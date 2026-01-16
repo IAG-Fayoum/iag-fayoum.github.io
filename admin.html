@@ -13,21 +13,31 @@
   <script src="assets/js/api.js"></script>
 
   <style>
+    /* [تم التعديل] تحسينات تجربة التطبيق */
     body { 
       font-family: 'Cairo', sans-serif; 
       background-color: #f8fafc;
-      /* [تم التعديل] تحسينات تجربة الموبايل */
-      overscroll-behavior-y: none;
-      -webkit-user-select: none;
+      overscroll-behavior-y: none; /* منع السحب */
+      -webkit-user-select: none; /* منع التحديد */
       user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
 
-    input, textarea, table, .selectable {
+    input, textarea, table, .selectable, h1, h2, h3, p {
       -webkit-user-select: text;
       user-select: text;
     }
+
+    /* منع التكبير في الآيفون */
+    input, select, textarea {
+      font-size: 16px !important;
+    }
     
+    /* إخفاء شريط التمرير */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* تأثير الضغط */
     button:active, .overview-card:active, .stat-card:active {
       transform: scale(0.97);
       transition: transform 0.1s;
@@ -38,9 +48,7 @@
     .fade-in { animation: fadeIn 0.5s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .stat-card { background: white; border-radius: 16px; padding: 24px; border: 1px solid #e2e8f0; transition: transform 0.2s; }
-    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); border-color: #0f766e; }
     .overview-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; transition: all 0.2s; text-align: center; }
-    .overview-card:hover { transform: translateY(-3px); box-shadow: 0 8px 16px -4px rgba(0,0,0,0.08); }
     .overview-card h4 { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #64748b; margin-bottom: 8px; }
     .overview-card .count { font-size: 2.5rem; font-weight: 900; line-height: 1; }
     .overview-new { border-bottom: 4px solid #3b82f6; } .overview-new .count { color: #3b82f6; }
@@ -49,107 +57,38 @@
     .overview-done { border-bottom: 4px solid #10b981; } .overview-done .count { color: #10b981; }
     .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; }
     .main-tab-btn { padding: 10px 20px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-    .main-tab-btn:hover { background-color: #f1f5f9; color: #0f766e; }
     .main-tab-btn.active { background-color: #0f766e; color: white; box-shadow: 0 4px 8px rgba(15, 118, 110, 0.3); }
     .input-field { width: 100%; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-weight: 600; outline: none; background: white; color: #334155; transition: 0.2s; }
     .input-field:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
     .btn-primary { background-color: #0f766e; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; }
-    .btn-primary:hover { background-color: #115e59; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3); }
     
     /* Mobile Optimizations */
     @media (max-width: 768px) {
-      /* Login Form */
-      #admin-login-view .bg-white {
-        padding: 24px;
-        max-width: 90%;
-      }
+      #admin-login-view .bg-white { padding: 24px; max-width: 90%; }
+      #admin-pin-input { font-size: 2rem; padding: 12px; }
       
-      #admin-pin-input {
-        font-size: 2rem;
-        padding: 12px;
-      }
+      header h1 { font-size: 1.5rem; }
+      header p { font-size: 0.75rem; }
+      .container { padding-left: 16px; padding-right: 16px; }
+      .overview-card { padding: 16px; }
+      .overview-card .count { font-size: 2rem; }
       
-      /* Header */
-      header h1 {
-        font-size: 1.5rem;
-      }
+      /* Tabs Scrolling */
+      .main-tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      .main-tabs::-webkit-scrollbar { display: none; }
+      .main-tab-btn { white-space: nowrap; font-size: 0.85rem; padding: 8px 16px; }
       
-      header p {
-        font-size: 0.75rem;
-      }
-      
-      /* Content Container */
-      .container {
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-      
-      /* Stats Cards */
-      .overview-card {
-        padding: 16px;
-      }
-      
-      .overview-card .count {
-        font-size: 2rem;
-      }
-      
-      /* Tabs */
-      .main-tabs {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-      
-      .main-tabs::-webkit-scrollbar {
-        display: none;
-      }
-      
-      .main-tab-btn {
-        white-space: nowrap;
-        font-size: 0.85rem;
-        padding: 8px 16px;
-      }
-      
-      /* Tables */
-      table {
-        font-size: 0.8rem;
-      }
-      
-      table th, table td {
-        padding: 8px 6px;
-      }
-      
-      /* Input Fields */
-      .input-field {
-        font-size: 0.9rem;
-      }
-      
-      /* Buttons */
-      .btn-primary {
-        width: 100%;
-        justify-content: center;
-      }
-      
-      /* Archive Filters */
-      .stat-card .grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-    }
-    
-    @media (max-width: 375px) {
-      .overview-card .count {
-        font-size: 1.75rem;
-      }
-      
-      header h1 {
-        font-size: 1.25rem;
-      }
+      table { font-size: 0.8rem; }
+      table th, table td { padding: 8px 6px; }
+      .input-field { font-size: 0.9rem; }
+      .btn-primary { width: 100%; justify-content: center; }
+      .stat-card .grid { grid-template-columns: 1fr; gap: 12px; }
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50">
+
+  <div id="toast-container" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-[100] flex flex-col gap-2 pointer-events-none w-max max-w-[90%]"></div>
 
   <div id="admin-login-view" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 p-4">
     <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-slate-200">
@@ -172,13 +111,13 @@
         >
       </div>
       
-      <button onclick="checkAdminLogin()" class="bg-red-600 hover:bg-red-700 text-white w-full py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-200 transition-all transform hover:-translate-y-1">
+      <button onclick="navigator.vibrate(10); checkAdminLogin()" class="bg-red-600 hover:bg-red-700 text-white w-full py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-200 transition-all transform hover:-translate-y-1">
         تسجيل الدخول
       </button>
       <p id="login-error" class="text-red-500 text-sm mt-4 font-bold hidden-section flex items-center justify-center gap-1">
         <i data-lucide="alert-circle" class="w-4 h-4"></i> <span>كود المرور غير صحيح</span>
       </p>
-      <button onclick="goHome()" class="mt-6 text-slate-400 hover:text-slate-600 text-sm font-bold flex items-center justify-center gap-2 mx-auto transition-colors">
+      <button onclick="navigator.vibrate(5); goHome()" class="mt-6 text-slate-400 hover:text-slate-600 text-sm font-bold flex items-center justify-center gap-2 mx-auto transition-colors">
         <i data-lucide="arrow-right" class="w-4 h-4"></i> عودة للرئيسية
       </button>
     </div>
@@ -193,14 +132,14 @@
           </h1>
           <p class="text-teal-100 text-sm mt-1 font-medium">نظام الحوكمة - مديرية الصحة بالفيوم</p>
         </div>
-        <button onclick="logout()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg flex items-center gap-2 transition-all font-bold">
+        <button onclick="navigator.vibrate(5); logout()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg flex items-center gap-2 transition-all font-bold">
           <i data-lucide="log-out" class="w-4 h-4"></i><span>خروج</span>
         </button>
       </div>
     </header>
 
     <div class="container mx-auto px-4 py-8 flex-grow">
-      <div class="main-tabs">
+      <div class="main-tabs no-scrollbar">
         <button class="main-tab-btn active" onclick="switchTab('overview')">
           <i data-lucide="layout-dashboard" class="w-4 h-4"></i>نظرة عامة
         </button>
@@ -223,7 +162,7 @@
           <h3 class="text-xl font-bold mb-4 text-slate-800 flex items-center gap-2">
             <i data-lucide="users" class="w-5 h-5 text-teal-600"></i>أداء الموظفين
           </h3>
-          <div id="employees-table" class="overflow-x-auto"></div>
+          <div id="employees-table" class="overflow-x-auto no-scrollbar"></div>
         </div>
       </div>
 
@@ -272,7 +211,7 @@
               <input type="text" id="archive-search" placeholder="رقم القيد، الجهة، الموضوع، الموظف..." class="input-field">
             </div>
           </div>
-          <button onclick="searchArchiveAdmin()" class="btn-primary mt-4">
+          <button onclick="navigator.vibrate(10); searchArchiveAdmin()" class="btn-primary mt-4">
             <i data-lucide="search" class="w-4 h-4"></i>بحث
           </button>
         </div>
@@ -289,13 +228,40 @@
   <script>
     let allEmployees=[];
     
+    // [تم التعديل] دالة الإشعارات (Toast)
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      const bgColor = type === 'error' ? 'bg-red-600' : (type === 'success' ? 'bg-slate-800' : 'bg-blue-600');
+      
+      toast.className = `${bgColor} text-white px-6 py-3 rounded-full shadow-2xl font-bold text-sm flex items-center gap-2 fade-in transition-all duration-300 transform translate-y-10 opacity-0`;
+      toast.innerHTML = type === 'error' ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${message}` : `<i data-lucide="check" class="w-4 h-4"></i> ${message}`;
+      
+      container.appendChild(toast);
+      lucide.createIcons();
+      
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-10', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-10');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+      
+      if(navigator.vibrate) navigator.vibrate(type === 'error' ? [50, 50, 50] : 10);
+    }
+
     async function checkAdminLogin() {
       const pin = document.getElementById('admin-pin-input').value;
       const errorMsg = document.getElementById('login-error');
 
       if (!pin || pin.length < 4) {
+        // [تم التعديل] استخدام Toast بدلاً من alert
         errorMsg.innerText = "أدخل الرمز كاملاً (4 أرقام)";
         errorMsg.classList.remove('hidden-section');
+        showToast("تأكد من إدخال 4 أرقام", "error");
         return;
       }
 
@@ -308,6 +274,7 @@
       } else {
          errorMsg.innerHTML = '<i data-lucide="alert-circle" class="w-4 h-4"></i> <span>كود خطأ أو غير مصرح لك</span>';
          errorMsg.classList.remove('hidden-section');
+         showToast("خطأ في تسجيل الدخول", "error");
          lucide.createIcons();
       }
     }
@@ -345,7 +312,8 @@
       if(result.success){
         displayArchive(result.results);
       }else{
-        alert('❌ خطأ: '+result.error);
+        // [تم التعديل]
+        showToast('❌ خطأ: '+result.error, 'error');
       }
     }
     
@@ -380,6 +348,13 @@
     function logout(){
       window.location.href = 'index.html';
     }
+    
+    // Override alert to use Toast
+    window.originalAlert = window.alert;
+    window.alert = function(msg) {
+        if(msg && (msg.includes('خطأ') || msg.includes('Error'))) showToast(msg, 'error');
+        else showToast(msg, 'success');
+    };
     
     lucide.createIcons();
   </script>
