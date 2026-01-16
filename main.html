@@ -13,31 +13,32 @@
   <script src="assets/js/api.js"></script>
 
   <style>
-    /* ── أساسيات ── */
+    /* ── أساسيات تجربة التطبيق ── */
     body { 
       font-family: 'Cairo', sans-serif; 
       background-color: #f8fafc;
-      overscroll-behavior-y: none;
+      overscroll-behavior-y: none; /* منع السحب للتحديث */
       -webkit-tap-highlight-color: transparent;
       -webkit-user-select: none; user-select: none;
     }
     
-    /* السماح بتحديد النصوص المهمة */
+    /* السماح بتحديد النصوص في الجداول والمدخلات */
     input, textarea, table, h1, h2, h3, p, span, td, th { -webkit-user-select: text; user-select: text; }
     
     /* منع تكبير الخط في الآيفون */
     input, select, textarea { font-size: 16px !important; }
 
-    /* إخفاء السكرول بار */
+    /* إخفاء شريط التمرير */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* دعم النوتش */
-    header { padding-top: calc(1rem + env(safe-area-inset-top)); }
-    .main-content { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+    /* 📱 التعامل مع النوتش (Notch) */
+    header, .safe-top { padding-top: calc(10px + env(safe-area-inset-top)); }
+    .main-content { padding-bottom: calc(85px + env(safe-area-inset-bottom)); }
+    .bottom-nav { padding-bottom: env(safe-area-inset-bottom); height: calc(65px + env(safe-area-inset-bottom)); }
 
     /* تأثير الضغط */
-    button:active, .card-press:active, .service-card:active { transform: scale(0.97); transition: 0.1s; }
+    button:active, .card-press:active, .service-card:active { transform: scale(0.97); transition: 0.1s; opacity: 0.9; }
 
     /* ── تنسيقات خاصة ── */
     .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
@@ -49,14 +50,18 @@
     .sidebar-active { background-color: #0f766e; color: white; border-right: 4px solid #ccfbf1; }
 
     /* Cards */
-    .stat-card { background: white; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .stat-card { background: white; border-radius: 12px; padding: 12px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .stat-card h3 { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-top: 4px; }
+    .stat-card p { font-size: 0.7rem; font-weight: 700; color: #64748b; }
+
     .service-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
-    .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-right: 4px solid transparent; }
+    
+    .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-right: 4px solid transparent; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     
     /* Employee Tabs */
     .main-tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
-    .main-tab-btn { padding: 8px 16px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; white-space: nowrap; background: #f1f5f9; }
-    .main-tab-btn.active { background-color: #0f766e; color: white; }
+    .main-tab-btn { padding: 8px 16px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; white-space: nowrap; background: #f1f5f9; border: 1px solid transparent; }
+    .main-tab-btn.active { background-color: #0f766e; color: white; box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.2); }
 
     /* Mobile Bottom Nav */
     @media (max-width: 768px) {
@@ -65,11 +70,11 @@
       .bottom-nav { 
         display: flex !important; position: fixed; bottom: 0; left: 0; right: 0; 
         background: white; border-top: 1px solid #e2e8f0; z-index: 1000;
-        padding-bottom: env(safe-area-inset-bottom); height: calc(65px + env(safe-area-inset-bottom));
         box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
       }
       .bottom-nav button { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #94a3b8; font-size: 0.7rem; font-weight: 700; border: none; background: transparent; }
       .bottom-nav button.active { color: #0f766e; }
+      .bottom-nav button.active i { stroke-width: 2.5px; }
       
       /* Mobile Cards for Tables */
       .mobile-card { background: white; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -111,50 +116,68 @@
       <div class="flex-1 overflow-y-auto scroll-smooth no-scrollbar main-content p-4 md:p-6">
 
         <div id="tab-dashboard" class="tab-content fade-in">
-          <header class="flex justify-between items-center mb-6">
-            <div>
+          
+          <header class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+            <div class="w-full md:w-auto">
               <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2"><i data-lucide="activity" class="text-teal-600"></i> مؤشرات الأداء</h2>
-              <p class="text-xs text-slate-500 font-bold mt-1" id="filter-status">جاري التحميل...</p>
+              <p class="text-xs text-slate-500 font-bold mt-1">مديرية الصحة بالفيوم</p>
             </div>
-            <button onclick="applyFilter(); vibrateDevice();" class="p-2 bg-white rounded-full shadow text-slate-600 active:scale-90 transition"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
+            
+            <div class="flex items-center gap-2 bg-white p-1.5 rounded-xl border shadow-sm w-full md:w-auto overflow-x-auto">
+               <select id="dash-year" class="bg-transparent text-sm font-bold text-slate-700 outline-none px-2 py-1">
+                 <option value="">كل السنوات</option>
+                 <option value="2025" selected>2025</option>
+                 <option value="2024">2024</option>
+               </select>
+               <div class="w-px h-4 bg-slate-200"></div>
+               <select id="dash-month" class="bg-transparent text-sm font-bold text-slate-700 outline-none px-2 py-1">
+                 <option value="">كل الشهور</option>
+                 <option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option>
+                 <option value="4">أبريل</option><option value="5">مايو</option><option value="6">يونيو</option>
+                 <option value="7">يوليو</option><option value="8">أغسطس</option><option value="9">سبتمبر</option>
+                 <option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+               </select>
+               <button onclick="applyFilter()" class="bg-teal-600 text-white px-4 py-1.5 rounded-lg text-sm font-bold shadow-sm whitespace-nowrap active:scale-95 transition">بحث</button>
+            </div>
           </header>
 
           <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
             <div class="stat-card border-b-4 border-slate-600">
-              <p class="text-xs font-bold text-slate-400">الإجمالي الكلي</p>
-              <h3 id="v-total" class="text-2xl font-black text-slate-800">--</h3>
+              <p>الإجمالي الكلي</p>
+              <h3 id="v-total" class="text-slate-800">--</h3>
             </div>
             <div class="stat-card border-b-4 border-emerald-500">
-              <p class="text-xs font-bold text-slate-400">تم الإنجاز</p>
-              <h3 id="v-done" class="text-2xl font-black text-emerald-600">--</h3>
+              <p>تم الإنجاز</p>
+              <h3 id="v-done" class="text-emerald-600">--</h3>
+            </div>
+            <div class="stat-card border-b-4 border-teal-300">
+              <p>بانتظار الاعتماد</p>
+              <h3 id="v-pending" class="text-teal-500">--</h3>
             </div>
             <div class="stat-card border-b-4 border-blue-500">
-              <p class="text-xs font-bold text-slate-400">بانتظار الاعتماد</p>
-              <h3 id="v-pending" class="text-2xl font-black text-blue-600">--</h3>
-            </div>
-            <div class="stat-card border-b-4 border-amber-500">
-              <p class="text-xs font-bold text-slate-400">جاري / فحص</p>
-              <h3 id="v-prog" class="text-2xl font-black text-amber-500">--</h3>
+              <p>قيد الفحص</p>
+              <h3 id="v-review" class="text-blue-600">--</h3>
             </div>
             <div class="stat-card border-b-4 border-red-600 bg-red-50">
-              <p class="text-xs font-bold text-red-600">🚨 متأخرات</p>
-              <h3 id="v-late" class="text-2xl font-black text-red-600">--</h3>
+              <p class="text-red-600">🚨 المتأخرات</p>
+              <h3 id="v-late" class="text-red-600">--</h3>
             </div>
           </div>
 
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-            <div class="p-4 border-b border-slate-100 flex items-center gap-2 bg-slate-50"><i data-lucide="users" class="text-teal-600"></i><h3 class="font-bold text-slate-800">أداء الموظفين</h3></div>
+            <div class="p-4 border-b border-slate-100 flex items-center gap-2 bg-slate-50"><i data-lucide="users" class="text-teal-600"></i><h3 class="font-bold text-slate-800">تحليل أداء الموظفين</h3></div>
             
             <div class="desktop-only overflow-x-auto">
               <table class="w-full text-right text-sm">
-                <thead class="bg-slate-100 text-slate-600 font-bold text-xs">
+                <thead class="bg-slate-50 text-slate-600 font-bold text-xs uppercase">
                   <tr>
                     <th class="p-3">الموظف</th>
                     <th class="p-3 text-center">الإجمالي</th>
                     <th class="p-3 text-center text-emerald-700">منجز</th>
-                    <th class="p-3 text-center text-blue-700">انتظار</th>
-                    <th class="p-3 text-center text-red-700">متأخر</th>
-                    <th class="p-3 text-center">نسبة</th>
+                    <th class="p-3 text-center text-teal-600">انتظار</th>
+                    <th class="p-3 text-center text-blue-600">فحص</th>
+                    <th class="p-3 text-center text-red-600">متأخر</th>
+                    <th class="p-3 text-center">النسبة</th>
                   </tr>
                 </thead>
                 <tbody id="table-rows-desktop"></tbody>
@@ -166,10 +189,9 @@
 
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="p-4 border-b border-slate-100 flex items-center gap-2 bg-slate-50"><i data-lucide="building-2" class="text-blue-600"></i><h3 class="font-bold text-slate-800">موقف الجهات</h3></div>
-            
             <div class="desktop-only overflow-x-auto max-h-80">
               <table class="w-full text-right text-sm">
-                <thead class="bg-slate-100 text-slate-600 font-bold text-xs sticky top-0">
+                <thead class="bg-slate-50 text-slate-600 font-bold text-xs sticky top-0">
                   <tr>
                     <th class="p-3">الجهة</th>
                     <th class="p-3 text-center">إجمالي</th>
@@ -180,13 +202,12 @@
                 <tbody id="entity-rows-desktop"></tbody>
               </table>
             </div>
-
             <div id="entity-rows-mobile" class="mobile-only p-3"></div>
           </div>
         </div>
 
         <div id="tab-services" class="tab-content hidden-section fade-in">
-          <h2 class="text-2xl font-bold text-slate-800 mb-6">الخدمات الإلكترونية</h2>
+          <header class="mb-6"><h2 class="text-xl font-bold text-slate-800">الخدمات الإلكترونية</h2></header>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <a href="https://forms.gle/A68F79PpJXHsfzXS9" target="_blank" class="service-card group">
               <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center"><i data-lucide="building-2"></i></div>
@@ -222,7 +243,8 @@
           </div>
 
           <div id="emp-profile-view" class="hidden-section w-full max-w-4xl self-start">
-             <div class="bg-white p-5 rounded-xl border border-slate-200 mb-6 flex justify-between items-center shadow-sm">
+             
+             <div class="bg-white p-5 rounded-xl border border-slate-200 mb-4 flex justify-between items-center shadow-sm">
                <div class="flex items-center gap-3">
                  <div class="w-12 h-12 bg-violet-100 text-violet-600 rounded-full flex items-center justify-center font-bold text-lg"><i data-lucide="user"></i></div>
                  <div><h2 id="profile-name" class="font-bold text-lg text-slate-800">...</h2><p id="profile-role" class="text-xs text-slate-500">...</p></div>
@@ -230,10 +252,18 @@
                <button onclick="logout()" class="text-red-500 bg-red-50 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition">خروج</button>
              </div>
 
+             <div class="grid grid-cols-4 gap-2 mb-4">
+                <div class="bg-white p-2 rounded-lg border text-center"><span class="text-xs text-slate-500 block">إجمالي</span><span id="p-total" class="font-bold text-lg">-</span></div>
+                <div class="bg-emerald-50 p-2 rounded-lg border border-emerald-100 text-center"><span class="text-xs text-emerald-600 block">منجز</span><span id="p-done" class="font-bold text-lg text-emerald-700">-</span></div>
+                <div class="bg-teal-50 p-2 rounded-lg border border-teal-100 text-center"><span class="text-xs text-teal-600 block">انتظار</span><span id="p-pending" class="font-bold text-lg text-teal-700">-</span></div>
+                <div class="bg-red-50 p-2 rounded-lg border border-red-100 text-center"><span class="text-xs text-red-600 block">متأخر</span><span id="p-late" class="font-bold text-lg text-red-700">-</span></div>
+             </div>
+
              <div class="main-tabs no-scrollbar">
-               <div class="main-tab-btn active" id="tab-btn-new" onclick="switchEmpTab('new')">📥 الوارد</div>
-               <div class="main-tab-btn" id="tab-btn-progress" onclick="switchEmpTab('progress')">⏳ جاري</div>
-               <div class="main-tab-btn" id="tab-btn-late" onclick="switchEmpTab('late')">🚨 متأخر</div>
+               <div class="main-tab-btn active" id="tab-btn-new" onclick="switchEmpTab('new')">📥 الوارد/جاري</div>
+               <div class="main-tab-btn" id="tab-btn-review" onclick="switchEmpTab('review')">🧐 قيد الفحص</div>
+               <div class="main-tab-btn" id="tab-btn-pending" onclick="switchEmpTab('pending')">⏳ الاعتماد</div>
+               <div class="main-tab-btn" id="tab-btn-late" onclick="switchEmpTab('late')">🚨 المتأخرات</div>
                <div class="main-tab-btn" id="tab-btn-history" onclick="switchEmpTab('history')">🗂️ الأرشيف</div>
              </div>
 
@@ -259,7 +289,7 @@
 
   <script>
     lucide.createIcons();
-    let allTasks = []; // لتخزين مهام الموظف
+    let allTasks = []; 
 
     // ── Navigation ──
     function switchTab(tabName) {
@@ -267,11 +297,10 @@
       const target = document.getElementById('tab-' + tabName);
       if(target) target.classList.remove('hidden-section');
 
-      // Update Buttons
       document.querySelectorAll('.bottom-nav button, .nav-btn').forEach(btn => {
         btn.classList.remove('active', 'text-teal-600', 'bg-teal-50', 'text-teal-700');
-        if(btn.id === 'nav-btn-' + tabName) btn.classList.add('active'); // Mobile
-        if(btn.dataset && btn.dataset.target === tabName) btn.classList.add('bg-teal-50', 'text-teal-700'); // Desktop
+        if(btn.id === 'nav-btn-' + tabName) btn.classList.add('active'); 
+        if(btn.dataset && btn.dataset.target === tabName) btn.classList.add('bg-teal-50', 'text-teal-700');
       });
       vibrateDevice();
     }
@@ -279,22 +308,33 @@
     // ── Dashboard Logic ──
     async function applyFilter() {
       document.getElementById('loader').classList.remove('hidden-section');
+      
+      const year = document.getElementById('dash-year').value;
+      const month = document.getElementById('dash-month').value;
+      
+      let start = '', end = '';
+      if(year) {
+         if(month) {
+            // شهر محدد
+            start = `${year}-${month.padStart(2,'0')}-01`;
+            // حساب آخر يوم في الشهر
+            let lastDay = new Date(year, month, 0).getDate();
+            end = `${year}-${month.padStart(2,'0')}-${lastDay}`;
+         } else {
+            // سنة كاملة
+            start = `${year}-01-01`; end = `${year}-12-31`;
+         }
+      }
+
       try {
-        if(typeof getDashboard === 'undefined') {
-           // Fallback for Apps Script
-           if(typeof google !== 'undefined' && google.script) {
-             google.script.run.withSuccessHandler(renderData).withFailureHandler(err => {
-               showToast("خطأ اتصال", "error");
-               document.getElementById('loader').classList.add('hidden-section');
-             }).getDashboardData('2024-01-01', '2025-12-31');
-           } else {
-             // Local Dev Mock (For safety only)
+        if(typeof google !== 'undefined' && google.script) {
+           google.script.run.withSuccessHandler(renderData).withFailureHandler(err => {
+             showToast("خطأ اتصال", "error");
              document.getElementById('loader').classList.add('hidden-section');
-             // showToast("Running Local Mode", "success");
-           }
+           }).getDashboardData(start, end);
         } else {
-           const data = await getDashboard('2024-01-01', '2025-12-31');
-           renderData(data);
+           console.log("Dev Mode: Skipping Backend Call");
+           document.getElementById('loader').classList.add('hidden-section');
         }
       } catch (e) { console.error(e); }
     }
@@ -303,11 +343,11 @@
         document.getElementById('loader').classList.add('hidden-section');
         if (data.error) { showToast(data.error, 'error'); return; }
 
-        // ✅ [Fix] Correct Variable Names from Backend
+        // 1. Stats
         document.getElementById('v-total').innerText = data.totals.total || 0;
         document.getElementById('v-done').innerText = data.totals.completed || 0;
-        document.getElementById('v-pending').innerText = data.totals.pending || 0;
-        document.getElementById('v-prog').innerText = data.totals.progress || 0;
+        document.getElementById('v-pending').innerText = data.totals.pending_approval || 0; // Updated Key
+        document.getElementById('v-review').innerText = data.totals.review || 0; // Updated Key
         document.getElementById('v-late').innerText = data.totals.overdue || 0;
 
         renderEmployees(data.employees);
@@ -323,11 +363,12 @@
       if(!list || list.length === 0) { mobile.innerHTML = '<p class="text-center text-slate-400">لا توجد بيانات</p>'; return; }
 
       list.forEach(e => {
-        // ✅ [Fix] Use correct keys: periodTotal, periodCompleted etc.
-        const total = e.periodTotal || 0;
-        const done = e.periodCompleted || 0;
-        const pending = e.periodPending || 0;
-        const overdue = e.absoluteOverdue || 0;
+        // Keys from Backend v5
+        const total = e.total || 0;
+        const done = e.completed || 0;
+        const pending = e.pending_approval || 0; // Green
+        const review = e.review || 0; // Blue
+        const overdue = e.overdue || 0; // Red
         const rate = e.rate || 0;
 
         // Desktop
@@ -339,7 +380,8 @@
             </td>
             <td class="p-3 text-center font-bold">${total}</td>
             <td class="p-3 text-center text-emerald-700 font-bold">${done}</td>
-            <td class="p-3 text-center text-blue-700 font-bold">${pending}</td>
+            <td class="p-3 text-center text-teal-600 font-bold">${pending}</td>
+            <td class="p-3 text-center text-blue-600 font-bold">${review}</td>
             <td class="p-3 text-center ${overdue > 0 ? 'text-red-600 font-black' : 'text-slate-300'}">${overdue}</td>
             <td class="p-3 text-center font-bold text-slate-700">%${rate}</td>
           </tr>
@@ -350,14 +392,15 @@
           <div class="mobile-card">
             <div class="flex justify-between items-start">
               <div>
-                <h4 class="font-bold text-slate-800">${e.name}</h4>
+                <h4 class="font-bold text-slate-800 text-sm">${e.name}</h4>
                 <p class="text-[10px] text-slate-500 mt-1">${e.breakdownStr || ''}</p>
               </div>
-              <span class="bg-slate-100 text-xs px-2 py-1 rounded font-bold">مجموع: ${total}</span>
+              <span class="bg-slate-100 text-xs px-2 py-1 rounded font-bold">م: ${total}</span>
             </div>
-            <div class="grid grid-cols-4 gap-1 mt-2 text-center text-xs font-bold">
+            <div class="grid grid-cols-5 gap-1 mt-2 text-center text-[10px] font-bold">
                <div class="bg-emerald-50 text-emerald-700 py-1 rounded">✅ ${done}</div>
-               <div class="bg-blue-50 text-blue-700 py-1 rounded">⏳ ${pending}</div>
+               <div class="bg-teal-50 text-teal-700 py-1 rounded">⏳ ${pending}</div>
+               <div class="bg-blue-50 text-blue-700 py-1 rounded">🧐 ${review}</div>
                <div class="${overdue > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-50 text-slate-300'} py-1 rounded">🚨 ${overdue}</div>
                <div class="bg-slate-100 text-slate-700 py-1 rounded">%${rate}</div>
             </div>
@@ -404,32 +447,30 @@
       
       document.getElementById('loader').classList.remove('hidden-section');
       
-      try {
-        if(typeof login !== 'undefined') {
-           const res = await login(pin);
-           processLogin(res);
-        } else {
-           google.script.run.withSuccessHandler(processLogin).withFailureHandler(e => {
-             showToast("خطأ اتصال", "error");
-             document.getElementById('loader').classList.add('hidden-section');
-           }).loginUser(pin);
-        }
-      } catch(e) { console.error(e); }
-    }
-
-    function processLogin(res) {
+      google.script.run.withSuccessHandler(res => {
          document.getElementById('loader').classList.add('hidden-section');
          if(res.success) {
             document.getElementById('emp-login-form').classList.add('hidden-section');
             document.getElementById('emp-profile-view').classList.remove('hidden-section');
+            
+            // Set Info & Stats
             document.getElementById('profile-name').innerText = res.name;
             document.getElementById('profile-role').innerText = res.role;
+            // Update Personal Stats Bar
+            if(res.stats) {
+               document.getElementById('p-total').innerText = res.stats.total;
+               document.getElementById('p-done').innerText = res.stats.done;
+               document.getElementById('p-pending').innerText = res.stats.pending;
+               document.getElementById('p-late').innerText = res.stats.late;
+            }
+
             allTasks = res.tasks || [];
             switchEmpTab('new');
             showToast(`أهلاً بك، ${res.name}`);
          } else {
             showToast("كود خطأ", "error");
          }
+      }).loginUser(pin);
     }
 
     function switchEmpTab(type) {
@@ -440,31 +481,44 @@
       container.innerHTML = '';
       
       let filtered = [];
-      // 🛑 منطق تصنيف المهام للموظف (Matches Backend Statuses)
-      if(type === 'new') filtered = allTasks.filter(t => !t.status || t.status.includes('جديد'));
-      else if(type === 'progress') filtered = allTasks.filter(t => t.status && (t.status.includes('جاري') || t.status.includes('قيد') || t.status.includes('لم يتم') || t.status.includes('انتظار')));
-      else if(type === 'late') filtered = allTasks.filter(t => t.status && (t.status.includes('متأخر') || t.status.includes('متابعة')));
-      else if(type === 'history') filtered = allTasks.filter(t => t.status && (t.status.includes('تم') || t.status.includes('منتهي') || t.status.includes('الأرشيف')));
+      // 🛑 منطق مطابق للـ Backend (categories)
+      // categories: 'completed', 'pending_approval', 'review', 'overdue', 'progress'
+      if(type === 'new') filtered = allTasks.filter(t => t.category === 'progress' || !t.category);
+      else if(type === 'review') filtered = allTasks.filter(t => t.category === 'review');
+      else if(type === 'pending') filtered = allTasks.filter(t => t.category === 'pending_approval');
+      else if(type === 'late') filtered = allTasks.filter(t => t.category === 'overdue');
+      else if(type === 'history') filtered = allTasks.filter(t => t.category === 'completed');
 
       if(filtered.length === 0) {
-         container.innerHTML = '<div class="text-center py-8 text-slate-400 bg-slate-50 rounded-lg">لا توجد مهام</div>';
+         container.innerHTML = '<div class="text-center py-8 text-slate-400 bg-slate-50 rounded-lg border border-dashed">لا توجد مهام في هذه القائمة</div>';
          return;
       }
 
       filtered.forEach(t => {
-         let statusColor = t.status.includes('متأخر') ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600';
-         let attachBtn = t.attachment ? `<a href="${t.attachment}" target="_blank" class="text-blue-600 text-xs font-bold flex items-center gap-1 mt-2"><i data-lucide="paperclip" class="w-3 h-3"></i> المرفق</a>` : '';
+         // ألوان الكروت بناءً على الحالة
+         let borderColor = 'border-l-slate-400';
+         let statusBg = 'bg-slate-100 text-slate-600';
+         
+         if(t.category === 'overdue') { borderColor='border-l-red-500'; statusBg='bg-red-100 text-red-700'; }
+         else if(t.category === 'pending_approval') { borderColor='border-l-teal-400'; statusBg='bg-teal-100 text-teal-700'; } // Mint
+         else if(t.category === 'review') { borderColor='border-l-blue-500'; statusBg='bg-blue-100 text-blue-700'; }
+         else if(t.category === 'completed') { borderColor='border-l-emerald-500'; statusBg='bg-emerald-100 text-emerald-700'; }
+         else { borderColor='border-l-amber-500'; statusBg='bg-amber-100 text-amber-700'; }
+
+         let attachBtn = t.attachment ? `<a href="${t.attachment}" target="_blank" class="text-blue-600 text-xs font-bold flex items-center gap-1 mt-2 bg-blue-50 p-1.5 rounded w-fit"><i data-lucide="paperclip" class="w-3 h-3"></i> معاينة المرفق</a>` : '';
          
          container.innerHTML += `
-           <div class="task-card border-l-4 ${type==='late'?'border-l-red-500':'border-l-blue-500'}">
+           <div class="task-card border-l-4 ${borderColor}">
               <div class="flex justify-between items-start mb-2">
-                 <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold text-slate-500">#${t.id}</span>
-                 <span class="text-[10px] px-2 py-1 rounded font-bold ${statusColor}">${t.status}</span>
+                 <span class="text-[10px] bg-slate-50 border px-2 py-1 rounded font-bold text-slate-500">#${t.id}</span>
+                 <span class="text-[10px] px-2 py-1 rounded font-bold ${statusBg}">${t.status}</span>
               </div>
               <h3 class="font-bold text-slate-800 text-sm mb-1">${t.subject}</h3>
-              <p class="text-xs text-slate-500 mb-1">${t.entity} | ${t.source}</p>
-              <p class="text-[10px] text-slate-400">${t.date}</p>
-              ${attachBtn}
+              <p class="text-xs text-slate-500 mb-1 font-bold">${t.entity}</p>
+              <div class="flex justify-between items-center mt-2 border-t pt-2 border-slate-50">
+                 <span class="text-[10px] text-slate-400">${t.date}</span>
+                 ${attachBtn}
+              </div>
            </div>
          `;
       });
@@ -489,7 +543,7 @@
       setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
     }
 
-    // Init
+    // Init Load
     window.onload = applyFilter;
   </script>
 </body>
