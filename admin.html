@@ -36,6 +36,98 @@
     .input-field:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
     .btn-primary { background-color: #0f766e; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; }
     .btn-primary:hover { background-color: #115e59; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3); }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      /* Login Form */
+      #admin-login-view .bg-white {
+        padding: 24px;
+        max-width: 90%;
+      }
+      
+      #admin-pin-input {
+        font-size: 2rem;
+        padding: 12px;
+      }
+      
+      /* Header */
+      header h1 {
+        font-size: 1.5rem;
+      }
+      
+      header p {
+        font-size: 0.75rem;
+      }
+      
+      /* Content Container */
+      .container {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      
+      /* Stats Cards */
+      .overview-card {
+        padding: 16px;
+      }
+      
+      .overview-card .count {
+        font-size: 2rem;
+      }
+      
+      /* Tabs */
+      .main-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      
+      .main-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .main-tab-btn {
+        white-space: nowrap;
+        font-size: 0.85rem;
+        padding: 8px 16px;
+      }
+      
+      /* Tables */
+      table {
+        font-size: 0.8rem;
+      }
+      
+      table th, table td {
+        padding: 8px 6px;
+      }
+      
+      /* Input Fields */
+      .input-field {
+        font-size: 0.9rem;
+      }
+      
+      /* Buttons */
+      .btn-primary {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      /* Archive Filters */
+      .stat-card .grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+    
+    @media (max-width: 375px) {
+      .overview-card .count {
+        font-size: 1.75rem;
+      }
+      
+      header h1 {
+        font-size: 1.25rem;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50">
