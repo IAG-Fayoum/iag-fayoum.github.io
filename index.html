@@ -6,7 +6,6 @@
   <meta name="theme-color" content="#0f766e">
   <title>Internal Audit and Governance – Fayoum</title>
   
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="assets/icons/icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,111 +16,35 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    body { 
-      font-family: 'Cairo', sans-serif; 
-      background-color: #f8fafc; 
-    }
-    .theme-gradient { 
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); 
-    }
-    .fade-in { 
-      animation: fadeIn 0.5s ease-out; 
-    }
-    @keyframes fadeIn { 
-      from { opacity: 0; transform: translateY(10px); } 
-      to { opacity: 1; transform: translateY(0); } 
-    }
+    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+    .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
-    /* Mobile Optimizations */
     @media (max-width: 768px) {
-      header {
-        padding-top: 32px;
-        padding-bottom: 64px;
-      }
-      
-      header h1 {
-        font-size: 1.75rem;
-      }
-      
-      header p {
-        font-size: 0.9rem;
-      }
-      
-      header .bg-white\/10 {
-        padding: 24px;
-        margin-bottom: 16px;
-      }
-      
-      header i {
-        width: 64px !important;
-        height: 64px !important;
-      }
-      
-      main {
-        margin-top: -48px;
-      }
-      
-      main .bg-white {
-        padding: 24px;
-        margin-bottom: 24px;
-      }
-      
-      main h2 {
-        font-size: 1.25rem;
-      }
-      
-      main p {
-        font-size: 0.9rem;
-      }
-      
-      .grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
-      
-      .grid button {
-        padding: 16px;
-      }
-      
-      .grid button i {
-        width: 28px !important;
-        height: 28px !important;
-      }
-      
-      .grid button span {
-        font-size: 0.85rem;
-      }
-      
-      footer {
-        padding-top: 24px;
-        padding-bottom: 24px;
-      }
-      
-      footer p {
-        font-size: 0.75rem;
-      }
-      
-      footer .text-xs {
-        font-size: 0.65rem;
-      }
+      header { padding-top: 32px; padding-bottom: 64px; }
+      header h1 { font-size: 1.75rem; }
+      header p { font-size: 0.9rem; }
+      header .bg-white\/10 { padding: 24px; margin-bottom: 16px; }
+      header i { width: 64px !important; height: 64px !important; }
+      main { margin-top: -48px; }
+      main .bg-white { padding: 24px; margin-bottom: 24px; }
+      main h2 { font-size: 1.25rem; }
+      main p { font-size: 0.9rem; }
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .grid button { padding: 16px; }
+      .grid button i { width: 28px !important; height: 28px !important; }
+      .grid button span { font-size: 0.85rem; }
+      footer { padding-top: 24px; padding-bottom: 24px; }
+      footer p { font-size: 0.75rem; }
+      footer .text-xs { font-size: 0.65rem; }
     }
     
     @media (max-width: 375px) {
-      header h1 {
-        font-size: 1.5rem;
-      }
-      
-      .grid {
-        gap: 8px;
-      }
-      
-      .grid button {
-        padding: 12px;
-      }
-      
-      .grid button span {
-        font-size: 0.75rem;
-      }
+      header h1 { font-size: 1.5rem; }
+      .grid { gap: 8px; }
+      .grid button { padding: 12px; }
+      .grid button span { font-size: 0.75rem; }
     }
   </style>
 </head>
@@ -159,22 +82,22 @@
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto opacity-95">
-        <button onclick="window.location.href='main.html'" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-teal-600 hover:scale-105 transition-transform group">
+        <button onclick="goToDashboard()" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-teal-600 hover:scale-105 transition-transform group">
           <i data-lucide="bar-chart-2" class="w-8 h-8 text-teal-600 mx-auto mb-3"></i>
           <span class="text-base font-bold text-slate-700">Dashboard</span>
         </button>
         
-        <button onclick="window.location.href='main.html#services'" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-blue-500 hover:scale-105 transition-transform group">
+        <button onclick="goToServices()" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-blue-500 hover:scale-105 transition-transform group">
           <i data-lucide="briefcase" class="w-8 h-8 text-blue-500 mx-auto mb-3"></i>
           <span class="text-base font-bold text-slate-700">الخدمات</span>
         </button>
         
-        <button onclick="window.location.href='main.html#employees'" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-violet-500 hover:scale-105 transition-transform group">
+        <button onclick="goToEmployees()" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-violet-500 hover:scale-105 transition-transform group">
           <i data-lucide="users" class="w-8 h-8 text-violet-500 mx-auto mb-3"></i>
           <span class="text-base font-bold text-slate-700">الموظفين</span>
         </button>
         
-        <button onclick="window.location.href='admin.html'" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-red-500 hover:scale-105 transition-transform group">
+        <button onclick="goToAdmin()" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-red-500 hover:scale-105 transition-transform group">
           <i data-lucide="settings" class="w-8 h-8 text-red-500 mx-auto mb-3"></i>
           <span class="text-base font-bold text-slate-700">الإدارة</span>
         </button>
@@ -200,9 +123,26 @@
   <script>
     lucide.createIcons();
     
-    // Register Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Error:', err));
+    }
+    
+    function goToDashboard() {
+      window.location.href = 'main.html';
+    }
+    
+    function goToServices() {
+      window.location.href = 'main.html';
+      setTimeout(() => { if (window.switchTab) window.switchTab('services'); }, 100);
+    }
+    
+    function goToEmployees() {
+      window.location.href = 'main.html';
+      setTimeout(() => { if (window.switchTab) window.switchTab('employees'); }, 100);
+    }
+    
+    function goToAdmin() {
+      window.location.href = 'admin.html';
     }
   </script>
 </body>
