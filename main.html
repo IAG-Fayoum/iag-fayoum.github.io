@@ -3,17 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#0f766e">
   <title>نظام الحوكمة - مديرية الصحة</title>
   
-  <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="assets/js/api.js"></script>
 
   <style>
-    /* ── أساسيات ── */
+    /* ── Core Styles ── */
     body { 
       font-family: 'Cairo', sans-serif; 
       background-color: #f8fafc;
@@ -22,31 +19,27 @@
       -webkit-user-select: none; user-select: none;
     }
     
-    /* السماح بتحديد النصوص */
+    /* Allow text selection where needed */
     input, textarea, table, h1, h2, h3, p, span, td, th { -webkit-user-select: text; user-select: text; }
-    input, select, textarea { font-size: 16px !important; } /* منع الزوم */
+    input, select, textarea { font-size: 16px !important; } /* Prevent Zoom on iPhone */
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* 📱 معالجة النوتش (Safe Area) */
+    /* Safe Area for Mobile */
     header { padding-top: calc(1rem + env(safe-area-inset-top)); }
     .main-content { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
     .bottom-nav { padding-bottom: env(safe-area-inset-bottom); height: calc(65px + env(safe-area-inset-bottom)); }
 
-    /* تأثير الضغط */
-    button:active, .card-press:active, .service-card:active { transform: scale(0.97); transition: 0.1s; opacity: 0.9; }
+    /* Interactions */
+    button:active, .card-press:active { transform: scale(0.97); transition: 0.1s; opacity: 0.9; }
 
-    /* ── تنسيقات خاصة ── */
     .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
     .hidden-section { display: none !important; }
     .fade-in { animation: fadeIn 0.4s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Sidebar */
-    .sidebar-active { background-color: #0f766e; color: white; border-right: 4px solid #ccfbf1; }
-
-    /* Cards */
+    /* Cards UI */
     .stat-card { background: white; border-radius: 12px; padding: 12px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     .stat-card h3 { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-top: 4px; }
     .stat-card p { font-size: 0.7rem; font-weight: 700; color: #64748b; }
@@ -56,11 +49,10 @@
     .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-right: 4px solid transparent; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
     
     /* Tabs */
-    .main-tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
     .main-tab-btn { padding: 8px 16px; font-weight: 700; color: #64748b; cursor: pointer; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; white-space: nowrap; background: #f1f5f9; border: 1px solid transparent; }
     .main-tab-btn.active { background-color: #0f766e; color: white; box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.2); }
 
-    /* Mobile Nav */
+    /* Responsive Logic */
     @media (max-width: 768px) {
       .desktop-only { display: none !important; }
       .bottom-nav { 
@@ -70,8 +62,6 @@
       }
       .bottom-nav button { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #94a3b8; font-size: 0.7rem; font-weight: 700; border: none; background: transparent; }
       .bottom-nav button.active { color: #0f766e; }
-      .bottom-nav button.active i { stroke-width: 2.5px; }
-      
       .mobile-card { background: white; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
     }
 
@@ -79,20 +69,11 @@
       .mobile-only { display: none !important; }
       .bottom-nav { display: none !important; }
     }
-    
-    /* Toast */
-    #toast-container { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 400px; pointer-events: none; }
-    .toast { background: #1e293b; color: white; padding: 12px 20px; border-radius: 50px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-weight: bold; font-size: 0.9rem; opacity: 0; transition: 0.3s; transform: translateY(20px); pointer-events: auto; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .toast.show { opacity: 1; transform: translateY(0); }
-    .toast.error { background: #ef4444; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col overflow-hidden">
 
-  <div id="toast-container"></div>
-
   <div class="flex-grow flex h-screen overflow-hidden">
-    
     <aside class="desktop-only w-64 bg-white border-l border-slate-200 flex flex-col shadow-lg z-20 shrink-0">
       <div class="p-6 text-center border-b border-slate-100">
         <div class="w-14 h-14 bg-teal-50 text-teal-700 rounded-full flex items-center justify-center mx-auto mb-2"><i data-lucide="shield" class="w-7 h-7"></i></div>
@@ -102,59 +83,34 @@
         <button onclick="switchTab('dashboard')" class="w-full flex items-center gap-3 p-3 rounded-lg font-bold bg-teal-50 text-teal-700 nav-btn" data-target="dashboard"><i data-lucide="layout-grid"></i> Dashboard</button>
         <button onclick="switchTab('services')" class="w-full flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-slate-50 nav-btn" data-target="services"><i data-lucide="briefcase"></i> الخدمات</button>
         <button onclick="switchTab('employees')" class="w-full flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-slate-50 nav-btn" data-target="employees"><i data-lucide="users-2"></i> الموظفين</button>
-        <a href="admin.html" class="w-full flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-red-50 hover:text-red-600"><i data-lucide="settings-2"></i> الإدارة</a>
       </nav>
-      <div class="p-4"><button onclick="window.location.href='index.html'" class="text-red-500 font-bold text-sm flex items-center gap-2"><i data-lucide="log-out" class="w-4 h-4"></i> خروج</button></div>
+      <div class="p-4"><button onclick="goHome()" class="text-red-500 font-bold text-sm flex items-center gap-2 hover:bg-red-50 w-full p-2 rounded"><i data-lucide="log-out" class="w-4 h-4"></i> خروج</button></div>
     </aside>
 
     <main class="flex-1 flex flex-col bg-slate-50 overflow-hidden relative">
       <div class="flex-1 overflow-y-auto scroll-smooth no-scrollbar main-content p-4 md:p-6">
 
         <div id="tab-dashboard" class="tab-content fade-in">
-          
           <header class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <div class="w-full md:w-auto">
               <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2"><i data-lucide="activity" class="text-teal-600"></i> مؤشرات الأداء</h2>
-              <p class="text-xs text-slate-500 font-bold mt-1">مديرية الصحة بالفيوم</p>
+              <p class="text-xs text-slate-500 font-bold mt-1">إحصائيات شاملة</p>
             </div>
             
-            <div class="flex items-center gap-2 bg-white p-1.5 rounded-xl border shadow-sm w-full md:w-auto overflow-x-auto">
-               <select id="dash-year" class="bg-transparent text-sm font-bold text-slate-700 outline-none px-2 py-1">
-                 <option value="">كل السنوات</option><option value="2025" selected>2025</option><option value="2024">2024</option>
+            <div class="flex items-center gap-2 bg-white p-1.5 rounded-xl border shadow-sm w-full md:w-auto">
+               <select id="dash-year" class="bg-transparent text-sm font-bold text-slate-700 outline-none px-2 py-1 w-full">
+                 <option value="2025" selected>2025</option><option value="2024">2024</option>
                </select>
-               <div class="w-px h-4 bg-slate-200"></div>
-               <select id="dash-month" class="bg-transparent text-sm font-bold text-slate-700 outline-none px-2 py-1">
-                 <option value="">كل الشهور</option>
-                 <option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option>
-                 <option value="4">أبريل</option><option value="5">مايو</option><option value="6">يونيو</option>
-                 <option value="7">يوليو</option><option value="8">أغسطس</option><option value="9">سبتمبر</option>
-                 <option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
-               </select>
-               <button onclick="applyFilter()" class="bg-teal-600 text-white px-4 py-1.5 rounded-lg text-sm font-bold shadow-sm whitespace-nowrap active:scale-95 transition">بحث</button>
+               <button onclick="applyFilter()" class="bg-teal-600 text-white px-4 py-1.5 rounded-lg text-sm font-bold shadow-sm whitespace-nowrap active:scale-95 transition">تحديث</button>
             </div>
           </header>
 
           <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-            <div class="stat-card border-b-4 border-slate-600">
-              <p>الإجمالي الكلي</p>
-              <h3 id="v-total" class="text-slate-800">--</h3>
-            </div>
-            <div class="stat-card border-b-4 border-emerald-500">
-              <p>تم الإنجاز</p>
-              <h3 id="v-done" class="text-emerald-600">--</h3>
-            </div>
-            <div class="stat-card border-b-4 border-teal-400 bg-teal-50/50">
-              <p>بانتظار الاعتماد</p>
-              <h3 id="v-pending" class="text-teal-600">--</h3>
-            </div>
-            <div class="stat-card border-b-4 border-blue-500 bg-blue-50/50">
-              <p>قيد الفحص</p>
-              <h3 id="v-review" class="text-blue-600">--</h3>
-            </div>
-            <div class="stat-card border-b-4 border-red-600 bg-red-50">
-              <p class="text-red-600">🚨 المتأخرات</p>
-              <h3 id="v-late" class="text-red-600">--</h3>
-            </div>
+            <div class="stat-card border-b-4 border-slate-600"><p>الإجمالي الكلي</p><h3 id="v-total" class="text-slate-800">--</h3></div>
+            <div class="stat-card border-b-4 border-emerald-500"><p>تم الإنجاز</p><h3 id="v-done" class="text-emerald-600">--</h3></div>
+            <div class="stat-card border-b-4 border-teal-400 bg-teal-50/50"><p>بانتظار الاعتماد</p><h3 id="v-pending" class="text-teal-600">--</h3></div>
+            <div class="stat-card border-b-4 border-blue-500 bg-blue-50/50"><p>قيد الفحص</p><h3 id="v-review" class="text-blue-600">--</h3></div>
+            <div class="stat-card border-b-4 border-red-600 bg-red-50"><p class="text-red-600">🚨 المتأخرات</p><h3 id="v-late" class="text-red-600">--</h3></div>
           </div>
 
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
@@ -164,37 +120,15 @@
               <table class="w-full text-right text-sm">
                 <thead class="bg-slate-50 text-slate-600 font-bold text-xs uppercase">
                   <tr>
-                    <th class="p-3">الموظف</th>
-                    <th class="p-3 text-center">الإجمالي</th>
-                    <th class="p-3 text-center text-emerald-700">منجز</th>
-                    <th class="p-3 text-center text-teal-600">اعتماد</th>
-                    <th class="p-3 text-center text-blue-600">فحص</th>
-                    <th class="p-3 text-center text-red-600">متأخر</th>
-                    <th class="p-3 text-center">النسبة</th>
+                    <th class="p-3">الموظف</th><th class="p-3 text-center">الإجمالي</th><th class="p-3 text-center text-emerald-700">منجز</th>
+                    <th class="p-3 text-center text-teal-600">اعتماد</th><th class="p-3 text-center text-blue-600">فحص</th>
+                    <th class="p-3 text-center text-red-600">متأخر</th><th class="p-3 text-center">النسبة</th>
                   </tr>
                 </thead>
                 <tbody id="table-rows-desktop"></tbody>
               </table>
             </div>
             <div id="table-rows-mobile" class="mobile-only p-3"></div>
-          </div>
-
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-4 border-b border-slate-100 flex items-center gap-2 bg-slate-50"><i data-lucide="building-2" class="text-blue-600"></i><h3 class="font-bold text-slate-800">موقف الجهات</h3></div>
-            <div class="desktop-only overflow-x-auto max-h-80">
-              <table class="w-full text-right text-sm">
-                <thead class="bg-slate-50 text-slate-600 font-bold text-xs sticky top-0">
-                  <tr>
-                    <th class="p-3">الجهة</th>
-                    <th class="p-3 text-center">إجمالي</th>
-                    <th class="p-3 text-center">متأخر</th>
-                    <th class="p-3 text-center">نسبة التأخير</th>
-                  </tr>
-                </thead>
-                <tbody id="entity-rows-desktop"></tbody>
-              </table>
-            </div>
-            <div id="entity-rows-mobile" class="mobile-only p-3"></div>
           </div>
         </div>
 
@@ -216,10 +150,6 @@
             <a href="https://forms.gle/MdqjBxbYcdiuR2NG9" target="_blank" class="service-card group">
               <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center"><i data-lucide="file-warning"></i></div>
               <span class="font-bold text-slate-700">فحص الشكاوى</span>
-            </a>
-            <a href="https://forms.gle/gqyJvmhZHeggeYLV7" target="_blank" class="service-card group">
-              <div class="w-12 h-12 bg-teal-50 text-teal-600 rounded-lg flex items-center justify-center"><i data-lucide="arrow-right-left"></i></div>
-              <span class="font-bold text-slate-700">صادر ووارد</span>
             </a>
           </div>
         </div>
@@ -251,15 +181,15 @@
                 <div class="bg-red-50 p-2 rounded-lg border border-red-100 text-center"><span class="text-xs text-red-600 block">متأخر</span><span id="p-late" class="font-bold text-lg text-red-700">-</span></div>
              </div>
 
-             <div class="main-tabs no-scrollbar">
+             <div class="flex gap-2 overflow-x-auto pb-2 mb-2 no-scrollbar">
                <div class="main-tab-btn active" id="tab-btn-new" onclick="switchEmpTab('new')">📥 الوارد/جاري</div>
                <div class="main-tab-btn" id="tab-btn-review" onclick="switchEmpTab('review')">🧐 قيد الفحص</div>
-               <div class="main-tab-btn" id="tab-btn-pending" onclick="switchEmpTab('pending')">⏳ الاعتماد</div>
                <div class="main-tab-btn" id="tab-btn-late" onclick="switchEmpTab('late')">🚨 المتأخرات</div>
                <div class="main-tab-btn" id="tab-btn-history" onclick="switchEmpTab('history')">🗂️ الأرشيف</div>
+               <div class="main-tab-btn" id="tab-btn-reports" onclick="switchEmpTab('reports')">📄 التقارير</div>
              </div>
 
-             <div id="emp-content-area" class="space-y-3"></div>
+             <div id="emp-content-area" class="space-y-3 pb-24"></div>
           </div>
         </div>
 
@@ -271,10 +201,9 @@
       <button onclick="switchTab('services')" id="nav-btn-services"><i data-lucide="briefcase"></i><span>الخدمات</span></button>
       <button onclick="switchTab('employees')" id="nav-btn-employees"><i data-lucide="users-2"></i><span>الموظفين</span></button>
     </nav>
-
   </div>
 
-  <div id="loader" class="fixed inset-0 bg-white/90 z-[3000] flex flex-col items-center justify-center hidden-section">
+  <div id="loader" class="fixed inset-0 bg-white/90 z-[3000] flex flex-col items-center justify-center hidden-section backdrop-blur-sm">
     <div class="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-3"></div>
     <p class="font-bold text-slate-700">جاري التحميل...</p>
   </div>
@@ -282,6 +211,17 @@
   <script>
     lucide.createIcons();
     let allTasks = []; 
+    let allReports = [];
+
+    // ── Navigation Logic ──
+    function goHome() {
+       document.getElementById('loader').classList.remove('hidden-section');
+       if(typeof google !== 'undefined' && google.script) {
+          google.script.run.withSuccessHandler(url => window.top.location.href = url).getScriptUrl();
+       } else {
+          window.location.href = 'index.html';
+       }
+    }
 
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-section'));
@@ -292,132 +232,85 @@
         if(btn.id === 'nav-btn-' + tabName) btn.classList.add('active'); 
         if(btn.dataset && btn.dataset.target === tabName) btn.classList.add('bg-teal-50', 'text-teal-700');
       });
-      vibrateDevice();
     }
 
-    async function applyFilter() {
+    // ── Dashboard Logic ──
+    function applyFilter() {
       document.getElementById('loader').classList.remove('hidden-section');
-      
       const year = document.getElementById('dash-year').value;
-      const month = document.getElementById('dash-month').value;
-      
-      let start = '', end = '';
-      if(year) {
-         if(month) {
-            start = `${year}-${month.padStart(2,'0')}-01`;
-            let lastDay = new Date(year, month, 0).getDate();
-            end = `${year}-${month.padStart(2,'0')}-${lastDay}`;
-         } else {
-            start = `${year}-01-01`; end = `${year}-12-31`;
-         }
-      }
+      const start = `${year}-01-01`; 
+      const end = `${year}-12-31`;
 
-      try {
-        // الاتصال بالباك اند
-        if(typeof google !== 'undefined' && google.script) {
-           google.script.run.withSuccessHandler(renderData).withFailureHandler(err => {
-             showToast("خطأ اتصال", "error");
+      if(typeof google !== 'undefined' && google.script) {
+         google.script.run.withSuccessHandler(renderData).withFailureHandler(err => {
+             alert("خطأ في الاتصال");
              document.getElementById('loader').classList.add('hidden-section');
-           }).getDashboardData(start, end);
-        } else {
-           console.log("Dev Mode");
-           document.getElementById('loader').classList.add('hidden-section');
-        }
-      } catch (e) { console.error(e); }
+         }).getDashboardData(start, end);
+      } else {
+         console.log("Dev Mode");
+         document.getElementById('loader').classList.add('hidden-section');
+      }
     }
 
     function renderData(data) {
         document.getElementById('loader').classList.add('hidden-section');
-        if (data.error) { showToast(data.error, 'error'); return; }
+        if (data.error) return;
 
-        // 1. Stats Cards
+        // Cards
         document.getElementById('v-total').innerText = data.totals.total || 0;
         document.getElementById('v-done').innerText = data.totals.completed || 0;
         document.getElementById('v-pending').innerText = data.totals.pending_approval || 0;
         document.getElementById('v-review').innerText = data.totals.review || 0;
         document.getElementById('v-late').innerText = data.totals.overdue || 0;
 
-        renderEmployees(data.employees);
-        renderEntities(data.entities);
-        showToast("تم تحديث البيانات");
+        // Employees Table
+        const desktop = document.getElementById('table-rows-desktop');
+        const mobile = document.getElementById('table-rows-mobile');
+        desktop.innerHTML = ''; mobile.innerHTML = '';
+
+        if(data.employees.length === 0) { mobile.innerHTML = '<p class="text-center text-slate-400">لا توجد بيانات</p>'; return; }
+
+        data.employees.forEach(e => {
+            // Desktop Row
+            desktop.innerHTML += `
+              <tr class="border-b hover:bg-slate-50 transition">
+                <td class="p-3">
+                  <div class="font-bold text-slate-800">${e.name}</div>
+                  <div class="text-[10px] text-slate-500 mt-1 bg-slate-100 inline-block px-1 rounded">${e.breakdownStr || ''}</div>
+                </td>
+                <td class="p-3 text-center font-bold">${e.total}</td>
+                <td class="p-3 text-center text-emerald-700 font-bold">${e.completed}</td>
+                <td class="p-3 text-center text-teal-600 font-bold">${e.pending_approval}</td>
+                <td class="p-3 text-center text-blue-600 font-bold">${e.review}</td>
+                <td class="p-3 text-center ${e.overdue > 0 ? 'text-red-600 font-black' : 'text-slate-300'}">${e.overdue}</td>
+                <td class="p-3 text-center font-bold text-slate-700">%${e.rate}</td>
+              </tr>`;
+            
+            // Mobile Card
+            mobile.innerHTML += `
+              <div class="mobile-card">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-bold text-slate-800 text-sm">${e.name}</h4>
+                    <p class="text-[10px] text-slate-500 mt-1">${e.breakdownStr || ''}</p>
+                  </div>
+                  <span class="bg-slate-100 text-xs px-2 py-1 rounded font-bold">م: ${e.total}</span>
+                </div>
+                <div class="grid grid-cols-5 gap-1 mt-2 text-center text-[10px] font-bold">
+                   <div class="bg-emerald-50 text-emerald-700 py-1 rounded">✅ ${e.completed}</div>
+                   <div class="bg-teal-50 text-teal-700 py-1 rounded">⏳ ${e.pending_approval}</div>
+                   <div class="bg-blue-50 text-blue-700 py-1 rounded">🧐 ${e.review}</div>
+                   <div class="${e.overdue > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-50 text-slate-300'} py-1 rounded">🚨 ${e.overdue}</div>
+                   <div class="bg-slate-100 text-slate-700 py-1 rounded">%${e.rate}</div>
+                </div>
+              </div>`;
+        });
     }
 
-    function renderEmployees(list) {
-      const desktop = document.getElementById('table-rows-desktop');
-      const mobile = document.getElementById('table-rows-mobile');
-      desktop.innerHTML = ''; mobile.innerHTML = '';
-
-      if(!list || list.length === 0) { mobile.innerHTML = '<p class="text-center text-slate-400">لا توجد بيانات</p>'; return; }
-
-      list.forEach(e => {
-        // Desktop
-        desktop.innerHTML += `
-          <tr class="border-b hover:bg-slate-50 transition">
-            <td class="p-3">
-              <div class="font-bold text-slate-800">${e.name}</div>
-              <div class="text-[10px] text-slate-500 mt-1 bg-slate-100 inline-block px-1 rounded">${e.breakdownStr || ''}</div>
-            </td>
-            <td class="p-3 text-center font-bold">${e.total}</td>
-            <td class="p-3 text-center text-emerald-700 font-bold">${e.completed}</td>
-            <td class="p-3 text-center text-teal-600 font-bold">${e.pending_approval}</td>
-            <td class="p-3 text-center text-blue-600 font-bold">${e.review}</td>
-            <td class="p-3 text-center ${e.overdue > 0 ? 'text-red-600 font-black' : 'text-slate-300'}">${e.overdue}</td>
-            <td class="p-3 text-center font-bold text-slate-700">%${e.rate}</td>
-          </tr>`;
-
-        // Mobile Card
-        mobile.innerHTML += `
-          <div class="mobile-card">
-            <div class="flex justify-between items-start">
-              <div>
-                <h4 class="font-bold text-slate-800 text-sm">${e.name}</h4>
-                <p class="text-[10px] text-slate-500 mt-1">${e.breakdownStr || ''}</p>
-              </div>
-              <span class="bg-slate-100 text-xs px-2 py-1 rounded font-bold">م: ${e.total}</span>
-            </div>
-            <div class="grid grid-cols-5 gap-1 mt-2 text-center text-[10px] font-bold">
-               <div class="bg-emerald-50 text-emerald-700 py-1 rounded">✅ ${e.completed}</div>
-               <div class="bg-teal-50 text-teal-700 py-1 rounded">⏳ ${e.pending_approval}</div>
-               <div class="bg-blue-50 text-blue-700 py-1 rounded">🧐 ${e.review}</div>
-               <div class="${e.overdue > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-50 text-slate-300'} py-1 rounded">🚨 ${e.overdue}</div>
-               <div class="bg-slate-100 text-slate-700 py-1 rounded">%${e.rate}</div>
-            </div>
-          </div>`;
-      });
-    }
-
-    function renderEntities(list) {
-      const desktop = document.getElementById('entity-rows-desktop');
-      const mobile = document.getElementById('entity-rows-mobile');
-      desktop.innerHTML = ''; mobile.innerHTML = '';
-
-      if(!list) return;
-
-      list.forEach(ent => {
-        desktop.innerHTML += `
-          <tr class="border-b hover:bg-slate-50">
-            <td class="p-3 font-bold text-xs text-slate-700">${ent.name}</td>
-            <td class="p-3 text-center font-bold">${ent.total}</td>
-            <td class="p-3 text-center ${ent.overdue > 0 ? 'text-red-600 font-bold' : 'text-slate-300'}">${ent.overdue}</td>
-            <td class="p-3 text-center text-xs text-slate-500">%${ent.overduePercent}</td>
-          </tr>`;
-        mobile.innerHTML += `
-          <div class="mobile-card flex-row justify-between items-center">
-             <div class="flex-1">
-               <h4 class="font-bold text-slate-800 text-sm mb-1">${ent.name}</h4>
-               <div class="flex gap-2 text-xs">
-                 <span class="${ent.overdue > 0 ? 'text-red-600 font-bold' : 'text-slate-400'}">متأخر: ${ent.overdue}</span>
-                 <span class="text-slate-500">نسبة: %${ent.overduePercent}</span>
-               </div>
-             </div>
-             <div class="bg-blue-50 text-blue-700 px-3 py-2 rounded-lg font-bold text-lg">${ent.total}</div>
-          </div>`;
-      });
-    }
-
-    async function handleLogin() {
+    // ── Employee Portal Logic ──
+    function handleLogin() {
       const pin = document.getElementById('emp-pin-input').value;
-      if (!pin || pin.length < 4) { showToast("أدخل الكود (4 أرقام)", "error"); return; }
+      if (!pin || pin.length < 4) return;
       document.getElementById('loader').classList.remove('hidden-section');
       
       google.script.run.withSuccessHandler(res => {
@@ -428,7 +321,6 @@
             document.getElementById('profile-name').innerText = res.name;
             document.getElementById('profile-role').innerText = res.role;
             
-            // ✅ تعبئة أرقام الموظف الشخصية
             if(res.stats) {
                document.getElementById('p-total').innerText = res.stats.total;
                document.getElementById('p-done').innerText = res.stats.completed;
@@ -437,10 +329,10 @@
             }
 
             allTasks = res.tasks || [];
+            allReports = res.reports || [];
             switchEmpTab('new');
-            showToast(`أهلاً بك، ${res.name}`);
          } else {
-            showToast("كود خطأ", "error");
+            alert("كود خطأ");
          }
       }).loginUser(pin);
     }
@@ -451,6 +343,12 @@
       
       const container = document.getElementById('emp-content-area');
       container.innerHTML = '';
+      
+      // Special Handler for Reports Tab
+      if (type === 'reports') {
+          renderReportsTab(container);
+          return;
+      }
       
       let filtered = [];
       if(type === 'new') filtered = allTasks.filter(t => t.category === 'progress');
@@ -472,9 +370,8 @@
          else if(t.category === 'pending_approval') { borderColor='border-l-teal-400'; statusBg='bg-teal-100 text-teal-700'; }
          else if(t.category === 'review') { borderColor='border-l-blue-500'; statusBg='bg-blue-100 text-blue-700'; }
          else if(t.category === 'completed') { borderColor='border-l-emerald-500'; statusBg='bg-emerald-100 text-emerald-700'; }
-         else { borderColor='border-l-amber-500'; statusBg='bg-amber-100 text-amber-700'; }
-
-         let attachBtn = t.attachment ? `<a href="${t.attachment}" target="_blank" class="text-blue-600 text-xs font-bold flex items-center gap-1 mt-2 bg-blue-50 p-1.5 rounded w-fit"><i data-lucide="paperclip" class="w-3 h-3"></i> معاينة المرفق</a>` : '';
+         
+         let attachBtn = t.attachment ? `<a href="${t.attachment}" target="_blank" class="text-blue-600 text-xs font-bold flex items-center gap-1 mt-2 bg-blue-50 p-1.5 rounded w-fit"><i data-lucide="paperclip" class="w-3 h-3"></i> مرفق</a>` : '';
          
          container.innerHTML += `
            <div class="task-card border-l-4 ${borderColor}">
@@ -493,22 +390,78 @@
       lucide.createIcons();
     }
 
+    // ── Reports & Field Attachments Logic ──
+    function renderReportsTab(container) {
+        if (!allReports || allReports.length === 0) {
+            container.innerHTML = '<div class="text-center py-8 text-slate-400 bg-slate-50 rounded-lg border border-dashed">لا توجد تقارير مؤرشفة</div>';
+            return;
+        }
+
+        allReports.forEach(r => {
+            // Document & PDF Buttons
+            let actions = '';
+            if (r.docLink) actions += `<a href="${r.docLink}" target="_blank" class="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition"><i data-lucide="file-edit" class="w-4 h-4"></i></a>`;
+            if (r.pdfLink) actions += `<a href="${r.pdfLink}" target="_blank" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition"><i data-lucide="file-text" class="w-4 h-4"></i></a>`;
+            
+            // Field Photos Button (Camera)
+            if (r.fieldAttachments && r.fieldAttachments.length > 0) {
+                // Encode the array to pass safely to onclick
+                const encodedAttachments = encodeURIComponent(JSON.stringify(r.fieldAttachments));
+                actions += `<button onclick="showFieldPhotos('${encodedAttachments}')" class="p-2 bg-violet-50 text-violet-600 rounded-lg hover:bg-violet-100 transition relative">
+                    <i data-lucide="camera" class="w-4 h-4"></i>
+                    <span class="absolute -top-1 -right-1 bg-violet-600 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center">${r.fieldAttachments.length}</span>
+                </button>`;
+            }
+
+            container.innerHTML += `
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded font-bold">${r.date}</span>
+                    <span class="text-[10px] bg-slate-50 border px-2 py-1 rounded text-slate-400">#${r.id}</span>
+                </div>
+                <h4 class="font-bold text-slate-800 text-sm mb-1">${r.title}</h4>
+                <p class="text-xs text-slate-500 mb-3">${r.entity}</p>
+                <div class="flex justify-end gap-2 border-t border-slate-50 pt-3">
+                    ${actions || '<span class="text-xs text-slate-300">لا توجد مرفقات</span>'}
+                </div>
+            </div>`;
+        });
+        lucide.createIcons();
+    }
+
+    // Show Field Photos Modal
+    function showFieldPhotos(encodedAttachments) {
+        const attachments = JSON.parse(decodeURIComponent(encodedAttachments));
+        
+        // Create Modal HTML
+        const modal = document.createElement('div');
+        modal.className = "fixed inset-0 z-[5000] bg-black/90 backdrop-blur-sm flex flex-col fade-in";
+        modal.innerHTML = `
+            <div class="p-4 flex justify-between items-center text-white">
+                <h3 class="font-bold text-lg">المرفقات الميدانية</h3>
+                <button onclick="this.closest('.fixed').remove()" class="bg-white/10 p-2 rounded-full hover:bg-white/20 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4">
+                <div class="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+                    ${attachments.map((link, i) => `
+                        <a href="${link}" target="_blank" class="block group relative aspect-square bg-slate-800 rounded-xl overflow-hidden border border-white/10">
+                            <img src="${link}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500 group-hover:scale-110" alt="صورة ${i+1}">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                                <span class="bg-white text-black text-xs font-bold px-3 py-1 rounded-full">عرض</span>
+                            </div>
+                        </a>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        lucide.createIcons();
+    }
+
     function logout() {
       document.getElementById('emp-profile-view').classList.add('hidden-section');
       document.getElementById('emp-login-form').classList.remove('hidden-section');
       document.getElementById('emp-pin-input').value = '';
-    }
-
-    function vibrateDevice() { if (navigator.vibrate) navigator.vibrate(10); }
-    function showToast(msg, type='success') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      toast.innerHTML = type === 'error' ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${msg}` : `<i data-lucide="check" class="w-4 h-4"></i> ${msg}`;
-      container.appendChild(toast);
-      lucide.createIcons();
-      setTimeout(() => toast.classList.add('show'), 10);
-      setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
     }
 
     window.onload = applyFilter;
