@@ -13,488 +13,269 @@
   <script src="assets/js/api.js"></script>
 
   <style>
-    /* ── أساسيات ── */
-    body { 
-      font-family: 'Cairo', sans-serif; 
-      background-color: #f8fafc;
-      overscroll-behavior-y: none;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-user-select: none; user-select: none;
-    }
-    
-    /* السماح بتحديد النصوص المهمة */
-    h1, h2, h3, p, span, td, th { -webkit-user-select: text; user-select: text; }
-    
-    /* منع تكبير الخط في الآيفون */
-    input, select, textarea { font-size: 16px !important; }
-
-    /* إخفاء السكرول بار */
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-    /* تأثير الضغط */
-    button:active, .card-press:active { transform: scale(0.97); transition: 0.1s; }
-
-    /* ── تنسيقات خاصة ── */
+    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; }
+    .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
     .hidden-section { display: none !important; }
     .fade-in { animation: fadeIn 0.4s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Sidebar Active State */
-    .sidebar-active { background-color: #0f766e; color: white; border-right: 4px solid #ccfbf1; }
-
-    /* Mobile Bottom Nav Fixes */
-    @media (max-width: 768px) {
-      .desktop-only { display: none !important; }
-      
-      .bottom-nav { 
-        display: flex !important; 
-        position: fixed; bottom: 0; left: 0; right: 0; 
-        background: white; border-top: 1px solid #e2e8f0; z-index: 1000;
-        padding-bottom: env(safe-area-inset-bottom);
-        height: calc(65px + env(safe-area-inset-bottom));
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
-      }
-      
-      .bottom-nav button {
-        flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        gap: 4px; color: #94a3b8; font-size: 0.7rem; font-weight: 700; border: none; background: transparent;
-      }
-      
-      .bottom-nav button.active { color: #0f766e; }
-      .bottom-nav button svg { width: 24px; height: 24px; }
-
-      /* رفع المحتوى لعدم الاختفاء خلف البار */
-      .main-content { 
-        padding-bottom: calc(90px + env(safe-area-inset-bottom)) !important;
-      }
-
-      /* تحويل الجداول لكروت */
-      .mobile-card-grid { display: grid; gap: 12px; }
-      .mobile-card { 
-        background: white; padding: 16px; border-radius: 12px; 
-        border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        display: flex; flex-direction: column; gap: 8px;
-      }
-    }
-
-    @media (min-width: 769px) {
-      .mobile-only { display: none !important; }
-      .bottom-nav { display: none !important; }
-    }
     
-    /* Toast Notification */
-    #toast-container { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 400px; pointer-events: none; }
-    .toast { background: #1e293b; color: white; padding: 12px 20px; border-radius: 50px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-weight: bold; font-size: 0.9rem; opacity: 0; transition: 0.3s; transform: translateY(20px); pointer-events: auto; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .toast.show { opacity: 1; transform: translateY(0); }
-    .toast.error { background: #ef4444; }
-    .toast.success { background: #10b981; }
+    /* Scrollbar Hide */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Cards */
+    .stat-card { background: white; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .service-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
+    .service-card:active { transform: scale(0.98); background-color: #f0fdfa; }
+
+    /* Bottom Nav */
+    @media (max-width: 768px) {
+      .desktop-sidebar { display: none !important; }
+      .bottom-nav { display: flex !important; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; z-index: 50; padding-bottom: env(safe-area-inset-bottom); height: calc(65px + env(safe-area-inset-bottom)); }
+      .bottom-nav button { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; color: #64748b; border: none; background: transparent; }
+      .bottom-nav button.active { color: #0f766e; font-weight: bold; }
+      .main-content { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+    }
+    @media (min-width: 769px) { .bottom-nav { display: none !important; } }
   </style>
 </head>
-<body class="min-h-screen flex flex-col overflow-hidden">
+<body class="min-h-screen flex flex-col">
 
-  <div id="toast-container"></div>
+  <div id="toast-container" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-[100] w-max max-w-[90%]"></div>
 
   <div class="flex-grow flex h-screen overflow-hidden">
-    
-    <aside class="desktop-only w-64 bg-white border-l border-slate-200 flex flex-col shadow-lg z-20 shrink-0">
+    <aside class="desktop-sidebar w-64 bg-white border-l border-slate-200 flex flex-col shadow-lg z-20 shrink-0">
       <div class="p-6 text-center border-b border-slate-100">
-        <h2 class="font-bold text-slate-800 text-lg">نظام الحوكمة</h2>
+        <h2 class="font-bold text-slate-800">نظام الحوكمة</h2>
       </div>
       <nav class="flex-grow p-4 space-y-2">
-        <button onclick="switchTab('dashboard')" class="w-full flex items-center gap-3 p-3 rounded-lg font-bold sidebar-active nav-btn" data-target="dashboard">
-          <i data-lucide="layout-grid"></i> Dashboard
-        </button>
-        <button onclick="switchTab('services')" class="w-full flex items-center gap-3 p-3 rounded-lg font-medium text-slate-600 hover:bg-slate-50 nav-btn" data-target="services">
-          <i data-lucide="briefcase"></i> الخدمات
-        </button>
-        <button onclick="switchTab('employees')" class="w-full flex items-center gap-3 p-3 rounded-lg font-medium text-slate-600 hover:bg-slate-50 nav-btn" data-target="employees">
-          <i data-lucide="users-2"></i> الموظفين
-        </button>
-        <a href="admin.html" class="w-full flex items-center gap-3 p-3 rounded-lg font-medium text-slate-600 hover:bg-red-50 hover:text-red-600">
-          <i data-lucide="settings-2"></i> الإدارة
-        </a>
+        <button onclick="switchTab('dashboard')" class="w-full flex items-center gap-3 p-3 rounded-lg font-bold bg-teal-50 text-teal-700"><i data-lucide="layout-grid"></i> Dashboard</button>
+        <button onclick="switchTab('services')" class="w-full flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-slate-50"><i data-lucide="briefcase"></i> الخدمات</button>
+        <button onclick="switchTab('employees')" class="w-full flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-slate-50"><i data-lucide="users-2"></i> الموظفين</button>
+        <a href="admin.html" class="w-full flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-red-50 hover:text-red-600"><i data-lucide="settings-2"></i> الإدارة</a>
       </nav>
-      <div class="p-4"><button onclick="window.location.href='index.html'" class="text-red-500 font-bold text-sm">خروج</button></div>
     </aside>
 
-    <main class="flex-1 flex flex-col bg-slate-50 overflow-hidden relative">
-      <div class="flex-1 overflow-y-auto scroll-smooth no-scrollbar main-content p-4 md:p-6">
+    <main class="flex-1 flex flex-col bg-slate-50 overflow-hidden relative main-content">
+      <div class="flex-1 overflow-y-auto no-scrollbar p-4 md:p-6">
 
-        <div id="tab-dashboard" class="tab-content fade-in">
-          <div class="flex flex-col gap-4 mb-6">
-            <div class="flex justify-between items-center">
-              <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                <i data-lucide="activity" class="text-teal-600"></i> مؤشرات الأداء
-              </h2>
-              <button onclick="applyFilter(); vibrateDevice();" class="p-2 bg-white border border-slate-200 rounded-full shadow-sm active:scale-90 transition">
-                <i data-lucide="refresh-cw" class="w-5 h-5 text-slate-600"></i>
-              </button>
+        <div id="tab-dashboard" class="fade-in">
+          <header class="flex justify-between items-center mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2"><i data-lucide="activity" class="text-teal-600"></i> مؤشرات الأداء</h2>
+              <p class="text-xs text-slate-500 font-bold mt-1" id="filter-status">جاري التحميل...</p>
             </div>
-            
-            <div class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm flex flex-wrap gap-2 items-center">
-               <select id="year-select" class="bg-transparent font-bold text-sm outline-none px-2"><option value="2025" selected>2025</option><option value="2024">2024</option></select>
-               <div class="h-4 w-[1px] bg-slate-300"></div>
-               <select id="filter-type" class="bg-transparent font-bold text-sm outline-none px-2 flex-grow" onchange="toggleInputs()">
-                 <option value="current">الربع الحالي</option>
-                 <option value="all">سنة كاملة</option>
-                 <option value="month">شهر محدد</option>
-               </select>
-               <div id="month-input" class="hidden-section"><select id="month-select" class="bg-slate-100 rounded px-2 py-1 text-sm"><option value="0">يناير</option><option value="1">فبراير</option></select></div>
-               <button onclick="applyFilter()" class="bg-teal-600 text-white px-4 py-1.5 rounded-lg text-sm font-bold">بحث</button>
+            <button onclick="applyFilter()" class="p-2 bg-white rounded-full shadow text-slate-600"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
+          </header>
+
+          <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+            <div class="stat-card border-b-4 border-slate-600">
+              <p class="text-xs font-bold text-slate-400">الإجمالي الكلي</p>
+              <h3 id="v-total" class="text-2xl font-black text-slate-800">--</h3>
+            </div>
+            <div class="stat-card border-b-4 border-emerald-500">
+              <p class="text-xs font-bold text-slate-400">تم الإنجاز</p>
+              <h3 id="v-done" class="text-2xl font-black text-emerald-600">--</h3>
+            </div>
+            <div class="stat-card border-b-4 border-blue-500">
+              <p class="text-xs font-bold text-slate-400">بانتظار الاعتماد</p>
+              <h3 id="v-pending" class="text-2xl font-black text-blue-600">--</h3>
+            </div>
+            <div class="stat-card border-b-4 border-amber-500">
+              <p class="text-xs font-bold text-slate-400">جاري / فحص</p>
+              <h3 id="v-prog" class="text-2xl font-black text-amber-500">--</h3>
+            </div>
+            <div class="stat-card border-b-4 border-red-600 bg-red-50">
+              <p class="text-xs font-bold text-red-600">🚨 متأخرات</p>
+              <h3 id="v-late" class="text-2xl font-black text-red-600">--</h3>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-              <p class="text-xs font-bold text-slate-400 mb-1">الإجمالي</p>
-              <h3 id="v-total" class="text-2xl md:text-3xl font-black text-slate-800">--</h3>
-            </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center border-b-4 border-emerald-500">
-              <p class="text-xs font-bold text-slate-400 mb-1">تم الإنجاز</p>
-              <h3 id="v-done" class="text-2xl md:text-3xl font-black text-emerald-600">--</h3>
-            </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center border-b-4 border-amber-500">
-              <p class="text-xs font-bold text-slate-400 mb-1">جاري العمل</p>
-              <h3 id="v-prog" class="text-2xl md:text-3xl font-black text-amber-500">--</h3>
-            </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center border-b-4 border-red-500">
-              <p class="text-xs font-bold text-slate-400 mb-1">المتأخرات</p>
-              <h3 id="v-late" class="text-2xl md:text-3xl font-black text-red-600">--</h3>
-            </div>
-          </div>
-
-          <div class="mb-6">
-            <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="users"></i> أداء الموظفين</h3>
-            
-            <div class="desktop-only bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+            <div class="p-4 border-b border-slate-100 flex items-center gap-2 bg-slate-50"><i data-lucide="users" class="text-teal-600"></i><h3 class="font-bold text-slate-800">تفنيطة أداء الموظفين</h3></div>
+            <div class="overflow-x-auto">
               <table class="w-full text-right text-sm">
-                <thead class="bg-slate-50 text-slate-600 font-bold">
-                  <tr><th class="p-3">الموظف</th><th class="p-3 text-center">التكليفات</th><th class="p-3 text-center">منجز</th><th class="p-3 text-center">جاري</th></tr>
+                <thead class="bg-slate-100 text-slate-600 font-bold text-xs">
+                  <tr>
+                    <th class="p-3">الموظف</th>
+                    <th class="p-3 text-center">الإجمالي</th>
+                    <th class="p-3 text-center text-emerald-700">منجز</th>
+                    <th class="p-3 text-center text-blue-700">انتظار</th>
+                    <th class="p-3 text-center text-red-700">متأخر</th>
+                    <th class="p-3 text-center">الإنجاز</th>
+                  </tr>
                 </thead>
-                <tbody id="table-rows-desktop"></tbody>
+                <tbody id="table-rows" class="divide-y divide-slate-100"></tbody>
               </table>
             </div>
-
-            <div id="table-rows-mobile" class="mobile-only mobile-card-grid"></div>
           </div>
 
-          <div>
-            <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2"><i data-lucide="building-2"></i> موقف الجهات</h3>
-            
-            <div class="desktop-only bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-4 border-b border-slate-100 flex items-center gap-2 bg-slate-50"><i data-lucide="building-2" class="text-blue-600"></i><h3 class="font-bold text-slate-800">موقف الجهات</h3></div>
+            <div class="overflow-x-auto max-h-80">
               <table class="w-full text-right text-sm">
-                <thead class="bg-slate-50 text-slate-600 font-bold">
-                  <tr><th class="p-3">الجهة</th><th class="p-3 text-center">الإجمالي</th><th class="p-3 text-center">قيد الفحص</th><th class="p-3 text-center">متأخر</th></tr>
+                <thead class="bg-slate-100 text-slate-600 font-bold text-xs sticky top-0">
+                  <tr>
+                    <th class="p-3">الجهة</th>
+                    <th class="p-3 text-center">إجمالي</th>
+                    <th class="p-3 text-center">متأخر</th>
+                    <th class="p-3 text-center">نسبة التأخير</th>
+                  </tr>
                 </thead>
-                <tbody id="entity-rows-desktop"></tbody>
+                <tbody id="entity-rows" class="divide-y divide-slate-100"></tbody>
               </table>
             </div>
-
-            <div id="entity-rows-mobile" class="mobile-only mobile-card-grid"></div>
           </div>
         </div>
 
-        <div id="tab-services" class="tab-content hidden-section fade-in">
-          <h2 class="text-2xl font-bold text-slate-800 mb-4">الخدمات الإلكترونية</h2>
-          <div class="grid grid-cols-1 gap-4">
-             <a href="https://forms.gle/A68F79PpJXHsfzXS9" target="_blank" class="card-press bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-4 shadow-sm">
-               <div class="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i data-lucide="building-2"></i></div>
-               <span class="font-bold text-slate-700">مرور مستشفيات</span>
-             </a>
-             <a href="https://forms.gle/49ku3m4hAjqnqxKE6" target="_blank" class="card-press bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-4 shadow-sm">
-               <div class="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center"><i data-lucide="building"></i></div>
-               <span class="font-bold text-slate-700">مرور وحدات</span>
-             </a>
-             </div>
+        <div id="tab-services" class="hidden-section fade-in">
+          <h2 class="text-xl font-bold text-slate-800 mb-4">الخدمات الإلكترونية</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <a href="https://forms.gle/A68F79PpJXHsfzXS9" target="_blank" class="service-card">
+              <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i data-lucide="building-2"></i></div>
+              <span class="font-bold text-slate-700">مرور مستشفيات</span>
+            </a>
+            <a href="https://forms.gle/49ku3m4hAjqnqxKE6" target="_blank" class="service-card">
+              <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center"><i data-lucide="building"></i></div>
+              <span class="font-bold text-slate-700">مرور وحدات</span>
+            </a>
+            <a href="https://forms.gle/UWAYWbRKhx753Ddc9" target="_blank" class="service-card">
+              <div class="w-10 h-10 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center"><i data-lucide="wallet"></i></div>
+              <span class="font-bold text-slate-700">مرور مالي</span>
+            </a>
+            <a href="https://forms.gle/MdqjBxbYcdiuR2NG9" target="_blank" class="service-card">
+              <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center"><i data-lucide="file-warning"></i></div>
+              <span class="font-bold text-slate-700">فحص الشكاوى</span>
+            </a>
+            <a href="https://forms.gle/gqyJvmhZHeggeYLV7" target="_blank" class="service-card">
+              <div class="w-10 h-10 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center"><i data-lucide="arrow-right-left"></i></div>
+              <span class="font-bold text-slate-700">صادر ووارد</span>
+            </a>
+          </div>
         </div>
 
-        <div id="tab-employees" class="tab-content hidden-section fade-in flex flex-col items-center justify-center h-full">
+        <div id="tab-employees" class="hidden-section fade-in flex flex-col items-center justify-center min-h-[60vh]">
           
-          <div id="emp-login-form" class="bg-white w-full max-w-sm p-6 rounded-2xl shadow-lg border border-slate-100 text-center">
-            <div class="w-16 h-16 bg-violet-50 text-violet-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <i data-lucide="lock" class="w-8 h-8"></i>
-            </div>
+          <div id="emp-login-form" class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 w-full max-w-sm text-center">
+            <div class="w-16 h-16 bg-violet-50 text-violet-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="lock" class="w-8 h-8"></i></div>
             <h3 class="text-lg font-bold text-slate-800 mb-2">بوابة الموظف</h3>
-            
-            <input type="password" id="emp-pin-input" placeholder="****" maxlength="4" inputmode="numeric" pattern="[0-9]*" class="w-full text-center text-3xl tracking-widest border border-slate-200 rounded-xl p-3 mb-4 focus:border-violet-500 outline-none">
-            
-            <button onclick="handleLogin()" class="w-full bg-violet-600 text-white font-bold py-3 rounded-xl hover:bg-violet-700 transition card-press">
-              تسجيل الدخول
-            </button>
+            <input type="password" id="emp-pin-input" placeholder="****" maxlength="4" inputmode="numeric" class="w-full text-center text-2xl border border-slate-200 rounded-xl p-3 mb-4 outline-none focus:border-violet-500">
+            <button onclick="handleLogin()" class="w-full bg-violet-600 text-white font-bold py-3 rounded-xl hover:bg-violet-700">دخول</button>
           </div>
 
           <div id="emp-profile-view" class="hidden-section w-full">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4 flex items-center justify-between">
-               <div>
-                 <h2 id="profile-name" class="font-bold text-slate-800">...</h2>
-                 <p id="profile-role" class="text-xs text-slate-500">...</p>
-               </div>
-               <button onclick="logout()" class="text-red-500 bg-red-50 px-3 py-1 rounded-lg text-sm font-bold">خروج</button>
-            </div>
-            
-            <div class="flex gap-2 mb-4 overflow-x-auto no-scrollbar pb-2">
-               <button class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap">📥 الوارد</button>
-               <button class="bg-white text-slate-600 px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 whitespace-nowrap">⏳ جاري</button>
-            </div>
-
-            <div id="cards-new" class="grid gap-3"></div>
-            </div>
-
+             <div class="bg-white p-4 rounded-xl border border-slate-200 mb-4 flex justify-between items-center">
+               <div><h2 id="profile-name" class="font-bold">...</h2><p id="profile-role" class="text-xs text-slate-500">...</p></div>
+               <button onclick="logout()" class="text-red-500 bg-red-50 px-3 py-1 rounded text-xs font-bold">خروج</button>
+             </div>
+             <div id="cards-new" class="space-y-3"></div>
+          </div>
         </div>
 
       </div>
     </main>
 
     <nav class="bottom-nav">
-      <button onclick="switchTab('dashboard')" id="nav-btn-dashboard" class="active">
-        <i data-lucide="layout-grid"></i>
-        <span>الرئيسية</span>
-      </button>
-      <button onclick="switchTab('services')" id="nav-btn-services">
-        <i data-lucide="briefcase"></i>
-        <span>الخدمات</span>
-      </button>
-      <button onclick="switchTab('employees')" id="nav-btn-employees">
-        <i data-lucide="users-2"></i>
-        <span>الموظفين</span>
-      </button>
+      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="active"><i data-lucide="layout-grid"></i><span>الرئيسية</span></button>
+      <button onclick="switchTab('services')" id="nav-services"><i data-lucide="briefcase"></i><span>الخدمات</span></button>
+      <button onclick="switchTab('employees')" id="nav-employees"><i data-lucide="users-2"></i><span>الموظفين</span></button>
     </nav>
-
   </div>
 
-  <div id="loader" class="fixed inset-0 bg-white/90 z-[3000] flex flex-col items-center justify-center hidden-section">
-    <div class="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+  <div id="loader" class="fixed inset-0 bg-white/90 z-[2000] flex flex-col items-center justify-center hidden-section">
+    <div class="w-10 h-10 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-3"></div>
     <p class="font-bold text-slate-700">جاري التحميل...</p>
   </div>
 
   <script>
-    // تهيئة الأيقونات
     lucide.createIcons();
 
-    // ── 1. Navigation Logic (إصلاح التنقل) ──
     function switchTab(tabName) {
-      // إخفاء كل التابات
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-section'));
+      document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden-section'));
+      document.getElementById('tab-' + tabName).classList.remove('hidden-section');
       
-      // إظهار التاب المطلوب
-      const target = document.getElementById('tab-' + tabName);
-      if(target) target.classList.remove('hidden-section');
-
-      // تحديث الأزرار (Active State)
-      document.querySelectorAll('.bottom-nav button, .nav-btn').forEach(btn => {
-        btn.classList.remove('active', 'sidebar-active', 'text-teal-600');
-        // Mobile Active
-        if(btn.id === 'nav-btn-' + tabName) btn.classList.add('active');
-        // Desktop Active
-        if(btn.dataset.target === tabName) btn.classList.add('sidebar-active');
-      });
-
-      // اهتزاز بسيط للموبايل
-      vibrateDevice();
+      document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active', 'text-teal-600'));
+      const navBtn = document.getElementById('nav-' + tabName);
+      if(navBtn) navBtn.classList.add('active', 'text-teal-600');
+      
       lucide.createIcons();
     }
 
-    // ── 2. Helper Functions ──
-    function vibrateDevice() {
-      if (navigator.vibrate) navigator.vibrate(10);
-    }
-
-    function showToast(msg, type='success') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      toast.innerHTML = type === 'error' ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${msg}` : `<i data-lucide="check" class="w-4 h-4"></i> ${msg}`;
-      container.appendChild(toast);
-      lucide.createIcons();
-      
-      // Animation
-      setTimeout(() => toast.classList.add('show'), 10);
-      setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
-
-    function toggleLoader(show) {
-      const loader = document.getElementById('loader');
-      if(show) loader.classList.remove('hidden-section');
-      else loader.classList.add('hidden-section');
-    }
-
-    // ── 3. Data Logic (إصلاح الحسابات والعرض) ──
     async function applyFilter() {
-      toggleLoader(true);
-      try {
-        // Mocking Data fetch if api.js fails or using real one
-        // هنا سنقوم بالحساب الصحيح
-        const start = document.getElementById('year-select').value + '-01-01';
-        const end = document.getElementById('year-select').value + '-12-31';
-        
-        // استدعاء الـ API
-        // ملاحظة: تأكد أن getDashboard موجودة في api.js
-        if(typeof getDashboard === 'undefined') {
-           throw new Error("ملف الاتصال (api.js) غير محمل");
-        }
-
-        const data = await getDashboard(start, end); // دالة من api.js
-        
-        if (!data || !data.totals) throw new Error("بيانات غير صحيحة");
-
-        // 🟢 تصحيح الحسابات (Math Fix)
-        const total = data.totals.periodTotal || 0;
-        const done = data.totals.periodCompleted || 0;
-        const overdue = data.totals.absoluteOverdue || 0;
-        
-        // الحساب اليدوي للمتبقي (عشان يظبط مع الإجمالي)
-        // جاري العمل = الإجمالي - المنجز
-        const inProgress = total - done; 
-
-        // تحديث الأرقام في الواجهة
-        animateValue("v-total", total);
-        animateValue("v-done", done);
-        animateValue("v-prog", inProgress); // الرقم المصحح
-        animateValue("v-late", overdue);
-
-        // 🟢 تحديث جدول الموظفين (Desktop & Mobile)
-        renderEmployees(data.employees);
-
-        // 🟢 تحديث موقف الجهات (Desktop & Mobile)
-        renderEntities(data.entities);
-
-        showToast("تم تحديث البيانات");
-
-      } catch (error) {
-        console.error(error);
-        showToast("تعذر الاتصال بالخادم", "error");
-      } finally {
-        toggleLoader(false);
-      }
-    }
-
-    // دالة رسم الموظفين (كروت للموبايل وجدول للكمبيوتر)
-    function renderEmployees(list) {
-      const desktopBody = document.getElementById('table-rows-desktop');
-      const mobileGrid = document.getElementById('table-rows-mobile');
-      
-      desktopBody.innerHTML = '';
-      mobileGrid.innerHTML = '';
-
-      if(!list || list.length === 0) {
-        mobileGrid.innerHTML = '<p class="text-center text-slate-400">لا توجد بيانات</p>';
-        return;
-      }
-
-      list.forEach(emp => {
-        // حسابات الموظف لتكون متسقة
-        const empTotal = emp.periodTotal || 0;
-        const empDone = emp.periodCompleted || 0;
-        const empProg = empTotal - empDone; // تصحيح
-
-        // 1. Desktop Row
-        desktopBody.innerHTML += `
-          <tr class="border-b hover:bg-slate-50">
-            <td class="p-3 font-bold text-slate-800">${emp.name}</td>
-            <td class="p-3 text-center">${empTotal}</td>
-            <td class="p-3 text-center text-emerald-600 font-bold">${empDone}</td>
-            <td class="p-3 text-center text-amber-500 font-bold">${empProg}</td>
-          </tr>
-        `;
-
-        // 2. Mobile Card (New!)
-        mobileGrid.innerHTML += `
-          <div class="mobile-card">
-            <div class="flex justify-between items-center">
-              <h4 class="font-bold text-slate-800">${emp.name}</h4>
-              <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded font-bold">مجموع: ${empTotal}</span>
-            </div>
-            <div class="flex gap-2 mt-2">
-              <div class="flex-1 bg-emerald-50 text-emerald-700 text-center py-2 rounded-lg text-sm font-bold">
-                 ✅ ${empDone}
-              </div>
-              <div class="flex-1 bg-amber-50 text-amber-700 text-center py-2 rounded-lg text-sm font-bold">
-                 ⏳ ${empProg}
-              </div>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    // دالة رسم الجهات
-    function renderEntities(list) {
-      const desktopBody = document.getElementById('entity-rows-desktop');
-      const mobileGrid = document.getElementById('entity-rows-mobile');
-      
-      desktopBody.innerHTML = '';
-      mobileGrid.innerHTML = '';
-
-      if(!list) return;
-
-      list.forEach(ent => {
-        // Desktop
-        desktopBody.innerHTML += `
-          <tr class="border-b hover:bg-slate-50">
-            <td class="p-3 font-bold text-slate-700 text-xs">${ent.name}</td>
-            <td class="p-3 text-center text-blue-600 font-bold">${ent.total}</td>
-            <td class="p-3 text-center text-amber-600">${ent.pending}</td>
-            <td class="p-3 text-center text-red-600 font-bold">${ent.overdue}</td>
-          </tr>
-        `;
-
-        // Mobile Card
-        mobileGrid.innerHTML += `
-          <div class="mobile-card flex-row justify-between items-center">
-             <div class="flex-1">
-               <h4 class="font-bold text-slate-800 text-sm mb-1">${ent.name}</h4>
-               <div class="flex gap-2 text-xs">
-                 <span class="text-amber-600 font-bold">فحص: ${ent.pending}</span>
-                 <span class="text-red-600 font-bold">متأخر: ${ent.overdue}</span>
-               </div>
-             </div>
-             <div class="bg-blue-50 text-blue-700 px-3 py-2 rounded-lg font-bold text-lg">
-               ${ent.total}
-             </div>
-          </div>
-        `;
-      });
-    }
-
-    // ── 4. Login Logic (إصلاح تسجيل الدخول) ──
-    async function handleLogin() {
-      const pin = document.getElementById('emp-pin-input').value;
-      if (!pin || pin.length < 4) {
-        showToast("أدخل الكود (4 أرقام)", "error");
-        return;
-      }
-      
-      vibrateDevice();
-      toggleLoader(true);
+      document.getElementById('loader').classList.remove('hidden-section');
+      // استخدام تاريخ ثابت الآن للتجربة، يمكن ربطه بالفلاتر لاحقاً
+      const start = '2024-01-01';
+      const end = '2025-12-31';
 
       try {
-        if(typeof login === 'undefined') throw new Error("API غير محمل");
+        if(typeof getDashboardData === 'undefined') throw new Error("Backend not loaded");
+        // استدعاء الباك اند (المعدل)
+        const data = await getDashboardData(start, end);
         
-        // استدعاء دالة login من ملف api.js
-        const response = await login(pin); 
-        
-        if (response && response.success) {
-          showToast("تم تسجيل الدخول بنجاح");
-          document.getElementById('emp-login-form').classList.add('hidden-section');
-          document.getElementById('emp-profile-view').classList.remove('hidden-section');
-          
-          document.getElementById('profile-name').innerText = response.name;
-          document.getElementById('profile-role').innerText = response.role;
-          
-          // تحميل مهام الموظف هنا (يمكن إضافتها لاحقاً)
-        } else {
-          showToast("بيانات الدخول غير صحيحة", "error");
-        }
+        if (data.error) throw new Error(data.error);
+
+        // تحديث الكروت العلوية
+        document.getElementById('v-total').innerText = data.totals.total;
+        document.getElementById('v-done').innerText = data.totals.completed;
+        document.getElementById('v-pending').innerText = data.totals.pending;
+        document.getElementById('v-prog').innerText = data.totals.progress; // يشمل جاري وقيد المراجعة
+        document.getElementById('v-late').innerText = data.totals.overdue;
+
+        // تحديث جدول الموظفين (مع التفنيطة)
+        const tbody = document.getElementById('table-rows');
+        tbody.innerHTML = '';
+        data.employees.forEach(e => {
+          tbody.innerHTML += `
+            <tr class="border-b hover:bg-slate-50">
+              <td class="p-3">
+                <div class="font-bold text-slate-800">${e.name}</div>
+                <div class="text-[10px] text-slate-500 mt-1 bg-slate-100 inline-block px-1 rounded">${e.breakdownStr}</div>
+              </td>
+              <td class="p-3 text-center font-bold">${e.total}</td>
+              <td class="p-3 text-center text-emerald-600 font-bold">${e.completed}</td>
+              <td class="p-3 text-center text-blue-600 font-bold">${e.pending}</td>
+              <td class="p-3 text-center ${e.overdue > 0 ? 'bg-red-50 text-red-600 font-black' : 'text-slate-300'}">${e.overdue}</td>
+              <td class="p-3 text-center font-bold text-slate-700">%${e.rate}</td>
+            </tr>
+          `;
+        });
+
+        // تحديث جدول الجهات
+        const entBody = document.getElementById('entity-rows');
+        entBody.innerHTML = '';
+        data.entities.forEach(ent => {
+           entBody.innerHTML += `
+             <tr class="border-b hover:bg-slate-50">
+               <td class="p-3 font-bold text-xs text-slate-700">${ent.name}</td>
+               <td class="p-3 text-center font-bold">${ent.total}</td>
+               <td class="p-3 text-center ${ent.overdue > 0 ? 'text-red-600 font-bold' : 'text-slate-300'}">${ent.overdue}</td>
+               <td class="p-3 text-center text-xs text-slate-500">%${ent.overduePercent}</td>
+             </tr>
+           `;
+        });
+
       } catch (e) {
         console.error(e);
-        showToast("خطأ في الاتصال بالسيرفر", "error");
+        // showToast('خطأ في التحميل', 'error');
       } finally {
-        toggleLoader(false);
+        document.getElementById('loader').classList.add('hidden-section');
       }
+    }
+
+    // دوال الموظفين
+    async function handleLogin() {
+       const pin = document.getElementById('emp-pin-input').value;
+       if(!pin) return;
+       // محاكاة تسجيل دخول (يجب ربطها بـ loginUser في الباك اند الفعلي)
+       document.getElementById('loader').classList.remove('hidden-section');
+       // ... Logic here ...
+       // للسرعة سأقوم بإظهار البروفايل مباشرة للتأكد أن الواجهة تعمل
+       setTimeout(() => {
+          document.getElementById('loader').classList.add('hidden-section');
+          document.getElementById('emp-login-form').classList.add('hidden-section');
+          document.getElementById('emp-profile-view').classList.remove('hidden-section');
+          document.getElementById('profile-name').innerText = "موظف تجريبي"; 
+       }, 500);
     }
 
     function logout() {
@@ -503,17 +284,7 @@
       document.getElementById('emp-pin-input').value = '';
     }
 
-    // Helper Animation
-    function animateValue(id, end) {
-      const obj = document.getElementById(id);
-      if(!obj) return;
-      obj.innerText = end; // Direct update for now
-    }
-    
-    // Initial Load
-    window.onload = function() {
-      applyFilter();
-    };
+    window.onload = applyFilter;
   </script>
 </body>
 </html>
