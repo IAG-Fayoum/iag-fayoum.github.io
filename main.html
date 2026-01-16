@@ -14,7 +14,13 @@
 
   <style>
     /* ── أساسيات ── */
-    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background-color: #f8fafc;
+      overscroll-behavior-y: none;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none; user-select: none;
+    }
     
     /* السماح بتحديد النصوص المهمة */
     input, textarea, table, h1, h2, h3, p, span, td, th { -webkit-user-select: text; user-select: text; }
@@ -25,6 +31,10 @@
     /* إخفاء السكرول بار */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* دعم النوتش */
+    header { padding-top: calc(1rem + env(safe-area-inset-top)); }
+    .main-content { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
 
     /* تأثير الضغط */
     button:active, .card-press:active, .service-card:active { transform: scale(0.97); transition: 0.1s; }
@@ -63,8 +73,6 @@
       }
       .bottom-nav button { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #94a3b8; font-size: 0.7rem; font-weight: 700; border: none; background: transparent; }
       .bottom-nav button.active { color: #0f766e; }
-      
-      .main-content { padding-bottom: calc(90px + env(safe-area-inset-bottom)) !important; }
       
       /* Mobile Cards for Tables */
       .mobile-card { background: white; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -106,13 +114,13 @@
       <div class="flex-1 overflow-y-auto scroll-smooth no-scrollbar main-content p-4 md:p-6">
 
         <div id="tab-dashboard" class="tab-content fade-in">
-          <div class="flex justify-between items-center mb-6">
+          <header class="flex justify-between items-center mb-6">
             <div>
               <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2"><i data-lucide="activity" class="text-teal-600"></i> مؤشرات الأداء</h2>
               <p class="text-xs text-slate-500 font-bold mt-1" id="filter-status">جاري التحميل...</p>
             </div>
-            <button onclick="applyFilter(); vibrateDevice();" class="p-2 bg-white rounded-full shadow text-slate-600 active:scale-90 transition"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
-          </div>
+            <button onclick="applyFilter()" class="p-2 bg-white rounded-full shadow text-slate-600"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
+          </header>
 
           <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
             <div class="stat-card border-b-4 border-slate-600">
@@ -226,15 +234,13 @@
              </div>
 
              <div class="main-tabs no-scrollbar">
-               <div class="main-tab-btn active" onclick="switchEmpTab('new')">📥 الوارد</div>
-               <div class="main-tab-btn" onclick="switchEmpTab('progress')">⏳ جاري</div>
-               <div class="main-tab-btn" onclick="switchEmpTab('late')">🚨 متأخر</div>
-               <div class="main-tab-btn" onclick="switchEmpTab('history')">🗂️ الأرشيف</div>
+               <div class="main-tab-btn active" id="tab-btn-new" onclick="switchEmpTab('new')">📥 الوارد</div>
+               <div class="main-tab-btn" id="tab-btn-progress" onclick="switchEmpTab('progress')">⏳ جاري</div>
+               <div class="main-tab-btn" id="tab-btn-late" onclick="switchEmpTab('late')">🚨 متأخر</div>
+               <div class="main-tab-btn" id="tab-btn-history" onclick="switchEmpTab('history')">🗂️ الأرشيف</div>
              </div>
 
-             <div id="emp-content-area" class="space-y-3">
-                <div class="text-center py-10 text-slate-400">اختر من القائمة لعرض المهام</div>
-             </div>
+             <div id="emp-content-area" class="space-y-3"></div>
           </div>
         </div>
 
@@ -277,33 +283,41 @@
     async function applyFilter() {
       document.getElementById('loader').classList.remove('hidden-section');
       try {
-        if(typeof getDashboardData === 'undefined') throw new Error("Backend missing");
-        // استدعاء الباك اند (المحدث)
-        const data = await getDashboardData('2024-01-01', '2025-12-31');
-        
-        if (data.error) throw new Error(data.error);
+        if(typeof getDashboard === 'undefined') {
+           // إذا لم تكن في وضع apps script مباشر، جرب google.script.run
+           google.script.run.withSuccessHandler(renderData).withFailureHandler(err => {
+             console.error(err);
+             showToast("خطأ اتصال", "error");
+             document.getElementById('loader').classList.add('hidden-section');
+           }).getDashboardData('2024-01-01', '2025-12-31');
+        } else {
+           // للمحاكاة المحلية
+           const data = await getDashboard('2024-01-01', '2025-12-31');
+           renderData(data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
 
-        // 1. Stats Cards
-        document.getElementById('v-total').innerText = data.totals.total;
-        document.getElementById('v-done').innerText = data.totals.completed;
-        document.getElementById('v-pending').innerText = data.totals.pending;
-        document.getElementById('v-prog').innerText = data.totals.progress;
-        document.getElementById('v-late').innerText = data.totals.overdue;
+    function renderData(data) {
+        document.getElementById('loader').classList.add('hidden-section');
+        if (data.error) { showToast(data.error, 'error'); return; }
 
-        // 2. Employees Render
+        // ✅ 1. تحديث الأرقام بأسماء المتغيرات الصحيحة
+        document.getElementById('v-total').innerText = data.totals.total || 0;
+        document.getElementById('v-done').innerText = data.totals.completed || 0;
+        document.getElementById('v-pending').innerText = data.totals.pending || 0;
+        document.getElementById('v-prog').innerText = data.totals.progress || 0;
+        document.getElementById('v-late').innerText = data.totals.overdue || 0;
+
+        // ✅ 2. رسم جدول الموظفين
         renderEmployees(data.employees);
 
-        // 3. Entities Render
+        // ✅ 3. رسم جدول الجهات
         renderEntities(data.entities);
 
         showToast("تم تحديث البيانات");
-
-      } catch (e) {
-        console.error(e);
-        showToast("تعذر الاتصال بالخادم", "error");
-      } finally {
-        document.getElementById('loader').classList.add('hidden-section');
-      }
     }
 
     function renderEmployees(list) {
@@ -319,7 +333,7 @@
           <tr class="border-b hover:bg-slate-50 transition">
             <td class="p-3">
               <div class="font-bold text-slate-800">${e.name}</div>
-              <div class="text-[10px] text-slate-500 mt-1 bg-slate-100 inline-block px-1 rounded">${e.breakdownStr}</div>
+              <div class="text-[10px] text-slate-500 mt-1 bg-slate-100 inline-block px-1 rounded">${e.breakdownStr || ''}</div>
             </td>
             <td class="p-3 text-center font-bold">${e.total}</td>
             <td class="p-3 text-center text-emerald-700 font-bold">${e.completed}</td>
@@ -329,13 +343,13 @@
           </tr>
         `;
 
-        // Mobile Card (Updated Design)
+        // Mobile Card
         mobile.innerHTML += `
           <div class="mobile-card">
             <div class="flex justify-between items-start">
               <div>
                 <h4 class="font-bold text-slate-800">${e.name}</h4>
-                <p class="text-[10px] text-slate-500 mt-1">${e.breakdownStr}</p>
+                <p class="text-[10px] text-slate-500 mt-1">${e.breakdownStr || ''}</p>
               </div>
               <span class="bg-slate-100 text-xs px-2 py-1 rounded font-bold">مجموع: ${e.total}</span>
             </div>
@@ -387,56 +401,60 @@
       if (!pin || pin.length < 4) { showToast("أدخل الكود (4 أرقام)", "error"); return; }
       
       document.getElementById('loader').classList.remove('hidden-section');
-      try {
-        if(typeof loginUser === 'undefined') {
-           // Fallback for API calls (Apps Script)
-           if(typeof login !== 'undefined') {
-              const res = await login(pin);
-              processLogin(res);
-           } else { throw new Error("API Missing"); }
-        } else {
-           // Direct call (if bundled)
-           const res = loginUser(pin); // This likely won't work in browser without mocking
-           processLogin(res);
-        }
-      } catch(e) { 
-         // Mock login for demo if failed
-         console.warn("Login failed, using mock for UI check");
-         setTimeout(() => {
-            processLogin({ success: true, name: "موظف تجريبي", role: "مراجع", tasks: [] });
-         }, 500);
-      }
-    }
-
-    function processLogin(res) {
-      document.getElementById('loader').classList.add('hidden-section');
-      if (res.success) {
-        document.getElementById('emp-login-form').classList.add('hidden-section');
-        document.getElementById('emp-profile-view').classList.remove('hidden-section');
-        document.getElementById('profile-name').innerText = res.name;
-        document.getElementById('profile-role').innerText = res.role;
-        allTasks = res.tasks || [];
-        switchEmpTab('new'); // Load new tasks by default
-        showToast(`أهلاً بك، ${res.name}`);
-      } else {
-        showToast("بيانات غير صحيحة", "error");
-      }
+      
+      google.script.run.withSuccessHandler(res => {
+         document.getElementById('loader').classList.add('hidden-section');
+         if(res.success) {
+            document.getElementById('emp-login-form').classList.add('hidden-section');
+            document.getElementById('emp-profile-view').classList.remove('hidden-section');
+            document.getElementById('profile-name').innerText = res.name;
+            document.getElementById('profile-role').innerText = res.role;
+            allTasks = res.tasks || [];
+            switchEmpTab('new');
+            showToast(`أهلاً بك، ${res.name}`);
+         } else {
+            showToast("كود خطأ", "error");
+         }
+      }).loginUser(pin);
     }
 
     function switchEmpTab(type) {
       document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
+      // Find button by ID since event target might be inner element
+      document.getElementById('tab-btn-' + type).classList.add('active');
       
       const container = document.getElementById('emp-content-area');
       container.innerHTML = '';
       
-      // Filter tasks based on type logic (Mock logic for now, relies on allTasks populated from login)
-      // You can expand this logic based on your needs
-      if(allTasks.length === 0) {
-         container.innerHTML = '<div class="text-center py-8 text-slate-400 bg-slate-50 rounded-lg">لا توجد مهام حالياً</div>';
-      } else {
-         // Render tasks...
+      let filtered = [];
+      if(type === 'new') filtered = allTasks.filter(t => !t.status || t.status.includes('جديد'));
+      else if(type === 'progress') filtered = allTasks.filter(t => t.status && (t.status.includes('جاري') || t.status.includes('قيد') || t.status.includes('لم يتم')));
+      else if(type === 'late') filtered = allTasks.filter(t => t.status && (t.status.includes('متأخر') || t.status.includes('متابعة')));
+      else if(type === 'history') filtered = allTasks.filter(t => t.status && (t.status.includes('تم') || t.status.includes('منتهي')));
+
+      if(filtered.length === 0) {
+         container.innerHTML = '<div class="text-center py-8 text-slate-400 bg-slate-50 rounded-lg">لا توجد مهام</div>';
+         return;
       }
+
+      filtered.forEach(t => {
+         let statusColor = t.status.includes('متأخر') ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600';
+         let attachBtn = t.attachment ? `<a href="${t.attachment}" target="_blank" class="text-blue-600 text-xs font-bold flex items-center gap-1 mt-2"><i data-lucide="paperclip" class="w-3 h-3"></i> المرفق</a>` : '';
+         
+         container.innerHTML += `
+           <div class="task-card border-l-4 ${type==='late'?'border-l-red-500':'border-l-blue-500'}">
+              <div class="flex justify-between items-start mb-2">
+                 <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold text-slate-500">#${t.id}</span>
+                 <span class="text-[10px] px-2 py-1 rounded font-bold ${statusColor}">${t.status}</span>
+              </div>
+              <h3 class="font-bold text-slate-800 text-sm mb-1">${t.subject}</h3>
+              <p class="text-xs text-slate-500 mb-1">${t.entity} | ${t.source}</p>
+              <p class="text-[10px] text-slate-400">${t.date}</p>
+              ${attachBtn}
+           </div>
+         `;
+      });
+      lucide.createIcons();
     }
 
     function logout() {
