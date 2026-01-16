@@ -169,10 +169,10 @@
                 <select id="new-status-select" class="input-field">
                   <option value="">-- اختر --</option>
                   <option value="جديد">✨ جديد</option>
-                  <option value="جاري التنفيذ">⏳ جاري التنفيذ</option>
+                  <option value="جاري">⏳ جاري التنفيذ</option>
                   <option value="قيد المراجعة">🧐 قيد المراجعة</option>
                   <option value="بانتظار الاعتماد">📜 بانتظار الاعتماد</option>
-                  <option value="تم الاعتماد">✅ تم الاعتماد</option>
+                  <option value="تم الإنجاز">✅ تم الإنجاز</option>
                   <option value="متأخر">🚨 متأخر</option>
                 </select>
               </div>
@@ -212,7 +212,7 @@
                 <option value="9">سبتمبر</option><option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
               </select>
               <div class="col-span-2">
-                <input type="text" id="archive-search" placeholder="بحث شامل..." class="input-field py-2 text-sm">
+                <input type="text" id="archive-search" placeholder="بحث شامل..." class="input-field py-2 text-sm" inputmode="search">
               </div>
             </div>
             <button onclick="searchArchiveAdmin()" class="btn-primary py-2 text-sm">بحث في الأرشيف</button>
@@ -240,7 +240,7 @@
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `mb-2 p-3 rounded-full text-center text-sm font-bold shadow-lg transition-all transform translate-y-4 opacity-0 flex items-center justify-center gap-2 ${type === 'error' ? 'bg-red-600 text-white' : 'bg-slate-800 text-white'}`;
-      toast.innerHTML = type === 'error' ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${msg}` : `<i data-lucide="check" class="w-4 h-4"></i> ${msg}`;
+      toast.innerHTML = type === 'error' ? `<i data-lucide="alert-circle" class=\"w-4 h-4\"></i> ${msg}` : `<i data-lucide="check" class=\"w-4 h-4\"></i> ${msg}`;
       container.appendChild(toast);
       lucide.createIcons();
       requestAnimationFrame(() => { toast.classList.remove('translate-y-4', 'opacity-0'); });
@@ -397,6 +397,8 @@
        };
        if(!d.date || !d.source || !d.subject || !d.employee) return showToast("املأ البيانات الأساسية (*)", "error");
        
+       if(!confirm("تأكيد إضافة المهمة للموظف: " + d.employee + "؟")) return;
+
        toggleLoader(true);
        google.script.run.withSuccessHandler((res) => { 
           toggleLoader(false);
@@ -428,17 +430,17 @@
         }
 
         res.results.forEach(r => {
-          let att = r.taskAttachment ? `<a href="${r.taskAttachment}" target="_blank" class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded flex items-center gap-1 hover:bg-slate-200"><i data-lucide="paperclip" class="w-3 h-3"></i> مرفق</a>` : '';
+          let att = r.taskAttachment ? `<a href="${r.taskAttachment}" target="_blank" class="text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-full flex items-center gap-1 hover:bg-slate-200 border border-slate-200"><i data-lucide="paperclip" class="w-3 h-3"></i> مرفق التكليف</a>` : '<span class="text-[10px] text-slate-300">لا يوجد مرفق</span>';
           
           container.innerHTML += `
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between md:items-center gap-3">
                <div>
                   <div class="flex items-center gap-2 mb-1">
-                     <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">#${r.id}</span>
+                     <span class="text-[10px] font-bold bg-red-50 text-red-600 px-2 py-0.5 rounded border border-red-100">#${r.id}</span>
                      <span class="text-xs text-slate-400 font-medium">${r.date}</span>
                   </div>
                   <h4 class="font-bold text-slate-800 text-sm">${r.subject}</h4>
-                  <p class="text-xs text-slate-500 mt-0.5">${r.entity}</p>
+                  <p class="text-xs text-slate-500 mt-0.5 font-bold">${r.entity}</p>
                </div>
                <div>${att}</div>
             </div>`;
