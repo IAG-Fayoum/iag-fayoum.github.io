@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#dc2626">
   <title>لوحة الإدارة - نظام الحوكمة</title>
   
@@ -13,7 +13,26 @@
   <script src="assets/js/api.js"></script>
 
   <style>
-    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background-color: #f8fafc;
+      /* [تم التعديل] تحسينات تجربة الموبايل */
+      overscroll-behavior-y: none;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    input, textarea, table, .selectable {
+      -webkit-user-select: text;
+      user-select: text;
+    }
+    
+    button:active, .overview-card:active, .stat-card:active {
+      transform: scale(0.97);
+      transition: transform 0.1s;
+    }
+
     .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
     .hidden-section { display: none !important; }
     .fade-in { animation: fadeIn 0.5s ease-out; }
@@ -141,8 +160,16 @@
       <p class="text-slate-500 mb-8 font-medium">المنطقة مخصصة للمديرين فقط</p>
       
       <div class="relative mb-6">
-        <input type="password" id="admin-pin-input" placeholder="أدخل كود المرور" maxlength="4" 
-          class="w-full bg-slate-50 border-2 border-slate-200 text-center text-3xl tracking-[0.5em] font-bold rounded-xl p-4 outline-none focus:border-red-500 focus:bg-white transition-all placeholder:text-slate-300 placeholder:text-lg placeholder:tracking-normal">
+        <input 
+          type="password" 
+          id="admin-pin-input" 
+          placeholder="أدخل كود المرور" 
+          maxlength="4" 
+          inputmode="numeric" 
+          pattern="[0-9]*"
+          autocomplete="off"
+          class="w-full bg-slate-50 border-2 border-slate-200 text-center text-3xl tracking-[0.5em] font-bold rounded-xl p-4 outline-none focus:border-red-500 focus:bg-white transition-all placeholder:text-slate-300 placeholder:text-lg placeholder:tracking-normal"
+        >
       </div>
       
       <button onclick="checkAdminLogin()" class="bg-red-600 hover:bg-red-700 text-white w-full py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-200 transition-all transform hover:-translate-y-1">
