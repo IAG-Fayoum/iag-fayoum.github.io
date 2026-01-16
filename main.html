@@ -34,7 +34,7 @@
 
     /* دعم النوتش */
     header { padding-top: calc(1rem + env(safe-area-inset-top)); }
-    .main-content { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+    .main-content { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
 
     /* تأثير الضغط */
     button:active, .card-press:active, .service-card:active { transform: scale(0.97); transition: 0.1s; }
@@ -52,10 +52,7 @@
     .stat-card { background: white; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     .service-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
     .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-right: 4px solid transparent; }
-    .task-new { border-right-color: #3b82f6; }
-    .task-done { border-right-color: #10b981; }
-    .task-late { border-right-color: #ef4444; }
-
+    
     /* Employee Tabs */
     .main-tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
     .main-tab-btn { padding: 8px 16px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; white-space: nowrap; background: #f1f5f9; }
@@ -119,7 +116,7 @@
               <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2"><i data-lucide="activity" class="text-teal-600"></i> مؤشرات الأداء</h2>
               <p class="text-xs text-slate-500 font-bold mt-1" id="filter-status">جاري التحميل...</p>
             </div>
-            <button onclick="applyFilter()" class="p-2 bg-white rounded-full shadow text-slate-600"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
+            <button onclick="applyFilter(); vibrateDevice();" class="p-2 bg-white rounded-full shadow text-slate-600 active:scale-90 transition"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
           </header>
 
           <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
@@ -220,7 +217,7 @@
             <div class="w-16 h-16 bg-violet-50 text-violet-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="lock" class="w-8 h-8"></i></div>
             <h3 class="text-xl font-bold text-slate-800 mb-2">بوابة الموظف</h3>
             <p class="text-sm text-slate-500 mb-6">أدخل كود المرور الشخصي</p>
-            <input type="password" id="emp-pin-input" placeholder="****" maxlength="4" inputmode="numeric" class="w-full text-center text-3xl tracking-[0.5em] border border-slate-200 rounded-xl p-3 mb-6 outline-none focus:border-violet-500 transition-colors">
+            <input type="password" id="emp-pin-input" placeholder="****" maxlength="4" inputmode="numeric" pattern="[0-9]*" class="w-full text-center text-3xl tracking-[0.5em] border border-slate-200 rounded-xl p-3 mb-6 outline-none focus:border-violet-500 transition-colors">
             <button onclick="handleLogin()" class="w-full bg-violet-600 text-white font-bold py-3 rounded-xl hover:bg-violet-700 transition card-press">تسجيل الدخول</button>
           </div>
 
@@ -284,39 +281,37 @@
       document.getElementById('loader').classList.remove('hidden-section');
       try {
         if(typeof getDashboard === 'undefined') {
-           // إذا لم تكن في وضع apps script مباشر، جرب google.script.run
-           google.script.run.withSuccessHandler(renderData).withFailureHandler(err => {
-             console.error(err);
-             showToast("خطأ اتصال", "error");
+           // Fallback for Apps Script
+           if(typeof google !== 'undefined' && google.script) {
+             google.script.run.withSuccessHandler(renderData).withFailureHandler(err => {
+               showToast("خطأ اتصال", "error");
+               document.getElementById('loader').classList.add('hidden-section');
+             }).getDashboardData('2024-01-01', '2025-12-31');
+           } else {
+             // Local Dev Mock (For safety only)
              document.getElementById('loader').classList.add('hidden-section');
-           }).getDashboardData('2024-01-01', '2025-12-31');
+             // showToast("Running Local Mode", "success");
+           }
         } else {
-           // للمحاكاة المحلية
            const data = await getDashboard('2024-01-01', '2025-12-31');
            renderData(data);
         }
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) { console.error(e); }
     }
 
     function renderData(data) {
         document.getElementById('loader').classList.add('hidden-section');
         if (data.error) { showToast(data.error, 'error'); return; }
 
-        // ✅ 1. تحديث الأرقام بأسماء المتغيرات الصحيحة
+        // ✅ [Fix] Correct Variable Names from Backend
         document.getElementById('v-total').innerText = data.totals.total || 0;
         document.getElementById('v-done').innerText = data.totals.completed || 0;
         document.getElementById('v-pending').innerText = data.totals.pending || 0;
         document.getElementById('v-prog').innerText = data.totals.progress || 0;
         document.getElementById('v-late').innerText = data.totals.overdue || 0;
 
-        // ✅ 2. رسم جدول الموظفين
         renderEmployees(data.employees);
-
-        // ✅ 3. رسم جدول الجهات
         renderEntities(data.entities);
-
         showToast("تم تحديث البيانات");
     }
 
@@ -328,18 +323,25 @@
       if(!list || list.length === 0) { mobile.innerHTML = '<p class="text-center text-slate-400">لا توجد بيانات</p>'; return; }
 
       list.forEach(e => {
-        // Desktop Row
+        // ✅ [Fix] Use correct keys: periodTotal, periodCompleted etc.
+        const total = e.periodTotal || 0;
+        const done = e.periodCompleted || 0;
+        const pending = e.periodPending || 0;
+        const overdue = e.absoluteOverdue || 0;
+        const rate = e.rate || 0;
+
+        // Desktop
         desktop.innerHTML += `
           <tr class="border-b hover:bg-slate-50 transition">
             <td class="p-3">
               <div class="font-bold text-slate-800">${e.name}</div>
               <div class="text-[10px] text-slate-500 mt-1 bg-slate-100 inline-block px-1 rounded">${e.breakdownStr || ''}</div>
             </td>
-            <td class="p-3 text-center font-bold">${e.total}</td>
-            <td class="p-3 text-center text-emerald-700 font-bold">${e.completed}</td>
-            <td class="p-3 text-center text-blue-700 font-bold">${e.pending}</td>
-            <td class="p-3 text-center ${e.overdue > 0 ? 'text-red-600 font-black' : 'text-slate-300'}">${e.overdue}</td>
-            <td class="p-3 text-center font-bold text-slate-700">%${e.rate}</td>
+            <td class="p-3 text-center font-bold">${total}</td>
+            <td class="p-3 text-center text-emerald-700 font-bold">${done}</td>
+            <td class="p-3 text-center text-blue-700 font-bold">${pending}</td>
+            <td class="p-3 text-center ${overdue > 0 ? 'text-red-600 font-black' : 'text-slate-300'}">${overdue}</td>
+            <td class="p-3 text-center font-bold text-slate-700">%${rate}</td>
           </tr>
         `;
 
@@ -351,13 +353,13 @@
                 <h4 class="font-bold text-slate-800">${e.name}</h4>
                 <p class="text-[10px] text-slate-500 mt-1">${e.breakdownStr || ''}</p>
               </div>
-              <span class="bg-slate-100 text-xs px-2 py-1 rounded font-bold">مجموع: ${e.total}</span>
+              <span class="bg-slate-100 text-xs px-2 py-1 rounded font-bold">مجموع: ${total}</span>
             </div>
             <div class="grid grid-cols-4 gap-1 mt-2 text-center text-xs font-bold">
-               <div class="bg-emerald-50 text-emerald-700 py-1 rounded">✅ ${e.completed}</div>
-               <div class="bg-blue-50 text-blue-700 py-1 rounded">⏳ ${e.pending}</div>
-               <div class="${e.overdue > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-50 text-slate-300'} py-1 rounded">🚨 ${e.overdue}</div>
-               <div class="bg-slate-100 text-slate-700 py-1 rounded">%${e.rate}</div>
+               <div class="bg-emerald-50 text-emerald-700 py-1 rounded">✅ ${done}</div>
+               <div class="bg-blue-50 text-blue-700 py-1 rounded">⏳ ${pending}</div>
+               <div class="${overdue > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-50 text-slate-300'} py-1 rounded">🚨 ${overdue}</div>
+               <div class="bg-slate-100 text-slate-700 py-1 rounded">%${rate}</div>
             </div>
           </div>
         `;
@@ -402,7 +404,20 @@
       
       document.getElementById('loader').classList.remove('hidden-section');
       
-      google.script.run.withSuccessHandler(res => {
+      try {
+        if(typeof login !== 'undefined') {
+           const res = await login(pin);
+           processLogin(res);
+        } else {
+           google.script.run.withSuccessHandler(processLogin).withFailureHandler(e => {
+             showToast("خطأ اتصال", "error");
+             document.getElementById('loader').classList.add('hidden-section');
+           }).loginUser(pin);
+        }
+      } catch(e) { console.error(e); }
+    }
+
+    function processLogin(res) {
          document.getElementById('loader').classList.add('hidden-section');
          if(res.success) {
             document.getElementById('emp-login-form').classList.add('hidden-section');
@@ -415,22 +430,21 @@
          } else {
             showToast("كود خطأ", "error");
          }
-      }).loginUser(pin);
     }
 
     function switchEmpTab(type) {
       document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
-      // Find button by ID since event target might be inner element
       document.getElementById('tab-btn-' + type).classList.add('active');
       
       const container = document.getElementById('emp-content-area');
       container.innerHTML = '';
       
       let filtered = [];
+      // 🛑 منطق تصنيف المهام للموظف (Matches Backend Statuses)
       if(type === 'new') filtered = allTasks.filter(t => !t.status || t.status.includes('جديد'));
-      else if(type === 'progress') filtered = allTasks.filter(t => t.status && (t.status.includes('جاري') || t.status.includes('قيد') || t.status.includes('لم يتم')));
+      else if(type === 'progress') filtered = allTasks.filter(t => t.status && (t.status.includes('جاري') || t.status.includes('قيد') || t.status.includes('لم يتم') || t.status.includes('انتظار')));
       else if(type === 'late') filtered = allTasks.filter(t => t.status && (t.status.includes('متأخر') || t.status.includes('متابعة')));
-      else if(type === 'history') filtered = allTasks.filter(t => t.status && (t.status.includes('تم') || t.status.includes('منتهي')));
+      else if(type === 'history') filtered = allTasks.filter(t => t.status && (t.status.includes('تم') || t.status.includes('منتهي') || t.status.includes('الأرشيف')));
 
       if(filtered.length === 0) {
          container.innerHTML = '<div class="text-center py-8 text-slate-400 bg-slate-50 rounded-lg">لا توجد مهام</div>';
@@ -463,7 +477,6 @@
       document.getElementById('emp-pin-input').value = '';
     }
 
-    // ── Helper ──
     function vibrateDevice() { if (navigator.vibrate) navigator.vibrate(10); }
     function showToast(msg, type='success') {
       const container = document.getElementById('toast-container');
