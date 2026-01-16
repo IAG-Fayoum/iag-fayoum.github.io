@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#dc2626">
+  <title>لوحة الإدارة - نظام الحوكمة</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="assets/js/api.js"></script>
+
+  <style>
+    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+    .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
+    .hidden-section { display: none !important; }
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .stat-card { background: white; border-radius: 16px; padding: 24px; border: 1px solid #e2e8f0; transition: transform 0.2s; }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); border-color: #0f766e; }
+    .overview-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; transition: all 0.2s; text-align: center; }
+    .overview-card:hover { transform: translateY(-3px); box-shadow: 0 8px 16px -4px rgba(0,0,0,0.08); }
+    .overview-card h4 { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #64748b; margin-bottom: 8px; }
+    .overview-card .count { font-size: 2.5rem; font-weight: 900; line-height: 1; }
+    .overview-new { border-bottom: 4px solid #3b82f6; } .overview-new .count { color: #3b82f6; }
+    .overview-progress { border-bottom: 4px solid #f59e0b; } .overview-progress .count { color: #f59e0b; }
+    .overview-late { border-bottom: 4px solid #ef4444; } .overview-late .count { color: #ef4444; }
+    .overview-done { border-bottom: 4px solid #10b981; } .overview-done .count { color: #10b981; }
+    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; }
+    .main-tab-btn { padding: 10px 20px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+    .main-tab-btn:hover { background-color: #f1f5f9; color: #0f766e; }
+    .main-tab-btn.active { background-color: #0f766e; color: white; box-shadow: 0 4px 8px rgba(15, 118, 110, 0.3); }
+    .input-field { width: 100%; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-weight: 600; outline: none; background: white; color: #334155; transition: 0.2s; }
+    .input-field:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+    .btn-primary { background-color: #0f766e; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary:hover { background-color: #115e59; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3); }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50">
+
+  <div id="admin-login-view" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-slate-200">
+      <div class="w-20 h-20 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+        <i data-lucide="shield-alert" class="w-10 h-10"></i>
+      </div>
+      <h3 class="text-2xl font-extrabold mb-2 text-slate-800">بوابة الإدارة</h3>
+      <p class="text-slate-500 mb-8 font-medium">المنطقة مخصصة للمديرين فقط</p>
+      
+      <div class="relative mb-6">
+        <input type="password" id="admin-pin-input" placeholder="أدخل كود المرور" maxlength="4" 
+          class="w-full bg-slate-50 border-2 border-slate-200 text-center text-3xl tracking-[0.5em] font-bold rounded-xl p-4 outline-none focus:border-red-500 focus:bg-white transition-all placeholder:text-slate-300 placeholder:text-lg placeholder:tracking-normal">
+      </div>
+      
+      <button onclick="checkAdminLogin()" class="bg-red-600 hover:bg-red-700 text-white w-full py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-200 transition-all transform hover:-translate-y-1">
+        تسجيل الدخول
+      </button>
+      <p id="login-error" class="text-red-500 text-sm mt-4 font-bold hidden-section flex items-center justify-center gap-1">
+        <i data-lucide="alert-circle" class="w-4 h-4"></i> <span>كود المرور غير صحيح</span>
+      </p>
+      <button onclick="goHome()" class="mt-6 text-slate-400 hover:text-slate-600 text-sm font-bold flex items-center justify-center gap-2 mx-auto transition-colors">
+        <i data-lucide="arrow-right" class="w-4 h-4"></i> عودة للرئيسية
+      </button>
+    </div>
+  </div>
+
+  <div id="admin-content-view" class="hidden-section flex-grow flex flex-col">
+    <header class="theme-gradient text-white py-6 shadow-lg">
+      <div class="container mx-auto px-6 flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-extrabold flex items-center gap-3">
+            <i data-lucide="shield-check" class="w-8 h-8"></i>لوحة الإدارة
+          </h1>
+          <p class="text-teal-100 text-sm mt-1 font-medium">نظام الحوكمة - مديرية الصحة بالفيوم</p>
+        </div>
+        <button onclick="logout()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg flex items-center gap-2 transition-all font-bold">
+          <i data-lucide="log-out" class="w-4 h-4"></i><span>خروج</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8 flex-grow">
+      <div class="main-tabs">
+        <button class="main-tab-btn active" onclick="switchTab('overview')">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>نظرة عامة
+        </button>
+        <button class="main-tab-btn" onclick="switchTab('reports')">
+          <i data-lucide="chart-bar" class="w-4 h-4"></i>التقارير
+        </button>
+        <button class="main-tab-btn" onclick="switchTab('archive')">
+          <i data-lucide="archive" class="w-4 h-4"></i>الأرشيف الإلكتروني
+        </button>
+      </div>
+
+      <div id="tab-overview" class="tab-content fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div class="overview-card overview-new"><h4>إجمالي المهام</h4><div id="stat-total" class="count">-</div></div>
+          <div class="overview-card overview-done"><h4>منجز</h4><div id="stat-done" class="count">-</div></div>
+          <div class="overview-card overview-progress"><h4>جاري العمل</h4><div id="stat-progress" class="count">-</div></div>
+          <div class="overview-card overview-late"><h4>متأخر</h4><div id="stat-overdue" class="count">-</div></div>
+        </div>
+        <div class="stat-card">
+          <h3 class="text-xl font-bold mb-4 text-slate-800 flex items-center gap-2">
+            <i data-lucide="users" class="w-5 h-5 text-teal-600"></i>أداء الموظفين
+          </h3>
+          <div id="employees-table" class="overflow-x-auto"></div>
+        </div>
+      </div>
+
+      <div id="tab-reports" class="tab-content hidden-section">
+        <div class="stat-card">
+          <h3 class="text-xl font-bold mb-6 text-slate-800 flex items-center gap-2">
+            <i data-lucide="chart-bar" class="w-5 h-5 text-teal-600"></i>التقارير
+          </h3>
+          <p class="text-slate-500 text-center py-12">قيد التطوير...</p>
+        </div>
+      </div>
+
+      <div id="tab-archive" class="tab-content hidden-section">
+        <div class="stat-card mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">السنة</label>
+              <select id="archive-year" class="input-field">
+                <option value="">الكل</option>
+                <option value="2024">2024</option>
+                <option value="2025" selected>2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">الشهر</label>
+              <select id="archive-month" class="input-field">
+                <option value="">الكل</option>
+                <option value="1">يناير</option>
+                <option value="2">فبراير</option>
+                <option value="3">مارس</option>
+                <option value="4">أبريل</option>
+                <option value="5">مايو</option>
+                <option value="6">يونيو</option>
+                <option value="7">يوليو</option>
+                <option value="8">أغسطس</option>
+                <option value="9">سبتمبر</option>
+                <option value="10">أكتوبر</option>
+                <option value="11">نوفمبر</option>
+                <option value="12">ديسمبر</option>
+              </select>
+            </div>
+            <div class="md:col-span-3">
+              <label class="block text-sm font-bold text-slate-700 mb-2">بحث</label>
+              <input type="text" id="archive-search" placeholder="رقم القيد، الجهة، الموضوع، الموظف..." class="input-field">
+            </div>
+          </div>
+          <button onclick="searchArchiveAdmin()" class="btn-primary mt-4">
+            <i data-lucide="search" class="w-4 h-4"></i>بحث
+          </button>
+        </div>
+        <div class="stat-card"><div id="archive-results"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="loader" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center hidden-section">
+    <div class="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+    <p class="font-bold text-slate-800 text-lg">جاري التحقق...</p>
+  </div>
+
+  <script>
+    let allEmployees=[];
+    
+    async function checkAdminLogin() {
+      const pin = document.getElementById('admin-pin-input').value;
+      const errorMsg = document.getElementById('login-error');
+
+      if (!pin || pin.length < 4) {
+        errorMsg.innerText = "أدخل الرمز كاملاً (4 أرقام)";
+        errorMsg.classList.remove('hidden-section');
+        return;
+      }
+
+      const res = await login(pin);
+      
+      if (res.success && res.role.includes('مدير')) {
+         document.getElementById('admin-login-view').classList.add('hidden-section');
+         document.getElementById('admin-content-view').classList.remove('hidden-section');
+         loadOverview();
+      } else {
+         errorMsg.innerHTML = '<i data-lucide="alert-circle" class="w-4 h-4"></i> <span>كود خطأ أو غير مصرح لك</span>';
+         errorMsg.classList.remove('hidden-section');
+         lucide.createIcons();
+      }
+    }
+
+    function goHome() {
+       window.location.href = 'index.html';
+    }
+
+    async function loadOverview(){
+      const data = await getDashboard('2024-01-01','2027-12-31');
+      
+      document.getElementById('stat-total').innerText=data.totals.periodTotal||0;
+      document.getElementById('stat-done').innerText=data.totals.periodCompleted||0;
+      document.getElementById('stat-progress').innerText=data.totals.periodRemaining||0;
+      document.getElementById('stat-overdue').innerText=data.totals.absoluteOverdue||0;
+      
+      let html='<table class="w-full text-sm"><thead class="bg-slate-100"><tr><th class="p-3 text-right font-bold text-slate-700">الموظف</th><th class="p-3 text-center font-bold text-slate-700">الإجمالي</th><th class="p-3 text-center font-bold text-slate-700">المنجز</th><th class="p-3 text-center font-bold text-slate-700">المتبقي</th></tr></thead><tbody>';
+      
+      (data.employees||[]).forEach(emp=>{
+        html+=`<tr class="border-b hover:bg-slate-50"><td class="p-3 font-bold text-slate-800">${emp.name}</td><td class="p-3 text-center">${emp.periodTotal}</td><td class="p-3 text-center text-emerald-600 font-bold">${emp.periodCompleted}</td><td class="p-3 text-center text-orange-600 font-bold">${emp.periodRemaining}</td></tr>`;
+      });
+      html+='</tbody></table>';
+      document.getElementById('employees-table').innerHTML=html;
+    }
+    
+    async function searchArchiveAdmin(){
+      const filters={
+        year:document.getElementById('archive-year').value,
+        month:document.getElementById('archive-month').value,
+        search:document.getElementById('archive-search').value
+      };
+      
+      const result = await searchArchive(filters);
+      
+      if(result.success){
+        displayArchive(result.results);
+      }else{
+        alert('❌ خطأ: '+result.error);
+      }
+    }
+    
+    function displayArchive(results){
+      let html='';
+      if(results.length===0){
+        html='<p class="text-center text-slate-400 py-12">لا توجد نتائج</p>';
+      }else{
+        html='<table class="w-full text-sm"><thead class="bg-slate-100"><tr><th class="p-3 text-right font-bold text-slate-700">رقم القيد</th><th class="p-3 font-bold text-slate-700">التاريخ</th><th class="p-3 font-bold text-slate-700">النوع</th><th class="p-3 font-bold text-slate-700">الجهة</th><th class="p-3 font-bold text-slate-700">الموضوع</th><th class="p-3 text-center font-bold text-slate-700">المرفقات</th></tr></thead><tbody>';
+        
+        results.forEach(r=>{
+          let attachments='';
+          if(r.taskAttachment)attachments+=`<a href="${r.taskAttachment}" target="_blank" class="text-cyan-600 hover:underline mx-1" title="مرفق التكليف">📎</a>`;
+          if(r.reportDoc)attachments+=`<a href="${r.reportDoc}" target="_blank" class="text-blue-600 hover:underline mx-1" title="Google Doc">📄</a>`;
+          if(r.reportPdf)attachments+=`<a href="${r.reportPdf}" target="_blank" class="text-red-600 hover:underline mx-1" title="PDF">📕</a>`;
+          
+          html+=`<tr class="border-b hover:bg-slate-50"><td class="p-3 font-bold text-slate-800">${r.id}</td><td class="p-3 text-slate-600">${r.date}</td><td class="p-3 text-slate-600">${r.type}</td><td class="p-3 text-slate-600">${r.entity}</td><td class="p-3 text-slate-600">${r.subject}</td><td class="p-3 text-center">${attachments||'-'}</td></tr>`;
+        });
+        html+='</tbody></table>';
+      }
+      document.getElementById('archive-results').innerHTML=html;
+    }
+    
+    function switchTab(tabName){
+      document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden-section'));
+      document.querySelectorAll('.main-tab-btn').forEach(b=>b.classList.remove('active'));
+      document.getElementById('tab-'+tabName).classList.remove('hidden-section');
+      event.target.closest('.main-tab-btn').classList.add('active');
+      lucide.createIcons();
+    }
+    
+    function logout(){
+      window.location.href = 'index.html';
+    }
+    
+    lucide.createIcons();
+  </script>
+</body>
+</html>
