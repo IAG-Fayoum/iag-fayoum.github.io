@@ -13,82 +13,85 @@
   <script src="assets/js/api.js"></script>
 
   <style>
-    /* [تم التعديل] تحسينات تجربة التطبيق */
+    /* ── أساسيات ── */
     body { 
       font-family: 'Cairo', sans-serif; 
       background-color: #f8fafc;
-      overscroll-behavior-y: none; /* منع السحب */
-      -webkit-user-select: none; /* منع التحديد */
-      user-select: none;
+      overscroll-behavior-y: none;
       -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none; user-select: none;
     }
 
-    input, textarea, table, .selectable, h1, h2, h3, p {
-      -webkit-user-select: text;
-      user-select: text;
+    input, textarea, table, h1, h2, h3, p, span, td, th {
+      -webkit-user-select: text; user-select: text;
     }
 
     /* منع التكبير في الآيفون */
-    input, select, textarea {
-      font-size: 16px !important;
-    }
+    input, select, textarea { font-size: 16px !important; }
     
     /* إخفاء شريط التمرير */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
     /* تأثير الضغط */
-    button:active, .overview-card:active, .stat-card:active {
-      transform: scale(0.97);
-      transition: transform 0.1s;
+    button:active, .card-press:active {
+      transform: scale(0.97); transition: 0.1s;
     }
 
-    .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
+    .theme-gradient { background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%); }
     .hidden-section { display: none !important; }
-    .fade-in { animation: fadeIn 0.5s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .stat-card { background: white; border-radius: 16px; padding: 24px; border: 1px solid #e2e8f0; transition: transform 0.2s; }
-    .overview-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; transition: all 0.2s; text-align: center; }
-    .overview-card h4 { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #64748b; margin-bottom: 8px; }
-    .overview-card .count { font-size: 2.5rem; font-weight: 900; line-height: 1; }
-    .overview-new { border-bottom: 4px solid #3b82f6; } .overview-new .count { color: #3b82f6; }
-    .overview-progress { border-bottom: 4px solid #f59e0b; } .overview-progress .count { color: #f59e0b; }
-    .overview-late { border-bottom: 4px solid #ef4444; } .overview-late .count { color: #ef4444; }
-    .overview-done { border-bottom: 4px solid #10b981; } .overview-done .count { color: #10b981; }
-    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; }
-    .main-tab-btn { padding: 10px 20px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-    .main-tab-btn.active { background-color: #0f766e; color: white; box-shadow: 0 4px 8px rgba(15, 118, 110, 0.3); }
-    .input-field { width: 100%; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-weight: 600; outline: none; background: white; color: #334155; transition: 0.2s; }
-    .input-field:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
-    .btn-primary { background-color: #0f766e; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; }
+    .fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     
+    /* Toast Notification */
+    #toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 400px; pointer-events: none; }
+    .toast { background: #1e293b; color: white; padding: 12px 20px; border-radius: 50px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-weight: bold; font-size: 0.9rem; opacity: 0; transition: 0.3s; transform: translateY(20px); pointer-events: auto; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: #ef4444; }
+    .toast.success { background: #10b981; }
+
     /* Mobile Optimizations */
     @media (max-width: 768px) {
-      #admin-login-view .bg-white { padding: 24px; max-width: 90%; }
-      #admin-pin-input { font-size: 2rem; padding: 12px; }
+      .desktop-only { display: none !important; }
       
-      header h1 { font-size: 1.5rem; }
-      header p { font-size: 0.75rem; }
-      .container { padding-left: 16px; padding-right: 16px; }
-      .overview-card { padding: 16px; }
-      .overview-card .count { font-size: 2rem; }
-      
+      /* تحويل الجداول لكروت */
+      .mobile-card-grid { display: grid; gap: 12px; }
+      .mobile-card { 
+        background: white; padding: 16px; border-radius: 12px; 
+        border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        display: flex; flex-direction: column; gap: 8px;
+      }
+
       /* Tabs Scrolling */
-      .main-tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-      .main-tabs::-webkit-scrollbar { display: none; }
-      .main-tab-btn { white-space: nowrap; font-size: 0.85rem; padding: 8px 16px; }
+      .main-tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 4px; }
+      .main-tab-btn { white-space: nowrap; font-size: 0.85rem; padding: 8px 16px; flex-shrink: 0; }
       
-      table { font-size: 0.8rem; }
-      table th, table td { padding: 8px 6px; }
       .input-field { font-size: 0.9rem; }
       .btn-primary { width: 100%; justify-content: center; }
-      .stat-card .grid { grid-template-columns: 1fr; gap: 12px; }
     }
+    
+    @media (min-width: 769px) {
+      .mobile-only { display: none !important; }
+    }
+
+    /* Custom Styles */
+    .stat-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; }
+    .overview-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; text-align: center; }
+    .overview-card h4 { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #64748b; margin-bottom: 8px; }
+    .overview-card .count { font-size: 2rem; font-weight: 900; line-height: 1; }
+    
+    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+    .main-tab-btn { padding: 10px 20px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 10px; display: flex; align-items: center; gap: 8px; }
+    .main-tab-btn.active { background-color: #b91c1c; color: white; }
+    
+    .input-field { width: 100%; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-weight: 600; outline: none; background: white; color: #334155; }
+    .input-field:focus { border-color: #b91c1c; }
+    .btn-primary { background-color: #b91c1c; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50">
 
-  <div id="toast-container" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-[100] flex flex-col gap-2 pointer-events-none w-max max-w-[90%]"></div>
+  <div id="toast-container"></div>
 
   <div id="admin-login-view" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 p-4">
     <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-slate-200">
@@ -106,257 +109,344 @@
           maxlength="4" 
           inputmode="numeric" 
           pattern="[0-9]*"
-          autocomplete="off"
           class="w-full bg-slate-50 border-2 border-slate-200 text-center text-3xl tracking-[0.5em] font-bold rounded-xl p-4 outline-none focus:border-red-500 focus:bg-white transition-all placeholder:text-slate-300 placeholder:text-lg placeholder:tracking-normal"
         >
       </div>
       
-      <button onclick="navigator.vibrate(10); checkAdminLogin()" class="bg-red-600 hover:bg-red-700 text-white w-full py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-200 transition-all transform hover:-translate-y-1">
+      <button onclick="checkAdminLogin()" class="bg-red-600 hover:bg-red-700 text-white w-full py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-200 transition-all card-press">
         تسجيل الدخول
       </button>
-      <p id="login-error" class="text-red-500 text-sm mt-4 font-bold hidden-section flex items-center justify-center gap-1">
-        <i data-lucide="alert-circle" class="w-4 h-4"></i> <span>كود المرور غير صحيح</span>
-      </p>
-      <button onclick="navigator.vibrate(5); goHome()" class="mt-6 text-slate-400 hover:text-slate-600 text-sm font-bold flex items-center justify-center gap-2 mx-auto transition-colors">
+      
+      <button onclick="goHome()" class="mt-6 text-slate-400 hover:text-slate-600 text-sm font-bold flex items-center justify-center gap-2 mx-auto transition-colors">
         <i data-lucide="arrow-right" class="w-4 h-4"></i> عودة للرئيسية
       </button>
     </div>
   </div>
 
-  <div id="admin-content-view" class="hidden-section flex-grow flex flex-col">
-    <header class="theme-gradient text-white py-6 shadow-lg">
-      <div class="container mx-auto px-6 flex justify-between items-center">
+  <div id="admin-content-view" class="hidden-section flex-grow flex flex-col h-screen overflow-hidden">
+    <header class="theme-gradient text-white py-4 shadow-lg shrink-0">
+      <div class="container mx-auto px-4 flex justify-between items-center">
         <div>
-          <h1 class="text-2xl md:text-3xl font-extrabold flex items-center gap-3">
-            <i data-lucide="shield-check" class="w-8 h-8"></i>لوحة الإدارة
+          <h1 class="text-lg md:text-2xl font-extrabold flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-6 h-6"></i> لوحة الإدارة
           </h1>
-          <p class="text-teal-100 text-sm mt-1 font-medium">نظام الحوكمة - مديرية الصحة بالفيوم</p>
         </div>
-        <button onclick="navigator.vibrate(5); logout()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg flex items-center gap-2 transition-all font-bold">
+        <button onclick="logout()" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg flex items-center gap-2 transition-all font-bold text-sm card-press">
           <i data-lucide="log-out" class="w-4 h-4"></i><span>خروج</span>
         </button>
       </div>
     </header>
 
-    <div class="container mx-auto px-4 py-8 flex-grow">
-      <div class="main-tabs no-scrollbar">
-        <button class="main-tab-btn active" onclick="switchTab('overview')">
-          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>نظرة عامة
-        </button>
-        <button class="main-tab-btn" onclick="switchTab('reports')">
-          <i data-lucide="chart-bar" class="w-4 h-4"></i>التقارير
-        </button>
-        <button class="main-tab-btn" onclick="switchTab('archive')">
-          <i data-lucide="archive" class="w-4 h-4"></i>الأرشيف الإلكتروني
-        </button>
-      </div>
-
-      <div id="tab-overview" class="tab-content fade-in">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div class="overview-card overview-new"><h4>إجمالي المهام</h4><div id="stat-total" class="count">-</div></div>
-          <div class="overview-card overview-done"><h4>منجز</h4><div id="stat-done" class="count">-</div></div>
-          <div class="overview-card overview-progress"><h4>جاري العمل</h4><div id="stat-progress" class="count">-</div></div>
-          <div class="overview-card overview-late"><h4>متأخر</h4><div id="stat-overdue" class="count">-</div></div>
-        </div>
-        <div class="stat-card">
-          <h3 class="text-xl font-bold mb-4 text-slate-800 flex items-center gap-2">
-            <i data-lucide="users" class="w-5 h-5 text-teal-600"></i>أداء الموظفين
-          </h3>
-          <div id="employees-table" class="overflow-x-auto no-scrollbar"></div>
-        </div>
-      </div>
-
-      <div id="tab-reports" class="tab-content hidden-section">
-        <div class="stat-card">
-          <h3 class="text-xl font-bold mb-6 text-slate-800 flex items-center gap-2">
-            <i data-lucide="chart-bar" class="w-5 h-5 text-teal-600"></i>التقارير
-          </h3>
-          <p class="text-slate-500 text-center py-12">قيد التطوير...</p>
-        </div>
-      </div>
-
-      <div id="tab-archive" class="tab-content hidden-section">
-        <div class="stat-card mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-2">السنة</label>
-              <select id="archive-year" class="input-field">
-                <option value="">الكل</option>
-                <option value="2024">2024</option>
-                <option value="2025" selected>2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-2">الشهر</label>
-              <select id="archive-month" class="input-field">
-                <option value="">الكل</option>
-                <option value="1">يناير</option>
-                <option value="2">فبراير</option>
-                <option value="3">مارس</option>
-                <option value="4">أبريل</option>
-                <option value="5">مايو</option>
-                <option value="6">يونيو</option>
-                <option value="7">يوليو</option>
-                <option value="8">أغسطس</option>
-                <option value="9">سبتمبر</option>
-                <option value="10">أكتوبر</option>
-                <option value="11">نوفمبر</option>
-                <option value="12">ديسمبر</option>
-              </select>
-            </div>
-            <div class="md:col-span-3">
-              <label class="block text-sm font-bold text-slate-700 mb-2">بحث</label>
-              <input type="text" id="archive-search" placeholder="رقم القيد، الجهة، الموضوع، الموظف..." class="input-field">
-            </div>
-          </div>
-          <button onclick="navigator.vibrate(10); searchArchiveAdmin()" class="btn-primary mt-4">
-            <i data-lucide="search" class="w-4 h-4"></i>بحث
+    <div class="flex-grow overflow-y-auto no-scrollbar p-4 md:p-6">
+      <div class="container mx-auto">
+        
+        <div class="main-tabs">
+          <button class="main-tab-btn active" onclick="switchTab('overview')">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>نظرة عامة
+          </button>
+          <button class="main-tab-btn" onclick="switchTab('reports')">
+            <i data-lucide="chart-bar" class="w-4 h-4"></i>التقارير
+          </button>
+          <button class="main-tab-btn" onclick="switchTab('archive')">
+            <i data-lucide="archive" class="w-4 h-4"></i>الأرشيف
           </button>
         </div>
-        <div class="stat-card"><div id="archive-results"></div></div>
+
+        <div id="tab-overview" class="tab-content fade-in">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div class="overview-card border-b-4 border-slate-600">
+               <h4>إجمالي المهام</h4>
+               <div id="stat-total" class="count text-slate-700">-</div>
+            </div>
+            <div class="overview-card border-b-4 border-emerald-500">
+               <h4>منجز</h4>
+               <div id="stat-done" class="count text-emerald-600">-</div>
+            </div>
+            <div class="overview-card border-b-4 border-amber-500">
+               <h4>جاري العمل</h4>
+               <div id="stat-progress" class="count text-amber-500">-</div>
+            </div>
+            <div class="overview-card border-b-4 border-red-500">
+               <h4>متأخر</h4>
+               <div id="stat-overdue" class="count text-red-600">-</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="flex justify-between items-center mb-4">
+               <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                 <i data-lucide="users" class="w-5 h-5 text-red-600"></i>أداء الموظفين
+               </h3>
+               <button onclick="loadOverview(); vibrateDevice();" class="text-sm text-slate-500 hover:text-red-600"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+            </div>
+            
+            <div class="desktop-only overflow-x-auto">
+              <table class="w-full text-sm text-right">
+                 <thead class="bg-slate-100 text-slate-600 font-bold">
+                   <tr>
+                     <th class="p-3">الموظف</th>
+                     <th class="p-3 text-center">الإجمالي</th>
+                     <th class="p-3 text-center">المنجز</th>
+                     <th class="p-3 text-center">جاري</th>
+                   </tr>
+                 </thead>
+                 <tbody id="employees-table-desktop"></tbody>
+              </table>
+            </div>
+
+            <div id="employees-list-mobile" class="mobile-only mobile-card-grid"></div>
+          </div>
+        </div>
+
+        <div id="tab-reports" class="tab-content hidden-section">
+          <div class="stat-card text-center py-12">
+            <i data-lucide="bar-chart-2" class="w-12 h-12 mx-auto text-slate-300 mb-4"></i>
+            <h3 class="font-bold text-slate-500">جاري تطوير لوحة التقارير المتقدمة...</h3>
+          </div>
+        </div>
+
+        <div id="tab-archive" class="tab-content hidden-section">
+          <div class="stat-card mb-4">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1">السنة</label>
+                <select id="archive-year" class="input-field py-1">
+                  <option value="">الكل</option>
+                  <option value="2025" selected>2025</option>
+                  <option value="2024">2024</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 mb-1">الشهر</label>
+                <select id="archive-month" class="input-field py-1">
+                  <option value="">الكل</option>
+                  <option value="1">يناير</option>
+                  <option value="2">فبراير</option>
+                  </select>
+              </div>
+              <div class="col-span-2 md:col-span-3">
+                <label class="block text-xs font-bold text-slate-500 mb-1">كلمة البحث</label>
+                <input type="text" id="archive-search" placeholder="بحث..." class="input-field py-1">
+              </div>
+            </div>
+            <button onclick="searchArchiveAdmin()" class="btn-primary w-full mt-4 justify-center py-3 card-press">
+              <i data-lucide="search" class="w-4 h-4"></i> بحث في الأرشيف
+            </button>
+          </div>
+          
+          <div id="archive-results-desktop" class="desktop-only stat-card overflow-x-auto"></div>
+          <div id="archive-results-mobile" class="mobile-only mobile-card-grid"></div>
+        </div>
+
       </div>
     </div>
   </div>
 
   <div id="loader" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center hidden-section">
-    <div class="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-    <p class="font-bold text-slate-800 text-lg">جاري التحقق...</p>
+    <div class="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+    <p class="font-bold text-slate-800">جاري المعالجة...</p>
   </div>
 
   <script>
-    let allEmployees=[];
+    lucide.createIcons();
+
+    // ── Helper Functions ──
+    function vibrateDevice() { if (navigator.vibrate) navigator.vibrate(10); }
     
-    // [تم التعديل] دالة الإشعارات (Toast)
-    function showToast(message, type = 'success') {
+    function showToast(msg, type='success') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      
-      const bgColor = type === 'error' ? 'bg-red-600' : (type === 'success' ? 'bg-slate-800' : 'bg-blue-600');
-      
-      toast.className = `${bgColor} text-white px-6 py-3 rounded-full shadow-2xl font-bold text-sm flex items-center gap-2 fade-in transition-all duration-300 transform translate-y-10 opacity-0`;
-      toast.innerHTML = type === 'error' ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${message}` : `<i data-lucide="check" class="w-4 h-4"></i> ${message}`;
-      
+      toast.className = `toast ${type}`;
+      toast.innerHTML = type === 'error' ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${msg}` : `<i data-lucide="check" class="w-4 h-4"></i> ${msg}`;
       container.appendChild(toast);
       lucide.createIcons();
-      
-      requestAnimationFrame(() => {
-        toast.classList.remove('translate-y-10', 'opacity-0');
-      });
-
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-y-10');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-      
-      if(navigator.vibrate) navigator.vibrate(type === 'error' ? [50, 50, 50] : 10);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
     }
 
+    function toggleLoader(show) {
+      document.getElementById('loader').classList.toggle('hidden-section', !show);
+    }
+
+    // ── Login Logic ──
     async function checkAdminLogin() {
       const pin = document.getElementById('admin-pin-input').value;
-      const errorMsg = document.getElementById('login-error');
+      if (!pin || pin.length < 4) { showToast("أدخل الرمز (4 أرقام)", "error"); return; }
 
-      if (!pin || pin.length < 4) {
-        // [تم التعديل] استخدام Toast بدلاً من alert
-        errorMsg.innerText = "أدخل الرمز كاملاً (4 أرقام)";
-        errorMsg.classList.remove('hidden-section');
-        showToast("تأكد من إدخال 4 أرقام", "error");
-        return;
-      }
-
-      const res = await login(pin);
+      vibrateDevice();
+      toggleLoader(true);
       
-      if (res.success && res.role.includes('مدير')) {
-         document.getElementById('admin-login-view').classList.add('hidden-section');
-         document.getElementById('admin-content-view').classList.remove('hidden-section');
-         loadOverview();
-      } else {
-         errorMsg.innerHTML = '<i data-lucide="alert-circle" class="w-4 h-4"></i> <span>كود خطأ أو غير مصرح لك</span>';
-         errorMsg.classList.remove('hidden-section');
-         showToast("خطأ في تسجيل الدخول", "error");
-         lucide.createIcons();
+      try {
+        if(typeof login === 'undefined') throw new Error("API not loaded");
+        const res = await login(pin);
+        
+        if (res.success && res.role.includes('مدير')) {
+           document.getElementById('admin-login-view').classList.add('hidden-section');
+           document.getElementById('admin-content-view').classList.remove('hidden-section');
+           loadOverview();
+        } else {
+           showToast("كود خطأ أو غير مصرح لك", "error");
+        }
+      } catch(e) {
+        console.error(e);
+        showToast("خطأ في الاتصال", "error");
+      } finally {
+        toggleLoader(false);
       }
     }
 
-    function goHome() {
-       window.location.href = 'index.html';
-    }
-
+    // ── Overview Logic (Fixed Math & Mobile Cards) ──
     async function loadOverview(){
-      const data = await getDashboard('2024-01-01','2027-12-31');
-      
-      document.getElementById('stat-total').innerText=data.totals.periodTotal||0;
-      document.getElementById('stat-done').innerText=data.totals.periodCompleted||0;
-      document.getElementById('stat-progress').innerText=data.totals.periodRemaining||0;
-      document.getElementById('stat-overdue').innerText=data.totals.absoluteOverdue||0;
-      
-      let html='<table class="w-full text-sm"><thead class="bg-slate-100"><tr><th class="p-3 text-right font-bold text-slate-700">الموظف</th><th class="p-3 text-center font-bold text-slate-700">الإجمالي</th><th class="p-3 text-center font-bold text-slate-700">المنجز</th><th class="p-3 text-center font-bold text-slate-700">المتبقي</th></tr></thead><tbody>';
-      
-      (data.employees||[]).forEach(emp=>{
-        html+=`<tr class="border-b hover:bg-slate-50"><td class="p-3 font-bold text-slate-800">${emp.name}</td><td class="p-3 text-center">${emp.periodTotal}</td><td class="p-3 text-center text-emerald-600 font-bold">${emp.periodCompleted}</td><td class="p-3 text-center text-orange-600 font-bold">${emp.periodRemaining}</td></tr>`;
-      });
-      html+='</tbody></table>';
-      document.getElementById('employees-table').innerHTML=html;
+      toggleLoader(true);
+      try {
+        const data = await getDashboard('2024-01-01','2027-12-31');
+        
+        if(!data || !data.totals) throw new Error("No Data");
+
+        // Math Fixes
+        const total = data.totals.periodTotal || 0;
+        const done = data.totals.periodCompleted || 0;
+        const overdue = data.totals.absoluteOverdue || 0;
+        const prog = total - done; // Correct Calculation
+
+        document.getElementById('stat-total').innerText = total;
+        document.getElementById('stat-done').innerText = done;
+        document.getElementById('stat-progress').innerText = prog;
+        document.getElementById('stat-overdue').innerText = overdue;
+        
+        // Render Employees
+        renderEmployeesTable(data.employees);
+
+      } catch(e) {
+        console.error(e);
+        showToast("فشل تحميل البيانات", "error");
+      } finally {
+        toggleLoader(false);
+      }
     }
-    
+
+    function renderEmployeesTable(list) {
+      const desktop = document.getElementById('employees-table-desktop');
+      const mobile = document.getElementById('employees-list-mobile');
+      desktop.innerHTML = ''; mobile.innerHTML = '';
+      
+      if(!list) return;
+
+      list.forEach(emp => {
+        const t = emp.periodTotal || 0;
+        const d = emp.periodCompleted || 0;
+        const p = t - d; // Math Fix
+
+        // Desktop
+        desktop.innerHTML += `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-3 font-bold text-slate-800">${emp.name}</td>
+            <td class="p-3 text-center">${t}</td>
+            <td class="p-3 text-center text-emerald-600 font-bold">${d}</td>
+            <td class="p-3 text-center text-amber-500 font-bold">${p}</td>
+          </tr>`;
+          
+        // Mobile Card
+        mobile.innerHTML += `
+          <div class="mobile-card">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800">${emp.name}</h4>
+              <span class="bg-slate-100 text-xs px-2 py-1 rounded">مجموع: ${t}</span>
+            </div>
+            <div class="flex gap-2 mt-1">
+               <div class="flex-1 bg-emerald-50 text-emerald-700 text-center py-2 rounded text-sm font-bold">✅ ${d}</div>
+               <div class="flex-1 bg-amber-50 text-amber-700 text-center py-2 rounded text-sm font-bold">⏳ ${p}</div>
+            </div>
+          </div>`;
+      });
+    }
+
+    // ── Archive Logic ──
     async function searchArchiveAdmin(){
-      const filters={
-        year:document.getElementById('archive-year').value,
-        month:document.getElementById('archive-month').value,
-        search:document.getElementById('archive-search').value
+      vibrateDevice();
+      toggleLoader(true);
+      const filters = {
+        year: document.getElementById('archive-year').value,
+        month: document.getElementById('archive-month').value,
+        search: document.getElementById('archive-search').value
       };
       
-      const result = await searchArchive(filters);
-      
-      if(result.success){
-        displayArchive(result.results);
-      }else{
-        // [تم التعديل]
-        showToast('❌ خطأ: '+result.error, 'error');
+      try {
+        const result = await searchArchive(filters);
+        if(result.success){
+          displayArchive(result.results);
+        } else {
+          showToast(result.error, "error");
+        }
+      } catch(e) {
+        showToast("خطأ في البحث", "error");
+      } finally {
+        toggleLoader(false);
       }
     }
     
     function displayArchive(results){
-      let html='';
-      if(results.length===0){
-        html='<p class="text-center text-slate-400 py-12">لا توجد نتائج</p>';
-      }else{
-        html='<table class="w-full text-sm"><thead class="bg-slate-100"><tr><th class="p-3 text-right font-bold text-slate-700">رقم القيد</th><th class="p-3 font-bold text-slate-700">التاريخ</th><th class="p-3 font-bold text-slate-700">النوع</th><th class="p-3 font-bold text-slate-700">الجهة</th><th class="p-3 font-bold text-slate-700">الموضوع</th><th class="p-3 text-center font-bold text-slate-700">المرفقات</th></tr></thead><tbody>';
-        
-        results.forEach(r=>{
-          let attachments='';
-          if(r.taskAttachment)attachments+=`<a href="${r.taskAttachment}" target="_blank" class="text-cyan-600 hover:underline mx-1" title="مرفق التكليف">📎</a>`;
-          if(r.reportDoc)attachments+=`<a href="${r.reportDoc}" target="_blank" class="text-blue-600 hover:underline mx-1" title="Google Doc">📄</a>`;
-          if(r.reportPdf)attachments+=`<a href="${r.reportPdf}" target="_blank" class="text-red-600 hover:underline mx-1" title="PDF">📕</a>`;
-          
-          html+=`<tr class="border-b hover:bg-slate-50"><td class="p-3 font-bold text-slate-800">${r.id}</td><td class="p-3 text-slate-600">${r.date}</td><td class="p-3 text-slate-600">${r.type}</td><td class="p-3 text-slate-600">${r.entity}</td><td class="p-3 text-slate-600">${r.subject}</td><td class="p-3 text-center">${attachments||'-'}</td></tr>`;
-        });
-        html+='</tbody></table>';
+      const desktop = document.getElementById('archive-results-desktop');
+      const mobile = document.getElementById('archive-results-mobile');
+      
+      if(results.length === 0){
+        desktop.innerHTML = '<p class="text-center text-slate-400 py-6">لا توجد نتائج</p>';
+        mobile.innerHTML = '<p class="text-center text-slate-400 py-6">لا توجد نتائج</p>';
+        return;
       }
-      document.getElementById('archive-results').innerHTML=html;
+
+      // Desktop Table Head
+      let dHtml = '<table class="w-full text-sm text-right"><thead class="bg-slate-100 font-bold"><tr><th class="p-3">رقم</th><th class="p-3">التاريخ</th><th class="p-3">الجهة</th><th class="p-3">الموضوع</th><th class="p-3">ملفات</th></tr></thead><tbody>';
+      
+      let mHtml = '';
+
+      results.forEach(r => {
+        // Attachments
+        let att = '';
+        if(r.taskAttachment) att += `<a href="${r.taskAttachment}" target="_blank" class="text-cyan-600 px-1">📎</a>`;
+        if(r.reportDoc) att += `<a href="${r.reportDoc}" target="_blank" class="text-blue-600 px-1">📄</a>`;
+        if(r.reportPdf) att += `<a href="${r.reportPdf}" target="_blank" class="text-red-600 px-1">📕</a>`;
+        
+        // Desktop Row
+        dHtml += `<tr class="border-b hover:bg-slate-50">
+          <td class="p-3 font-bold">${r.id}</td>
+          <td class="p-3 text-slate-600">${r.date}</td>
+          <td class="p-3 font-bold text-xs">${r.entity}</td>
+          <td class="p-3 text-slate-600 text-xs">${r.subject}</td>
+          <td class="p-3 text-center">${att || '-'}</td>
+        </tr>`;
+
+        // Mobile Card
+        mHtml += `
+          <div class="mobile-card relative">
+             <div class="flex justify-between">
+                <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded font-bold">#${r.id}</span>
+                <span class="text-xs text-slate-400">${r.date}</span>
+             </div>
+             <h4 class="font-bold text-slate-800 text-sm">${r.subject}</h4>
+             <p class="text-xs text-slate-500">${r.entity} | ${r.type}</p>
+             <div class="flex justify-end gap-3 mt-2 border-t pt-2 border-slate-100">
+                ${att ? att : '<span class="text-xs text-slate-300">بلا مرفقات</span>'}
+             </div>
+          </div>
+        `;
+      });
+      dHtml += '</tbody></table>';
+      
+      desktop.innerHTML = dHtml;
+      mobile.innerHTML = mHtml;
     }
     
+    // Navigation
     function switchTab(tabName){
-      document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden-section'));
-      document.querySelectorAll('.main-tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden-section'));
+      document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('tab-'+tabName).classList.remove('hidden-section');
       event.target.closest('.main-tab-btn').classList.add('active');
-      lucide.createIcons();
     }
     
-    function logout(){
-      window.location.href = 'index.html';
-    }
-    
-    // Override alert to use Toast
-    window.originalAlert = window.alert;
-    window.alert = function(msg) {
-        if(msg && (msg.includes('خطأ') || msg.includes('Error'))) showToast(msg, 'error');
-        else showToast(msg, 'success');
-    };
-    
-    lucide.createIcons();
+    function goHome() { window.location.href = 'index.html'; }
+    function logout() { window.location.href = 'index.html'; }
   </script>
 </body>
 </html>
