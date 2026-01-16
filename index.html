@@ -31,6 +31,98 @@
       from { opacity: 0; transform: translateY(10px); } 
       to { opacity: 1; transform: translateY(0); } 
     }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      header {
+        padding-top: 32px;
+        padding-bottom: 64px;
+      }
+      
+      header h1 {
+        font-size: 1.75rem;
+      }
+      
+      header p {
+        font-size: 0.9rem;
+      }
+      
+      header .bg-white\/10 {
+        padding: 24px;
+        margin-bottom: 16px;
+      }
+      
+      header i {
+        width: 64px !important;
+        height: 64px !important;
+      }
+      
+      main {
+        margin-top: -48px;
+      }
+      
+      main .bg-white {
+        padding: 24px;
+        margin-bottom: 24px;
+      }
+      
+      main h2 {
+        font-size: 1.25rem;
+      }
+      
+      main p {
+        font-size: 0.9rem;
+      }
+      
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      
+      .grid button {
+        padding: 16px;
+      }
+      
+      .grid button i {
+        width: 28px !important;
+        height: 28px !important;
+      }
+      
+      .grid button span {
+        font-size: 0.85rem;
+      }
+      
+      footer {
+        padding-top: 24px;
+        padding-bottom: 24px;
+      }
+      
+      footer p {
+        font-size: 0.75rem;
+      }
+      
+      footer .text-xs {
+        font-size: 0.65rem;
+      }
+    }
+    
+    @media (max-width: 375px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .grid {
+        gap: 8px;
+      }
+      
+      .grid button {
+        padding: 12px;
+      }
+      
+      .grid button span {
+        font-size: 0.75rem;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
