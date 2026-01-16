@@ -34,17 +34,16 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
+    /* التعامل مع النوتش في الآيفون */
+    header {
+      padding-top: calc(1rem + env(safe-area-inset-top)); /* مسافة أمان للنوتش */
+    }
+
     /* تأثير الضغط */
     button:active, .card-press:active {
       transform: scale(0.97); transition: 0.1s;
     }
     
-    /* تحديد كارت المهمة */
-    .task-selected {
-      border: 2px solid #0f766e !important;
-      background-color: #f0fdfa !important;
-    }
-
     .theme-gradient { background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%); }
     .hidden-section { display: none !important; }
     .fade-in { animation: fadeIn 0.4s ease-out; }
@@ -57,44 +56,35 @@
     .toast.error { background: #ef4444; }
     .toast.success { background: #10b981; }
 
-    /* Mobile Optimizations */
-    @media (max-width: 768px) {
-      .desktop-only { display: none !important; }
-      
-      /* تحويل الجداول لكروت */
-      .mobile-card-grid { display: grid; gap: 12px; }
-      .mobile-card { 
-        background: white; padding: 16px; border-radius: 12px; 
-        border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        display: flex; flex-direction: column; gap: 8px;
-        position: relative;
-      }
-
-      /* Tabs Scrolling */
-      .main-tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 4px; }
-      .main-tab-btn { white-space: nowrap; font-size: 0.85rem; padding: 8px 16px; flex-shrink: 0; }
-      
-      .input-field { font-size: 0.9rem; }
-      .btn-primary { width: 100%; justify-content: center; }
-    }
-    
-    @media (min-width: 769px) {
-      .mobile-only { display: none !important; }
-    }
-
     /* Custom Styles */
     .stat-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; }
     .overview-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; text-align: center; }
     .overview-card h4 { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #64748b; margin-bottom: 8px; }
     .overview-card .count { font-size: 2rem; font-weight: 900; line-height: 1; }
     
-    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
-    .main-tab-btn { padding: 10px 20px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 10px; display: flex; align-items: center; gap: 8px; }
+    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .main-tab-btn { padding: 10px 20px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 10px; display: flex; align-items: center; gap: 8px; white-space: nowrap; flex-shrink: 0; }
     .main-tab-btn.active { background-color: #b91c1c; color: white; }
     
-    .input-field { width: 100%; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-weight: 600; outline: none; background: white; color: #334155; }
-    .input-field:focus { border-color: #b91c1c; }
-    .btn-primary { background-color: #b91c1c; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; }
+    .input-field { width: 100%; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-weight: 600; outline: none; background: white; color: #334155; transition: 0.2s; }
+    .input-field:focus { border-color: #b91c1c; box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.1); }
+    .btn-primary { background-color: #b91c1c; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+    .btn-primary:hover { background-color: #991b1b; }
+
+    /* Mobile Cards */
+    .mobile-card { 
+      background: white; padding: 16px; border-radius: 12px; 
+      border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .desktop-only { display: none !important; }
+      .container { padding-left: 16px; padding-right: 16px; }
+    }
+    @media (min-width: 769px) {
+      .mobile-only { display: none !important; }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50">
@@ -173,6 +163,7 @@
                </h3>
                <button onclick="loadOverview(); vibrateDevice();" class="text-sm text-slate-500 hover:text-red-600"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
             </div>
+            
             <div class="desktop-only overflow-x-auto">
               <table class="w-full text-sm text-right">
                  <thead class="bg-slate-100 text-slate-600 font-bold">
@@ -189,6 +180,7 @@
                  <tbody id="employees-table-desktop"></tbody>
               </table>
             </div>
+            
             <div id="employees-list-mobile" class="mobile-only mobile-card-grid"></div>
           </div>
         </div>
@@ -210,7 +202,7 @@
               </div>
             </div>
             <div id="reassign-results" class="mb-4 mobile-card-grid"></div>
-            <button onclick="executeReassign()" class="btn-primary w-full md:w-auto justify-center"><i data-lucide="check" class="w-4 h-4"></i>تأكيد إعادة التكليف</button>
+            <button onclick="executeReassign()" class="btn-primary w-full md:w-auto"><i data-lucide="check" class="w-4 h-4"></i>تأكيد إعادة التكليف</button>
           </div>
         </div>
 
@@ -240,7 +232,7 @@
               </div>
             </div>
             <div id="status-results" class="mb-4 mobile-card-grid"></div>
-            <button onclick="executeStatusUpdate()" class="btn-primary w-full md:w-auto justify-center"><i data-lucide="check" class="w-4 h-4"></i>تأكيد التعديل</button>
+            <button onclick="executeStatusUpdate()" class="btn-primary w-full md:w-auto"><i data-lucide="check" class="w-4 h-4"></i>تأكيد التعديل</button>
           </div>
         </div>
 
@@ -256,7 +248,7 @@
               <div><label class="block text-sm font-bold text-slate-700 mb-2">الموعد النهائي</label><input type="date" id="add-deadline" class="input-field"></div>
               <div><label class="block text-sm font-bold text-slate-700 mb-2">رابط المرفق</label><input type="url" id="add-attachment" class="input-field" placeholder="https://..."></div>
             </div>
-            <button onclick="executeAddTask()" class="btn-primary mt-6 w-full md:w-auto justify-center"><i data-lucide="plus" class="w-4 h-4"></i>إضافة المهمة</button>
+            <button onclick="executeAddTask()" class="btn-primary mt-6 w-full md:w-auto"><i data-lucide="plus" class="w-4 h-4"></i>إضافة المهمة</button>
           </div>
         </div>
 
@@ -319,24 +311,18 @@
       
       try {
         if(typeof login === 'undefined') throw new Error("API not loaded");
+        // استدعاء من api.js أو google.script.run
         const res = await login(pin);
         
         if (res.success && res.role.includes('مدير')) {
            document.getElementById('admin-login-view').classList.add('hidden-section');
            document.getElementById('admin-content-view').classList.remove('hidden-section');
            loadOverview();
-           populateDropdowns(res); // ملء قوائم الموظفين
         } else {
            showToast("كود خطأ أو غير مصرح لك", "error");
         }
       } catch(e) { console.error(e); showToast("خطأ في الاتصال", "error"); } 
       finally { toggleLoader(false); }
-    }
-
-    // تعبئة قوائم الموظفين في التبويبات
-    function populateDropdowns(data) {
-       // نحتاج لقائمة الموظفين. يمكن استدعاء getDashboard للحصول عليها إذا لم تكن في login
-       // هنا سأفترض أننا سنحصل عليها من loadOverview
     }
 
     // ── Overview Logic ──
@@ -346,20 +332,22 @@
         const data = await getDashboard('2024-01-01','2027-12-31');
         if(!data || !data.totals) throw new Error("No Data");
 
-        // Stats
-        document.getElementById('stat-total').innerText = data.totals.total;
-        document.getElementById('stat-done').innerText = data.totals.completed;
-        document.getElementById('stat-pending').innerText = data.totals.pending;
-        document.getElementById('stat-progress').innerText = data.totals.progress;
-        document.getElementById('stat-overdue').innerText = data.totals.overdue;
+        // ✅ هنا الربط الصحيح بالمتغيرات الجديدة لمنع الـ Undefined
+        document.getElementById('stat-total').innerText = data.totals.total || 0;
+        document.getElementById('stat-done').innerText = data.totals.completed || 0;
+        document.getElementById('stat-pending').innerText = data.totals.pending || 0;
+        document.getElementById('stat-progress').innerText = data.totals.progress || 0;
+        document.getElementById('stat-overdue').innerText = data.totals.overdue || 0;
         
-        // Populate Dropdowns from employees list
+        // Populate Dropdowns
         const empSelects = [document.getElementById('new-employee'), document.getElementById('add-employee')];
         empSelects.forEach(sel => {
            sel.innerHTML = '<option value="">-- اختر موظف --</option>';
-           data.employees.forEach(e => {
-             sel.innerHTML += `<option value="${e.name}">${e.name}</option>`;
-           });
+           if(data.employees) {
+             data.employees.forEach(e => {
+               sel.innerHTML += `<option value="${e.name}">${e.name}</option>`;
+             });
+           }
         });
 
         // Render Employees
@@ -377,6 +365,14 @@
       if(!list) return;
 
       list.forEach(emp => {
+        // ✅ استخدام المتغيرات الجديدة أيضاً هنا
+        const total = emp.periodTotal || 0;
+        const done = emp.periodCompleted || 0;
+        const pending = emp.periodPending || 0;
+        const prog = emp.periodInProgress || 0;
+        const overdue = emp.absoluteOverdue || 0;
+        const rate = emp.rate || 0;
+
         // Desktop
         desktop.innerHTML += `
           <tr class="border-b hover:bg-slate-50">
@@ -384,12 +380,12 @@
               <div class="font-bold text-slate-800">${emp.name}</div>
               <div class="text-[10px] text-slate-400">${emp.breakdownStr || ''}</div>
             </td>
-            <td class="p-3 text-center">${emp.total}</td>
-            <td class="p-3 text-center text-emerald-600 font-bold">${emp.completed}</td>
-            <td class="p-3 text-center text-blue-600 font-bold">${emp.pending}</td>
-            <td class="p-3 text-center text-amber-500 font-bold">${emp.progress}</td>
-            <td class="p-3 text-center ${emp.overdue > 0 ? 'text-red-600 font-black' : 'text-slate-300'}">${emp.overdue}</td>
-            <td class="p-3 text-center font-bold text-slate-700">%${emp.rate}</td>
+            <td class="p-3 text-center">${total}</td>
+            <td class="p-3 text-center text-emerald-600 font-bold">${done}</td>
+            <td class="p-3 text-center text-blue-600 font-bold">${pending}</td>
+            <td class="p-3 text-center text-amber-500 font-bold">${prog}</td>
+            <td class="p-3 text-center ${overdue > 0 ? 'text-red-600 font-black' : 'text-slate-300'}">${overdue}</td>
+            <td class="p-3 text-center font-bold text-slate-700">%${rate}</td>
           </tr>`;
           
         // Mobile Card
@@ -397,37 +393,36 @@
           <div class="mobile-card">
             <div class="flex justify-between items-center">
               <h4 class="font-bold text-slate-800">${emp.name}</h4>
-              <span class="bg-slate-100 text-xs px-2 py-1 rounded">المجموع: ${emp.total}</span>
+              <span class="bg-slate-100 text-xs px-2 py-1 rounded">مجموع: ${total}</span>
             </div>
             <div class="grid grid-cols-4 gap-1 mt-2 text-center text-xs font-bold">
-               <div class="bg-emerald-50 text-emerald-700 py-1 rounded">✅ ${emp.completed}</div>
-               <div class="bg-blue-50 text-blue-700 py-1 rounded">⏳ ${emp.pending}</div>
-               <div class="bg-amber-50 text-amber-700 py-1 rounded">🚧 ${emp.progress}</div>
-               <div class="${emp.overdue > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-50 text-slate-300'} py-1 rounded">🚨 ${emp.overdue}</div>
+               <div class="bg-emerald-50 text-emerald-700 py-1 rounded">✅ ${done}</div>
+               <div class="bg-blue-50 text-blue-700 py-1 rounded">⏳ ${pending}</div>
+               <div class="bg-amber-50 text-amber-700 py-1 rounded">🚧 ${prog}</div>
+               <div class="${overdue > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-50 text-slate-300'} py-1 rounded">🚨 ${overdue}</div>
             </div>
           </div>`;
       });
     }
 
-    // ── Action Tabs Logic (Search & Select) ──
+    // ── Action Tabs Logic ──
     async function searchTaskForAction(type) {
       const query = document.getElementById('search-' + type).value;
       if(query.length < 2) { showToast("اكتب حرفين على الأقل", "error"); return; }
       
       toggleLoader(true);
       try {
-        // استخدام دالة البحث في الأرشيف (أو API خاص لو متاح)
         const filters = { search: query, year: '2025' }; 
         const res = await searchArchive(filters); 
         
         const container = document.getElementById(type + '-results');
         container.innerHTML = '';
-        selectedTaskId = null; // Reset
+        selectedTaskId = null;
 
         if(res.success && res.results.length > 0) {
            res.results.forEach(task => {
              container.innerHTML += `
-               <div onclick="selectTask(this, '${task.id}')" class="mobile-card cursor-pointer hover:border-teal-500 transition-colors">
+               <div onclick="selectTask(this, '${task.id}')" class="mobile-card cursor-pointer hover:border-red-500 transition-colors border-2 border-transparent">
                   <div class="flex justify-between">
                      <span class="font-bold text-xs bg-slate-200 px-2 rounded">#${task.id}</span>
                      <span class="text-xs text-slate-500">${task.date}</span>
@@ -445,8 +440,12 @@
     }
 
     function selectTask(el, id) {
-       document.querySelectorAll('.mobile-card').forEach(c => c.classList.remove('task-selected'));
-       el.classList.add('task-selected');
+       document.querySelectorAll('.mobile-card').forEach(c => {
+         c.classList.remove('border-red-500', 'bg-red-50');
+         c.classList.add('border-transparent');
+       });
+       el.classList.remove('border-transparent');
+       el.classList.add('border-red-500', 'bg-red-50');
        selectedTaskId = id;
        vibrateDevice();
     }
@@ -458,20 +457,18 @@
        
        toggleLoader(true);
        try {
-         // Assuming API has this function or we define it
-         // لو الدالة غير موجودة في api.js، هذا الكود سيفشل. 
-         // سنفترض وجودها أو استخدام google.script.run كاحتياطي في بيئة Apps Script
-         if(typeof reassignTask !== 'undefined') {
-            const res = await reassignTask(selectedTaskId, newEmp);
-            if(res.success) { showToast("تم إعادة التكليف"); document.getElementById('reassign-results').innerHTML = ''; selectedTaskId=null; }
-            else showToast("فشلت العملية", "error");
-         } else {
-            // Fallback for Apps Script
-            google.script.run.withSuccessHandler(() => {
-               showToast("تم إعادة التكليف"); toggleLoader(false);
-            }).reassignTask(selectedTaskId, newEmp);
-            return; // Exit to avoid double toggleLoader
-         }
+          // Check for Apps Script environment vs Web
+          if(typeof reassignTask !== 'undefined') {
+             const res = await reassignTask(selectedTaskId, newEmp);
+             if(res.success) { showToast("تم إعادة التكليف"); document.getElementById('reassign-results').innerHTML = ''; selectedTaskId=null; }
+             else showToast("فشلت العملية", "error");
+          } else {
+             // Fallback
+             google.script.run.withSuccessHandler(() => {
+                showToast("تم التنفيذ"); toggleLoader(false);
+             }).reassignTask(selectedTaskId, newEmp);
+             return;
+          }
        } catch(e) { showToast("خطأ في التنفيذ", "error"); }
        finally { toggleLoader(false); }
     }
@@ -518,7 +515,6 @@
              const res = await addTaskManual(taskData);
              if(res.success) { 
                showToast("تمت الإضافة بنجاح"); 
-               // Clear inputs
                document.querySelectorAll('#tab-add input, #tab-add textarea').forEach(i => i.value = '');
              } else showToast("فشل الإضافة", "error");
           } else {
@@ -587,6 +583,9 @@
     
     function goHome() { window.location.href = 'index.html'; }
     function logout() { window.location.href = 'index.html'; }
+    
+    // Auto Load Icons
+    lucide.createIcons();
   </script>
 </body>
 </html>
