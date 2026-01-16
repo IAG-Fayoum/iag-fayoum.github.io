@@ -28,7 +28,7 @@
 
     /* Safe Area for Mobile */
     header { padding-top: calc(1rem + env(safe-area-inset-top)); }
-    .main-content { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+    .main-content { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } /* Increased padding */
     .bottom-nav { padding-bottom: env(safe-area-inset-bottom); height: calc(65px + env(safe-area-inset-bottom)); }
 
     /* Interactions */
@@ -184,6 +184,7 @@
              <div class="flex gap-2 overflow-x-auto pb-2 mb-2 no-scrollbar">
                <div class="main-tab-btn active" id="tab-btn-new" onclick="switchEmpTab('new')">📥 الوارد/جاري</div>
                <div class="main-tab-btn" id="tab-btn-review" onclick="switchEmpTab('review')">🧐 قيد الفحص</div>
+               <div class="main-tab-btn" id="tab-btn-pending" onclick="switchEmpTab('pending')">⏳ اعتماد</div>
                <div class="main-tab-btn" id="tab-btn-late" onclick="switchEmpTab('late')">🚨 المتأخرات</div>
                <div class="main-tab-btn" id="tab-btn-history" onclick="switchEmpTab('history')">🗂️ الأرشيف</div>
                <div class="main-tab-btn" id="tab-btn-reports" onclick="switchEmpTab('reports')">📄 التقارير</div>
@@ -207,11 +208,25 @@
     <div class="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-3"></div>
     <p class="font-bold text-slate-700">جاري التحميل...</p>
   </div>
+  
+  <div id="toast-container" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[4000] pointer-events-none w-full max-w-sm px-4"></div>
 
   <script>
     lucide.createIcons();
     let allTasks = []; 
     let allReports = [];
+
+    // ── Helper: Toast Notification ──
+    function showToast(msg, type='success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `mb-2 p-3 rounded-full text-center text-sm font-bold shadow-lg transition-all transform translate-y-4 opacity-0 flex items-center justify-center gap-2 ${type === 'error' ? 'bg-red-600 text-white' : 'bg-slate-800 text-white'}`;
+      toast.innerHTML = type === 'error' ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${msg}` : `<i data-lucide="check" class="w-4 h-4"></i> ${msg}`;
+      container.appendChild(toast);
+      lucide.createIcons();
+      requestAnimationFrame(() => { toast.classList.remove('translate-y-4', 'opacity-0'); });
+      setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(() => toast.remove(), 300); }, 3000);
+    }
 
     // ── Navigation Logic ──
     function goHome() {
@@ -243,7 +258,7 @@
 
       if(typeof google !== 'undefined' && google.script) {
          google.script.run.withSuccessHandler(renderData).withFailureHandler(err => {
-             alert("خطأ في الاتصال");
+             showToast("خطأ في الاتصال", "error");
              document.getElementById('loader').classList.add('hidden-section');
          }).getDashboardData(start, end);
       } else {
@@ -310,7 +325,7 @@
     // ── Employee Portal Logic ──
     function handleLogin() {
       const pin = document.getElementById('emp-pin-input').value;
-      if (!pin || pin.length < 4) return;
+      if (!pin || pin.length < 4) { showToast("أدخل الكود كاملاً", "error"); return; }
       document.getElementById('loader').classList.remove('hidden-section');
       
       google.script.run.withSuccessHandler(res => {
@@ -332,7 +347,7 @@
             allReports = res.reports || [];
             switchEmpTab('new');
          } else {
-            alert("كود خطأ");
+            showToast("كود المرور غير صحيح", "error");
          }
       }).loginUser(pin);
     }
