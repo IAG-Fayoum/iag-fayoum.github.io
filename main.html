@@ -14,24 +14,25 @@
     body { 
       font-family: 'Cairo', sans-serif; 
       background-color: #f8fafc;
-      overscroll-behavior-y: none;
+      overscroll-behavior-y: none; /* منع السحب لأسفل في الموبايل */
       -webkit-tap-highlight-color: transparent;
       -webkit-user-select: none; user-select: none;
     }
     
-    /* Allow text selection where needed */
+    /* السماح بتحديد النصوص في الأماكن المهمة */
     input, textarea, table, h1, h2, h3, p, span, td, th { -webkit-user-select: text; user-select: text; }
-    input, select, textarea { font-size: 16px !important; } /* Prevent Zoom on iPhone */
+    input, select, textarea { font-size: 16px !important; } /* منع التكبير التلقائي في آيفون */
 
+    /* إخفاء شريط التمرير */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* Safe Area for Mobile */
+    /* ضبط المسافات الآمنة للموبايل */
     header { padding-top: calc(1rem + env(safe-area-inset-top)); }
-    .main-content { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } /* Increased padding */
+    .main-content { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } 
     .bottom-nav { padding-bottom: env(safe-area-inset-bottom); height: calc(65px + env(safe-area-inset-bottom)); }
 
-    /* Interactions */
+    /* تفاعلات */
     button:active, .card-press:active { transform: scale(0.97); transition: 0.1s; opacity: 0.9; }
 
     .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
@@ -45,7 +46,6 @@
     .stat-card p { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
     .service-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
-    
     .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-right: 4px solid transparent; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
     
     /* Tabs */
@@ -262,7 +262,8 @@
              document.getElementById('loader').classList.add('hidden-section');
          }).getDashboardData(start, end);
       } else {
-         console.log("Dev Mode");
+         // وضع المطور (Dummy Data)
+         console.log("Dev Mode: Loading dummy data");
          document.getElementById('loader').classList.add('hidden-section');
       }
     }
@@ -460,7 +461,7 @@
                 <div class="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
                     ${attachments.map((link, i) => `
                         <a href="${link}" target="_blank" class="block group relative aspect-square bg-slate-800 rounded-xl overflow-hidden border border-white/10">
-                            <img src="${link}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500 group-hover:scale-110" alt="صورة ${i+1}">
+                            <img src="${link}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500 group-hover:scale-110" alt="صورة ${i+1}" onerror="this.src='https://placehold.co/400x400?text=No+Image'">
                             <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
                                 <span class="bg-white text-black text-xs font-bold px-3 py-1 rounded-full">عرض</span>
                             </div>
