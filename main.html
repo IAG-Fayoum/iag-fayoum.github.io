@@ -13,30 +13,37 @@
   <script src="assets/js/api.js"></script>
 
   <style>
+    /* [تم التعديل] تحسينات تجربة التطبيق */
     body { 
       font-family: 'Cairo', sans-serif; 
       background-color: #f8fafc;
-      /* [تم التعديل] منع سحب الصفحة للأسفل (Pull-to-refresh) ليشعر المستخدم أنه تطبيق */
-      overscroll-behavior-y: none;
-      /* [تم التعديل] منع تحديد النصوص في الواجهة */
-      -webkit-user-select: none;
+      overscroll-behavior-y: none; /* منع السحب للتحديث */
+      -webkit-user-select: none; /* منع تحديد النصوص */
       user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
     
-    /* السماح بتحديد النصوص داخل الجداول وحقول الكتابة فقط */
-    input, textarea, table, .selectable {
+    /* السماح بالكتابة وتحديد النصوص في الأماكن الضرورية */
+    input, textarea, table, .selectable, h1, h2, h3, p {
       -webkit-user-select: text;
       user-select: text;
     }
 
-    /* [تم التعديل] تأثير ضغط حقيقي للأزرار والبطاقات */
-    button:active, .service-card:active, .task-card:active, .main-tab-btn:active, .sidebar-item:active {
+    /* [تم التعديل] منع التكبير التلقائي في الآيفون */
+    input, select, textarea {
+      font-size: 16px !important; 
+    }
+
+    /* [تم التعديل] إخفاء شريط التمرير */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* تأثير الضغط على الأزرار */
+    button:active, .service-card:active, .task-card:active, .sidebar-item:active {
       transform: scale(0.97);
-      opacity: 0.9;
       transition: transform 0.1s;
     }
-    
+
     /* ── Theme Colors ── */
     .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
     
@@ -52,16 +59,13 @@
     
     /* ── Cards ── */
     .stat-card { background: white; border-radius: 16px; padding: 24px; border: 1px solid #e2e8f0; transition: transform 0.2s; }
-    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); border-color: #0f766e; }
     
     .service-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; transition: all 0.3s; display: flex; align-items: center; gap: 15px; cursor: pointer; }
-    .service-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-color: #0f766e; }
     
     .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
 
     /* Employee Stats Overview Cards */
     .overview-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; transition: all 0.2s; text-align: center; }
-    .overview-card:hover { transform: translateY(-3px); box-shadow: 0 8px 16px -4px rgba(0,0,0,0.08); }
     .overview-card h4 { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #64748b; margin-bottom: 8px; }
     .overview-card .count { font-size: 2.5rem; font-weight: 900; line-height: 1; }
     .overview-new { border-bottom: 4px solid #3b82f6; } .overview-new .count { color: #3b82f6; }
@@ -71,7 +75,6 @@
 
     /* Tasks Styles */
     .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; transition: all 0.2s; border-right: 4px solid transparent; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
-    .task-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
     
     .task-new { border-right-color: #3b82f6; background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%); box-shadow: 0 4px 8px rgba(59, 130, 246, 0.15); }
     .task-progress { border-right-color: #f59e0b; }
@@ -80,171 +83,63 @@
 
     .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; }
     .main-tab-btn { padding: 10px 20px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-    .main-tab-btn:hover { background-color: #f1f5f9; color: #0f766e; }
     .main-tab-btn.active { background-color: #0f766e; color: white; box-shadow: 0 4px 8px rgba(15, 118, 110, 0.3); }
 
     .overdue-table { border: 2px solid #fecaca; border-radius: 12px; overflow: hidden; }
     .overdue-table thead { background-color: #fee2e2; }
     .overdue-table thead th { color: #991b1b; font-weight: 800; }
-    .overdue-table tbody tr:hover { background-color: #fef2f2; }
 
     .history-filters { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
     .filter-label { font-weight: 700; color: #475569; font-size: 0.85rem; }
     .filter-select { border: 2px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-weight: 600; outline: none; background: white; color: #334155; transition: 0.2s; }
-    .filter-select:focus { border-color: #0f766e; }
     .filter-btn { background-color: #0f766e; color: white; padding: 6px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-    .filter-btn:hover { background-color: #115e59; }
 
-    /* Mobile Bottom Navigation - محسّن */
+    /* Mobile Bottom Navigation - Optimized */
     @media (max-width: 768px) {
       .desktop-sidebar { display: none !important; }
       
       .bottom-nav { 
         display: flex !important; 
-        position: fixed; 
-        bottom: 0; 
-        left: 0; 
-        right: 0; 
-        background: white; 
-        border-top: 2px solid #e2e8f0; 
-        z-index: 999;
-        box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
-        padding: 8px 0;
-        /* [تم التعديل] إضافة دعم لمناطق الأمان (Safe Area) للآيفون */
+        position: fixed; bottom: 0; left: 0; right: 0; 
+        background: white; border-top: 2px solid #e2e8f0; z-index: 999;
+        box-shadow: 0 -4px 12px rgba(0,0,0,0.08); padding: 8px 0;
         padding-bottom: env(safe-area-inset-bottom);
         height: calc(70px + env(safe-area-inset-bottom));
       }
       
       .bottom-nav button {
-        flex: 1;
-        padding: 8px 4px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        font-size: 0.65rem;
-        font-weight: 700;
-        color: #64748b;
-        transition: all 0.2s;
-        border: none;
-        background: transparent;
-        position: relative;
+        flex: 1; padding: 8px 4px; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 4px;
+        font-size: 0.65rem; font-weight: 700; color: #64748b;
+        transition: all 0.2s; border: none; background: transparent; position: relative;
       }
       
-      .bottom-nav button:active {
-        transform: scale(0.95);
-      }
-      
-      .bottom-nav button.active {
-        color: #0f766e;
-        background: #f0fdfa;
-      }
-      
+      .bottom-nav button.active { color: #0f766e; background: #f0fdfa; }
       .bottom-nav button.active::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 10%;
-        right: 10%;
-        height: 3px;
-        background: #0f766e;
-        border-radius: 0 0 3px 3px;
+        content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 3px;
+        background: #0f766e; border-radius: 0 0 3px 3px;
       }
       
-      .bottom-nav button svg {
-        width: 24px;
-        height: 24px;
-      }
-      
-      /* تحسينات المحتوى للموبايل */
       .main-content { 
-        /* [تم التعديل] زيادة الهامش السفلي لاحترام ارتفاع النافبار الجديد */
         padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important; 
         height: calc(100vh - (70px + env(safe-area-inset-bottom)));
         overflow-y: auto;
       }
       
-      /* تحسين الإحصائيات للموبايل */
-      .stat-card {
-        padding: 16px;
-      }
+      .stat-card, .overview-card, .task-card { padding: 16px; }
+      .stat-card h3 { font-size: 1.5rem; }
+      .overview-card .count { font-size: 2rem; }
       
-      .stat-card h3 {
-        font-size: 1.5rem;
-      }
-      
-      /* تحسين overview cards للموبايل */
-      .overview-card {
-        padding: 16px;
-      }
-      
-      .overview-card .count {
-        font-size: 2rem;
-      }
-      
-      /* تحسين Task Cards للموبايل */
-      .task-card {
-        padding: 14px;
-      }
-      
-      /* تحسين الجداول للموبايل */
-      table {
-        font-size: 0.85rem;
-      }
-      
-      table th, table td {
-        padding: 10px 8px;
-      }
-      
-      /* تحسين الفلاتر للموبايل */
-      .history-filters {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .filter-select {
-        width: 100%;
-      }
-      
-      .filter-btn {
-        width: 100%;
-        padding: 10px;
-      }
-      
-      /* تحسين Login Form للموبايل */
-      #emp-login-form {
-        padding: 24px;
-        max-width: 90%;
-      }
-      
-      #emp-pin-input {
-        font-size: 2rem;
-      }
-    }
-    
-    @media (min-width: 769px) {
-      .bottom-nav { display: none !important; }
-    }
-    
-    @media (max-width: 375px) {
-      .overview-card .count {
-        font-size: 1.75rem;
-      }
-      
-      .bottom-nav button {
-        font-size: 0.6rem;
-        padding: 6px 2px;
-      }
-      
-      .bottom-nav button svg {
-        width: 20px;
-        height: 20px;
-      }
+      table th, table td { padding: 10px 8px; font-size: 0.8rem; }
+      .filter-select, .filter-btn { width: 100%; }
+      #emp-login-form { padding: 24px; max-width: 90%; }
+      #emp-pin-input { font-size: 2rem; }
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
+
+  <div id="toast-container" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-[100] flex flex-col gap-2 pointer-events-none w-max max-w-[90%]"></div>
 
   <div id="dashboard-app" class="flex-grow flex h-screen overflow-hidden">
     
@@ -276,16 +171,21 @@
       </div>
     </aside>
 
-    <main class="flex-1 flex flex-col bg-slate-50 overflow-hidden relative main-content">
-      <div class="flex-1 overflow-y-auto scroll-smooth">
+    <main class="flex-1 flex flex-col bg-slate-50 overflow-hidden relative main-content no-scrollbar">
+      <div class="flex-1 overflow-y-auto scroll-smooth no-scrollbar">
 
         <div id="tab-dashboard" class="fade-in">
           <header class="bg-white border-b border-slate-200 p-4 flex flex-col xl:flex-row justify-between items-center gap-4 shadow-sm sticky top-0 z-30">
-            <div>
-              <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                <i data-lucide="activity" class="text-teal-600"></i> مؤشرات الأداء
-              </h2>
-              <p class="text-xs text-slate-500 font-bold mt-1" id="filter-status">جاري التحميل...</p>
+            <div class="flex justify-between w-full md:w-auto items-center">
+              <div>
+                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                  <i data-lucide="activity" class="text-teal-600"></i> مؤشرات الأداء
+                </h2>
+                <p class="text-xs text-slate-500 font-bold mt-1" id="filter-status">جاري التحميل...</p>
+              </div>
+              <button onclick="navigator.vibrate(10); applyFilter()" class="md:hidden p-2 bg-slate-100 rounded-full text-slate-600 hover:bg-teal-50 hover:text-teal-600">
+                <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+              </button>
             </div>
             
             <div class="bg-white border border-slate-200 p-1 rounded-xl flex gap-2 items-center flex-wrap shadow-sm">
@@ -331,7 +231,7 @@
                 <input type="date" id="d-start" class="border rounded px-1 text-sm">
                 <input type="date" id="d-end" class="border rounded px-1 text-sm">
               </div>
-              <button onclick="applyFilter()" class="bg-teal-600 text-white px-4 py-1 rounded-lg text-sm font-bold hover:bg-teal-700">
+              <button onclick="navigator.vibrate(10); applyFilter()" class="bg-teal-600 text-white px-4 py-1 rounded-lg text-sm font-bold hover:bg-teal-700">
                 <i data-lucide="search" class="w-4 h-4"></i>
               </button>
             </div>
@@ -362,7 +262,7 @@
                 <i data-lucide="users" class="text-teal-600"></i>
                 <h3 class="font-bold text-slate-800">تحليل أداء الموظفين</h3>
               </div>
-              <div class="overflow-x-auto">
+              <div class="overflow-x-auto no-scrollbar">
                 <table class="w-full text-right">
                   <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold">
                     <tr>
@@ -385,7 +285,7 @@
                 <i data-lucide="building-2" class="text-blue-600"></i>
                 <h3 class="font-bold text-slate-800">موقف الجهات الخاضعة للرقابة</h3>
               </div>
-              <div class="overflow-x-auto max-h-96">
+              <div class="overflow-x-auto max-h-96 no-scrollbar">
                 <table class="w-full text-right">
                   <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold sticky top-0">
                     <tr>
@@ -408,23 +308,23 @@
             <i data-lucide="briefcase" class="text-teal-600"></i> الخدمات الإلكترونية
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <a href="https://forms.gle/A68F79PpJXHsfzXS9" target="_blank" class="service-card group">
+            <a href="https://forms.gle/A68F79PpJXHsfzXS9" target="_blank" class="service-card group" onclick="navigator.vibrate(5)">
               <div class="icon-box bg-blue-50 text-blue-600"><i data-lucide="building-2"></i></div>
               <div><h3 class="font-bold text-slate-800">مرور مستشفيات</h3></div>
             </a>
-            <a href="https://forms.gle/49ku3m4hAjqnqxKE6" target="_blank" class="service-card group">
+            <a href="https://forms.gle/49ku3m4hAjqnqxKE6" target="_blank" class="service-card group" onclick="navigator.vibrate(5)">
               <div class="icon-box bg-emerald-50 text-emerald-600"><i data-lucide="building"></i></div>
               <div><h3 class="font-bold text-slate-800">مرور وحدات</h3></div>
             </a>
-            <a href="https://forms.gle/UWAYWbRKhx753Ddc9" target="_blank" class="service-card group">
+            <a href="https://forms.gle/UWAYWbRKhx753Ddc9" target="_blank" class="service-card group" onclick="navigator.vibrate(5)">
               <div class="icon-box bg-violet-50 text-violet-600"><i data-lucide="wallet"></i></div>
               <div><h3 class="font-bold text-slate-800">مرور مالي</h3></div>
             </a>
-            <a href="https://forms.gle/MdqjBxbYcdiuR2NG9" target="_blank" class="service-card group">
+            <a href="https://forms.gle/MdqjBxbYcdiuR2NG9" target="_blank" class="service-card group" onclick="navigator.vibrate(5)">
               <div class="icon-box bg-amber-50 text-amber-600"><i data-lucide="file-warning"></i></div>
               <div><h3 class="font-bold text-slate-800">فحص الشكاوى</h3></div>
             </a>
-            <a href="https://forms.gle/gqyJvmhZHeggeYLV7" target="_blank" class="service-card group">
+            <a href="https://forms.gle/gqyJvmhZHeggeYLV7" target="_blank" class="service-card group" onclick="navigator.vibrate(5)">
               <div class="icon-box bg-teal-50 text-teal-600"><i data-lucide="arrow-right-left"></i></div>
               <div><h3 class="font-bold text-slate-800">صادر ووارد</h3></div>
             </a>
@@ -449,7 +349,7 @@
               class="bg-slate-50 border border-slate-200 text-center text-2xl tracking-widest rounded-lg w-full p-3 mb-4 outline-none focus:border-violet-500 transition-colors"
             >
             
-            <button onclick="handleLogin()" class="bg-violet-600 hover:bg-violet-700 text-white w-full py-3 rounded-lg font-bold transition-colors">تسجيل الدخول</button>
+            <button onclick="navigator.vibrate(10); handleLogin()" class="bg-violet-600 hover:bg-violet-700 text-white w-full py-3 rounded-lg font-bold transition-colors">تسجيل الدخول</button>
             <p id="emp-error" class="text-red-500 text-xs mt-3 hidden-section font-bold"></p>
           </div>
   
@@ -473,7 +373,7 @@
               <div class="overview-card overview-done"><h4>✅ منجز</h4><div class="count" id="stat-done">0</div></div>
             </div>
 
-            <div class="main-tabs">
+            <div class="main-tabs no-scrollbar">
               <div class="main-tab-btn active" id="main-tab-new" onclick="switchMainTab('new')">
                 <i data-lucide="inbox" class="w-5 h-5"></i> 📥 الوارد
               </div>
@@ -550,7 +450,7 @@
                   <option value="11">نوفمبر</option>
                   <option value="12">ديسمبر</option>
                 </select>
-                <button onclick="applyHistoryFilter()" class="filter-btn">تطبيق</button>
+                <button onclick="navigator.vibrate(10); applyHistoryFilter()" class="filter-btn">تطبيق</button>
               </div>
 
               <div class="mb-6">
@@ -565,7 +465,7 @@
                   <i data-lucide="file-text" class="w-5 h-5"></i> التقارير المؤرشفة
                 </h4>
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                  <div class="overflow-x-auto max-h-[400px]">
+                  <div class="overflow-x-auto max-h-[400px] no-scrollbar">
                     <table class="w-full text-right text-sm">
                       <thead class="bg-slate-100 text-slate-600 sticky top-0 font-bold">
                         <tr>
@@ -589,19 +489,19 @@
     </main>
 
     <nav class="bottom-nav" style="display: none;">
-      <button onclick="switchTab('dashboard')" id="bottom-nav-dashboard" class="active">
+      <button onclick="navigator.vibrate(5); switchTab('dashboard')" id="bottom-nav-dashboard" class="active">
         <i data-lucide="layout-grid" class="w-6 h-6"></i>
         <span>Dashboard</span>
       </button>
-      <button onclick="switchTab('services')" id="bottom-nav-services">
+      <button onclick="navigator.vibrate(5); switchTab('services')" id="bottom-nav-services">
         <i data-lucide="briefcase" class="w-6 h-6"></i>
         <span>الخدمات</span>
       </button>
-      <button onclick="switchTab('employees')" id="bottom-nav-employees">
+      <button onclick="navigator.vibrate(5); switchTab('employees')" id="bottom-nav-employees">
         <i data-lucide="users-2" class="w-6 h-6"></i>
         <span>الموظفين</span>
       </button>
-      <button onclick="window.location.href='index.html'">
+      <button onclick="navigator.vibrate(5); window.location.href='index.html'">
         <i data-lucide="home" class="w-6 h-6"></i>
         <span>الرئيسية</span>
       </button>
@@ -618,6 +518,32 @@
   <script>
     lucide.createIcons();
     
+    // [تم التعديل] دالة الإشعارات الجديدة (Toast)
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      const bgColor = type === 'error' ? 'bg-red-600' : (type === 'success' ? 'bg-slate-800' : 'bg-blue-600');
+      
+      toast.className = `${bgColor} text-white px-6 py-3 rounded-full shadow-2xl font-bold text-sm flex items-center gap-2 fade-in transition-all duration-300 transform translate-y-10 opacity-0`;
+      toast.innerHTML = type === 'error' ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${message}` : `<i data-lucide="check" class="w-4 h-4"></i> ${message}`;
+      
+      container.appendChild(toast);
+      lucide.createIcons();
+      
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-10', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-10');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+      
+      // اهتزاز عند ظهور الإشعار
+      if(navigator.vibrate) navigator.vibrate(type === 'error' ? [50, 50, 50] : 10);
+    }
+    
     // Check URL hash for direct tab access
     window.addEventListener('load', () => {
       const hash = window.location.hash.substring(1);
@@ -627,6 +553,13 @@
         applyFilter();
       }
     });
+    
+    // Override alert to use Toast if needed (Optional)
+    window.originalAlert = window.alert;
+    window.alert = function(msg) {
+        if(msg && (msg.includes('خطأ') || msg.includes('Error'))) showToast(msg, 'error');
+        else showToast(msg, 'success');
+    };
   </script>
 </body>
 </html>
