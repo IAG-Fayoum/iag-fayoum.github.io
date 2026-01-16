@@ -3,88 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#dc2626">
   <title>لوحة الإدارة - نظام الحوكمة</title>
   
-  <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="assets/js/api.js"></script>
 
   <style>
-    /* ── أساسيات ── */
+    /* ── Core & Reset ── */
     body { 
       font-family: 'Cairo', sans-serif; 
       background-color: #f8fafc;
       overscroll-behavior-y: none;
       -webkit-tap-highlight-color: transparent;
-      -webkit-user-select: none; user-select: none;
     }
-
-    input, textarea, table, h1, h2, h3, p, span, td, th { -webkit-user-select: text; user-select: text; }
-    input, select, textarea { font-size: 16px !important; }
-    
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
-    /* معالجة النوتش */
+    /* Layout */
     header { padding-top: calc(1rem + env(safe-area-inset-top)); }
     .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-
-    /* تأثير الضغط */
-    button:active, .card-press:active { transform: scale(0.97); transition: 0.1s; opacity: 0.9; }
-    
     .theme-gradient { background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%); }
     .hidden-section { display: none !important; }
     .fade-in { animation: fadeIn 0.4s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    
-    /* Toast */
-    #toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 400px; pointer-events: none; }
-    .toast { background: #1e293b; color: white; padding: 12px 20px; border-radius: 50px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-weight: bold; font-size: 0.9rem; opacity: 0; transition: 0.3s; transform: translateY(20px); pointer-events: auto; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .toast.show { opacity: 1; transform: translateY(0); }
-    .toast.error { background: #ef4444; }
 
-    /* Custom UI */
-    .stat-card { background: white; border-radius: 16px; padding: 16px; border: 1px solid #e2e8f0; }
-    .overview-card { background: white; border-radius: 16px; padding: 16px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    /* UI Components */
+    .stat-card { background: white; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .overview-card { background: white; border-radius: 12px; padding: 12px; border: 1px solid #e2e8f0; text-align: center; }
     .overview-card h4 { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; }
-    .overview-card .count { font-size: 1.8rem; font-weight: 900; line-height: 1; }
+    .overview-card .count { font-size: 1.5rem; font-weight: 900; line-height: 1; }
     
-    .main-tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; overflow-x: auto; }
-    .main-tab-btn { padding: 8px 16px; font-weight: 700; color: #64748b; cursor: pointer; border-radius: 8px; display: flex; align-items: center; gap: 6px; white-space: nowrap; background: #f1f5f9; border: 1px solid transparent; font-size: 0.85rem; }
+    /* Tabs */
+    .main-tab-btn { padding: 10px 16px; font-weight: 700; color: #64748b; cursor: pointer; border-radius: 8px; display: flex; align-items: center; gap: 8px; white-space: nowrap; background: #f1f5f9; border: 1px solid transparent; font-size: 0.9rem; transition: 0.2s; }
     .main-tab-btn.active { background-color: #b91c1c; color: white; box-shadow: 0 4px 6px -1px rgba(185, 28, 28, 0.2); }
-    
-    .input-field { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font-weight: 600; outline: none; background: white; color: #334155; }
-    .input-field:focus { border-color: #b91c1c; ring: 2px solid #fee2e2; }
-    .btn-primary { background-color: #b91c1c; color: white; padding: 10px; border-radius: 8px; font-weight: 700; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
-    
-    /* Mobile Card Style */
-    .mobile-card { background: white; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .main-tab-btn:hover:not(.active) { background-color: #e2e8f0; }
 
+    /* Inputs & Buttons */
+    .input-field { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font-weight: 600; outline: none; background: white; color: #334155; transition: border-color 0.2s; }
+    .input-field:focus { border-color: #b91c1c; ring: 2px solid #fee2e2; }
+    .btn-primary { background-color: #b91c1c; color: white; padding: 12px; border-radius: 8px; font-weight: 700; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
+    .btn-primary:active { transform: scale(0.98); opacity: 0.9; }
+
+    /* Result Items */
+    .result-item { cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+    .result-item:hover { background-color: #fef2f2; }
+    .result-item.selected { border-color: #b91c1c; background-color: #fef2f2; }
+
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
       .desktop-only { display: none !important; }
+      .grid-cols-5 { grid-template-columns: repeat(2, 1fr); }
+      .grid-cols-5 > div:last-child { grid-column: span 2; }
     }
-    @media (min-width: 769px) {
-      .mobile-only { display: none !important; }
-    }
+    @media (min-width: 769px) { .mobile-only { display: none !important; } }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50">
 
-  <div id="toast-container"></div>
-
   <div id="admin-login-view" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 p-4">
-    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-slate-200">
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-slate-200 fade-in">
       <div class="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="shield-alert" class="w-8 h-8"></i></div>
       <h3 class="text-xl font-extrabold mb-2 text-slate-800">بوابة الإدارة</h3>
       <p class="text-slate-500 mb-6 font-medium text-sm">المنطقة مخصصة للمديرين فقط</p>
       
       <input type="password" id="admin-pin-input" placeholder="****" maxlength="4" inputmode="numeric" pattern="[0-9]*" class="w-full bg-slate-50 border border-slate-200 text-center text-3xl tracking-[0.5em] font-bold rounded-xl p-3 mb-6 outline-none focus:border-red-500 transition-colors">
       
-      <button onclick="checkAdminLogin()" class="btn-primary py-3 text-lg shadow-lg shadow-red-100">تسجيل الدخول</button>
-      <button onclick="goHome()" class="mt-4 text-slate-400 font-bold text-xs flex items-center justify-center gap-1 mx-auto hover:text-slate-600">عودة للرئيسية</button>
+      <button onclick="checkAdminLogin()" class="btn-primary py-3 text-lg shadow-lg shadow-red-100">دخول النظام</button>
+      <button onclick="goHome()" class="mt-6 text-slate-400 font-bold text-xs flex items-center justify-center gap-2 mx-auto hover:text-slate-600 transition-colors">
+        <i data-lucide="arrow-right" class="w-3 h-3"></i> عودة للرئيسية
+      </button>
     </div>
   </div>
 
@@ -101,7 +89,7 @@
     <div class="flex-grow overflow-y-auto no-scrollbar p-4 safe-bottom">
       <div class="container mx-auto max-w-5xl">
         
-        <div class="main-tabs no-scrollbar">
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-4 no-scrollbar">
           <button class="main-tab-btn active" onclick="switchTab('overview')"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> نظرة عامة</button>
           <button class="main-tab-btn" onclick="switchTab('reassign')"><i data-lucide="user-round-cog" class="w-4 h-4"></i> إعادة تكليف</button>
           <button class="main-tab-btn" onclick="switchTab('status')"><i data-lucide="edit" class="w-4 h-4"></i> تعديل حالة</button>
@@ -110,163 +98,168 @@
         </div>
 
         <div id="tab-overview" class="tab-content fade-in">
-          <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+          <div class="grid grid-cols-5 gap-3 mb-6">
             <div class="overview-card border-b-4 border-slate-600"><h4>الإجمالي</h4><div id="stat-total" class="count text-slate-700">-</div></div>
             <div class="overview-card border-b-4 border-emerald-500"><h4>منجز</h4><div id="stat-done" class="count text-emerald-600">-</div></div>
             <div class="overview-card border-b-4 border-teal-400 bg-teal-50/30"><h4>انتظار</h4><div id="stat-pending" class="count text-teal-600">-</div></div>
-            <div class="overview-card border-b-4 border-blue-500 bg-blue-50/30"><h4>قيد الفحص</h4><div id="stat-review" class="count text-blue-600">-</div></div>
+            <div class="overview-card border-b-4 border-blue-500 bg-blue-50/30"><h4>فحص</h4><div id="stat-review" class="count text-blue-600">-</div></div>
             <div class="overview-card border-b-4 border-red-500 bg-red-50/30"><h4>متأخر</h4><div id="stat-overdue" class="count text-red-600">-</div></div>
           </div>
           
           <div class="stat-card">
             <div class="flex justify-between items-center mb-4">
-               <h3 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-red-600"></i> تفاصيل أداء الموظفين</h3>
-               <button onclick="loadOverview()" class="text-xs bg-slate-100 px-2 py-1 rounded hover:bg-slate-200"><i data-lucide="refresh-cw" class="w-3 h-3"></i> تحديث</button>
+               <h3 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-red-600"></i> أداء الموظفين</h3>
+               <button onclick="loadOverview()" class="text-xs bg-slate-100 px-3 py-1.5 rounded-lg hover:bg-slate-200 font-bold flex items-center gap-1 transition"><i data-lucide="refresh-cw" class="w-3 h-3"></i> تحديث</button>
             </div>
-            
-            <div class="desktop-only overflow-x-auto">
-              <table class="w-full text-sm text-right">
-                 <thead class="bg-slate-100 text-slate-600 font-bold text-xs uppercase">
+            <div class="overflow-x-auto rounded-lg border border-slate-100">
+              <table class="w-full text-sm text-right bg-white">
+                 <thead class="bg-slate-50 text-slate-600 font-bold text-xs uppercase">
                    <tr>
                      <th class="p-3">الموظف</th>
-                     <th class="p-3 text-center">الإجمالي</th>
+                     <th class="p-3 text-center">مهام</th>
                      <th class="p-3 text-center text-emerald-600">منجز</th>
-                     <th class="p-3 text-center text-teal-600">انتظار</th>
-                     <th class="p-3 text-center text-blue-600">فحص</th>
                      <th class="p-3 text-center text-red-600">متأخر</th>
                      <th class="p-3 text-center">النسبة</th>
                    </tr>
                  </thead>
-                 <tbody id="employees-table-desktop"></tbody>
+                 <tbody id="employees-table"></tbody>
               </table>
             </div>
-            
-            <div id="employees-list-mobile" class="mobile-only"></div>
           </div>
         </div>
 
-        <div id="tab-reassign" class="tab-content hidden-section">
-          <div class="stat-card">
-            <h3 class="font-bold mb-4 text-slate-800">إعادة تكليف مهمة</h3>
+        <div id="tab-reassign" class="tab-content hidden-section fade-in">
+          <div class="stat-card max-w-2xl mx-auto">
+            <h3 class="font-bold mb-4 text-slate-800 text-lg flex items-center gap-2"><i data-lucide="arrow-right-left" class="w-5 h-5 text-red-600"></i> نقل مهمة لموظف آخر</h3>
             <div class="space-y-4">
-              <div>
-                <label class="text-xs font-bold text-slate-500 block mb-1">ابحث عن المهمة</label>
+              <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <label class="text-xs font-bold text-slate-500 block mb-2">1. ابحث عن المهمة</label>
                 <div class="flex gap-2">
-                  <input type="text" id="search-reassign" placeholder="رقم القيد..." class="input-field">
-                  <button onclick="searchTaskForAction('reassign')" class="bg-slate-800 text-white px-4 rounded-lg"><i data-lucide="search" class="w-4 h-4"></i></button>
+                  <input type="text" id="search-reassign" placeholder="رقم القيد، الموضوع، أو اسم الموظف..." class="input-field">
+                  <button onclick="searchTaskForAction('reassign')" class="bg-slate-800 text-white px-4 rounded-lg hover:bg-slate-900"><i data-lucide="search" class="w-5 h-5"></i></button>
                 </div>
+                <div id="reassign-results" class="space-y-2 mt-3 max-h-60 overflow-y-auto"></div>
               </div>
-              <div>
-                <label class="text-xs font-bold text-slate-500 block mb-1">الموظف الجديد</label>
-                <select id="new-employee" class="input-field"><option value="">-- اختر --</option></select>
+
+              <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <label class="text-xs font-bold text-slate-500 block mb-2">2. اختر الموظف الجديد</label>
+                <select id="new-employee" class="input-field"><option value="">-- جاري التحميل --</option></select>
               </div>
-              <div id="reassign-results" class="space-y-2"></div>
-              <button onclick="executeReassign()" class="btn-primary mt-2">تأكيد النقل</button>
+              
+              <button onclick="executeReassign()" class="btn-primary mt-2">تأكيد النقل وإرسال إشعار</button>
             </div>
           </div>
         </div>
 
-        <div id="tab-status" class="tab-content hidden-section">
-          <div class="stat-card">
-            <h3 class="font-bold mb-4 text-slate-800">تعديل حالة مهمة</h3>
+        <div id="tab-status" class="tab-content hidden-section fade-in">
+          <div class="stat-card max-w-2xl mx-auto">
+            <h3 class="font-bold mb-4 text-slate-800 text-lg flex items-center gap-2"><i data-lucide="check-circle-2" class="w-5 h-5 text-red-600"></i> تعديل حالة مهمة</h3>
             <div class="space-y-4">
-              <div>
-                <label class="text-xs font-bold text-slate-500 block mb-1">ابحث عن المهمة</label>
+              <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <label class="text-xs font-bold text-slate-500 block mb-2">1. ابحث عن المهمة</label>
                 <div class="flex gap-2">
-                  <input type="text" id="search-status" placeholder="رقم القيد..." class="input-field">
-                  <button onclick="searchTaskForAction('status')" class="bg-slate-800 text-white px-4 rounded-lg"><i data-lucide="search" class="w-4 h-4"></i></button>
+                  <input type="text" id="search-status" placeholder="رقم القيد أو الموضوع..." class="input-field">
+                  <button onclick="searchTaskForAction('status')" class="bg-slate-800 text-white px-4 rounded-lg hover:bg-slate-900"><i data-lucide="search" class="w-5 h-5"></i></button>
                 </div>
+                <div id="status-results" class="space-y-2 mt-3 max-h-60 overflow-y-auto"></div>
               </div>
-              <div>
-                <label class="text-xs font-bold text-slate-500 block mb-1">الحالة الجديدة</label>
+
+              <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <label class="text-xs font-bold text-slate-500 block mb-2">2. اختر الحالة الجديدة</label>
                 <select id="new-status-select" class="input-field">
                   <option value="">-- اختر --</option>
-                  <option value="جديد">جديد</option>
-                  <option value="لم يتم البدء">لم يتم البدء</option>
-                  <option value="جاري التنفيذ">جاري التنفيذ</option>
-                  <option value="قيد المراجعة">قيد المراجعة</option>
-                  <option value="بانتظار الاعتماد">بانتظار الاعتماد</option>
-                  <option value="تم الاعتماد">تم الاعتماد</option>
-                  <option value="متأخر">متأخر</option>
+                  <option value="جديد">✨ جديد</option>
+                  <option value="جاري التنفيذ">⏳ جاري التنفيذ</option>
+                  <option value="قيد المراجعة">🧐 قيد المراجعة</option>
+                  <option value="بانتظار الاعتماد">📜 بانتظار الاعتماد</option>
+                  <option value="تم الاعتماد">✅ تم الاعتماد</option>
+                  <option value="متأخر">🚨 متأخر</option>
                 </select>
               </div>
-              <div id="status-results" class="space-y-2"></div>
-              <button onclick="executeStatusUpdate()" class="btn-primary mt-2">تحديث الحالة</button>
+              
+              <button onclick="executeStatusUpdate()" class="btn-primary mt-2">حفظ التغييرات</button>
             </div>
           </div>
         </div>
 
-        <div id="tab-add" class="tab-content hidden-section">
-          <div class="stat-card">
-            <h3 class="font-bold mb-4 text-slate-800">إضافة مهمة يدوياً</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div><label class="text-xs font-bold text-slate-500">التاريخ</label><input type="date" id="add-date" class="input-field"></div>
-              <div><label class="text-xs font-bold text-slate-500">المصدر</label><input type="text" id="add-source" class="input-field"></div>
-              <div class="md:col-span-2"><label class="text-xs font-bold text-slate-500">الموضوع</label><textarea id="add-subject" rows="2" class="input-field"></textarea></div>
-              <div><label class="text-xs font-bold text-slate-500">الجهة</label><input type="text" id="add-entity" class="input-field"></div>
-              <div><label class="text-xs font-bold text-slate-500">الموظف</label><select id="add-employee" class="input-field"><option value="">-- اختر --</option></select></div>
-              <div><label class="text-xs font-bold text-slate-500">ميعاد التسليم</label><input type="date" id="add-deadline" class="input-field"></div>
-              <div><label class="text-xs font-bold text-slate-500">مرفق (رابط)</label><input type="url" id="add-attachment" class="input-field"></div>
+        <div id="tab-add" class="tab-content hidden-section fade-in">
+          <div class="stat-card max-w-2xl mx-auto">
+            <h3 class="font-bold mb-4 text-slate-800 text-lg flex items-center gap-2"><i data-lucide="plus-square" class="w-5 h-5 text-red-600"></i> إضافة مهمة يدوياً</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><label class="text-xs font-bold text-slate-500 mb-1 block">تاريخ الورود <span class="text-red-500">*</span></label><input type="date" id="add-date" class="input-field"></div>
+              <div><label class="text-xs font-bold text-slate-500 mb-1 block">وارد من (المصدر) <span class="text-red-500">*</span></label><input type="text" id="add-source" class="input-field" placeholder="مثال: مكتب الوزير"></div>
+              <div class="md:col-span-2"><label class="text-xs font-bold text-slate-500 mb-1 block">الموضوع <span class="text-red-500">*</span></label><textarea id="add-subject" rows="2" class="input-field" placeholder="وصف مختصر للمهمة..."></textarea></div>
+              <div><label class="text-xs font-bold text-slate-500 mb-1 block">جهة التنفيذ</label><input type="text" id="add-entity" class="input-field" placeholder="مثال: مستشفى طامية"></div>
+              <div><label class="text-xs font-bold text-slate-500 mb-1 block">الموظف المكلف <span class="text-red-500">*</span></label><select id="add-employee" class="input-field"><option value="">-- جاري التحميل --</option></select></div>
+              <div><label class="text-xs font-bold text-slate-500 mb-1 block">ميعاد التسليم (Deadline)</label><input type="date" id="add-deadline" class="input-field"></div>
+              <div><label class="text-xs font-bold text-slate-500 mb-1 block">رابط المرفق</label><input type="url" id="add-attachment" class="input-field" placeholder="https://..."></div>
             </div>
-            <button onclick="executeAddTask()" class="btn-primary mt-4">حفظ المهمة</button>
+            <button onclick="executeAddTask()" class="btn-primary mt-6">إضافة وإرسال إشعار</button>
           </div>
         </div>
 
-        <div id="tab-archive" class="tab-content hidden-section">
+        <div id="tab-archive" class="tab-content hidden-section fade-in">
           <div class="stat-card mb-4">
-            <h3 class="font-bold mb-3 text-slate-800">الأرشيف الإلكتروني</h3>
+            <h3 class="font-bold mb-3 text-slate-800 flex items-center gap-2"><i data-lucide="archive" class="w-5 h-5 text-red-600"></i> الأرشيف الإلكتروني</h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
-              <select id="archive-year" class="input-field py-1 text-sm">
+              <select id="archive-year" class="input-field py-2 text-sm">
                 <option value="">كل السنوات</option><option value="2025" selected>2025</option><option value="2024">2024</option>
               </select>
-              <select id="archive-month" class="input-field py-1 text-sm">
+              <select id="archive-month" class="input-field py-2 text-sm">
                 <option value="">كل الشهور</option>
                 <option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option><option value="4">أبريل</option>
                 <option value="5">مايو</option><option value="6">يونيو</option><option value="7">يوليو</option><option value="8">أغسطس</option>
                 <option value="9">سبتمبر</option><option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
               </select>
               <div class="col-span-2">
-                <input type="text" id="archive-search" placeholder="بحث..." class="input-field py-1 text-sm">
+                <input type="text" id="archive-search" placeholder="بحث شامل..." class="input-field py-2 text-sm">
               </div>
             </div>
-            <button onclick="searchArchiveAdmin()" class="btn-primary py-2">بحث</button>
+            <button onclick="searchArchiveAdmin()" class="btn-primary py-2 text-sm">بحث في الأرشيف</button>
           </div>
-          <div id="archive-results-desktop" class="desktop-only stat-card overflow-x-auto"></div>
-          <div id="archive-results-mobile" class="mobile-only"></div>
+          
+          <div id="archive-results-area" class="space-y-2"></div>
         </div>
 
       </div>
     </div>
   </div>
 
-  <div id="loader" class="fixed inset-0 bg-white/90 z-50 flex flex-col items-center justify-center hidden-section">
+  <div id="loader" class="fixed inset-0 bg-white/90 z-[9999] flex flex-col items-center justify-center hidden-section backdrop-blur-sm">
     <div class="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin mb-3"></div>
-    <p class="font-bold text-slate-800">جاري المعالجة...</p>
+    <p class="font-bold text-slate-800">جاري الاتصال...</p>
   </div>
+  <div id="toast-container" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none w-full max-w-sm px-4"></div>
 
   <script>
     lucide.createIcons();
-    let selectedTaskId = null;
+    let selectedTaskId = null; // لتخزين المهمة المختارة للإجراءات
 
-    // ── Helper ──
-    function vibrateDevice() { if (navigator.vibrate) navigator.vibrate(10); }
+    // ── Helper Functions ──
     function showToast(msg, type='success') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
+      toast.className = `mb-2 p-3 rounded-full text-center text-sm font-bold shadow-lg transition-all transform translate-y-4 opacity-0 flex items-center justify-center gap-2 ${type === 'error' ? 'bg-red-600 text-white' : 'bg-slate-800 text-white'}`;
       toast.innerHTML = type === 'error' ? `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${msg}` : `<i data-lucide="check" class="w-4 h-4"></i> ${msg}`;
       container.appendChild(toast);
       lucide.createIcons();
-      setTimeout(() => toast.classList.add('show'), 10);
-      setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+      requestAnimationFrame(() => { toast.classList.remove('translate-y-4', 'opacity-0'); });
+      setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(() => toast.remove(), 300); }, 3000);
     }
     function toggleLoader(show) { document.getElementById('loader').classList.toggle('hidden-section', !show); }
+    function goHome() { 
+      toggleLoader(true);
+      if(typeof google !== 'undefined' && google.script) {
+         google.script.run.withSuccessHandler(url => window.top.location.href = url).getScriptUrl();
+      } else { window.location.href = 'index.html'; }
+    }
+    function logout() { location.reload(); }
 
-    // ── Logic ──
-    async function checkAdminLogin() {
+    // ── Login Logic ──
+    function checkAdminLogin() {
       const pin = document.getElementById('admin-pin-input').value;
-      if (!pin || pin.length < 4) { showToast("أدخل الرمز (4 أرقام)", "error"); return; }
-      vibrateDevice(); toggleLoader(true);
+      if (!pin || pin.length < 4) { showToast("أدخل الرمز كاملاً", "error"); return; }
+      toggleLoader(true);
       
       try {
         if(typeof google === 'undefined' || !google.script) throw new Error("API Missing");
@@ -276,10 +269,11 @@
               document.getElementById('admin-content-view').classList.remove('hidden-section');
               loadOverview();
            } else { showToast("كود خطأ أو غير مصرح لك", "error"); toggleLoader(false); }
-        }).withFailureHandler(e => { showToast("خطأ اتصال", "error"); toggleLoader(false); }).loginUser(pin);
-      } catch(e) { console.error(e); toggleLoader(false); }
+        }).withFailureHandler(e => { showToast("خطأ اتصال: " + e, "error"); toggleLoader(false); }).loginUser(pin);
+      } catch(e) { console.error(e); showToast("وضع المطور: تخطي الدخول", "error"); toggleLoader(false); }
     }
 
+    // ── Data Loading ──
     function loadOverview(){
       google.script.run.withSuccessHandler(data => {
         toggleLoader(false);
@@ -292,62 +286,30 @@
         document.getElementById('stat-review').innerText = data.totals.review || 0;
         document.getElementById('stat-overdue').innerText = data.totals.overdue || 0;
         
-        // Populate Dropdowns
+        // Populate Dropdowns (Employees) for both Add & Reassign tabs
         const empSelects = [document.getElementById('new-employee'), document.getElementById('add-employee')];
         empSelects.forEach(sel => {
-           sel.innerHTML = '<option value="">-- اختر --</option>';
+           sel.innerHTML = '<option value="">-- اختر الموظف --</option>';
            data.employees.forEach(e => sel.innerHTML += `<option value="${e.name}">${e.name}</option>`);
         });
 
-        renderEmployeesTable(data.employees);
+        // Table
+        const tbody = document.getElementById('employees-table');
+        tbody.innerHTML = '';
+        data.employees.forEach(e => {
+            tbody.innerHTML += `
+            <tr class="border-b hover:bg-slate-50">
+              <td class="p-3 font-bold text-slate-800">${e.name}</td>
+              <td class="p-3 text-center">${e.total}</td>
+              <td class="p-3 text-center text-emerald-600 font-bold">${e.completed}</td>
+              <td class="p-3 text-center font-bold ${e.overdue > 0 ? 'text-red-600' : 'text-slate-300'}">${e.overdue}</td>
+              <td class="p-3 text-center text-xs text-slate-500">%${e.rate}</td>
+            </tr>`;
+        });
       }).getDashboardData('2020-01-01','2030-12-31');
     }
 
-    function renderEmployeesTable(list) {
-      const desktop = document.getElementById('employees-table-desktop');
-      const mobile = document.getElementById('employees-list-mobile');
-      desktop.innerHTML = ''; mobile.innerHTML = '';
-      
-      if(!list) return;
-
-      list.forEach(e => {
-        // Desktop
-        desktop.innerHTML += `
-          <tr class="border-b hover:bg-slate-50">
-            <td class="p-3">
-              <div class="font-bold text-slate-800">${e.name}</div>
-              <div class="text-[10px] text-slate-400 bg-slate-100 px-1 rounded w-fit mt-1">${e.breakdownStr || ''}</div>
-            </td>
-            <td class="p-3 text-center font-bold">${e.total}</td>
-            <td class="p-3 text-center text-emerald-600 font-bold">${e.completed}</td>
-            <td class="p-3 text-center text-teal-600 font-bold">${e.pending_approval}</td>
-            <td class="p-3 text-center text-blue-600 font-bold">${e.review}</td>
-            <td class="p-3 text-center font-bold ${e.overdue > 0 ? 'text-red-600' : 'text-slate-300'}">${e.overdue}</td>
-            <td class="p-3 text-center font-bold text-slate-700">%${e.rate}</td>
-          </tr>`;
-          
-        // Mobile
-        mobile.innerHTML += `
-          <div class="mobile-card">
-            <div class="flex justify-between items-start">
-              <div>
-                <h4 class="font-bold text-slate-800">${e.name}</h4>
-                <p class="text-[10px] text-slate-500 mt-1">${e.breakdownStr || ''}</p>
-              </div>
-              <span class="bg-slate-100 text-xs px-2 py-1 rounded font-bold">مجموع: ${e.total}</span>
-            </div>
-            <div class="grid grid-cols-5 gap-1 mt-2 text-center text-[10px] font-bold">
-               <div class="bg-emerald-50 text-emerald-700 py-1 rounded">✅ ${e.completed}</div>
-               <div class="bg-teal-50 text-teal-700 py-1 rounded">⏳ ${e.pending_approval}</div>
-               <div class="bg-blue-50 text-blue-700 py-1 rounded">🧐 ${e.review}</div>
-               <div class="${e.overdue > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-50 text-slate-300'} py-1 rounded">🚨 ${e.overdue}</div>
-               <div class="bg-slate-100 text-slate-700 py-1 rounded">%${e.rate}</div>
-            </div>
-          </div>`;
-      });
-    }
-
-    // ── Search & Actions ──
+    // ── Actions: Reassign & Status ──
     function searchTaskForAction(type) {
       const q = document.getElementById('search-' + type).value;
       if(q.length < 2) { showToast("اكتب حرفين على الأقل", "error"); return; }
@@ -357,43 +319,72 @@
         toggleLoader(false);
         const container = document.getElementById(type + '-results');
         container.innerHTML = '';
-        selectedTaskId = null;
+        selectedTaskId = null; // Reset selection
 
         if(res.success && res.results.length > 0) {
            res.results.forEach(t => {
              container.innerHTML += `
-               <div onclick="selectTask(this, '${t.id}')" class="mobile-card cursor-pointer hover:border-red-500 border-2 border-transparent transition">
-                  <div class="flex justify-between"><span class="font-bold text-xs bg-slate-100 px-2 rounded">#${t.id}</span><span class="text-xs text-slate-400">${t.date}</span></div>
-                  <div class="font-bold text-sm mt-1">${t.subject}</div>
-                  <div class="text-xs text-slate-500">${t.entity}</div>
+               <div onclick="selectTask(this, '${t.id}')" class="result-item bg-white p-3 rounded-lg border border-slate-200 mb-2 flex justify-between items-center group">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-[10px] font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-600">#${t.id}</span>
+                      <span class="text-[10px] text-slate-400">${t.date}</span>
+                    </div>
+                    <p class="font-bold text-sm text-slate-800">${t.subject}</p>
+                    <p class="text-xs text-slate-500">${t.entity}</p>
+                  </div>
+                  <div class="w-4 h-4 rounded-full border-2 border-slate-300 group-[.selected]:bg-red-600 group-[.selected]:border-red-600"></div>
                </div>`;
            });
-        } else { container.innerHTML = '<p class="text-center text-slate-400">لا نتائج</p>'; }
-      }).searchArchive({ search: q }); // Search all dates
+        } else { container.innerHTML = '<p class="text-center text-slate-400 text-sm py-2">لا توجد نتائج مطابقة</p>'; }
+      }).searchArchive({ search: q });
     }
 
     function selectTask(el, id) {
-       document.querySelectorAll('.mobile-card').forEach(c => { c.classList.remove('border-red-500','bg-red-50'); c.classList.add('border-transparent'); });
-       el.classList.remove('border-transparent'); el.classList.add('border-red-500','bg-red-50');
-       selectedTaskId = id; vibrateDevice();
+       // Visual feedback
+       document.querySelectorAll('.result-item').forEach(c => c.classList.remove('selected'));
+       el.classList.add('selected');
+       selectedTaskId = id; 
+       showToast("تم اختيار المهمة #" + id);
     }
 
     function executeReassign() {
-       if(!selectedTaskId) return showToast("اختر مهمة", "error");
+       if(!selectedTaskId) return showToast("اختر المهمة من نتائج البحث أولاً", "error");
        const emp = document.getElementById('new-employee').value;
-       if(!emp) return showToast("اختر موظف", "error");
+       if(!emp) return showToast("اختر الموظف الجديد", "error");
+       
+       if(!confirm("هل أنت متأكد من نقل المهمة للموظف: " + emp + "؟")) return;
+
        toggleLoader(true);
-       google.script.run.withSuccessHandler(() => { showToast("تم النقل"); toggleLoader(false); }).reassignTask(selectedTaskId, emp);
+       google.script.run.withSuccessHandler((res) => { 
+         toggleLoader(false);
+         if(res.success) {
+            showToast("✅ تم النقل بنجاح"); 
+            document.getElementById('search-reassign').value = '';
+            document.getElementById('reassign-results').innerHTML = '';
+            selectedTaskId = null;
+         } else { showToast("خطأ: " + res.error, "error"); }
+       }).reassignTask(selectedTaskId, emp);
     }
 
     function executeStatusUpdate() {
-       if(!selectedTaskId) return showToast("اختر مهمة", "error");
+       if(!selectedTaskId) return showToast("اختر المهمة أولاً", "error");
        const st = document.getElementById('new-status-select').value;
-       if(!st) return showToast("اختر حالة", "error");
+       if(!st) return showToast("اختر الحالة الجديدة", "error");
+       
        toggleLoader(true);
-       google.script.run.withSuccessHandler(() => { showToast("تم التحديث"); toggleLoader(false); }).updateTaskStatus(selectedTaskId, st);
+       google.script.run.withSuccessHandler((res) => { 
+          toggleLoader(false);
+          if(res.success) {
+             showToast("✅ تم تحديث الحالة");
+             document.getElementById('search-status').value = '';
+             document.getElementById('status-results').innerHTML = '';
+             selectedTaskId = null;
+          } else { showToast("خطأ: " + res.error, "error"); }
+       }).updateTaskStatus(selectedTaskId, st);
     }
 
+    // ── Add Task Logic ──
     function executeAddTask() {
        const d = {
          date: document.getElementById('add-date').value,
@@ -404,11 +395,21 @@
          deadline: document.getElementById('add-deadline').value,
          attachment: document.getElementById('add-attachment').value
        };
-       if(!d.date || !d.source || !d.subject) return showToast("بيانات ناقصة", "error");
+       if(!d.date || !d.source || !d.subject || !d.employee) return showToast("املأ البيانات الأساسية (*)", "error");
+       
        toggleLoader(true);
-       google.script.run.withSuccessHandler(() => { showToast("تمت الإضافة"); toggleLoader(false); }).addTaskManual(d);
+       google.script.run.withSuccessHandler((res) => { 
+          toggleLoader(false);
+          if(res.success) {
+             showToast("✅ تمت الإضافة برقم: " + res.id);
+             // Clear inputs
+             document.getElementById('add-subject').value = '';
+             document.getElementById('add-attachment').value = '';
+          } else { showToast("خطأ: " + res.error, "error"); }
+       }).addTaskManual(d);
     }
 
+    // ── Archive Logic ──
     function searchArchiveAdmin(){
       const f = {
         year: document.getElementById('archive-year').value,
@@ -418,59 +419,46 @@
       toggleLoader(true);
       google.script.run.withSuccessHandler(res => {
         toggleLoader(false);
-        const desktop = document.getElementById('archive-results-desktop');
-        const mobile = document.getElementById('archive-results-mobile');
+        const container = document.getElementById('archive-results-area');
+        container.innerHTML = '';
         
         if(res.results.length === 0){
-           desktop.innerHTML = '<p class="text-center text-slate-400 py-4">لا توجد نتائج</p>';
-           mobile.innerHTML = '<p class="text-center text-slate-400 py-4">لا توجد نتائج</p>';
+           container.innerHTML = '<div class="text-center text-slate-400 py-8 bg-white rounded-lg border border-dashed">لا توجد نتائج</div>';
            return;
         }
 
-        let dHtml = '<table class="w-full text-sm text-right"><thead class="bg-slate-100 font-bold"><tr><th class="p-3">رقم</th><th class="p-3">تاريخ</th><th class="p-3">جهة</th><th class="p-3">موضوع</th><th class="p-3">مرفق</th></tr></thead><tbody>';
-        let mHtml = '';
-
         res.results.forEach(r => {
-          // Restore Attachment Logic
-          let att = '';
-          if(r.taskAttachment) att += `<a href="${r.taskAttachment}" target="_blank" class="text-cyan-600 hover:underline mx-1" title="مرفق التكليف">📎</a>`;
-          // Assuming backend returns reportDoc/reportPdf if available (future proof)
-          if(r.reportDoc) att += `<a href="${r.reportDoc}" target="_blank" class="text-blue-600 hover:underline mx-1" title="Doc">📄</a>`;
-          if(r.reportPdf) att += `<a href="${r.reportPdf}" target="_blank" class="text-red-600 hover:underline mx-1" title="PDF">📕</a>`;
+          let att = r.taskAttachment ? `<a href="${r.taskAttachment}" target="_blank" class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded flex items-center gap-1 hover:bg-slate-200"><i data-lucide="paperclip" class="w-3 h-3"></i> مرفق</a>` : '';
           
-          dHtml += `<tr class="border-b hover:bg-slate-50"><td class="p-3 font-bold">${r.id}</td><td class="p-3">${r.date}</td><td class="p-3">${r.entity}</td><td class="p-3">${r.subject}</td><td class="p-3 text-center">${att || '-'}</td></tr>`;
-          
-          mHtml += `
-            <div class="mobile-card">
-              <div class="flex justify-between"><span class="font-bold bg-slate-100 px-2 rounded">#${r.id}</span><span class="text-slate-400 text-xs">${r.date}</span></div>
-              <div class="font-bold text-sm mt-1">${r.subject}</div>
-              <div class="text-xs text-slate-500">${r.entity}</div>
-              <div class="mt-2 text-left">${att}</div>
+          container.innerHTML += `
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between md:items-center gap-3">
+               <div>
+                  <div class="flex items-center gap-2 mb-1">
+                     <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">#${r.id}</span>
+                     <span class="text-xs text-slate-400 font-medium">${r.date}</span>
+                  </div>
+                  <h4 class="font-bold text-slate-800 text-sm">${r.subject}</h4>
+                  <p class="text-xs text-slate-500 mt-0.5">${r.entity}</p>
+               </div>
+               <div>${att}</div>
             </div>`;
         });
-        dHtml += '</tbody></table>';
-        desktop.innerHTML = dHtml;
-        mobile.innerHTML = mHtml;
+        lucide.createIcons();
       }).searchArchive(f);
     }
 
     function switchTab(tabName){
       document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden-section'));
       document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
+      
       document.getElementById('tab-'+tabName).classList.remove('hidden-section');
       
-      // Robust active class toggling
+      // Activate buttons that link to this tab
       const buttons = document.querySelectorAll('.main-tab-btn');
       buttons.forEach(btn => {
-         if(btn.getAttribute('onclick').includes(tabName)) {
-            btn.classList.add('active');
-         }
+         if(btn.getAttribute('onclick').includes(tabName)) btn.classList.add('active');
       });
     }
-    
-    function goHome() { window.location.href = 'index.html'; }
-    function logout() { window.location.href = 'index.html'; }
-    lucide.createIcons();
   </script>
 </body>
 </html>
