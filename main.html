@@ -431,9 +431,9 @@
             // ✅ تعبئة أرقام الموظف الشخصية
             if(res.stats) {
                document.getElementById('p-total').innerText = res.stats.total;
-               document.getElementById('p-done').innerText = res.stats.done;
-               document.getElementById('p-pending').innerText = res.stats.pending;
-               document.getElementById('p-late').innerText = res.stats.late;
+               document.getElementById('p-done').innerText = res.stats.completed;
+               document.getElementById('p-pending').innerText = res.stats.pending_approval;
+               document.getElementById('p-late').innerText = res.stats.overdue;
             }
 
             allTasks = res.tasks || [];
