@@ -13,28 +13,25 @@
   <script src="assets/js/api.js"></script>
 
   <style>
-    /* ── أساسيات تجربة التطبيق ── */
+    /* ── أساسيات ── */
     body { 
       font-family: 'Cairo', sans-serif; 
       background-color: #f8fafc;
-      overscroll-behavior-y: none; /* منع السحب للتحديث */
+      overscroll-behavior-y: none;
       -webkit-tap-highlight-color: transparent;
       -webkit-user-select: none; user-select: none;
     }
     
-    /* السماح بتحديد النصوص في الجداول والمدخلات */
+    /* السماح بتحديد النصوص */
     input, textarea, table, h1, h2, h3, p, span, td, th { -webkit-user-select: text; user-select: text; }
-    
-    /* منع تكبير الخط في الآيفون */
-    input, select, textarea { font-size: 16px !important; }
+    input, select, textarea { font-size: 16px !important; } /* منع الزوم */
 
-    /* إخفاء شريط التمرير */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* 📱 التعامل مع النوتش (Notch) */
-    header, .safe-top { padding-top: calc(10px + env(safe-area-inset-top)); }
-    .main-content { padding-bottom: calc(85px + env(safe-area-inset-bottom)); }
+    /* 📱 معالجة النوتش (Safe Area) */
+    header { padding-top: calc(1rem + env(safe-area-inset-top)); }
+    .main-content { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
     .bottom-nav { padding-bottom: env(safe-area-inset-bottom); height: calc(65px + env(safe-area-inset-bottom)); }
 
     /* تأثير الضغط */
@@ -46,27 +43,26 @@
     .fade-in { animation: fadeIn 0.4s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Sidebar Active State */
+    /* Sidebar */
     .sidebar-active { background-color: #0f766e; color: white; border-right: 4px solid #ccfbf1; }
 
     /* Cards */
     .stat-card { background: white; border-radius: 12px; padding: 12px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-    .stat-card h3 { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-top: 4px; }
+    .stat-card h3 { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-top: 4px; }
     .stat-card p { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
     .service-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
     
-    .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-right: 4px solid transparent; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-right: 4px solid transparent; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
     
-    /* Employee Tabs */
+    /* Tabs */
     .main-tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
-    .main-tab-btn { padding: 8px 16px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; white-space: nowrap; background: #f1f5f9; border: 1px solid transparent; }
+    .main-tab-btn { padding: 8px 16px; font-weight: 700; color: #64748b; cursor: pointer; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; white-space: nowrap; background: #f1f5f9; border: 1px solid transparent; }
     .main-tab-btn.active { background-color: #0f766e; color: white; box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.2); }
 
-    /* Mobile Bottom Nav */
+    /* Mobile Nav */
     @media (max-width: 768px) {
       .desktop-only { display: none !important; }
-      
       .bottom-nav { 
         display: flex !important; position: fixed; bottom: 0; left: 0; right: 0; 
         background: white; border-top: 1px solid #e2e8f0; z-index: 1000;
@@ -76,7 +72,6 @@
       .bottom-nav button.active { color: #0f766e; }
       .bottom-nav button.active i { stroke-width: 2.5px; }
       
-      /* Mobile Cards for Tables */
       .mobile-card { background: white; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
     }
 
@@ -125,9 +120,7 @@
             
             <div class="flex items-center gap-2 bg-white p-1.5 rounded-xl border shadow-sm w-full md:w-auto overflow-x-auto">
                <select id="dash-year" class="bg-transparent text-sm font-bold text-slate-700 outline-none px-2 py-1">
-                 <option value="">كل السنوات</option>
-                 <option value="2025" selected>2025</option>
-                 <option value="2024">2024</option>
+                 <option value="">كل السنوات</option><option value="2025" selected>2025</option><option value="2024">2024</option>
                </select>
                <div class="w-px h-4 bg-slate-200"></div>
                <select id="dash-month" class="bg-transparent text-sm font-bold text-slate-700 outline-none px-2 py-1">
@@ -150,11 +143,11 @@
               <p>تم الإنجاز</p>
               <h3 id="v-done" class="text-emerald-600">--</h3>
             </div>
-            <div class="stat-card border-b-4 border-teal-300">
+            <div class="stat-card border-b-4 border-teal-400 bg-teal-50/50">
               <p>بانتظار الاعتماد</p>
-              <h3 id="v-pending" class="text-teal-500">--</h3>
+              <h3 id="v-pending" class="text-teal-600">--</h3>
             </div>
-            <div class="stat-card border-b-4 border-blue-500">
+            <div class="stat-card border-b-4 border-blue-500 bg-blue-50/50">
               <p>قيد الفحص</p>
               <h3 id="v-review" class="text-blue-600">--</h3>
             </div>
@@ -165,7 +158,7 @@
           </div>
 
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-            <div class="p-4 border-b border-slate-100 flex items-center gap-2 bg-slate-50"><i data-lucide="users" class="text-teal-600"></i><h3 class="font-bold text-slate-800">تحليل أداء الموظفين</h3></div>
+            <div class="p-4 border-b border-slate-100 flex items-center gap-2 bg-slate-50"><i data-lucide="users" class="text-teal-600"></i><h3 class="font-bold text-slate-800">أداء الموظفين</h3></div>
             
             <div class="desktop-only overflow-x-auto">
               <table class="w-full text-right text-sm">
@@ -174,7 +167,7 @@
                     <th class="p-3">الموظف</th>
                     <th class="p-3 text-center">الإجمالي</th>
                     <th class="p-3 text-center text-emerald-700">منجز</th>
-                    <th class="p-3 text-center text-teal-600">انتظار</th>
+                    <th class="p-3 text-center text-teal-600">اعتماد</th>
                     <th class="p-3 text-center text-blue-600">فحص</th>
                     <th class="p-3 text-center text-red-600">متأخر</th>
                     <th class="p-3 text-center">النسبة</th>
@@ -183,7 +176,6 @@
                 <tbody id="table-rows-desktop"></tbody>
               </table>
             </div>
-
             <div id="table-rows-mobile" class="mobile-only p-3"></div>
           </div>
 
@@ -291,11 +283,9 @@
     lucide.createIcons();
     let allTasks = []; 
 
-    // ── Navigation ──
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-section'));
-      const target = document.getElementById('tab-' + tabName);
-      if(target) target.classList.remove('hidden-section');
+      document.getElementById('tab-' + tabName).classList.remove('hidden-section');
 
       document.querySelectorAll('.bottom-nav button, .nav-btn').forEach(btn => {
         btn.classList.remove('active', 'text-teal-600', 'bg-teal-50', 'text-teal-700');
@@ -305,7 +295,6 @@
       vibrateDevice();
     }
 
-    // ── Dashboard Logic ──
     async function applyFilter() {
       document.getElementById('loader').classList.remove('hidden-section');
       
@@ -315,25 +304,23 @@
       let start = '', end = '';
       if(year) {
          if(month) {
-            // شهر محدد
             start = `${year}-${month.padStart(2,'0')}-01`;
-            // حساب آخر يوم في الشهر
             let lastDay = new Date(year, month, 0).getDate();
             end = `${year}-${month.padStart(2,'0')}-${lastDay}`;
          } else {
-            // سنة كاملة
             start = `${year}-01-01`; end = `${year}-12-31`;
          }
       }
 
       try {
+        // الاتصال بالباك اند
         if(typeof google !== 'undefined' && google.script) {
            google.script.run.withSuccessHandler(renderData).withFailureHandler(err => {
              showToast("خطأ اتصال", "error");
              document.getElementById('loader').classList.add('hidden-section');
            }).getDashboardData(start, end);
         } else {
-           console.log("Dev Mode: Skipping Backend Call");
+           console.log("Dev Mode");
            document.getElementById('loader').classList.add('hidden-section');
         }
       } catch (e) { console.error(e); }
@@ -343,11 +330,11 @@
         document.getElementById('loader').classList.add('hidden-section');
         if (data.error) { showToast(data.error, 'error'); return; }
 
-        // 1. Stats
+        // 1. Stats Cards
         document.getElementById('v-total').innerText = data.totals.total || 0;
         document.getElementById('v-done').innerText = data.totals.completed || 0;
-        document.getElementById('v-pending').innerText = data.totals.pending_approval || 0; // Updated Key
-        document.getElementById('v-review').innerText = data.totals.review || 0; // Updated Key
+        document.getElementById('v-pending').innerText = data.totals.pending_approval || 0;
+        document.getElementById('v-review').innerText = data.totals.review || 0;
         document.getElementById('v-late').innerText = data.totals.overdue || 0;
 
         renderEmployees(data.employees);
@@ -363,14 +350,6 @@
       if(!list || list.length === 0) { mobile.innerHTML = '<p class="text-center text-slate-400">لا توجد بيانات</p>'; return; }
 
       list.forEach(e => {
-        // Keys from Backend v5
-        const total = e.total || 0;
-        const done = e.completed || 0;
-        const pending = e.pending_approval || 0; // Green
-        const review = e.review || 0; // Blue
-        const overdue = e.overdue || 0; // Red
-        const rate = e.rate || 0;
-
         // Desktop
         desktop.innerHTML += `
           <tr class="border-b hover:bg-slate-50 transition">
@@ -378,14 +357,13 @@
               <div class="font-bold text-slate-800">${e.name}</div>
               <div class="text-[10px] text-slate-500 mt-1 bg-slate-100 inline-block px-1 rounded">${e.breakdownStr || ''}</div>
             </td>
-            <td class="p-3 text-center font-bold">${total}</td>
-            <td class="p-3 text-center text-emerald-700 font-bold">${done}</td>
-            <td class="p-3 text-center text-teal-600 font-bold">${pending}</td>
-            <td class="p-3 text-center text-blue-600 font-bold">${review}</td>
-            <td class="p-3 text-center ${overdue > 0 ? 'text-red-600 font-black' : 'text-slate-300'}">${overdue}</td>
-            <td class="p-3 text-center font-bold text-slate-700">%${rate}</td>
-          </tr>
-        `;
+            <td class="p-3 text-center font-bold">${e.total}</td>
+            <td class="p-3 text-center text-emerald-700 font-bold">${e.completed}</td>
+            <td class="p-3 text-center text-teal-600 font-bold">${e.pending_approval}</td>
+            <td class="p-3 text-center text-blue-600 font-bold">${e.review}</td>
+            <td class="p-3 text-center ${e.overdue > 0 ? 'text-red-600 font-black' : 'text-slate-300'}">${e.overdue}</td>
+            <td class="p-3 text-center font-bold text-slate-700">%${e.rate}</td>
+          </tr>`;
 
         // Mobile Card
         mobile.innerHTML += `
@@ -395,17 +373,16 @@
                 <h4 class="font-bold text-slate-800 text-sm">${e.name}</h4>
                 <p class="text-[10px] text-slate-500 mt-1">${e.breakdownStr || ''}</p>
               </div>
-              <span class="bg-slate-100 text-xs px-2 py-1 rounded font-bold">م: ${total}</span>
+              <span class="bg-slate-100 text-xs px-2 py-1 rounded font-bold">م: ${e.total}</span>
             </div>
             <div class="grid grid-cols-5 gap-1 mt-2 text-center text-[10px] font-bold">
-               <div class="bg-emerald-50 text-emerald-700 py-1 rounded">✅ ${done}</div>
-               <div class="bg-teal-50 text-teal-700 py-1 rounded">⏳ ${pending}</div>
-               <div class="bg-blue-50 text-blue-700 py-1 rounded">🧐 ${review}</div>
-               <div class="${overdue > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-50 text-slate-300'} py-1 rounded">🚨 ${overdue}</div>
-               <div class="bg-slate-100 text-slate-700 py-1 rounded">%${rate}</div>
+               <div class="bg-emerald-50 text-emerald-700 py-1 rounded">✅ ${e.completed}</div>
+               <div class="bg-teal-50 text-teal-700 py-1 rounded">⏳ ${e.pending_approval}</div>
+               <div class="bg-blue-50 text-blue-700 py-1 rounded">🧐 ${e.review}</div>
+               <div class="${e.overdue > 0 ? 'bg-red-100 text-red-700' : 'bg-slate-50 text-slate-300'} py-1 rounded">🚨 ${e.overdue}</div>
+               <div class="bg-slate-100 text-slate-700 py-1 rounded">%${e.rate}</div>
             </div>
-          </div>
-        `;
+          </div>`;
       });
     }
 
@@ -423,8 +400,7 @@
             <td class="p-3 text-center font-bold">${ent.total}</td>
             <td class="p-3 text-center ${ent.overdue > 0 ? 'text-red-600 font-bold' : 'text-slate-300'}">${ent.overdue}</td>
             <td class="p-3 text-center text-xs text-slate-500">%${ent.overduePercent}</td>
-          </tr>
-        `;
+          </tr>`;
         mobile.innerHTML += `
           <div class="mobile-card flex-row justify-between items-center">
              <div class="flex-1">
@@ -435,16 +411,13 @@
                </div>
              </div>
              <div class="bg-blue-50 text-blue-700 px-3 py-2 rounded-lg font-bold text-lg">${ent.total}</div>
-          </div>
-        `;
+          </div>`;
       });
     }
 
-    // ── Employee Portal Logic ──
     async function handleLogin() {
       const pin = document.getElementById('emp-pin-input').value;
       if (!pin || pin.length < 4) { showToast("أدخل الكود (4 أرقام)", "error"); return; }
-      
       document.getElementById('loader').classList.remove('hidden-section');
       
       google.script.run.withSuccessHandler(res => {
@@ -452,11 +425,10 @@
          if(res.success) {
             document.getElementById('emp-login-form').classList.add('hidden-section');
             document.getElementById('emp-profile-view').classList.remove('hidden-section');
-            
-            // Set Info & Stats
             document.getElementById('profile-name').innerText = res.name;
             document.getElementById('profile-role').innerText = res.role;
-            // Update Personal Stats Bar
+            
+            // ✅ تعبئة أرقام الموظف الشخصية
             if(res.stats) {
                document.getElementById('p-total').innerText = res.stats.total;
                document.getElementById('p-done').innerText = res.stats.done;
@@ -481,26 +453,23 @@
       container.innerHTML = '';
       
       let filtered = [];
-      // 🛑 منطق مطابق للـ Backend (categories)
-      // categories: 'completed', 'pending_approval', 'review', 'overdue', 'progress'
-      if(type === 'new') filtered = allTasks.filter(t => t.category === 'progress' || !t.category);
+      if(type === 'new') filtered = allTasks.filter(t => t.category === 'progress');
       else if(type === 'review') filtered = allTasks.filter(t => t.category === 'review');
       else if(type === 'pending') filtered = allTasks.filter(t => t.category === 'pending_approval');
       else if(type === 'late') filtered = allTasks.filter(t => t.category === 'overdue');
       else if(type === 'history') filtered = allTasks.filter(t => t.category === 'completed');
 
       if(filtered.length === 0) {
-         container.innerHTML = '<div class="text-center py-8 text-slate-400 bg-slate-50 rounded-lg border border-dashed">لا توجد مهام في هذه القائمة</div>';
+         container.innerHTML = '<div class="text-center py-8 text-slate-400 bg-slate-50 rounded-lg border border-dashed">لا توجد مهام</div>';
          return;
       }
 
       filtered.forEach(t => {
-         // ألوان الكروت بناءً على الحالة
          let borderColor = 'border-l-slate-400';
          let statusBg = 'bg-slate-100 text-slate-600';
          
          if(t.category === 'overdue') { borderColor='border-l-red-500'; statusBg='bg-red-100 text-red-700'; }
-         else if(t.category === 'pending_approval') { borderColor='border-l-teal-400'; statusBg='bg-teal-100 text-teal-700'; } // Mint
+         else if(t.category === 'pending_approval') { borderColor='border-l-teal-400'; statusBg='bg-teal-100 text-teal-700'; }
          else if(t.category === 'review') { borderColor='border-l-blue-500'; statusBg='bg-blue-100 text-blue-700'; }
          else if(t.category === 'completed') { borderColor='border-l-emerald-500'; statusBg='bg-emerald-100 text-emerald-700'; }
          else { borderColor='border-l-amber-500'; statusBg='bg-amber-100 text-amber-700'; }
@@ -519,8 +488,7 @@
                  <span class="text-[10px] text-slate-400">${t.date}</span>
                  ${attachBtn}
               </div>
-           </div>
-         `;
+           </div>`;
       });
       lucide.createIcons();
     }
@@ -543,7 +511,6 @@
       setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
     }
 
-    // Init Load
     window.onload = applyFilter;
   </script>
 </body>
