@@ -1,273 +1,131 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الحوكمة - وزارة الصحة والسكان</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        .fade-in {
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-        .float {
-            animation: float 3s ease-in-out infinite;
-        }
-        .portal-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .portal-card:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        .building {
-            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #0d9488 100%);
-            border-radius: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-        .building::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent,
-                transparent 40px,
-                rgba(255,255,255,0.1) 40px,
-                rgba(255,255,255,0.1) 45px
-            );
-        }
-        .window {
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#0f766e">
+  <title>Internal Audit and Governance – Fayoum</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="assets/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+    .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    @media (max-width: 768px) {
+      header { padding-top: 32px; padding-bottom: 64px; }
+      header h1 { font-size: 1.75rem; }
+      header p { font-size: 0.9rem; }
+      header .bg-white\/10 { padding: 24px; margin-bottom: 16px; }
+      header i { width: 64px !important; height: 64px !important; }
+      main { margin-top: -48px; }
+      main .bg-white { padding: 24px; margin-bottom: 24px; }
+      main h2 { font-size: 1.25rem; }
+      main p { font-size: 0.9rem; }
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .grid button { padding: 16px; }
+      .grid button i { width: 28px !important; height: 28px !important; }
+      .grid button span { font-size: 0.85rem; }
+      footer { padding-top: 24px; padding-bottom: 24px; }
+      footer p { font-size: 0.75rem; }
+      footer .text-xs { font-size: 0.65rem; }
+    }
+    
+    @media (max-width: 375px) {
+      header h1 { font-size: 1.5rem; }
+      .grid { gap: 8px; }
+      .grid button { padding: 12px; }
+      .grid button span { font-size: 0.75rem; }
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-teal-50 via-blue-50 to-slate-100 min-h-screen">
+<body class="min-h-screen flex flex-col">
 
-<!-- Header -->
-<header class="bg-white/90 backdrop-blur-sm shadow-lg sticky top-0 z-40">
-    <div class="container mx-auto px-4 py-4">
-        <div class="flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="bg-teal-600 w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg">
-                    <i data-lucide="shield-check" class="text-white w-8 h-8"></i>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-800">نظام الحوكمة</h1>
-                    <p class="text-sm text-slate-600">إدارة المراجعة الداخلية والحوكمة</p>
-                    <p class="text-xs text-teal-600 font-bold">وزارة الصحة والسكان - محافظة الفيوم</p>
-                </div>
-            </div>
-            
-            <div class="hidden md:flex items-center gap-3 text-sm text-slate-600">
-                <i data-lucide="phone" class="w-4 h-4 text-teal-600"></i>
-                <span>084 - XXXXXXX</span>
-            </div>
+  <div id="landing-page" class="flex-grow flex flex-col fade-in">
+    <header class="theme-gradient text-white pb-20 pt-12 shadow-lg relative overflow-hidden">
+      <div class="container mx-auto px-6 text-center relative z-10">
+        <div class="bg-white/10 p-8 rounded-full inline-block mb-6 backdrop-blur-sm border border-white/20 shadow-2xl">
+          <i data-lucide="landmark" class="w-24 h-24 text-teal-50"></i>
         </div>
-    </div>
-</header>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-wide drop-shadow-md">
+          إدارة المراجعة الداخلية والحوكمة
+        </h1>
+        <p class="text-lg text-teal-100 font-medium opacity-90">
+          مديرية الشؤون الصحية بالفيوم
+        </p>
+      </div>
+      <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+    </header>
 
-<!-- Hero Section with Building -->
-<section class="container mx-auto px-4 py-12">
-    <div class="building shadow-2xl p-12 text-center text-white mb-12 fade-in">
-        <div class="relative z-10">
-            <div class="inline-block bg-white/20 backdrop-blur-sm p-4 rounded-2xl mb-6">
-                <i data-lucide="building-2" class="w-20 h-20"></i>
-            </div>
-            <h2 class="text-4xl font-black mb-4">🏛️ إدارة المراجعة الداخلية والحوكمة</h2>
-            <p class="text-xl mb-8 text-teal-100">مديرية الصحة - محافظة الفيوم</p>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-                <div class="window rounded-lg p-4">
-                    <p class="text-3xl font-black">24</p>
-                    <p class="text-xs text-teal-100">منشأة صحية</p>
-                </div>
-                <div class="window rounded-lg p-4">
-                    <p class="text-3xl font-black">8</p>
-                    <p class="text-xs text-teal-100">جهات رقابية</p>
-                </div>
-                <div class="window rounded-lg p-4">
-                    <p class="text-3xl font-black">12</p>
-                    <p class="text-xs text-teal-100">موظف</p>
-                </div>
-                <div class="window rounded-lg p-4">
-                    <p class="text-3xl font-black">3</p>
-                    <p class="text-xs text-teal-100">أقسام رئيسية</p>
-                </div>
-            </div>
+    <main class="container mx-auto px-4 -mt-12 mb-10 flex-grow relative z-20">
+      <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 text-center max-w-4xl mx-auto border border-slate-100 mb-8">
+        <h2 class="text-2xl font-bold text-slate-800 mb-4 flex justify-center items-center gap-2">
+          <i data-lucide="shield-check" class="text-teal-600"></i> البوابة الرقمية الموحدة
+        </h2>
+        <p class="text-slate-600 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
+          منصة مركزية لإدارة تكليفات المراجعين الماليين والإداريين بمديرية الشؤون الصحية بالفيوم.
+        </p>
+        <div class="border-t border-slate-100 pt-6 mt-2 max-w-2xl mx-auto">
+          <p class="text-[11px] md:text-xs text-slate-400 font-medium leading-loose">
+            <span class="font-bold text-slate-500">تنويه:</span> يقتصر الاستخدام على أعضاء إدارة المراجعة الداخلية والحوكمة المكلفين رسميًا.
+          </p>
         </div>
-    </div>
+      </div>
 
-    <!-- Welcome Message -->
-    <div class="text-center mb-12 fade-in" style="animation-delay: 0.2s">
-        <h3 class="text-3xl font-black text-slate-800 mb-4">اختر البوابة المناسبة</h3>
-        <p class="text-slate-600 text-lg">نظام إلكتروني متكامل لإدارة المراجعة والحوكمة</p>
-    </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto opacity-95">
+        <button onclick="window.location.href='main.html'" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-teal-600 hover:scale-105 transition-transform group">
+          <i data-lucide="bar-chart-2" class="w-8 h-8 text-teal-600 mx-auto mb-3"></i>
+          <span class="text-base font-bold text-slate-700">Dashboard</span>
+        </button>
+        
+        <button onclick="window.location.href='main.html'" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-blue-500 hover:scale-105 transition-transform group">
+          <i data-lucide="briefcase" class="w-8 h-8 text-blue-500 mx-auto mb-3"></i>
+          <span class="text-base font-bold text-slate-700">الخدمات</span>
+        </button>
+        
+        <button onclick="window.location.href='main.html'" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-violet-500 hover:scale-105 transition-transform group">
+          <i data-lucide="users" class="w-8 h-8 text-violet-500 mx-auto mb-3"></i>
+          <span class="text-base font-bold text-slate-700">الموظفين</span>
+        </button>
+        
+        <button onclick="window.location.href='admin.html'" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-red-500 hover:scale-105 transition-transform group">
+          <i data-lucide="settings" class="w-8 h-8 text-red-500 mx-auto mb-3"></i>
+          <span class="text-base font-bold text-slate-700">الإدارة</span>
+        </button>
+      </div>
+    </main>
 
-    <!-- Portal Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-        <!-- Dashboard Portal -->
-        <div class="portal-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-xl p-8 text-white fade-in" style="animation-delay: 0.3s" onclick="window.location.href='dashboard.html'">
-            <div class="bg-white/20 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mx-auto float">
-                <i data-lucide="bar-chart-3" class="w-10 h-10"></i>
-            </div>
-            <h4 class="text-2xl font-bold mb-3 text-center">لوحة التحكم</h4>
-            <p class="text-blue-100 text-sm text-center mb-6">الإحصائيات والتقارير الشاملة</p>
-            <div class="text-center">
-                <span class="inline-block bg-white/20 px-4 py-2 rounded-lg text-sm font-bold">Dashboard</span>
-            </div>
+    <footer class="bg-[#0f172a] text-white py-8 text-center border-t-4 border-teal-600 mt-auto relative z-10">
+      <div class="container mx-auto px-4">
+        <div class="mb-4 text-slate-500 opacity-60">
+          <i data-lucide="landmark" class="w-12 h-12 mx-auto"></i>
         </div>
-
-        <!-- Employee Portal -->
-        <div class="portal-card bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-xl p-8 text-white fade-in" style="animation-delay: 0.4s" onclick="window.location.href='employee.html'">
-            <div class="bg-white/20 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mx-auto float" style="animation-delay: 0.5s">
-                <i data-lucide="user" class="w-10 h-10"></i>
-            </div>
-            <h4 class="text-2xl font-bold mb-3 text-center">بوابة الموظف</h4>
-            <p class="text-emerald-100 text-sm text-center mb-6">متابعة المهام والتقارير الشخصية</p>
-            <div class="text-center">
-                <span class="inline-block bg-white/20 px-4 py-2 rounded-lg text-sm font-bold">Employee</span>
-            </div>
+        <p class="text-sm md:text-base font-bold mb-3 opacity-90">
+          © 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة
+        </p>
+        <div class="text-[10px] md:text-xs text-slate-400 space-y-1 font-[sans-serif]" dir="ltr">
+          <p class="tracking-wider opacity-70">MoH Fayoum Governance – Internal Access Page</p>
+          <p class="tracking-wider opacity-70">Developed under Governance Supervision – Dr. MAH</p>
         </div>
+      </div>
+    </footer>
+  </div>
 
-        <!-- Coordinator Portal -->
-        <div class="portal-card bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-xl p-8 text-white fade-in" style="animation-delay: 0.5s" onclick="window.location.href='coordinator.html'">
-            <div class="bg-white/20 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mx-auto float" style="animation-delay: 1s">
-                <i data-lucide="users-cog" class="w-10 h-10"></i>
-            </div>
-            <h4 class="text-2xl font-bold mb-3 text-center">بوابة المنسق</h4>
-            <p class="text-purple-100 text-sm text-center mb-6">إدارة الفريق وتوزيع المهام</p>
-            <div class="text-center">
-                <span class="inline-block bg-white/20 px-4 py-2 rounded-lg text-sm font-bold">Coordinator</span>
-            </div>
-        </div>
-
-        <!-- Admin Portal -->
-        <div class="portal-card bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl shadow-xl p-8 text-white fade-in" style="animation-delay: 0.6s" onclick="window.location.href='admin.html'">
-            <div class="bg-white/20 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mx-auto float" style="animation-delay: 1.5s">
-                <i data-lucide="shield-check" class="w-10 h-10"></i>
-            </div>
-            <h4 class="text-2xl font-bold mb-3 text-center">لوحة المدير</h4>
-            <p class="text-slate-300 text-sm text-center mb-6">التحكم الكامل والإدارة المتقدمة</p>
-            <div class="text-center">
-                <span class="inline-block bg-white/20 px-4 py-2 rounded-lg text-sm font-bold">Admin</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto fade-in" style="animation-delay: 0.7s">
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-2xl transition-all">
-            <div class="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i data-lucide="file-check" class="w-8 h-8 text-teal-600"></i>
-            </div>
-            <p class="text-3xl font-black text-slate-800 mb-2">278</p>
-            <p class="text-xs text-slate-600 font-bold">معاملة نشطة</p>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-2xl transition-all">
-            <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i data-lucide="users" class="w-8 h-8 text-blue-600"></i>
-            </div>
-            <p class="text-3xl font-black text-slate-800 mb-2">12</p>
-            <p class="text-xs text-slate-600 font-bold">موظف نشط</p>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-2xl transition-all">
-            <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i data-lucide="building" class="w-8 h-8 text-purple-600"></i>
-            </div>
-            <p class="text-3xl font-black text-slate-800 mb-2">24</p>
-            <p class="text-xs text-slate-600 font-bold">منشأة صحية</p>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-2xl transition-all">
-            <div class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i data-lucide="check-circle" class="w-8 h-8 text-emerald-600"></i>
-            </div>
-            <p class="text-3xl font-black text-slate-800 mb-2">156</p>
-            <p class="text-xs text-slate-600 font-bold">مهمة منجزة</p>
-        </div>
-    </div>
-
-    <!-- Features Section -->
-    <div class="mt-16 bg-white rounded-2xl shadow-2xl p-12 fade-in" style="animation-delay: 0.8s">
-        <h3 class="text-3xl font-black text-center text-slate-800 mb-12">مميزات النظام</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="text-center">
-                <div class="bg-teal-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="zap" class="w-10 h-10 text-teal-600"></i>
-                </div>
-                <h4 class="text-xl font-bold text-slate-800 mb-2">توزيع تلقائي</h4>
-                <p class="text-slate-600">توزيع ذكي للمهام حسب التخصص والحمل</p>
-            </div>
-
-            <div class="text-center">
-                <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="bell" class="w-10 h-10 text-blue-600"></i>
-                </div>
-                <h4 class="text-xl font-bold text-slate-800 mb-2">إشعارات فورية</h4>
-                <p class="text-slate-600">تنبيهات تلقائية عبر البريد الإلكتروني</p>
-            </div>
-
-            <div class="text-center">
-                <div class="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="file-text" class="w-10 h-10 text-purple-600"></i>
-                </div>
-                <h4 class="text-xl font-bold text-slate-800 mb-2">تقارير احترافية</h4>
-                <p class="text-slate-600">تقارير مدعومة بالذكاء الاصطناعي</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Footer -->
-<footer class="bg-slate-900 text-white py-8 mt-16">
-    <div class="container mx-auto px-4 text-center">
-        <div class="flex items-center justify-center gap-4 mb-4">
-            <div class="bg-teal-600 w-12 h-12 rounded-full flex items-center justify-center">
-                <i data-lucide="shield-check" class="w-6 h-6"></i>
-            </div>
-            <div class="text-right">
-                <p class="font-bold">إدارة المراجعة الداخلية والحوكمة</p>
-                <p class="text-xs text-slate-400">وزارة الصحة والسكان - محافظة الفيوم</p>
-            </div>
-        </div>
-        <div class="border-t border-slate-700 pt-4 mt-4">
-            <p class="text-sm text-slate-400">© 2025 جميع الحقوق محفوظة</p>
-            <p class="text-xs text-slate-500 mt-2">تم التطوير بواسطة فريق الحوكمة الرقمية</p>
-        </div>
-    </div>
-</footer>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
+  <script>
     lucide.createIcons();
     
-    // Add click animation
-    document.querySelectorAll('.portal-card').forEach(card => {
-        card.addEventListener('click', function() {
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 200);
-        });
-    });
-});
-</script>
-
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Error:', err));
+    }
+  </script>
 </body>
 </html>
