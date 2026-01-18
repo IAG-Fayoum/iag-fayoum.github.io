@@ -6,7 +6,7 @@
  */
 
 // ✅ رابط النشر الخاص بك (Deploy URL)
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby4emzeDBnK2R7zMsxAsDc1ARe5rgcnMz7VEUu67bwzXwofFd53fJn-LGCoRsZXMgW4Og/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzi68xXxFmLlTd-w0ADsf_A7S1100sYjfusWeZNGTyOf7_PlRhsPYTO6iCrTyj7mz996w/exec";
 
 // 📦 متغيرات النظام (State Management)
 let currentUser = null;
