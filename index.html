@@ -2,164 +2,409 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>بوابة الموظف - نظام الحوكمة</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الحوكمة - وزارة الصحة الفيوم</title>
+    <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-
-    <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
-        .hidden-section { display: none !important; }
-        
-        /* تأثيرات بصرية للكروت */
-        .stat-card { transition: all 0.2s; border: 1px solid #e2e8f0; background: white; border-radius: 12px; padding: 16px; position: relative; overflow: hidden; }
-        .stat-card:active { transform: scale(0.98); }
-        
-        /* ألوان الحالات */
-        .task-new { border-right: 4px solid #3b82f6; }
-        .task-progress { border-right: 4px solid #f59e0b; }
-        .task-late { border-right: 4px solid #ef4444; background-color: #fef2f2; }
-        .task-done { border-right: 4px solid #10b981; opacity: 0.9; }
-
-        /* لودر التحميل */
-        .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 50; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
-        .spinner { width: 40px; height: 40px; border: 4px solid #e2e8f0; border-top-color: #0f766e; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-    </style>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="text-slate-800 pb-20">
+<body class="bg-gradient-to-br from-teal-50 to-slate-100 min-h-screen">
 
-    <div id="loader" class="loader-overlay hidden-section">
-        <div class="flex flex-col items-center gap-3">
-            <div class="spinner"></div>
-            <p class="text-sm font-bold text-slate-600">جاري الاتصال...</p>
-        </div>
-    </div>
-
-    <div id="emp-login-form" class="min-h-screen flex flex-col justify-center items-center p-6 bg-slate-50">
-        <div class="w-full max-w-sm bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center">
-            <div class="w-16 h-16 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i data-lucide="lock" class="w-8 h-8"></i>
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     🔐 LOGIN VIEW
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="login-view" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        <!-- Logo & Title -->
+        <div class="text-center mb-8">
+            <div class="bg-teal-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="shield-check" class="text-white w-10 h-10"></i>
             </div>
-            <h2 class="text-2xl font-bold mb-2">بوابة الموظف</h2>
-            <p class="text-slate-400 text-sm mb-6">أدخل كود المرور الشخصي (PIN)</p>
-            
-            <input type="tel" id="emp-pin-input" maxlength="4" placeholder="****" 
-                   class="w-full text-center text-3xl font-bold tracking-[0.5em] py-4 border-2 border-slate-200 rounded-xl focus:border-teal-600 outline-none transition-colors mb-4 bg-slate-50">
-            
-            <button onclick="handleLogin()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-teal-600/20 transition-all active:scale-95">
-                دخول النظام
-            </button>
-            <p id="emp-error" class="text-red-500 text-xs font-bold mt-4 hidden-section"></p>
-            
-            <div class="mt-8 pt-6 border-t border-slate-100">
-                <a href="admin.html" class="text-slate-400 text-xs font-bold hover:text-teal-600 flex items-center justify-center gap-1">
-                    <i data-lucide="shield"></i> دخول الإدارة
-                </a>
-            </div>
+            <h1 class="text-2xl font-bold text-slate-800 mb-2">نظام الحوكمة</h1>
+            <p class="text-slate-500 text-sm">وزارة الصحة والسكان - محافظة الفيوم</p>
         </div>
-    </div>
 
-    <div id="emp-profile-view" class="hidden-section max-w-md mx-auto min-h-screen flex flex-col">
-        
-        <header class="bg-white p-6 sticky top-0 z-40 shadow-sm border-b border-slate-100 flex justify-between items-center">
+        <!-- PIN Input -->
+        <div class="space-y-4">
             <div>
-                <h1 class="text-xl font-bold text-slate-800" id="profile-name">...</h1>
-                <p class="text-xs text-slate-500 font-bold mt-1" id="profile-role">...</p>
+                <label class="block text-slate-700 font-bold mb-2 text-sm">رمز الدخول (PIN)</label>
+                <input 
+                    type="password" 
+                    id="pin-input" 
+                    placeholder="أدخل رمز الدخول المكون من 4 أرقام"
+                    maxlength="6"
+                    class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-teal-500 focus:outline-none text-center text-2xl tracking-widest"
+                    onkeypress="if(event.key==='Enter') handleLogin()"
+                >
             </div>
-            <button onclick="logout()" class="bg-red-50 text-red-500 p-2 rounded-lg hover:bg-red-100 transition-colors">
-                <i data-lucide="log-out" class="w-5 h-5"></i>
-            </button>
-        </header>
-
-        <div class="grid grid-cols-4 gap-2 p-4">
-            <div class="bg-blue-50 p-2 rounded-xl text-center border border-blue-100">
-                <span class="block text-2xl font-black text-blue-600" id="stat-new">0</span>
-                <span class="text-[10px] font-bold text-slate-500">جديد</span>
-            </div>
-            <div class="bg-amber-50 p-2 rounded-xl text-center border border-amber-100">
-                <span class="block text-2xl font-black text-amber-500" id="stat-progress">0</span>
-                <span class="text-[10px] font-bold text-slate-500">جاري</span>
-            </div>
-            <div class="bg-red-50 p-2 rounded-xl text-center border border-red-100">
-                <span class="block text-2xl font-black text-red-500" id="stat-late">0</span>
-                <span class="text-[10px] font-bold text-slate-500">متأخر</span>
-            </div>
-            <div class="bg-emerald-50 p-2 rounded-xl text-center border border-emerald-100">
-                <span class="block text-2xl font-black text-emerald-600" id="stat-done">0</span>
-                <span class="text-[10px] font-bold text-slate-500">منجز</span>
-            </div>
-        </div>
-
-        <div class="px-4 mb-4">
-            <div class="flex bg-slate-100 p-1 rounded-xl overflow-x-auto no-scrollbar">
-                <button id="tab-btn-new" onclick="switchTaskTab('new')" class="flex-1 py-2 px-4 rounded-lg text-xs font-bold transition-all bg-slate-800 text-white shadow-sm whitespace-nowrap">الوارد</button>
-                <button id="tab-btn-progress" onclick="switchTaskTab('progress')" class="flex-1 py-2 px-4 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-800 whitespace-nowrap">جاري التنفيذ</button>
-                <button id="tab-btn-late" onclick="switchTaskTab('late')" class="flex-1 py-2 px-4 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-800 whitespace-nowrap">المتأخرات</button>
-                <button id="tab-btn-history" onclick="switchTaskTab('history')" class="flex-1 py-2 px-4 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-800 whitespace-nowrap">الأرشيف</button>
-            </div>
-        </div>
-
-        <div id="tasks-container" class="px-4 space-y-3 pb-20">
-            </div>
-
-        <div id="archive-container" class="hidden-section px-4 pb-20">
             
-            <div class="bg-white p-4 rounded-xl border border-slate-200 mb-4 shadow-sm">
-                <h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i data-lucide="filter" class="w-4 h-4 text-teal-600"></i> فلترة السجل</h3>
-                <div class="flex gap-2">
-                    <select id="history-year" class="bg-slate-50 border border-slate-200 text-sm rounded-lg p-2 font-bold w-1/3 outline-none">
-                        <option value="2027">2027</option>
-                        <option value="2026">2026</option>
-                        <option value="2025" selected>2025</option>
-                        <option value="2024">2024</option>
-                    </select>
-                    <select id="history-month" class="bg-slate-50 border border-slate-200 text-sm rounded-lg p-2 font-bold w-2/3 outline-none">
-                        <option value="">كل الشهور</option>
-                        <option value="1">يناير</option>
-                        <option value="2">فبراير</option>
-                        <option value="3">مارس</option>
-                        <option value="4">أبريل</option>
-                        <option value="5">مايو</option>
-                        <option value="6">يونيو</option>
-                        <option value="7">يوليو</option>
-                        <option value="8">أغسطس</option>
-                        <option value="9">سبتمبر</option>
-                        <option value="10">أكتوبر</option>
-                        <option value="11">نوفمبر</option>
-                        <option value="12">ديسمبر</option>
+            <button 
+                onclick="handleLogin()"
+                class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
+            >
+                <i data-lucide="log-in" class="w-5 h-5"></i>
+                دخول
+            </button>
+
+            <p id="error-msg" class="hidden text-red-600 text-sm text-center font-bold"></p>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 pt-6 border-t border-slate-200 text-center text-xs text-slate-400">
+            إدارة المراجعة الداخلية والحوكمة © 2025
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     📊 DASHBOARD VIEW
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="dashboard-view" class="hidden">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="bg-teal-600 w-12 h-12 rounded-full flex items-center justify-center">
+                    <i data-lucide="shield-check" class="text-white w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-800">نظام الحوكمة</h1>
+                    <p class="text-xs text-slate-500">لوحة التحكم والإحصائيات</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="text-left">
+                    <p class="text-sm font-bold text-slate-800" id="user-name"></p>
+                    <p class="text-xs text-slate-500" id="user-role"></p>
+                </div>
+                <button 
+                    onclick="logout()"
+                    class="bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-lg font-bold text-sm transition-all"
+                >
+                    خروج
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Filters -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i data-lucide="filter" class="w-5 h-5 text-teal-600"></i>
+                الفلترة والبحث
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">السنة</label>
+                    <select id="year-select" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+                        <!-- Will be filled by JS -->
                     </select>
                 </div>
-                <button onclick="applyHistoryFilter()" class="w-full mt-3 bg-slate-800 text-white py-2 rounded-lg text-xs font-bold">تطبيق الفلتر</button>
+                
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">نوع الفترة</label>
+                    <select id="filter-type" onchange="toggleFilterInputs()" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+                        <option value="current">السنة الحالية</option>
+                        <option value="month">شهر محدد</option>
+                        <option value="custom">فترة مخصصة</option>
+                    </select>
+                </div>
+                
+                <div id="month-input" class="hidden">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">الشهر</label>
+                    <select id="month-select" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+                        <!-- Will be filled by JS -->
+                    </select>
+                </div>
+                
+                <div id="date-range" class="hidden col-span-2 grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">من</label>
+                        <input type="date" id="d-start" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">إلى</label>
+                        <input type="date" id="d-end" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+                    </div>
+                </div>
+                
+                <div class="flex items-end">
+                    <button 
+                        onclick="applyFilter()"
+                        class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-lg transition-all flex items-center justify-center gap-2"
+                    >
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                        تطبيق
+                    </button>
+                </div>
             </div>
+            
+            <p id="filter-status" class="text-xs text-slate-500 mt-4"></p>
+        </div>
 
-            <h3 class="font-bold text-slate-700 text-sm mb-2 px-1">آخر الإنجازات</h3>
-            <div id="done-tasks-list" class="grid grid-cols-2 gap-2 mb-6"></div>
-
-            <h3 class="font-bold text-slate-700 text-sm mb-2 px-1">سجل التقارير</h3>
-            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-                <table class="w-full text-right">
-                    <thead class="bg-slate-50 text-slate-500 text-[10px] font-bold">
-                        <tr>
-                            <th class="p-3">التاريخ</th>
-                            <th class="p-3">النوع</th>
-                            <th class="p-3">الجهة</th>
-                            <th class="p-3 text-center">عرض</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reports-rows"></tbody>
-                </table>
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-blue-100 text-sm font-bold">إجمالي المعاملات</p>
+                        <h2 id="v-total" class="text-4xl font-black mt-2">0</h2>
+                    </div>
+                    <div class="bg-white/20 p-3 rounded-lg">
+                        <i data-lucide="file-text" class="w-6 h-6"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-emerald-100 text-sm font-bold">المنجزة</p>
+                        <h2 id="v-done" class="text-4xl font-black mt-2">0</h2>
+                    </div>
+                    <div class="bg-white/20 p-3 rounded-lg">
+                        <i data-lucide="check-circle" class="w-6 h-6"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-amber-100 text-sm font-bold">قيد التنفيذ</p>
+                        <h2 id="v-prog" class="text-4xl font-black mt-2">0</h2>
+                    </div>
+                    <div class="bg-white/20 p-3 rounded-lg">
+                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-red-100 text-sm font-bold">المتأخرة</p>
+                        <h2 id="v-late" class="text-4xl font-black mt-2">0</h2>
+                    </div>
+                    <div class="bg-white/20 p-3 rounded-lg">
+                        <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                    </div>
+                </div>
             </div>
         </div>
 
-    </div>
+        <!-- Tables Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Employees Table -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-teal-600 text-white px-6 py-4">
+                    <h3 class="font-bold flex items-center gap-2">
+                        <i data-lucide="users" class="w-5 h-5"></i>
+                        أداء الموظفين
+                    </h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="p-4 text-right text-xs font-bold text-slate-600">الموظف</th>
+                                <th class="p-4 text-center text-xs font-bold text-slate-600">الإجمالي</th>
+                                <th class="p-4 text-center text-xs font-bold text-slate-600">المنجز</th>
+                                <th class="p-4 text-xs font-bold text-slate-600">التقدم</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-rows">
+                            <tr>
+                                <td colspan="4" class="p-8 text-center text-slate-400">جاري التحميل...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-    <script src="assets/js/main.js"></script>
-    <script>
-        // تفعيل الأيقونات عند التحميل
-        lucide.createIcons();
-    </script>
+            <!-- Entities Table -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-slate-700 text-white px-6 py-4">
+                    <h3 class="font-bold flex items-center gap-2">
+                        <i data-lucide="building" class="w-5 h-5"></i>
+                        الجهات الأكثر تأخيراً
+                    </h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="p-4 text-right text-xs font-bold text-slate-600">الجهة</th>
+                                <th class="p-4 text-center text-xs font-bold text-slate-600">الكل</th>
+                                <th class="p-4 text-center text-xs font-bold text-slate-600">معلق</th>
+                                <th class="p-4 text-center text-xs font-bold text-slate-600">متأخر</th>
+                                <th class="p-4 text-center text-xs font-bold text-slate-600">نسبة %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="entity-rows">
+                            <tr>
+                                <td colspan="5" class="p-8 text-center text-slate-400">جاري التحميل...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loader -->
+<div id="loader" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-8 flex flex-col items-center gap-4">
+        <div class="animate-spin rounded-full h-16 w-16 border-4 border-teal-600 border-t-transparent"></div>
+        <p class="text-slate-700 font-bold">جاري التحميل...</p>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/core.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// 🔐 LOGIN LOGIC
+// ═══════════════════════════════════════════════════════════════════════════
+async function handleLogin() {
+    const pin = document.getElementById('pin-input').value.trim();
+    const errorMsg = document.getElementById('error-msg');
+    
+    if (pin.length < 4) {
+        errorMsg.textContent = '⚠️ يرجى إدخال رمز الدخول';
+        errorMsg.classList.remove('hidden');
+        return;
+    }
+    
+    const result = await login(pin);
+    
+    if (result.success) {
+        document.getElementById('login-view').classList.add('hidden');
+        document.getElementById('dashboard-view').classList.remove('hidden');
+        
+        document.getElementById('user-name').textContent = result.name;
+        document.getElementById('user-role').textContent = result.role;
+        
+        // تحميل الداتا
+        initDashboard();
+    } else {
+        errorMsg.textContent = '❌ ' + (result.error || 'رمز الدخول غير صحيح');
+        errorMsg.classList.remove('hidden');
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 📊 DASHBOARD LOGIC
+// ═══════════════════════════════════════════════════════════════════════════
+function initDashboard() {
+    // Fill year options
+    document.getElementById('year-select').innerHTML = getYearOptions();
+    document.getElementById('month-select').innerHTML = getMonthOptions();
+    
+    // Apply default filter
+    applyFilter();
+}
+
+async function applyFilter() {
+    const year = document.getElementById('year-select').value;
+    const type = document.getElementById('filter-type').value;
+    let start, end;
+    
+    if (type === 'current') {
+        start = `${year}-01-01`;
+        end = `${year}-12-31`;
+    } else if (type === 'month') {
+        const m = parseInt(document.getElementById('month-select').value);
+        const mm = m < 10 ? '0' + m : m;
+        start = `${year}-${mm}-01`;
+        end = `${year}-${mm}-31`;
+    } else {
+        start = document.getElementById('d-start').value;
+        end = document.getElementById('d-end').value;
+    }
+    
+    document.getElementById('filter-status').textContent = 'جاري التحديث...';
+    
+    const data = await fetchDashboardData(start, end);
+    
+    if (data) {
+        renderDashboard(data);
+        document.getElementById('filter-status').textContent = `آخر تحديث: ${new Date().toLocaleTimeString('ar-EG')}`;
+    }
+}
+
+function renderDashboard(data) {
+    // Update stats
+    document.getElementById('v-total').textContent = data.totals.periodTotal;
+    document.getElementById('v-done').textContent = data.totals.periodCompleted;
+    document.getElementById('v-prog').textContent = data.totals.periodInProgress;
+    document.getElementById('v-late').textContent = data.totals.absoluteOverdue;
+    
+    // Render employees table
+    const tbody = document.getElementById('table-rows');
+    tbody.innerHTML = '';
+    data.employees.forEach(emp => {
+        const percent = emp.periodTotal > 0 ? Math.round((emp.periodCompleted / emp.periodTotal) * 100) : 0;
+        const barColor = percent >= 80 ? 'bg-emerald-500' : (percent < 50 ? 'bg-red-500' : 'bg-amber-500');
+        
+        tbody.innerHTML += `
+        <tr class="hover:bg-slate-50 border-b border-slate-100">
+            <td class="p-4 font-bold text-slate-800">${emp.name}</td>
+            <td class="p-4 text-center text-slate-600">${emp.periodTotal}</td>
+            <td class="p-4 text-center font-bold text-emerald-600">${emp.periodCompleted}</td>
+            <td class="p-4">
+                <div class="w-full bg-slate-200 rounded-full h-2.5">
+                    <div class="${barColor} h-2.5 rounded-full" style="width: ${percent}%"></div>
+                </div>
+            </td>
+        </tr>`;
+    });
+    
+    // Render entities table
+    const entBody = document.getElementById('entity-rows');
+    entBody.innerHTML = '';
+    data.entities.slice(0, 10).forEach(ent => {
+        entBody.innerHTML += `
+        <tr class="hover:bg-slate-50 border-b border-slate-100">
+            <td class="p-4 font-bold text-slate-700 text-xs">${ent.name}</td>
+            <td class="p-4 text-center text-slate-600">${ent.total}</td>
+            <td class="p-4 text-center text-amber-600 font-bold">${ent.pending}</td>
+            <td class="p-4 text-center text-red-600 font-black">${ent.overdue}</td>
+            <td class="p-4 text-center text-xs font-bold">${ent.overduePercent}%</td>
+        </tr>`;
+    });
+    
+    lucide.createIcons();
+}
+
+function toggleFilterInputs() {
+    const type = document.getElementById('filter-type').value;
+    document.getElementById('month-input').classList.add('hidden');
+    document.getElementById('date-range').classList.add('hidden');
+    
+    if (type === 'month') document.getElementById('month-input').classList.remove('hidden');
+    if (type === 'custom') document.getElementById('date-range').classList.remove('hidden');
+}
+
+// Init icons
+document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    
+    // Check if already logged in
+    const user = getCurrentUser();
+    if (user) {
+        document.getElementById('login-view').classList.add('hidden');
+        document.getElementById('dashboard-view').classList.remove('hidden');
+        document.getElementById('user-name').textContent = user.name;
+        document.getElementById('user-role').textContent = user.role;
+        initDashboard();
+    }
+});
+</script>
+
 </body>
 </html>
