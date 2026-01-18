@@ -1,376 +1,327 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#b91c1c">
-  <title>لوحة الإدارة - نظام الحوكمة</title>
-  
-  <link rel="manifest" href="manifest.json">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-
-  <style>
-    :root {
-      --primary: #b91c1c; /* أحمر للإدارة */
-      --bg-light: #f8fafc;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة القيادة - الإدارة العليا</title>
     
-    body { 
-      font-family: 'Cairo', sans-serif; 
-      background-color: var(--bg-light);
-      overscroll-behavior-y: none;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      -webkit-user-select: none;
-    }
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
-    input, textarea, table, .selectable, select {
-      user-select: text;
-      -webkit-user-select: text;
-    }
-
-    .btn-active:active { transform: scale(0.98); transition: transform 0.1s; }
-    
-    /* تنسيق الحقول */
-    .input-field {
-      width: 100%;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-weight: 600;
-      outline: none;
-      background: white;
-      color: #334155;
-      transition: all 0.2s;
-    }
-    .input-field:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(185, 28, 28, 0.1);
-    }
-
-    /* الكروت */
-    .admin-card {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-
-    /* التبويبات */
-    .nav-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-weight: 700;
-      color: #64748b;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .nav-btn.active {
-      background-color: var(--primary);
-      color: white;
-      box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
-    }
-    .nav-btn:hover:not(.active) {
-      background-color: #fee2e2;
-      color: var(--primary);
-    }
-
-    .hidden-section { display: none !important; }
-    .fade-in { animation: fadeIn 0.4s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* تحسينات الموبايل */
-    @media (max-width: 768px) {
-      .nav-scroll {
-        overflow-x: auto;
-        padding-bottom: 10px;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; 
-      }
-      .nav-scroll::-webkit-scrollbar { display: none; }
-      
-      .admin-card { padding: 16px; }
-      
-      /* تحسين عرض الجداول */
-      table { min-width: 600px; }
-      .table-container { overflow-x: auto; }
-    }
-  </style>
-</head>
-<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800">
-
-  <div id="admin-login-view" class="fixed inset-0 z-50 flex items-center justify-center bg-white p-6">
-    <div class="w-full max-w-md text-center">
-      <div class="w-24 h-24 bg-red-50 text-red-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm">
-        <i data-lucide="shield-alert" class="w-12 h-12"></i>
-      </div>
-      <h1 class="text-3xl font-black text-slate-900 mb-2">منطقة الإدارة</h1>
-      <p class="text-slate-500 mb-10 font-medium">نظام الحوكمة الرقمي</p>
-      
-      <div class="relative mb-6 group">
-        <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400 group-focus-within:text-red-600 transition-colors">
-          <i data-lucide="lock" class="w-6 h-6"></i>
-        </div>
-        <input 
-          type="password" 
-          id="admin-pin-input" 
-          placeholder="رمز المرور" 
-          maxlength="4" 
-          inputmode="numeric" 
-          class="w-full bg-slate-50 border-2 border-slate-200 text-center text-3xl font-bold rounded-2xl p-5 outline-none focus:border-red-600 focus:bg-white transition-all placeholder:text-slate-300 placeholder:text-xl placeholder:font-normal"
-        >
-      </div>
-      
-      <button onclick="handleAdminLogin()" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-red-200 transition-all btn-active flex items-center justify-center gap-2">
-        <span>دخول للنظام</span>
-        <i data-lucide="arrow-left" class="w-5 h-5"></i>
-      </button>
-
-      <p id="login-error" class="text-red-500 text-sm font-bold mt-6 hidden-section flex items-center justify-center gap-2 bg-red-50 p-3 rounded-lg">
-        <i data-lucide="alert-circle" class="w-4 h-4"></i> <span>الرمز غير صحيح</span>
-      </p>
-      
-      <button onclick="window.location.href='index.html'" class="mt-8 text-slate-400 hover:text-slate-600 text-sm font-bold transition-colors">
-        عودة للرئيسية
-      </button>
-    </div>
-  </div>
-
-  <div id="admin-dashboard-view" class="hidden-section flex-grow flex flex-col h-screen overflow-hidden">
-    
-    <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm z-30 shrink-0">
-      <div class="flex items-center gap-3">
-        <div class="bg-red-50 p-2 rounded-lg text-red-600"><i data-lucide="shield-check"></i></div>
-        <div>
-          <h1 class="font-bold text-slate-800 text-lg leading-tight">لوحة الإدارة</h1>
-          <p class="text-xs text-slate-500 font-bold">النسخة الماسية v4.0</p>
-        </div>
-      </div>
-      <button onclick="logoutAdmin()" class="bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2">
-        <span class="hidden md:inline">تسجيل خروج</span>
-        <i data-lucide="log-out" class="w-4 h-4"></i>
-      </button>
-    </header>
-
-    <main class="flex-1 overflow-y-auto bg-slate-50 p-4 md:p-8">
-      <div class="max-w-7xl mx-auto">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; }
+        .hidden-section { display: none !important; }
         
-        <div class="mb-8 nav-scroll">
-          <div class="flex gap-2 min-w-max">
-            <button class="nav-btn active" onclick="switchAdminTab('overview')"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> نظرة عامة</button>
-            <button class="nav-btn" onclick="switchAdminTab('reassign')"><i data-lucide="user-cog" class="w-4 h-4"></i> إعادة تكليف</button>
-            <button class="nav-btn" onclick="switchAdminTab('status')"><i data-lucide="list-checks" class="w-4 h-4"></i> تعديل حالة</button>
-            <button class="nav-btn" onclick="switchAdminTab('add')"><i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة مهمة</button>
-            <button class="nav-btn" onclick="switchAdminTab('archive')"><i data-lucide="archive" class="w-4 h-4"></i> الأرشيف</button>
-          </div>
+        /* Sidebar Active State */
+        .nav-item.active { background-color: #0f172a; color: white; border-right: 4px solid #0f766e; }
+        
+        /* Cards Animation */
+        .dashboard-card { transition: transform 0.2s; }
+        .dashboard-card:hover { transform: translateY(-3px); }
+
+        /* Loader */
+        .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); z-index: 60; display: flex; justify-content: center; align-items: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #cbd5e1; border-top-color: #ef4444; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="text-slate-800 h-screen overflow-hidden flex">
+
+    <div id="admin-loader" class="loader-overlay hidden-section">
+        <div class="flex flex-col items-center gap-2">
+            <div class="spinner"></div>
+            <p class="font-bold text-slate-600">جاري المعالجة...</p>
         </div>
+    </div>
 
-        <div id="tab-overview" class="fade-in space-y-6">
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="admin-card border-b-4 border-blue-500 p-4 text-center">
-              <span class="text-xs font-bold text-slate-400 uppercase">الكل</span>
-              <div id="adm-stat-total" class="text-3xl font-black text-slate-800 mt-1">-</div>
+    <div id="admin-login-view" class="fixed inset-0 z-50 bg-slate-900 flex justify-center items-center p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center">
+            <div class="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="shield-alert" class="w-8 h-8"></i>
             </div>
-            <div class="admin-card border-b-4 border-emerald-500 p-4 text-center">
-              <span class="text-xs font-bold text-slate-400 uppercase">منجز</span>
-              <div id="adm-stat-done" class="text-3xl font-black text-emerald-600 mt-1">-</div>
-            </div>
-            <div class="admin-card border-b-4 border-amber-500 p-4 text-center">
-              <span class="text-xs font-bold text-slate-400 uppercase">جاري</span>
-              <div id="adm-stat-prog" class="text-3xl font-black text-amber-500 mt-1">-</div>
-            </div>
-            <div class="admin-card border-b-4 border-red-500 p-4 text-center bg-red-50">
-              <span class="text-xs font-bold text-red-400 uppercase">متأخر</span>
-              <div id="adm-stat-late" class="text-3xl font-black text-red-600 mt-1">-</div>
-            </div>
-          </div>
-
-          <div class="admin-card overflow-hidden">
-            <div class="flex items-center gap-2 mb-6 border-b border-slate-100 pb-4">
-              <div class="bg-teal-100 p-2 rounded-lg text-teal-700"><i data-lucide="users"></i></div>
-              <h3 class="font-bold text-lg">أداء الموظفين</h3>
-            </div>
-            <div class="table-container">
-              <table class="w-full text-right text-sm">
-                <thead class="bg-slate-50 text-slate-600 font-bold uppercase text-xs">
-                  <tr>
-                    <th class="p-4 rounded-r-lg">الموظف</th>
-                    <th class="p-4 text-center">المهام</th>
-                    <th class="p-4 text-center">المنجز</th>
-                    <th class="p-4 text-center rounded-l-lg">المتبقي</th>
-                  </tr>
-                </thead>
-                <tbody id="adm-employees-table" class="divide-y divide-slate-100 font-medium"></tbody>
-              </table>
-            </div>
-          </div>
+            <h2 class="text-2xl font-bold mb-2">منطقة محظورة</h2>
+            <p class="text-slate-500 text-sm mb-6">هذه اللوحة مخصصة للإدارة العليا فقط</p>
+            <input type="password" id="admin-pin-input" placeholder="رمز المرور الإداري" class="w-full text-center text-xl p-3 border-2 border-slate-200 rounded-xl focus:border-red-500 outline-none mb-4 tracking-widest">
+            <button onclick="handleAdminLogin()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-colors">دخول</button>
+            <p id="login-error" class="text-red-500 text-xs font-bold mt-3 hidden-section">❌ غير مصرح لك بالدخول</p>
+            <a href="index.html" class="block mt-6 text-slate-400 text-xs hover:text-slate-200">العودة لبوابة الموظفين</a>
         </div>
+    </div>
 
-        <div id="tab-reassign" class="hidden-section fade-in">
-          <div class="admin-card max-w-3xl mx-auto">
-            <div class="flex items-center gap-2 mb-6">
-              <div class="bg-blue-100 p-2 rounded-lg text-blue-700"><i data-lucide="refresh-cw"></i></div>
-              <h3 class="font-bold text-lg">نقل مهمة لموظف آخر</h3>
+    <div id="admin-dashboard-view" class="hidden-section flex w-full h-full">
+        
+        <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shadow-xl z-20">
+            <div class="p-6 border-b border-slate-800 flex items-center gap-3">
+                <i data-lucide="layout-dashboard" class="text-teal-400"></i>
+                <span class="font-bold text-white text-lg">نظام الحوكمة</span>
             </div>
             
-            <div class="grid gap-6">
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">رقم القيد أو الموضوع</label>
-                <div class="flex gap-2">
-                  <input type="text" id="reassign-search-input" placeholder="ابحث..." class="input-field">
-                  <button onclick="searchTaskForAdmin('reassign')" class="bg-slate-800 text-white px-4 rounded-xl font-bold"><i data-lucide="search"></i></button>
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <button onclick="switchAdminTab('overview')" id="btn-overview" class="nav-item active w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition-colors">
+                    <i data-lucide="bar-chart-2" class="w-5 h-5"></i> نظرة عامة
+                </button>
+                <button onclick="switchAdminTab('reassign')" id="btn-reassign" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition-colors">
+                    <i data-lucide="user-cog" class="w-5 h-5"></i> إدارة التكليفات
+                </button>
+                <button onclick="switchAdminTab('status')" id="btn-status" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition-colors">
+                    <i data-lucide="list-checks" class="w-5 h-5"></i> تعديل الحالات
+                </button>
+                <button onclick="switchAdminTab('add')" id="btn-add" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition-colors">
+                    <i data-lucide="plus-square" class="w-5 h-5"></i> إضافة مهمة
+                </button>
+                <button onclick="switchAdminTab('archive')" id="btn-archive" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition-colors">
+                    <i data-lucide="archive" class="w-5 h-5"></i> الأرشيف الشامل
+                </button>
+                
+                <div class="pt-4 mt-4 border-t border-slate-800">
+                    <p class="text-xs font-bold text-slate-500 px-3 mb-2">التحكم بالنظام</p>
+                    <button onclick="switchAdminTab('settings')" id="btn-settings" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition-colors text-amber-500">
+                        <i data-lucide="settings" class="w-5 h-5"></i> إعدادات النظام
+                    </button>
                 </div>
-              </div>
-              
-              <div id="reassign-task-preview" class="hidden-section bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <div class="flex justify-between items-start mb-2">
-                  <span id="reassign-id" class="text-xs font-bold bg-slate-200 px-2 py-1 rounded text-slate-600">#</span>
-                  <span id="reassign-current-emp" class="text-xs font-bold text-blue-600"></span>
+            </nav>
+
+            <div class="p-4 border-t border-slate-800">
+                <button onclick="logoutAdmin()" class="w-full flex items-center gap-2 text-red-400 hover:text-red-300 p-2 text-sm font-bold">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> تسجيل خروج
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 bg-slate-50 overflow-y-auto p-8 relative">
+            
+            <div id="tab-overview" class="admin-tab fade-in">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2"><i data-lucide="activity" class="text-teal-600"></i> مؤشرات الأداء الحية</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 dashboard-card">
+                        <p class="text-xs font-bold text-slate-400 uppercase">إجمالي المهام</p>
+                        <h3 class="text-3xl font-black text-slate-800 mt-2" id="adm-stat-total">0</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 dashboard-card border-r-4 border-r-emerald-500">
+                        <p class="text-xs font-bold text-emerald-600 uppercase">تم الإنجاز</p>
+                        <h3 class="text-3xl font-black text-emerald-600 mt-2" id="adm-stat-done">0</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 dashboard-card border-r-4 border-r-amber-500">
+                        <p class="text-xs font-bold text-amber-500 uppercase">جاري العمل</p>
+                        <h3 class="text-3xl font-black text-amber-500 mt-2" id="adm-stat-prog">0</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 dashboard-card border-r-4 border-r-red-500">
+                        <p class="text-xs font-bold text-red-500 uppercase">متأخرات</p>
+                        <h3 class="text-3xl font-black text-red-500 mt-2" id="adm-stat-late">0</h3>
+                    </div>
                 </div>
-                <h4 id="reassign-subject" class="font-bold text-slate-800 mb-1"></h4>
-                <p id="reassign-entity" class="text-sm text-slate-500"></p>
-              </div>
 
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">تعيين إلى الموظف:</label>
-                <select id="reassign-new-emp" class="input-field bg-white">
-                  <option value="">-- اختر الموظف --</option>
-                </select>
-              </div>
-
-              <button onclick="executeReassign()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition-colors btn-active">
-                تأكيد النقل
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div id="tab-status" class="hidden-section fade-in">
-          <div class="admin-card max-w-3xl mx-auto">
-            <div class="flex items-center gap-2 mb-6">
-              <div class="bg-amber-100 p-2 rounded-lg text-amber-700"><i data-lucide="edit-3"></i></div>
-              <h3 class="font-bold text-lg">تعديل حالة مهمة</h3>
-            </div>
-
-            <div class="grid gap-6">
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">رقم القيد أو الموضوع</label>
-                <div class="flex gap-2">
-                  <input type="text" id="status-search-input" placeholder="ابحث..." class="input-field">
-                  <button onclick="searchTaskForAdmin('status')" class="bg-slate-800 text-white px-4 rounded-xl font-bold"><i data-lucide="search"></i></button>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-700">أداء الموظفين</h3>
+                        <button onclick="loadAdminDashboard()" class="text-sm text-teal-600 font-bold hover:underline">تحديث البيانات</button>
+                    </div>
+                    <table class="w-full text-right text-sm">
+                        <thead class="bg-slate-50 text-slate-500 font-bold">
+                            <tr>
+                                <th class="p-4">الموظف</th>
+                                <th class="p-4 text-center">إجمالي</th>
+                                <th class="p-4 text-center text-emerald-600">منجز</th>
+                                <th class="p-4 text-center text-amber-600">متبقي</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adm-employees-table" class="divide-y divide-slate-100"></tbody>
+                    </table>
                 </div>
-              </div>
+            </div>
 
-              <div id="status-task-preview" class="hidden-section bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <div class="flex justify-between items-start mb-2">
-                  <span id="status-id" class="text-xs font-bold bg-slate-200 px-2 py-1 rounded text-slate-600">#</span>
-                  <span id="status-current" class="text-xs font-bold text-amber-600"></span>
+            <div id="tab-reassign" class="admin-tab hidden-section fade-in">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6">إعادة توجيه تكليف</h2>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 max-w-2xl">
+                    <label class="block text-sm font-bold text-slate-600 mb-2">البحث عن المهمة</label>
+                    <div class="flex gap-2 mb-4">
+                        <input type="text" id="reassign-search-input" placeholder="اكتب رقم القيد، الموضوع، أو اسم الموظف الحالي" class="flex-1 bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none focus:border-teal-500">
+                        <button onclick="searchTaskForAdmin('reassign')" class="bg-slate-800 text-white px-6 rounded-xl font-bold">بحث</button>
+                    </div>
+                    
+                    <div id="reassign-task-preview" class="hidden-section bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                        <div class="flex justify-between mb-2">
+                            <span class="font-bold text-slate-800" id="reassign-id">#000</span>
+                            <span class="text-xs bg-white border px-2 py-1 rounded text-slate-500" id="reassign-entity">-</span>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2" id="reassign-subject">...</p>
+                    </div>
+
+                    <label class="block text-sm font-bold text-slate-600 mb-2">تحويل إلى الموظف</label>
+                    <select id="reassign-new-emp" class="w-full bg-white border border-slate-200 p-3 rounded-xl outline-none mb-6">
+                        <option value="">جاري تحميل الموظفين...</option>
+                    </select>
+
+                    <button data-task-id="" onclick="executeReassign()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl transition-colors">تأكيد النقل وإرسال إيميل</button>
                 </div>
-                <h4 id="status-subject" class="font-bold text-slate-800 mb-1"></h4>
-              </div>
-
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">الحالة الجديدة:</label>
-                <select id="status-new-val" class="input-field bg-white">
-                  <option value="">-- اختر الحالة --</option>
-                  <option value="جديد">✨ جديد</option>
-                  <option value="جاري التنفيذ">⏳ جاري التنفيذ</option>
-                  <option value="قيد الفحص">🔍 قيد الفحص</option>
-                  <option value="متأخر">🚨 متأخر</option>
-                  <option value="تم الاعتماد">✅ تم الاعتماد</option>
-                  <option value="منتهي">🏁 منتهي</option>
-                </select>
-              </div>
-
-              <button onclick="executeStatusUpdate()" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl font-bold transition-colors btn-active">
-                حفظ التغييرات
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div id="tab-add" class="hidden-section fade-in">
-          <div class="admin-card max-w-4xl mx-auto">
-            <div class="flex items-center gap-2 mb-6">
-              <div class="bg-emerald-100 p-2 rounded-lg text-emerald-700"><i data-lucide="plus"></i></div>
-              <h3 class="font-bold text-lg">إضافة مهمة جديدة (يدوي)</h3>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div><label class="block text-sm font-bold text-slate-700 mb-2">تاريخ الورود *</label><input type="date" id="add-date" class="input-field"></div>
-              <div><label class="block text-sm font-bold text-slate-700 mb-2">الجهة الوارد منها *</label><input type="text" id="add-source" class="input-field" placeholder="مثال: الوزارة"></div>
-              
-              <div class="md:col-span-2"><label class="block text-sm font-bold text-slate-700 mb-2">الموضوع *</label><textarea id="add-subject" rows="2" class="input-field" placeholder="نص الموضوع..."></textarea></div>
-              
-              <div><label class="block text-sm font-bold text-slate-700 mb-2">الجهة محل التنفيذ</label><input type="text" id="add-entity" class="input-field" placeholder="مثال: مستشفى الفيوم العام"></div>
-              <div><label class="block text-sm font-bold text-slate-700 mb-2">الموظف المكلف</label><select id="add-employee" class="input-field"><option value="">-- اختر --</option></select></div>
-              
-              <div><label class="block text-sm font-bold text-slate-700 mb-2">الموعد النهائي</label><input type="date" id="add-deadline" class="input-field"></div>
-              <div><label class="block text-sm font-bold text-slate-700 mb-2">رابط المرفق</label><input type="url" id="add-attachment" class="input-field" placeholder="https://..."></div>
+            <div id="tab-status" class="admin-tab hidden-section fade-in">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6">تعديل حالة مهمة (إدارياً)</h2>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 max-w-2xl">
+                    <div class="flex gap-2 mb-4">
+                        <input type="text" id="status-search-input" placeholder="اكتب رقم القيد للبحث..." class="flex-1 bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none focus:border-teal-500">
+                        <button onclick="searchTaskForAdmin('status')" class="bg-slate-800 text-white px-6 rounded-xl font-bold">بحث</button>
+                    </div>
+
+                    <div id="status-task-preview" class="hidden-section bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                        <span class="font-bold text-slate-800 block mb-1" id="status-id">#000</span>
+                        <p class="text-sm text-slate-600" id="status-subject">...</p>
+                    </div>
+
+                    <label class="block text-sm font-bold text-slate-600 mb-2">الحالة الجديدة</label>
+                    <select id="status-new-val" class="w-full bg-white border border-slate-200 p-3 rounded-xl outline-none mb-6">
+                        <option value="جديد">جديد</option>
+                        <option value="قيد الفحص">قيد الفحص</option>
+                        <option value="جاري التنفيذ">جاري التنفيذ</option>
+                        <option value="متأخر">متأخر</option>
+                        <option value="تم الاعتماد">تم الاعتماد</option>
+                        <option value="منتهي">منتهي</option>
+                        <option value="محذوف">❌ حذف (إلغاء التكليف)</option>
+                    </select>
+
+                    <button data-task-id="" onclick="executeStatusUpdate()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-xl transition-colors">حفظ التعديل</button>
+                </div>
             </div>
 
-            <button onclick="executeAddTask()" class="w-full mt-8 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition-colors btn-active">
-              إضافة المهمة للنظام
-            </button>
-          </div>
-        </div>
+            <div id="tab-add" class="admin-tab hidden-section fade-in">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6">إضافة تكليف يدوي</h2>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 max-w-3xl">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">تاريخ الورود</label>
+                            <input type="date" id="add-date" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">الموعد النهائي</label>
+                            <input type="date" id="add-deadline" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">الجهة الوارد منها</label>
+                        <input type="text" id="add-source" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none" placeholder="مثال: مكتب الوزير">
+                    </div>
 
-        <div id="tab-archive" class="hidden-section fade-in">
-          <div class="admin-card mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-              <div><label class="block text-xs font-bold text-slate-500 mb-1">السنة</label><select id="arch-year" class="input-field"><option value="2025">2025</option><option value="2024">2024</option></select></div>
-              <div><label class="block text-xs font-bold text-slate-500 mb-1">الشهر</label><select id="arch-month" class="input-field"><option value="">الكل</option><option value="1">يناير</option><option value="2">فبراير</option></select></div>
-              <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-500 mb-1">بحث شامل</label><div class="flex gap-2"><input type="text" id="arch-search" placeholder="رقم، جهة، موظف..." class="input-field"><button onclick="searchArchiveAdmin()" class="bg-red-600 text-white px-6 rounded-xl font-bold"><i data-lucide="search"></i></button></div></div>
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">الجهة محل التنفيذ</label>
+                        <input type="text" id="add-entity" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none" placeholder="مثال: مستشفى الفيوم العام">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">الموضوع</label>
+                        <textarea id="add-subject" rows="3" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none" placeholder="تفاصيل التكليف..."></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">الموظف المكلف</label>
+                            <select id="add-employee" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none">
+                                <option value="">اختر الموظف...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">رابط المرفق (اختياري)</label>
+                            <input type="url" id="add-attachment" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none" placeholder="https://...">
+                        </div>
+                    </div>
+
+                    <button onclick="executeAddTask()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-colors">إضافة التكليف للقاعدة</button>
+                </div>
             </div>
-          </div>
-          
-          <div class="admin-card">
-            <div class="table-container">
-              <table class="w-full text-right text-sm">
-                <thead class="bg-slate-50 text-slate-600 font-bold uppercase text-xs">
-                  <tr>
-                    <th class="p-4 rounded-r-lg">القيد</th>
-                    <th class="p-4">التاريخ</th>
-                    <th class="p-4">الجهة</th>
-                    <th class="p-4">الموضوع</th>
-                    <th class="p-4 text-center rounded-l-lg">الملفات</th>
-                  </tr>
-                </thead>
-                <tbody id="arch-results" class="divide-y divide-slate-100"></tbody>
-              </table>
+
+            <div id="tab-archive" class="admin-tab hidden-section fade-in">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6">الأرشيف الشامل</h2>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <select id="arch-year" class="bg-slate-50 border p-3 rounded-xl font-bold"><option value="2025">2025</option><option value="2024">2024</option></select>
+                        <select id="arch-month" class="bg-slate-50 border p-3 rounded-xl font-bold"><option value="">كل الشهور</option><option value="1">يناير</option><option value="2">فبراير</option></select>
+                        <input type="text" id="arch-search" placeholder="كلمة مفتاحية..." class="bg-slate-50 border p-3 rounded-xl md:col-span-2">
+                    </div>
+                    <button onclick="searchArchiveAdmin()" class="w-full mt-4 bg-slate-800 text-white py-3 rounded-xl font-bold">بحث في الأرشيف</button>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <table class="w-full text-right text-sm">
+                        <thead class="bg-slate-50 text-slate-500"><tr><th class="p-3">#</th><th class="p-3">التاريخ</th><th class="p-3">الجهة</th><th class="p-3">الموضوع</th><th class="p-3 text-center">ملف</th></tr></thead>
+                        <tbody id="arch-results" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
             </div>
-          </div>
-        </div>
 
-      </div>
-    </main>
-  </div>
+            <div id="tab-settings" class="admin-tab hidden-section fade-in">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2"><i data-lucide="settings" class="text-amber-500"></i> التحكم بالنظام</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-lg mb-2">وضع الصيانة</h3>
+                        <p class="text-slate-500 text-sm mb-4">عند التفعيل، لن يتمكن الموظفون من الدخول للنظام وسيظهر لهم رسالة "جاري التحديث".</p>
+                        <label class="flex items-center cursor-pointer">
+                            <div class="relative">
+                                <input type="checkbox" id="maintenance-toggle" class="sr-only" onchange="toggleMaintenance()">
+                                <div class="w-14 h-8 bg-slate-200 rounded-full dot-bg transition"></div>
+                                <div class="dot absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition transform"></div>
+                            </div>
+                            <span class="mr-3 font-bold text-slate-700" id="maintenance-status">النظام يعمل</span>
+                        </label>
+                    </div>
 
-  <div id="admin-loader" class="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex flex-col items-center justify-center hidden-section">
-    <div class="w-16 h-16 border-4 border-slate-200 border-t-red-600 rounded-full animate-spin mb-4"></div>
-    <p class="font-bold text-slate-600">جاري الاتصال بقاعدة البيانات...</p>
-  </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 opacity-60 pointer-events-none">
+                        <h3 class="font-bold text-lg mb-2">إقفال السنة المالية</h3>
+                        <p class="text-slate-500 text-sm mb-4">منع أي تعديلات على سجلات السنة الحالية (قريباً).</p>
+                        <button class="bg-slate-200 text-slate-400 font-bold py-2 px-4 rounded-lg cursor-not-allowed">تفعيل الإقفال</button>
+                    </div>
+                </div>
+            </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-    });
+        </main>
+    </div>
 
-    // تبديل التبويبات (مؤقت)
-    function switchAdminTab(tabId) {
-      document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden-section'));
-      document.getElementById('tab-' + tabId).classList.remove('hidden-section');
-      
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-      const activeBtn = document.querySelector(`button[onclick="switchAdminTab('${tabId}')"]`);
-      if(activeBtn) activeBtn.classList.add('active');
-    }
-  </script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Admin Navigation Logic
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden-section'));
+            document.getElementById('tab-' + tabName).classList.remove('hidden-section');
+            
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active', 'bg-slate-800', 'border-r-4'));
+            const btn = document.getElementById('btn-' + tabName);
+            if(btn) btn.classList.add('active');
+            
+            if(tabName === 'overview') loadAdminDashboard();
+            if(tabName === 'reassign' || tabName === 'add') loadEmployeesList();
+        }
+
+        // Fake Maintenance Toggle UI (Front-only for now)
+        function toggleMaintenance() {
+            const checkbox = document.getElementById('maintenance-toggle');
+            const label = document.getElementById('maintenance-status');
+            const dot = document.querySelector('.dot');
+            const bg = document.querySelector('.dot-bg');
+            
+            if (checkbox.checked) {
+                label.innerText = "النظام متوقف للصيانة";
+                label.classList.add('text-red-600');
+                dot.classList.add('translate-x-6');
+                bg.classList.remove('bg-slate-200');
+                bg.classList.add('bg-red-500');
+            } else {
+                label.innerText = "النظام يعمل";
+                label.classList.remove('text-red-600');
+                dot.classList.remove('translate-x-6');
+                bg.classList.add('bg-slate-200');
+                bg.classList.remove('bg-red-500');
+            }
+        }
+    </script>
+    <style>
+        /* Toggle Switch Styles */
+        input:checked ~ .dot { transform: translateX(100%); }
+        input:checked ~ .dot-bg { background-color: #ef4444; }
+    </style>
 </body>
 </html>
