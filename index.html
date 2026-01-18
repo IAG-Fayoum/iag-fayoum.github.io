@@ -3,406 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الحوكمة - وزارة الصحة الفيوم</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>نظام الحوكمة - وزارة الصحة والسكان</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .portal-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .portal-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .building {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #0d9488 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .building::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 40px,
+                rgba(255,255,255,0.1) 40px,
+                rgba(255,255,255,0.1) 45px
+            );
+        }
+        .window {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-teal-50 to-slate-100 min-h-screen">
+<body class="bg-gradient-to-br from-teal-50 via-blue-50 to-slate-100 min-h-screen">
 
-<!-- ═══════════════════════════════════════════════════════════════════════════
-     🔐 LOGIN VIEW
-     ═══════════════════════════════════════════════════════════════════════════ -->
-<div id="login-view" class="min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-        <!-- Logo & Title -->
-        <div class="text-center mb-8">
-            <div class="bg-teal-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i data-lucide="shield-check" class="text-white w-10 h-10"></i>
-            </div>
-            <h1 class="text-2xl font-bold text-slate-800 mb-2">نظام الحوكمة</h1>
-            <p class="text-slate-500 text-sm">وزارة الصحة والسكان - محافظة الفيوم</p>
-        </div>
-
-        <!-- PIN Input -->
-        <div class="space-y-4">
-            <div>
-                <label class="block text-slate-700 font-bold mb-2 text-sm">رمز الدخول (PIN)</label>
-                <input 
-                    type="password" 
-                    id="pin-input" 
-                    placeholder="أدخل رمز الدخول المكون من 4 أرقام"
-                    maxlength="6"
-                    class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-teal-500 focus:outline-none text-center text-2xl tracking-widest"
-                    onkeypress="if(event.key==='Enter') handleLogin()"
-                >
-            </div>
-            
-            <button 
-                onclick="handleLogin()"
-                class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
-            >
-                <i data-lucide="log-in" class="w-5 h-5"></i>
-                دخول
-            </button>
-
-            <p id="error-msg" class="hidden text-red-600 text-sm text-center font-bold"></p>
-        </div>
-
-        <!-- Footer -->
-        <div class="mt-8 pt-6 border-t border-slate-200 text-center text-xs text-slate-400">
-            إدارة المراجعة الداخلية والحوكمة © 2025
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════════════════
-     📊 DASHBOARD VIEW
-     ═══════════════════════════════════════════════════════════════════════════ -->
-<div id="dashboard-view" class="hidden">
-    <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-40">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+<!-- Header -->
+<header class="bg-white/90 backdrop-blur-sm shadow-lg sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <div class="bg-teal-600 w-12 h-12 rounded-full flex items-center justify-center">
-                    <i data-lucide="shield-check" class="text-white w-6 h-6"></i>
+                <div class="bg-teal-600 w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg">
+                    <i data-lucide="shield-check" class="text-white w-8 h-8"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold text-slate-800">نظام الحوكمة</h1>
-                    <p class="text-xs text-slate-500">لوحة التحكم والإحصائيات</p>
+                    <h1 class="text-2xl font-black text-slate-800">نظام الحوكمة</h1>
+                    <p class="text-sm text-slate-600">إدارة المراجعة الداخلية والحوكمة</p>
+                    <p class="text-xs text-teal-600 font-bold">وزارة الصحة والسكان - محافظة الفيوم</p>
                 </div>
             </div>
             
-            <div class="flex items-center gap-4">
-                <div class="text-left">
-                    <p class="text-sm font-bold text-slate-800" id="user-name"></p>
-                    <p class="text-xs text-slate-500" id="user-role"></p>
-                </div>
-                <button 
-                    onclick="logout()"
-                    class="bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-lg font-bold text-sm transition-all"
-                >
-                    خروج
-                </button>
+            <div class="hidden md:flex items-center gap-3 text-sm text-slate-600">
+                <i data-lucide="phone" class="w-4 h-4 text-teal-600"></i>
+                <span>084 - XXXXXXX</span>
             </div>
         </div>
-    </header>
+    </div>
+</header>
 
-    <div class="container mx-auto px-4 py-8">
-        <!-- Filters -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i data-lucide="filter" class="w-5 h-5 text-teal-600"></i>
-                الفلترة والبحث
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">السنة</label>
-                    <select id="year-select" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
-                        <!-- Will be filled by JS -->
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">نوع الفترة</label>
-                    <select id="filter-type" onchange="toggleFilterInputs()" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
-                        <option value="current">السنة الحالية</option>
-                        <option value="month">شهر محدد</option>
-                        <option value="custom">فترة مخصصة</option>
-                    </select>
-                </div>
-                
-                <div id="month-input" class="hidden">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">الشهر</label>
-                    <select id="month-select" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
-                        <!-- Will be filled by JS -->
-                    </select>
-                </div>
-                
-                <div id="date-range" class="hidden col-span-2 grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">من</label>
-                        <input type="date" id="d-start" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">إلى</label>
-                        <input type="date" id="d-end" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
-                    </div>
-                </div>
-                
-                <div class="flex items-end">
-                    <button 
-                        onclick="applyFilter()"
-                        class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-lg transition-all flex items-center justify-center gap-2"
-                    >
-                        <i data-lucide="search" class="w-4 h-4"></i>
-                        تطبيق
-                    </button>
-                </div>
+<!-- Hero Section with Building -->
+<section class="container mx-auto px-4 py-12">
+    <div class="building shadow-2xl p-12 text-center text-white mb-12 fade-in">
+        <div class="relative z-10">
+            <div class="inline-block bg-white/20 backdrop-blur-sm p-4 rounded-2xl mb-6">
+                <i data-lucide="building-2" class="w-20 h-20"></i>
             </div>
-            
-            <p id="filter-status" class="text-xs text-slate-500 mt-4"></p>
-        </div>
-
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <p class="text-blue-100 text-sm font-bold">إجمالي المعاملات</p>
-                        <h2 id="v-total" class="text-4xl font-black mt-2">0</h2>
-                    </div>
-                    <div class="bg-white/20 p-3 rounded-lg">
-                        <i data-lucide="file-text" class="w-6 h-6"></i>
-                    </div>
+            <h2 class="text-4xl font-black mb-4">🏛️ إدارة المراجعة الداخلية والحوكمة</h2>
+            <p class="text-xl mb-8 text-teal-100">مديرية الصحة - محافظة الفيوم</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="window rounded-lg p-4">
+                    <p class="text-3xl font-black">24</p>
+                    <p class="text-xs text-teal-100">منشأة صحية</p>
                 </div>
-            </div>
-            
-            <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <p class="text-emerald-100 text-sm font-bold">المنجزة</p>
-                        <h2 id="v-done" class="text-4xl font-black mt-2">0</h2>
-                    </div>
-                    <div class="bg-white/20 p-3 rounded-lg">
-                        <i data-lucide="check-circle" class="w-6 h-6"></i>
-                    </div>
+                <div class="window rounded-lg p-4">
+                    <p class="text-3xl font-black">8</p>
+                    <p class="text-xs text-teal-100">جهات رقابية</p>
                 </div>
-            </div>
-            
-            <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <p class="text-amber-100 text-sm font-bold">قيد التنفيذ</p>
-                        <h2 id="v-prog" class="text-4xl font-black mt-2">0</h2>
-                    </div>
-                    <div class="bg-white/20 p-3 rounded-lg">
-                        <i data-lucide="clock" class="w-6 h-6"></i>
-                    </div>
+                <div class="window rounded-lg p-4">
+                    <p class="text-3xl font-black">12</p>
+                    <p class="text-xs text-teal-100">موظف</p>
                 </div>
-            </div>
-            
-            <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <p class="text-red-100 text-sm font-bold">المتأخرة</p>
-                        <h2 id="v-late" class="text-4xl font-black mt-2">0</h2>
-                    </div>
-                    <div class="bg-white/20 p-3 rounded-lg">
-                        <i data-lucide="alert-circle" class="w-6 h-6"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tables Container -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Employees Table -->
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="bg-teal-600 text-white px-6 py-4">
-                    <h3 class="font-bold flex items-center gap-2">
-                        <i data-lucide="users" class="w-5 h-5"></i>
-                        أداء الموظفين
-                    </h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-slate-100">
-                            <tr>
-                                <th class="p-4 text-right text-xs font-bold text-slate-600">الموظف</th>
-                                <th class="p-4 text-center text-xs font-bold text-slate-600">الإجمالي</th>
-                                <th class="p-4 text-center text-xs font-bold text-slate-600">المنجز</th>
-                                <th class="p-4 text-xs font-bold text-slate-600">التقدم</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-rows">
-                            <tr>
-                                <td colspan="4" class="p-8 text-center text-slate-400">جاري التحميل...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Entities Table -->
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="bg-slate-700 text-white px-6 py-4">
-                    <h3 class="font-bold flex items-center gap-2">
-                        <i data-lucide="building" class="w-5 h-5"></i>
-                        الجهات الأكثر تأخيراً
-                    </h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-slate-100">
-                            <tr>
-                                <th class="p-4 text-right text-xs font-bold text-slate-600">الجهة</th>
-                                <th class="p-4 text-center text-xs font-bold text-slate-600">الكل</th>
-                                <th class="p-4 text-center text-xs font-bold text-slate-600">معلق</th>
-                                <th class="p-4 text-center text-xs font-bold text-slate-600">متأخر</th>
-                                <th class="p-4 text-center text-xs font-bold text-slate-600">نسبة %</th>
-                            </tr>
-                        </thead>
-                        <tbody id="entity-rows">
-                            <tr>
-                                <td colspan="5" class="p-8 text-center text-slate-400">جاري التحميل...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="window rounded-lg p-4">
+                    <p class="text-3xl font-black">3</p>
+                    <p class="text-xs text-teal-100">أقسام رئيسية</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Loader -->
-<div id="loader" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl p-8 flex flex-col items-center gap-4">
-        <div class="animate-spin rounded-full h-16 w-16 border-4 border-teal-600 border-t-transparent"></div>
-        <p class="text-slate-700 font-bold">جاري التحميل...</p>
+    <!-- Welcome Message -->
+    <div class="text-center mb-12 fade-in" style="animation-delay: 0.2s">
+        <h3 class="text-3xl font-black text-slate-800 mb-4">اختر البوابة المناسبة</h3>
+        <p class="text-slate-600 text-lg">نظام إلكتروني متكامل لإدارة المراجعة والحوكمة</p>
     </div>
-</div>
 
-<!-- Scripts -->
-<script src="assets/js/core.js"></script>
+    <!-- Portal Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        <!-- Dashboard Portal -->
+        <div class="portal-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-xl p-8 text-white fade-in" style="animation-delay: 0.3s" onclick="window.location.href='dashboard.html'">
+            <div class="bg-white/20 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mx-auto float">
+                <i data-lucide="bar-chart-3" class="w-10 h-10"></i>
+            </div>
+            <h4 class="text-2xl font-bold mb-3 text-center">لوحة التحكم</h4>
+            <p class="text-blue-100 text-sm text-center mb-6">الإحصائيات والتقارير الشاملة</p>
+            <div class="text-center">
+                <span class="inline-block bg-white/20 px-4 py-2 rounded-lg text-sm font-bold">Dashboard</span>
+            </div>
+        </div>
+
+        <!-- Employee Portal -->
+        <div class="portal-card bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-xl p-8 text-white fade-in" style="animation-delay: 0.4s" onclick="window.location.href='employee.html'">
+            <div class="bg-white/20 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mx-auto float" style="animation-delay: 0.5s">
+                <i data-lucide="user" class="w-10 h-10"></i>
+            </div>
+            <h4 class="text-2xl font-bold mb-3 text-center">بوابة الموظف</h4>
+            <p class="text-emerald-100 text-sm text-center mb-6">متابعة المهام والتقارير الشخصية</p>
+            <div class="text-center">
+                <span class="inline-block bg-white/20 px-4 py-2 rounded-lg text-sm font-bold">Employee</span>
+            </div>
+        </div>
+
+        <!-- Coordinator Portal -->
+        <div class="portal-card bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-xl p-8 text-white fade-in" style="animation-delay: 0.5s" onclick="window.location.href='coordinator.html'">
+            <div class="bg-white/20 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mx-auto float" style="animation-delay: 1s">
+                <i data-lucide="users-cog" class="w-10 h-10"></i>
+            </div>
+            <h4 class="text-2xl font-bold mb-3 text-center">بوابة المنسق</h4>
+            <p class="text-purple-100 text-sm text-center mb-6">إدارة الفريق وتوزيع المهام</p>
+            <div class="text-center">
+                <span class="inline-block bg-white/20 px-4 py-2 rounded-lg text-sm font-bold">Coordinator</span>
+            </div>
+        </div>
+
+        <!-- Admin Portal -->
+        <div class="portal-card bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl shadow-xl p-8 text-white fade-in" style="animation-delay: 0.6s" onclick="window.location.href='admin.html'">
+            <div class="bg-white/20 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mx-auto float" style="animation-delay: 1.5s">
+                <i data-lucide="shield-check" class="w-10 h-10"></i>
+            </div>
+            <h4 class="text-2xl font-bold mb-3 text-center">لوحة المدير</h4>
+            <p class="text-slate-300 text-sm text-center mb-6">التحكم الكامل والإدارة المتقدمة</p>
+            <div class="text-center">
+                <span class="inline-block bg-white/20 px-4 py-2 rounded-lg text-sm font-bold">Admin</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto fade-in" style="animation-delay: 0.7s">
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-2xl transition-all">
+            <div class="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="file-check" class="w-8 h-8 text-teal-600"></i>
+            </div>
+            <p class="text-3xl font-black text-slate-800 mb-2">278</p>
+            <p class="text-xs text-slate-600 font-bold">معاملة نشطة</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-2xl transition-all">
+            <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="users" class="w-8 h-8 text-blue-600"></i>
+            </div>
+            <p class="text-3xl font-black text-slate-800 mb-2">12</p>
+            <p class="text-xs text-slate-600 font-bold">موظف نشط</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-2xl transition-all">
+            <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="building" class="w-8 h-8 text-purple-600"></i>
+            </div>
+            <p class="text-3xl font-black text-slate-800 mb-2">24</p>
+            <p class="text-xs text-slate-600 font-bold">منشأة صحية</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-2xl transition-all">
+            <div class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="check-circle" class="w-8 h-8 text-emerald-600"></i>
+            </div>
+            <p class="text-3xl font-black text-slate-800 mb-2">156</p>
+            <p class="text-xs text-slate-600 font-bold">مهمة منجزة</p>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="mt-16 bg-white rounded-2xl shadow-2xl p-12 fade-in" style="animation-delay: 0.8s">
+        <h3 class="text-3xl font-black text-center text-slate-800 mb-12">مميزات النظام</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="bg-teal-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="zap" class="w-10 h-10 text-teal-600"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-2">توزيع تلقائي</h4>
+                <p class="text-slate-600">توزيع ذكي للمهام حسب التخصص والحمل</p>
+            </div>
+
+            <div class="text-center">
+                <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="bell" class="w-10 h-10 text-blue-600"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-2">إشعارات فورية</h4>
+                <p class="text-slate-600">تنبيهات تلقائية عبر البريد الإلكتروني</p>
+            </div>
+
+            <div class="text-center">
+                <div class="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="file-text" class="w-10 h-10 text-purple-600"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-2">تقارير احترافية</h4>
+                <p class="text-slate-600">تقارير مدعومة بالذكاء الاصطناعي</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-slate-900 text-white py-8 mt-16">
+    <div class="container mx-auto px-4 text-center">
+        <div class="flex items-center justify-center gap-4 mb-4">
+            <div class="bg-teal-600 w-12 h-12 rounded-full flex items-center justify-center">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <div class="text-right">
+                <p class="font-bold">إدارة المراجعة الداخلية والحوكمة</p>
+                <p class="text-xs text-slate-400">وزارة الصحة والسكان - محافظة الفيوم</p>
+            </div>
+        </div>
+        <div class="border-t border-slate-700 pt-4 mt-4">
+            <p class="text-sm text-slate-400">© 2025 جميع الحقوق محفوظة</p>
+            <p class="text-xs text-slate-500 mt-2">تم التطوير بواسطة فريق الحوكمة الرقمية</p>
+        </div>
+    </div>
+</footer>
+
 <script>
-// ═══════════════════════════════════════════════════════════════════════════
-// 🔐 LOGIN LOGIC
-// ═══════════════════════════════════════════════════════════════════════════
-async function handleLogin() {
-    const pin = document.getElementById('pin-input').value.trim();
-    const errorMsg = document.getElementById('error-msg');
-    
-    if (pin.length < 4) {
-        errorMsg.textContent = '⚠️ يرجى إدخال رمز الدخول';
-        errorMsg.classList.remove('hidden');
-        return;
-    }
-    
-    const result = await login(pin);
-    
-    if (result.success) {
-        document.getElementById('login-view').classList.add('hidden');
-        document.getElementById('dashboard-view').classList.remove('hidden');
-        
-        document.getElementById('user-name').textContent = result.name;
-        document.getElementById('user-role').textContent = result.role;
-        
-        // تحميل الداتا
-        initDashboard();
-    } else {
-        errorMsg.textContent = '❌ ' + (result.error || 'رمز الدخول غير صحيح');
-        errorMsg.classList.remove('hidden');
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 📊 DASHBOARD LOGIC
-// ═══════════════════════════════════════════════════════════════════════════
-function initDashboard() {
-    // Fill year options
-    document.getElementById('year-select').innerHTML = getYearOptions();
-    document.getElementById('month-select').innerHTML = getMonthOptions();
-    
-    // Apply default filter
-    applyFilter();
-}
-
-async function applyFilter() {
-    const year = document.getElementById('year-select').value;
-    const type = document.getElementById('filter-type').value;
-    let start, end;
-    
-    if (type === 'current') {
-        start = `${year}-01-01`;
-        end = `${year}-12-31`;
-    } else if (type === 'month') {
-        const m = parseInt(document.getElementById('month-select').value);
-        const mm = m < 10 ? '0' + m : m;
-        start = `${year}-${mm}-01`;
-        end = `${year}-${mm}-31`;
-    } else {
-        start = document.getElementById('d-start').value;
-        end = document.getElementById('d-end').value;
-    }
-    
-    document.getElementById('filter-status').textContent = 'جاري التحديث...';
-    
-    const data = await fetchDashboardData(start, end);
-    
-    if (data) {
-        renderDashboard(data);
-        document.getElementById('filter-status').textContent = `آخر تحديث: ${new Date().toLocaleTimeString('ar-EG')}`;
-    }
-}
-
-function renderDashboard(data) {
-    // Update stats
-    document.getElementById('v-total').textContent = data.totals.periodTotal;
-    document.getElementById('v-done').textContent = data.totals.periodCompleted;
-    document.getElementById('v-prog').textContent = data.totals.periodInProgress;
-    document.getElementById('v-late').textContent = data.totals.absoluteOverdue;
-    
-    // Render employees table
-    const tbody = document.getElementById('table-rows');
-    tbody.innerHTML = '';
-    data.employees.forEach(emp => {
-        const percent = emp.periodTotal > 0 ? Math.round((emp.periodCompleted / emp.periodTotal) * 100) : 0;
-        const barColor = percent >= 80 ? 'bg-emerald-500' : (percent < 50 ? 'bg-red-500' : 'bg-amber-500');
-        
-        tbody.innerHTML += `
-        <tr class="hover:bg-slate-50 border-b border-slate-100">
-            <td class="p-4 font-bold text-slate-800">${emp.name}</td>
-            <td class="p-4 text-center text-slate-600">${emp.periodTotal}</td>
-            <td class="p-4 text-center font-bold text-emerald-600">${emp.periodCompleted}</td>
-            <td class="p-4">
-                <div class="w-full bg-slate-200 rounded-full h-2.5">
-                    <div class="${barColor} h-2.5 rounded-full" style="width: ${percent}%"></div>
-                </div>
-            </td>
-        </tr>`;
-    });
-    
-    // Render entities table
-    const entBody = document.getElementById('entity-rows');
-    entBody.innerHTML = '';
-    data.entities.slice(0, 10).forEach(ent => {
-        entBody.innerHTML += `
-        <tr class="hover:bg-slate-50 border-b border-slate-100">
-            <td class="p-4 font-bold text-slate-700 text-xs">${ent.name}</td>
-            <td class="p-4 text-center text-slate-600">${ent.total}</td>
-            <td class="p-4 text-center text-amber-600 font-bold">${ent.pending}</td>
-            <td class="p-4 text-center text-red-600 font-black">${ent.overdue}</td>
-            <td class="p-4 text-center text-xs font-bold">${ent.overduePercent}%</td>
-        </tr>`;
-    });
-    
-    lucide.createIcons();
-}
-
-function toggleFilterInputs() {
-    const type = document.getElementById('filter-type').value;
-    document.getElementById('month-input').classList.add('hidden');
-    document.getElementById('date-range').classList.add('hidden');
-    
-    if (type === 'month') document.getElementById('month-input').classList.remove('hidden');
-    if (type === 'custom') document.getElementById('date-range').classList.remove('hidden');
-}
-
-// Init icons
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
     
-    // Check if already logged in
-    const user = getCurrentUser();
-    if (user) {
-        document.getElementById('login-view').classList.add('hidden');
-        document.getElementById('dashboard-view').classList.remove('hidden');
-        document.getElementById('user-name').textContent = user.name;
-        document.getElementById('user-role').textContent = user.role;
-        initDashboard();
-    }
+    // Add click animation
+    document.querySelectorAll('.portal-card').forEach(card => {
+        card.addEventListener('click', function() {
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 200);
+        });
+    });
 });
 </script>
 
