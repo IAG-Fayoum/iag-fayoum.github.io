@@ -1,470 +1,632 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة المنسق - نظام الحوكمة</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <title>بوابة المنسق - نظام الحوكمة</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="assets/js/api.js"></script>
+
+  <style>
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background-color: #f8fafc;
+      /* [تم التعديل] منع سحب الصفحة للأسفل (Pull-to-refresh) ليشعر المستخدم أنه تطبيق */
+      overscroll-behavior-y: none;
+      /* [تم التعديل] منع تحديد النصوص في الواجهة */
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* السماح بتحديد النصوص داخل الجداول وحقول الكتابة فقط */
+    input, textarea, table, .selectable {
+      -webkit-user-select: text;
+      user-select: text;
+    }
+
+    /* [تم التعديل] تأثير ضغط حقيقي للأزرار والبطاقات */
+    button:active, .service-card:active, .task-card:active, .main-tab-btn:active, .sidebar-item:active {
+      transform: scale(0.97);
+      opacity: 0.9;
+      transition: transform 0.1s;
+    }
+    
+    /* ── Theme Colors ── */
+    .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
+    
+    /* ── Sidebar Navigation ── */
+    .sidebar-active { background-color: #0f766e; color: white; border-right: 4px solid #ccfbf1; }
+    .sidebar-item { color: #475569; transition: all 0.2s; }
+    .sidebar-item:hover { background-color: #f0fdfa; color: #0f766e; }
+    
+    /* ── Utilities ── */
+    .hidden-section { display: none !important; }
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* ── Cards ── */
+    .stat-card { background: white; border-radius: 16px; padding: 24px; border: 1px solid #e2e8f0; transition: transform 0.2s; }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); border-color: #0f766e; }
+    
+    .service-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; transition: all 0.3s; display: flex; align-items: center; gap: 15px; cursor: pointer; }
+    .service-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-color: #0f766e; }
+    
+    .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+
+    /* Employee Stats Overview Cards */
+    .overview-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; transition: all 0.2s; text-align: center; }
+    .overview-card:hover { transform: translateY(-3px); box-shadow: 0 8px 16px -4px rgba(0,0,0,0.08); }
+    .overview-card h4 { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #64748b; margin-bottom: 8px; }
+    .overview-card .count { font-size: 2.5rem; font-weight: 900; line-height: 1; }
+    .overview-new { border-bottom: 4px solid #3b82f6; } .overview-new .count { color: #3b82f6; }
+    .overview-progress { border-bottom: 4px solid #f59e0b; } .overview-progress .count { color: #f59e0b; }
+    .overview-late { border-bottom: 4px solid #ef4444; } .overview-late .count { color: #ef4444; }
+    .overview-done { border-bottom: 4px solid #10b981; } .overview-done .count { color: #10b981; }
+
+    /* Tasks Styles */
+    .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; transition: all 0.2s; border-right: 4px solid transparent; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+    .task-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    
+    .task-new { border-right-color: #3b82f6; background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%); box-shadow: 0 4px 8px rgba(59, 130, 246, 0.15); }
+    .task-progress { border-right-color: #f59e0b; }
+    .task-late { border-right-color: #ef4444; }
+    .task-done { border-right-color: #10b981; }
+
+    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; }
+    .main-tab-btn { padding: 10px 20px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+    .main-tab-btn:hover { background-color: #f1f5f9; color: #0f766e; }
+    .main-tab-btn.active { background-color: #0f766e; color: white; box-shadow: 0 4px 8px rgba(15, 118, 110, 0.3); }
+
+    .overdue-table { border: 2px solid #fecaca; border-radius: 12px; overflow: hidden; }
+    .overdue-table thead { background-color: #fee2e2; }
+    .overdue-table thead th { color: #991b1b; font-weight: 800; }
+    .overdue-table tbody tr:hover { background-color: #fef2f2; }
+
+    .history-filters { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
+    .filter-label { font-weight: 700; color: #475569; font-size: 0.85rem; }
+    .filter-select { border: 2px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-weight: 600; outline: none; background: white; color: #334155; transition: 0.2s; }
+    .filter-select:focus { border-color: #0f766e; }
+    .filter-btn { background-color: #0f766e; color: white; padding: 6px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .filter-btn:hover { background-color: #115e59; }
+
+    /* Mobile Bottom Navigation - محسّن */
+    @media (max-width: 768px) {
+      .desktop-sidebar { display: none !important; }
+      
+      .bottom-nav { 
+        display: flex !important; 
+        position: fixed; 
+        bottom: 0; 
+        left: 0; 
+        right: 0; 
+        background: white; 
+        border-top: 2px solid #e2e8f0; 
+        z-index: 999;
+        box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+        padding: 8px 0;
+        /* [تم التعديل] إضافة دعم لمناطق الأمان (Safe Area) للآيفون */
+        padding-bottom: env(safe-area-inset-bottom);
+        height: calc(70px + env(safe-area-inset-bottom));
+      }
+      
+      .bottom-nav button {
+        flex: 1;
+        padding: 8px 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: #64748b;
+        transition: all 0.2s;
+        border: none;
+        background: transparent;
+        position: relative;
+      }
+      
+      .bottom-nav button:active {
+        transform: scale(0.95);
+      }
+      
+      .bottom-nav button.active {
+        color: #0f766e;
+        background: #f0fdfa;
+      }
+      
+      .bottom-nav button.active::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 10%;
+        right: 10%;
+        height: 3px;
+        background: #0f766e;
+        border-radius: 0 0 3px 3px;
+      }
+      
+      .bottom-nav button svg {
+        width: 24px;
+        height: 24px;
+      }
+      
+      /* تحسينات المحتوى للموبايل */
+      .main-content { 
+        /* [تم التعديل] زيادة الهامش السفلي لاحترام ارتفاع النافبار الجديد */
+        padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important; 
+        height: calc(100vh - (70px + env(safe-area-inset-bottom)));
+        overflow-y: auto;
+      }
+      
+      /* تحسين الإحصائيات للموبايل */
+      .stat-card {
+        padding: 16px;
+      }
+      
+      .stat-card h3 {
+        font-size: 1.5rem;
+      }
+      
+      /* تحسين overview cards للموبايل */
+      .overview-card {
+        padding: 16px;
+      }
+      
+      .overview-card .count {
+        font-size: 2rem;
+      }
+      
+      /* تحسين Task Cards للموبايل */
+      .task-card {
+        padding: 14px;
+      }
+      
+      /* تحسين الجداول للموبايل */
+      table {
+        font-size: 0.85rem;
+      }
+      
+      table th, table td {
+        padding: 10px 8px;
+      }
+      
+      /* تحسين الفلاتر للموبايل */
+      .history-filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .filter-select {
+        width: 100%;
+      }
+      
+      .filter-btn {
+        width: 100%;
+        padding: 10px;
+      }
+      
+      /* تحسين Login Form للموبايل */
+      #emp-login-form {
+        padding: 24px;
+        max-width: 90%;
+      }
+      
+      #emp-pin-input {
+        font-size: 2rem;
+      }
+    }
+    
+    @media (min-width: 769px) {
+      .bottom-nav { display: none !important; }
+    }
+    
+    @media (max-width: 375px) {
+      .overview-card .count {
+        font-size: 1.75rem;
+      }
+      
+      .bottom-nav button {
+        font-size: 0.6rem;
+        padding: 6px 2px;
+      }
+      
+      .bottom-nav button svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  </style>
 </head>
-<body class="bg-slate-50">
+<body class="min-h-screen flex flex-col">
 
-<!-- Header -->
-<header class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white sticky top-0 z-40 shadow-lg">
-    <div class="container mx-auto px-4 py-4">
-        <div class="flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-white/20 p-2 rounded-lg">
-                    <i data-lucide="users-cog" class="w-6 h-6"></i>
-                </div>
-                <div>
-                    <h1 id="coord-name" class="text-lg font-bold">المنسق</h1>
-                    <p class="text-xs text-indigo-100">متابعة الفريق والتوزيع</p>
-                </div>
+  <div id="dashboard-app" class="flex-grow flex h-screen overflow-hidden">
+    
+    <aside class="desktop-sidebar w-64 bg-white border-l border-slate-200 flex flex-col shadow-lg z-20 shrink-0">
+      <div class="p-6 text-center border-b border-slate-100">
+        <div class="w-16 h-16 bg-teal-50 text-teal-700 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
+          <i data-lucide="shield" class="w-8 h-8"></i>
+        </div>
+        <h2 class="font-bold text-slate-800 mt-2">نظام الحوكمة</h2>
+      </div>
+      <nav class="flex-grow p-4 space-y-2">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 p-3 rounded-lg font-bold sidebar-active">
+          <i data-lucide="layout-grid" class="w-5 h-5"></i> Dashboard
+        </button>
+        <button onclick="switchTab('services')" id="nav-services" class="w-full flex items-center gap-3 p-3 rounded-lg font-medium sidebar-item">
+          <i data-lucide="briefcase" class="w-5 h-5"></i> الخدمات
+        </button>
+        <button onclick="switchTab('employees')" id="nav-employees" class="w-full flex items-center gap-3 p-3 rounded-lg font-medium sidebar-item">
+          <i data-lucide="users-2" class="w-5 h-5"></i> الموظفين
+        </button>
+        <a href="admin.html" class="w-full flex items-center gap-3 p-3 rounded-lg font-medium sidebar-item hover:bg-red-50 hover:text-red-600">
+          <i data-lucide="settings-2" class="w-5 h-5"></i> الإدارة
+        </a>
+      </nav>
+      <div class="p-4 border-t border-slate-100">
+        <button onclick="exitSystem()" class="w-full flex items-center gap-3 p-3 rounded-lg text-red-500 hover:bg-red-50 transition-colors text-sm font-bold">
+          <i data-lucide="log-out" class="w-4 h-4"></i> خروج
+        </button>
+      </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col bg-slate-50 overflow-hidden relative main-content">
+      <div class="flex-1 overflow-y-auto scroll-smooth">
+
+        <div id="tab-dashboard" class="fade-in">
+          <header class="bg-white border-b border-slate-200 p-4 flex flex-col xl:flex-row justify-between items-center gap-4 shadow-sm sticky top-0 z-30">
+            <div>
+              <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="activity" class="text-teal-600"></i> مؤشرات الأداء
+              </h2>
+              <p class="text-xs text-slate-500 font-bold mt-1" id="filter-status">جاري التحميل...</p>
             </div>
             
-            <div class="flex items-center gap-2">
-                <button onclick="window.location.href='index.html'" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg font-bold text-sm transition-all">
-                    لوحة التحكم
-                </button>
-                <button onclick="logout()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg font-bold text-sm transition-all">
-                    خروج
-                </button>
+            <div class="bg-white border border-slate-200 p-1 rounded-xl flex gap-2 items-center flex-wrap shadow-sm">
+              <div class="flex items-center gap-1 px-2 border-l border-slate-200">
+                <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+                <select id="year-select" class="outline-none bg-transparent font-bold text-slate-700 text-sm py-1">
+                  <option value="2027">2027</option>
+                  <option value="2026">2026</option>
+                  <option value="2025" selected>2025</option>
+                  <option value="2024">2024</option>
+                </select>
+              </div>
+              <div class="flex items-center gap-1 px-2">
+                <i data-lucide="filter" class="w-4 h-4 text-slate-400"></i>
+                <select id="filter-type" class="outline-none bg-transparent font-bold text-slate-700 text-sm py-1" onchange="toggleInputs()">
+                  <option value="current">الربع الحالي</option>
+                  <option value="all">سنة كاملة</option>
+                  <option value="Q1">Q1</option>
+                  <option value="Q2">Q2</option>
+                  <option value="Q3">Q3</option>
+                  <option value="Q4">Q4</option>
+                  <option value="month">شهر محدد</option>
+                  <option value="custom">فترة مخصصة</option>
+                </select>
+              </div>
+              <div id="month-input" class="hidden-section px-2 border-r border-slate-200">
+                <select id="month-select" class="outline-none bg-transparent font-bold text-slate-700 text-sm py-1">
+                  <option value="0">يناير</option>
+                  <option value="1">فبراير</option>
+                  <option value="2">مارس</option>
+                  <option value="3">أبريل</option>
+                  <option value="4">مايو</option>
+                  <option value="5">يونيو</option>
+                  <option value="6">يوليو</option>
+                  <option value="7">أغسطس</option>
+                  <option value="8">سبتمبر</option>
+                  <option value="9">أكتوبر</option>
+                  <option value="10">نوفمبر</option>
+                  <option value="11">ديسمبر</option>
+                </select>
+              </div>
+              <div id="date-range" class="hidden-section px-2 flex gap-2 border-r border-slate-200">
+                <input type="date" id="d-start" class="border rounded px-1 text-sm">
+                <input type="date" id="d-end" class="border rounded px-1 text-sm">
+              </div>
+              <button onclick="applyFilter()" class="bg-teal-600 text-white px-4 py-1 rounded-lg text-sm font-bold hover:bg-teal-700">
+                <i data-lucide="search" class="w-4 h-4"></i>
+              </button>
             </div>
-        </div>
-    </div>
-</header>
+          </header>
 
-<!-- Stats Bar -->
-<div class="bg-white shadow-md border-b-4 border-indigo-500">
-    <div class="container mx-auto px-4 py-6">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="text-center">
-                <div class="text-3xl font-black text-blue-600" id="total-tasks">0</div>
-                <div class="text-xs text-slate-600 font-bold mt-1">المعاملات النشطة</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-black text-emerald-600" id="completed-tasks">0</div>
-                <div class="text-xs text-slate-600 font-bold mt-1">المنجزة اليوم</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-black text-red-600" id="overdue-tasks">0</div>
-                <div class="text-xs text-slate-600 font-bold mt-1">المتأخرة</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-black text-purple-600" id="active-employees">0</div>
-                <div class="text-xs text-slate-600 font-bold mt-1">الموظفون النشطون</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Main Content -->
-<div class="container mx-auto px-4 py-8">
-    <!-- Tabs -->
-    <div class="bg-white rounded-xl shadow-lg p-4 mb-8">
-        <div class="flex flex-wrap gap-2">
-            <button id="tab-btn-overview" onclick="switchTab('overview')" class="px-6 py-3 rounded-lg font-bold transition-all bg-indigo-600 text-white">
-                نظرة عامة
-            </button>
-            <button id="tab-btn-employees" onclick="switchTab('employees')" class="px-6 py-3 rounded-lg font-bold transition-all bg-slate-100 text-slate-600">
-                أداء الموظفين
-            </button>
-            <button id="tab-btn-workload" onclick="switchTab('workload')" class="px-6 py-3 rounded-lg font-bold transition-all bg-slate-100 text-slate-600">
-                توزيع الأحمال
-            </button>
-            <button id="tab-btn-alerts" onclick="switchTab('alerts')" class="px-6 py-3 rounded-lg font-bold transition-all bg-slate-100 text-slate-600">
-                التنبيهات
-            </button>
-        </div>
-    </div>
-
-    <!-- Overview Tab -->
-    <div id="overview-tab" class="space-y-8">
-        <!-- Active Assignments -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="bg-indigo-600 text-white px-6 py-4">
-                <h3 class="font-bold flex items-center gap-2">
-                    <i data-lucide="list" class="w-5 h-5"></i>
-                    التكليفات النشطة
-                </h3>
-            </div>
-            
-            <!-- Filters -->
-            <div class="p-6 bg-slate-50 border-b border-slate-200">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">الموظف</label>
-                        <select id="filter-employee" onchange="applyOverviewFilter()" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
-                            <option value="">-- الكل --</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">الحالة</label>
-                        <select id="filter-status" onchange="applyOverviewFilter()" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
-                            <option value="">-- الكل --</option>
-                            <option value="جديد">جديد</option>
-                            <option value="جاري">جاري التنفيذ</option>
-                            <option value="متأخر">متأخر</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">الجهة</label>
-                        <select id="filter-entity" onchange="applyOverviewFilter()" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
-                            <option value="">-- الكل --</option>
-                        </select>
-                    </div>
-                </div>
+          <div class="p-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+              <div class="stat-card border-b-4 border-teal-600">
+                <p class="text-slate-500 text-xs font-bold uppercase">إجمالي التكليفات</p>
+                <h3 id="v-total" class="text-4xl font-black text-slate-800 mt-2">...</h3>
+              </div>
+              <div class="stat-card border-b-4 border-emerald-500">
+                <p class="text-slate-500 text-xs font-bold uppercase">تم الإنجاز</p>
+                <h3 id="v-done" class="text-4xl font-black text-emerald-600 mt-2">...</h3>
+              </div>
+              <div class="stat-card border-b-4 border-amber-500">
+                <p class="text-slate-500 text-xs font-bold uppercase">جاري العمل</p>
+                <h3 id="v-prog" class="text-4xl font-black text-amber-500 mt-2">...</h3>
+              </div>
+              <div class="stat-card border-b-4 border-red-500 bg-red-50">
+                <p class="text-red-500 text-xs font-bold uppercase">إجمالي المتأخرات (كلي)</p>
+                <h3 id="v-late" class="text-4xl font-black text-red-600 mt-2">...</h3>
+              </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-slate-100">
-                        <tr>
-                            <th class="p-4 text-right text-xs font-bold text-slate-600">رقم القيد</th>
-                            <th class="p-4 text-right text-xs font-bold text-slate-600">الموضوع</th>
-                            <th class="p-4 text-right text-xs font-bold text-slate-600">الجهة</th>
-                            <th class="p-4 text-right text-xs font-bold text-slate-600">المكلف</th>
-                            <th class="p-4 text-center text-xs font-bold text-slate-600">التاريخ</th>
-                            <th class="p-4 text-center text-xs font-bold text-slate-600">الحالة</th>
-                        </tr>
-                    </thead>
-                    <tbody id="overview-rows">
-                        <tr>
-                            <td colspan="6" class="p-8 text-center text-slate-400">جاري التحميل...</td>
-                        </tr>
-                    </tbody>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <div class="p-6 border-b border-slate-100 flex items-center gap-2 bg-slate-50/50">
+                <i data-lucide="users" class="text-teal-600"></i>
+                <h3 class="font-bold text-slate-800">تحليل أداء الموظفين</h3>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-right">
+                  <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold">
+                    <tr>
+                      <th class="p-5">الموظف</th>
+                      <th class="p-5">مصادر التكليف</th>
+                      <th class="p-5 text-center">متوسط السرعة</th>
+                      <th class="p-5 text-center">التكليفات</th>
+                      <th class="p-5 text-center">منجز</th>
+                      <th class="p-5 text-center">متبقي</th>
+                      <th class="p-5 w-1/4">الإنجاز</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-rows" class="divide-y divide-slate-100 text-sm font-medium"></tbody>
                 </table>
+              </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Employees Tab -->
-    <div id="employees-tab" class="hidden">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Will be filled by JS -->
-        </div>
-    </div>
-
-    <!-- Workload Tab -->
-    <div id="workload-tab" class="hidden">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <i data-lucide="bar-chart-3" class="w-5 h-5 text-indigo-600"></i>
-                توزيع الأحمال على الموظفين
-            </h3>
-            <div id="workload-chart" class="space-y-4">
-                <!-- Will be filled by JS -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <div class="p-6 border-b border-slate-100 flex items-center gap-2 bg-slate-50/50">
+                <i data-lucide="building-2" class="text-blue-600"></i>
+                <h3 class="font-bold text-slate-800">موقف الجهات الخاضعة للرقابة</h3>
+              </div>
+              <div class="overflow-x-auto max-h-96">
+                <table class="w-full text-right">
+                  <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold sticky top-0">
+                    <tr>
+                      <th class="p-4">الجهة / المستشفى</th>
+                      <th class="p-4 text-center">إجمالي الموضوعات</th>
+                      <th class="p-4 text-center">قيد الفحص</th>
+                      <th class="p-4 text-center">متأخر</th>
+                      <th class="p-4 text-center">نسبة المتأخرات</th>
+                    </tr>
+                  </thead>
+                  <tbody id="entity-rows" class="divide-y divide-slate-100 text-sm font-medium"></tbody>
+                </table>
+              </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Alerts Tab -->
-    <div id="alerts-tab" class="hidden space-y-6">
-        <!-- Overdue Tasks -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="bg-red-600 text-white px-6 py-4">
-                <h3 class="font-bold flex items-center gap-2">
-                    <i data-lucide="alert-triangle" class="w-5 h-5"></i>
-                    المهام المتأخرة
-                </h3>
-            </div>
-            <div class="p-6">
-                <div id="overdue-list" class="space-y-3">
-                    <!-- Will be filled by JS -->
-                </div>
-            </div>
+          </div>
         </div>
 
-        <!-- No Activity -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="bg-amber-600 text-white px-6 py-4">
-                <h3 class="font-bold flex items-center gap-2">
-                    <i data-lucide="user-x" class="w-5 h-5"></i>
-                    موظفون بدون نشاط (7 أيام)
-                </h3>
-            </div>
-            <div class="p-6">
-                <div id="inactive-list" class="space-y-3">
-                    <!-- Will be filled by JS -->
-                </div>
-            </div>
+        <div id="tab-services" class="hidden-section fade-in p-6">
+          <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+            <i data-lucide="briefcase" class="text-teal-600"></i> الخدمات الإلكترونية
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <a href="https://forms.gle/A68F79PpJXHsfzXS9" target="_blank" class="service-card group">
+              <div class="icon-box bg-blue-50 text-blue-600"><i data-lucide="building-2"></i></div>
+              <div><h3 class="font-bold text-slate-800">مرور مستشفيات</h3></div>
+            </a>
+            <a href="https://forms.gle/49ku3m4hAjqnqxKE6" target="_blank" class="service-card group">
+              <div class="icon-box bg-emerald-50 text-emerald-600"><i data-lucide="building"></i></div>
+              <div><h3 class="font-bold text-slate-800">مرور وحدات</h3></div>
+            </a>
+            <a href="https://forms.gle/UWAYWbRKhx753Ddc9" target="_blank" class="service-card group">
+              <div class="icon-box bg-violet-50 text-violet-600"><i data-lucide="wallet"></i></div>
+              <div><h3 class="font-bold text-slate-800">مرور مالي</h3></div>
+            </a>
+            <a href="https://forms.gle/MdqjBxbYcdiuR2NG9" target="_blank" class="service-card group">
+              <div class="icon-box bg-amber-50 text-amber-600"><i data-lucide="file-warning"></i></div>
+              <div><h3 class="font-bold text-slate-800">فحص الشكاوى</h3></div>
+            </a>
+            <a href="https://forms.gle/gqyJvmhZHeggeYLV7" target="_blank" class="service-card group">
+              <div class="icon-box bg-teal-50 text-teal-600"><i data-lucide="arrow-right-left"></i></div>
+              <div><h3 class="font-bold text-slate-800">صادر ووارد</h3></div>
+            </a>
+          </div>
         </div>
-    </div>
-</div>
 
-<!-- Loader -->
-<div id="loader" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl p-8 flex flex-col items-center gap-4">
-        <div class="animate-spin rounded-full h-16 w-16 border-4 border-indigo-600 border-t-transparent"></div>
-        <p class="text-slate-700 font-bold">جاري التحميل...</p>
-    </div>
-</div>
-
-<!-- Scripts -->
-<script src="assets/js/core.js"></script>
-<script>
-let dashboardData = null;
-let currentTab = 'overview';
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 🚀 INITIALIZATION
-// ═══════════════════════════════════════════════════════════════════════════
-async function init() {
-    const user = getCurrentUser();
-    if (!user) {
-        window.location.href = 'index.html';
-        return;
-    }
-    
-    document.getElementById('coord-name').textContent = user.name;
-    
-    await loadDashboardData();
-}
-
-async function loadDashboardData() {
-    const year = new Date().getFullYear();
-    const data = await fetchDashboardData(`${year}-01-01`, `${year}-12-31`);
-    
-    if (data) {
-        dashboardData = data;
-        updateStats();
-        fillFilters();
-        switchTab('overview');
-    }
-}
-
-function updateStats() {
-    if (!dashboardData) return;
-    
-    const totals = dashboardData.totals;
-    document.getElementById('total-tasks').textContent = totals.periodTotal;
-    document.getElementById('completed-tasks').textContent = totals.periodCompleted;
-    document.getElementById('overdue-tasks').textContent = totals.absoluteOverdue;
-    document.getElementById('active-employees').textContent = dashboardData.employees.length;
-}
-
-function fillFilters() {
-    if (!dashboardData) return;
-    
-    const empSelect = document.getElementById('filter-employee');
-    const entSelect = document.getElementById('filter-entity');
-    
-    empSelect.innerHTML = '<option value="">-- الكل --</option>';
-    dashboardData.employees.forEach(emp => {
-        empSelect.innerHTML += `<option value="${emp.name}">${emp.name}</option>`;
-    });
-    
-    entSelect.innerHTML = '<option value="">-- الكل --</option>';
-    dashboardData.entities.forEach(ent => {
-        entSelect.innerHTML += `<option value="${ent.name}">${ent.name}</option>`;
-    });
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 📑 TABS LOGIC
-// ═══════════════════════════════════════════════════════════════════════════
-function switchTab(tab) {
-    currentTab = tab;
-    
-    // Update buttons
-    ['overview', 'employees', 'workload', 'alerts'].forEach(t => {
-        const btn = document.getElementById(`tab-btn-${t}`);
-        if (t === tab) {
-            btn.className = 'px-6 py-3 rounded-lg font-bold transition-all bg-indigo-600 text-white';
-        } else {
-            btn.className = 'px-6 py-3 rounded-lg font-bold transition-all bg-slate-100 text-slate-600';
-        }
-    });
-    
-    // Show/hide tabs
-    ['overview', 'employees', 'workload', 'alerts'].forEach(t => {
-        const el = document.getElementById(`${t}-tab`);
-        if (el) {
-            if (t === tab) {
-                el.classList.remove('hidden');
-            } else {
-                el.classList.add('hidden');
-            }
-        }
-    });
-    
-    // Render content
-    if (tab === 'overview') renderOverview();
-    if (tab === 'employees') renderEmployees();
-    if (tab === 'workload') renderWorkload();
-    if (tab === 'alerts') renderAlerts();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 📊 OVERVIEW TAB
-// ═══════════════════════════════════════════════════════════════════════════
-function renderOverview() {
-    applyOverviewFilter();
-}
-
-function applyOverviewFilter() {
-    if (!dashboardData) return;
-    
-    const empFilter = document.getElementById('filter-employee').value;
-    const statusFilter = document.getElementById('filter-status').value;
-    const entityFilter = document.getElementById('filter-entity').value;
-    
-    const tbody = document.getElementById('overview-rows');
-    tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">لا توجد بيانات مطابقة للفلتر</td></tr>';
-    
-    // This is a placeholder - in real scenario, you'd fetch actual task details
-    // For now, we'll show employee summary
-    const employees = dashboardData.employees.filter(emp => {
-        return (!empFilter || emp.name === empFilter);
-    });
-    
-    tbody.innerHTML = '';
-    employees.forEach(emp => {
-        tbody.innerHTML += `
-        <tr class="hover:bg-slate-50 border-b border-slate-100">
-            <td class="p-4 text-sm font-bold text-slate-700">-</td>
-            <td class="p-4 text-sm">${emp.name} - ${emp.periodTotal} معاملة</td>
-            <td class="p-4 text-sm">-</td>
-            <td class="p-4 text-sm font-bold">${emp.name}</td>
-            <td class="p-4 text-center text-xs">-</td>
-            <td class="p-4 text-center">
-                <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs font-bold">نشط</span>
-            </td>
-        </tr>`;
-    });
-    
-    lucide.createIcons();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 👥 EMPLOYEES TAB
-// ═══════════════════════════════════════════════════════════════════════════
-function renderEmployees() {
-    if (!dashboardData) return;
-    
-    const container = document.getElementById('employees-tab');
-    container.innerHTML = '';
-    
-    dashboardData.employees.forEach(emp => {
-        const percent = emp.periodTotal > 0 ? Math.round((emp.periodCompleted / emp.periodTotal) * 100) : 0;
-        const progressColor = percent >= 80 ? 'bg-emerald-500' : (percent < 50 ? 'bg-red-500' : 'bg-amber-500');
-        
-        container.innerHTML += `
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center gap-4 mb-4">
-                <div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center">
-                    <i data-lucide="user" class="w-6 h-6 text-indigo-600"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-800">${emp.name}</h4>
-                    <p class="text-xs text-slate-500">${emp.role}</p>
-                </div>
-            </div>
+        <div id="tab-employees" class="hidden-section fade-in p-6 flex flex-col items-center justify-center min-h-[500px]">
+          
+          <div id="emp-login-form" class="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full text-center border border-slate-100">
+            <i data-lucide="lock" class="w-16 h-16 mx-auto mb-4 text-violet-500 bg-violet-50 p-3 rounded-full"></i>
+            <h3 class="text-xl font-bold mb-2 text-slate-800">بوابة الموظف</h3>
+            <p class="text-slate-500 mb-6 text-sm">أدخل كود المرور (PIN)</p>
             
-            <div class="space-y-3">
-                <div class="flex justify-between text-sm">
-                    <span class="text-slate-600">إجمالي المعاملات</span>
-                    <span class="font-bold text-slate-800">${emp.periodTotal}</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-slate-600">المنجزة</span>
-                    <span class="font-bold text-emerald-600">${emp.periodCompleted}</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-slate-600">المتأخرة</span>
-                    <span class="font-bold text-red-600">${emp.absoluteOverdue}</span>
-                </div>
-                
-                <div class="pt-3 border-t border-slate-200">
-                    <div class="flex justify-between text-xs text-slate-600 mb-2">
-                        <span>نسبة الإنجاز</span>
-                        <span class="font-bold">${percent}%</span>
-                    </div>
-                    <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="${progressColor} h-2 rounded-full transition-all" style="width: ${percent}%"></div>
-                    </div>
-                </div>
+            <input 
+              type="password" 
+              id="emp-pin-input" 
+              placeholder="****" 
+              maxlength="4" 
+              inputmode="numeric" 
+              pattern="[0-9]*"
+              autocomplete="off"
+              class="bg-slate-50 border border-slate-200 text-center text-2xl tracking-widest rounded-lg w-full p-3 mb-4 outline-none focus:border-violet-500 transition-colors"
+            >
+            
+            <button onclick="handleLogin()" class="bg-violet-600 hover:bg-violet-700 text-white w-full py-3 rounded-lg font-bold transition-colors">تسجيل الدخول</button>
+            <p id="emp-error" class="text-red-500 text-xs mt-3 hidden-section font-bold"></p>
+          </div>
+  
+          <div id="emp-profile-view" class="hidden-section w-full max-w-7xl">
+            
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6 flex items-center gap-4">
+              <div class="w-16 h-16 bg-violet-100 text-violet-600 rounded-full flex items-center justify-center text-2xl font-bold">
+                <i data-lucide="user"></i>
+              </div>
+              <div>
+                <h2 class="text-2xl font-bold text-slate-800" id="profile-name">...</h2>
+                <p class="text-slate-500" id="profile-role">...</p>
+              </div>
+              <button onclick="logout()" class="mr-auto text-red-500 font-bold text-sm bg-red-50 px-4 py-2 rounded-lg hover:bg-red-100 transition-colors">خروج</button>
             </div>
-        </div>`;
-    });
-    
-    lucide.createIcons();
-}
 
-// ═══════════════════════════════════════════════════════════════════════════
-// 📊 WORKLOAD TAB
-// ═══════════════════════════════════════════════════════════════════════════
-function renderWorkload() {
-    if (!dashboardData) return;
-    
-    const container = document.getElementById('workload-chart');
-    container.innerHTML = '';
-    
-    // Sort by workload
-    const sorted = [...dashboardData.employees].sort((a, b) => b.periodTotal - a.periodTotal);
-    
-    sorted.forEach(emp => {
-        const maxLoad = sorted[0].periodTotal;
-        const widthPercent = (emp.periodTotal / maxLoad) * 100;
-        const barColor = emp.periodTotal > 20 ? 'bg-red-500' : (emp.periodTotal > 10 ? 'bg-amber-500' : 'bg-emerald-500');
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div class="overview-card overview-new"><h4>📥 جديد</h4><div class="count" id="stat-new">0</div></div>
+              <div class="overview-card overview-progress"><h4>⏳ جاري التنفيذ</h4><div class="count" id="stat-progress">0</div></div>
+              <div class="overview-card overview-late"><h4>🚨 متأخر</h4><div class="count" id="stat-late">0</div></div>
+              <div class="overview-card overview-done"><h4>✅ منجز</h4><div class="count" id="stat-done">0</div></div>
+            </div>
+
+            <div class="main-tabs">
+              <div class="main-tab-btn active" id="main-tab-new" onclick="switchMainTab('new')">
+                <i data-lucide="inbox" class="w-5 h-5"></i> 📥 الوارد
+              </div>
+              <div class="main-tab-btn" id="main-tab-progress" onclick="switchMainTab('progress')">
+                <i data-lucide="loader" class="w-5 h-5"></i> ⏳ جاري التنفيذ
+              </div>
+              <div class="main-tab-btn" id="main-tab-late" onclick="switchMainTab('late')">
+                <i data-lucide="alert-triangle" class="w-5 h-5"></i> 🚨 المتأخرات
+              </div>
+              <div class="main-tab-btn" id="main-tab-history" onclick="switchMainTab('history')">
+                <i data-lucide="archive" class="w-5 h-5"></i> 🗂️ السجل والأرشيف
+              </div>
+            </div>
+
+            <div id="content-new">
+              <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i data-lucide="sparkles" class="text-blue-500"></i> التكليفات الجديدة
+              </h3>
+              <div id="cards-new" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div id="content-progress" class="hidden-section">
+              <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i data-lucide="timer" class="text-amber-500"></i> المهام الجارية
+              </h3>
+              <div id="cards-progress" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div id="content-late" class="hidden-section">
+              <h3 class="text-lg font-bold text-red-700 mb-4 flex items-center gap-2">
+                <i data-lucide="alert-octagon" class="text-red-600"></i> قائمة المهام المتأخرة
+              </h3>
+              <div class="overdue-table bg-white">
+                <table class="w-full text-right">
+                  <thead>
+                    <tr>
+                      <th class="p-4">الموضوع</th>
+                      <th class="p-4">المصدر</th>
+                      <th class="p-4">الجهة</th>
+                      <th class="p-4 text-center">تاريخ الورود</th>
+                      <th class="p-4 text-center">مدة التأخير</th>
+                      <th class="p-4 text-center">المرفقات</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-late" class="text-sm font-medium"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="content-history" class="hidden-section">
+              <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i data-lucide="folder-open" class="text-slate-600"></i> السجل الكامل والأرشيف
+              </h3>
+              <div class="history-filters bg-white p-4 rounded-xl border border-slate-200 mb-4">
+                <span class="filter-label">فلترة حسب:</span>
+                <select id="history-year" class="filter-select">
+                  <option value="2027">2027</option>
+                  <option value="2026">2026</option>
+                  <option value="2025">2025</option>
+                  <option value="2024">2024</option>
+                </select>
+                <select id="history-month" class="filter-select">
+                  <option value="">كل الشهور</option>
+                  <option value="1">يناير</option>
+                  <option value="2">فبراير</option>
+                  <option value="3">مارس</option>
+                  <option value="4">أبريل</option>
+                  <option value="5">مايو</option>
+                  <option value="6">يونيو</option>
+                  <option value="7">يوليو</option>
+                  <option value="8">أغسطس</option>
+                  <option value="9">سبتمبر</option>
+                  <option value="10">أكتوبر</option>
+                  <option value="11">نوفمبر</option>
+                  <option value="12">ديسمبر</option>
+                </select>
+                <button onclick="applyHistoryFilter()" class="filter-btn">تطبيق</button>
+              </div>
+
+              <div class="mb-6">
+                <h4 class="text-md font-bold text-emerald-700 mb-3 flex items-center gap-2">
+                  <i data-lucide="check-circle" class="w-5 h-5"></i> المهام المنجزة
+                </h4>
+                <div id="cards-done" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+              </div>
+
+              <div>
+                <h4 class="text-md font-bold text-slate-700 mb-3 flex items-center gap-2">
+                  <i data-lucide="file-text" class="w-5 h-5"></i> التقارير المؤرشفة
+                </h4>
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                  <div class="overflow-x-auto max-h-[400px]">
+                    <table class="w-full text-right text-sm">
+                      <thead class="bg-slate-100 text-slate-600 sticky top-0 font-bold">
+                        <tr>
+                          <th class="p-3">التاريخ</th>
+                          <th class="p-3">النوع</th>
+                          <th class="p-3">الموضوع / الجهة</th>
+                          <th class="p-3 text-center">الإجراءات</th>
+                        </tr>
+                      </thead>
+                      <tbody id="reports-rows" class="divide-y divide-slate-100 text-sm"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
         
-        container.innerHTML += `
-        <div>
-            <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-bold text-slate-700">${emp.name}</span>
-                <span class="text-sm font-bold text-slate-600">${emp.periodTotal} معاملة</span>
-            </div>
-            <div class="w-full bg-slate-200 rounded-full h-8">
-                <div class="${barColor} h-8 rounded-full flex items-center justify-center text-white text-xs font-bold" style="width: ${widthPercent}%">
-                    ${emp.periodTotal > 0 ? emp.periodTotal : ''}
-                </div>
-            </div>
-        </div>`;
-    });
-}
+      </div>
+    </main>
 
-// ═══════════════════════════════════════════════════════════════════════════
-// 🚨 ALERTS TAB
-// ═══════════════════════════════════════════════════════════════════════════
-function renderAlerts() {
-    if (!dashboardData) return;
-    
-    // Overdue tasks
-    const overdueList = document.getElementById('overdue-list');
-    const overdueEmps = dashboardData.employees.filter(e => e.absoluteOverdue > 0).sort((a, b) => b.absoluteOverdue - a.absoluteOverdue);
-    
-    if (overdueEmps.length === 0) {
-        overdueList.innerHTML = '<p class="text-slate-400 text-sm">لا توجد مهام متأخرة! 🎉</p>';
-    } else {
-        overdueList.innerHTML = '';
-        overdueEmps.forEach(emp => {
-            overdueList.innerHTML += `
-            <div class="flex items-center justify-between p-4 bg-red-50 border border-red-200 rounded-lg">
-                <div>
-                    <p class="font-bold text-slate-800">${emp.name}</p>
-                    <p class="text-xs text-slate-600">${emp.role}</p>
-                </div>
-                <div class="text-left">
-                    <span class="text-2xl font-black text-red-600">${emp.absoluteOverdue}</span>
-                    <p class="text-xs text-red-600">متأخر</p>
-                </div>
-            </div>`;
-        });
-    }
-    
-    // Inactive employees (placeholder)
-    const inactiveList = document.getElementById('inactive-list');
-    inactiveList.innerHTML = '<p class="text-slate-400 text-sm">جميع الموظفين نشطون</p>';
-}
+    <nav class="bottom-nav" style="display: none;">
+      <button onclick="switchTab('dashboard')" id="bottom-nav-dashboard" class="active">
+        <i data-lucide="layout-grid" class="w-6 h-6"></i>
+        <span>Dashboard</span>
+      </button>
+      <button onclick="switchTab('services')" id="bottom-nav-services">
+        <i data-lucide="briefcase" class="w-6 h-6"></i>
+        <span>الخدمات</span>
+      </button>
+      <button onclick="switchTab('employees')" id="bottom-nav-employees">
+        <i data-lucide="users-2" class="w-6 h-6"></i>
+        <span>الموظفين</span>
+      </button>
+      <button onclick="window.location.href='index.html'">
+        <i data-lucide="home" class="w-6 h-6"></i>
+        <span>الرئيسية</span>
+      </button>
+    </nav>
 
-// Init
-document.addEventListener('DOMContentLoaded', () => {
+  </div>
+
+  <div id="loader" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center hidden-section">
+    <div class="w-16 h-16 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+    <p class="font-bold text-teal-800 text-lg">جاري العمل...</p>
+  </div>
+
+  <script src="assets/js/main.js"></script>
+  <script>
     lucide.createIcons();
-    init();
-});
-</script>
-
+    
+    // Check URL hash for direct tab access
+    window.addEventListener('load', () => {
+      const hash = window.location.hash.substring(1);
+      if (hash && ['dashboard', 'services', 'employees'].includes(hash)) {
+        switchTab(hash);
+      } else {
+        applyFilter();
+      }
+    });
+  </script>
 </body>
 </html>
