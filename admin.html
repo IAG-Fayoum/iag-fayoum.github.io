@@ -1,607 +1,387 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة المدير - نظام الحوكمة</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#dc2626">
+  <title>لوحة الإدارة - نظام الحوكمة</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="assets/js/api.js"></script>
+
+  <style>
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background-color: #f8fafc;
+      /* [تم التعديل] تحسينات تجربة الموبايل */
+      overscroll-behavior-y: none;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    input, textarea, table, .selectable {
+      -webkit-user-select: text;
+      user-select: text;
+    }
+    
+    button:active, .overview-card:active, .stat-card:active {
+      transform: scale(0.97);
+      transition: transform 0.1s;
+    }
+
+    .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
+    .hidden-section { display: none !important; }
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .stat-card { background: white; border-radius: 16px; padding: 24px; border: 1px solid #e2e8f0; transition: transform 0.2s; }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); border-color: #0f766e; }
+    .overview-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; transition: all 0.2s; text-align: center; }
+    .overview-card:hover { transform: translateY(-3px); box-shadow: 0 8px 16px -4px rgba(0,0,0,0.08); }
+    .overview-card h4 { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #64748b; margin-bottom: 8px; }
+    .overview-card .count { font-size: 2.5rem; font-weight: 900; line-height: 1; }
+    .overview-new { border-bottom: 4px solid #3b82f6; } .overview-new .count { color: #3b82f6; }
+    .overview-progress { border-bottom: 4px solid #f59e0b; } .overview-progress .count { color: #f59e0b; }
+    .overview-late { border-bottom: 4px solid #ef4444; } .overview-late .count { color: #ef4444; }
+    .overview-done { border-bottom: 4px solid #10b981; } .overview-done .count { color: #10b981; }
+    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; }
+    .main-tab-btn { padding: 10px 20px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+    .main-tab-btn:hover { background-color: #f1f5f9; color: #0f766e; }
+    .main-tab-btn.active { background-color: #0f766e; color: white; box-shadow: 0 4px 8px rgba(15, 118, 110, 0.3); }
+    .input-field { width: 100%; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-weight: 600; outline: none; background: white; color: #334155; transition: 0.2s; }
+    .input-field:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+    .btn-primary { background-color: #0f766e; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary:hover { background-color: #115e59; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3); }
+    
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      /* Login Form */
+      #admin-login-view .bg-white {
+        padding: 24px;
+        max-width: 90%;
+      }
+      
+      #admin-pin-input {
+        font-size: 2rem;
+        padding: 12px;
+      }
+      
+      /* Header */
+      header h1 {
+        font-size: 1.5rem;
+      }
+      
+      header p {
+        font-size: 0.75rem;
+      }
+      
+      /* Content Container */
+      .container {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      
+      /* Stats Cards */
+      .overview-card {
+        padding: 16px;
+      }
+      
+      .overview-card .count {
+        font-size: 2rem;
+      }
+      
+      /* Tabs */
+      .main-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      
+      .main-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .main-tab-btn {
+        white-space: nowrap;
+        font-size: 0.85rem;
+        padding: 8px 16px;
+      }
+      
+      /* Tables */
+      table {
+        font-size: 0.8rem;
+      }
+      
+      table th, table td {
+        padding: 8px 6px;
+      }
+      
+      /* Input Fields */
+      .input-field {
+        font-size: 0.9rem;
+      }
+      
+      /* Buttons */
+      .btn-primary {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      /* Archive Filters */
+      .stat-card .grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+    
+    @media (max-width: 375px) {
+      .overview-card .count {
+        font-size: 1.75rem;
+      }
+      
+      header h1 {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
 </head>
-<body class="bg-slate-50">
+<body class="min-h-screen flex flex-col bg-slate-50">
 
-<!-- Header -->
-<header class="bg-gradient-to-r from-slate-800 to-slate-900 text-white sticky top-0 z-40 shadow-lg">
-    <div class="container mx-auto px-4 py-4">
-        <div class="flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-white/20 p-2 rounded-lg">
-                    <i data-lucide="shield-check" class="w-6 h-6"></i>
-                </div>
-                <div>
-                    <h1 id="admin-name" class="text-lg font-bold">المدير</h1>
-                    <p class="text-xs text-slate-300">لوحة التحكم الكاملة</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-2">
-                <button onclick="openSettings()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg font-bold text-sm transition-all flex items-center gap-2">
-                    <i data-lucide="settings" class="w-4 h-4"></i>
-                    الإعدادات
-                </button>
-                <button onclick="window.location.href='index.html'" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg font-bold text-sm transition-all">
-                    Dashboard
-                </button>
-                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg font-bold text-sm transition-all">
-                    خروج
-                </button>
-            </div>
-        </div>
+  <div id="admin-login-view" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-slate-200">
+      <div class="w-20 h-20 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+        <i data-lucide="shield-alert" class="w-10 h-10"></i>
+      </div>
+      <h3 class="text-2xl font-extrabold mb-2 text-slate-800">بوابة الإدارة</h3>
+      <p class="text-slate-500 mb-8 font-medium">المنطقة مخصصة للمديرين فقط</p>
+      
+      <div class="relative mb-6">
+        <input 
+          type="password" 
+          id="admin-pin-input" 
+          placeholder="أدخل كود المرور" 
+          maxlength="4" 
+          inputmode="numeric" 
+          pattern="[0-9]*"
+          autocomplete="off"
+          class="w-full bg-slate-50 border-2 border-slate-200 text-center text-3xl tracking-[0.5em] font-bold rounded-xl p-4 outline-none focus:border-red-500 focus:bg-white transition-all placeholder:text-slate-300 placeholder:text-lg placeholder:tracking-normal"
+        >
+      </div>
+      
+      <button onclick="checkAdminLogin()" class="bg-red-600 hover:bg-red-700 text-white w-full py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-200 transition-all transform hover:-translate-y-1">
+        تسجيل الدخول
+      </button>
+      <p id="login-error" class="text-red-500 text-sm mt-4 font-bold hidden-section flex items-center justify-center gap-1">
+        <i data-lucide="alert-circle" class="w-4 h-4"></i> <span>كود المرور غير صحيح</span>
+      </p>
+      <button onclick="goHome()" class="mt-6 text-slate-400 hover:text-slate-600 text-sm font-bold flex items-center justify-center gap-2 mx-auto transition-colors">
+        <i data-lucide="arrow-right" class="w-4 h-4"></i> عودة للرئيسية
+      </button>
     </div>
-</header>
+  </div>
 
-<!-- Main Content -->
-<div class="container mx-auto px-4 py-8">
-    <!-- Tabs -->
-    <div class="bg-white rounded-xl shadow-lg p-4 mb-8">
-        <div class="flex flex-wrap gap-2">
-            <button id="tab-btn-stats" onclick="switchTab('stats')" class="px-6 py-3 rounded-lg font-bold transition-all bg-slate-800 text-white">
-                الإحصائيات
-            </button>
-            <button id="tab-btn-reassign" onclick="switchTab('reassign')" class="px-6 py-3 rounded-lg font-bold transition-all bg-slate-100 text-slate-600">
-                إعادة تكليف
-            </button>
-            <button id="tab-btn-status" onclick="switchTab('status')" class="px-6 py-3 rounded-lg font-bold transition-all bg-slate-100 text-slate-600">
-                تعديل الحالة
-            </button>
-            <button id="tab-btn-add" onclick="switchTab('add')" class="px-6 py-3 rounded-lg font-bold transition-all bg-slate-100 text-slate-600">
-                إضافة مهمة
-            </button>
-            <button id="tab-btn-archive" onclick="switchTab('archive')" class="px-6 py-3 rounded-lg font-bold transition-all bg-slate-100 text-slate-600">
-                البحث في الأرشيف
-            </button>
+  <div id="admin-content-view" class="hidden-section flex-grow flex flex-col">
+    <header class="theme-gradient text-white py-6 shadow-lg">
+      <div class="container mx-auto px-6 flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-extrabold flex items-center gap-3">
+            <i data-lucide="shield-check" class="w-8 h-8"></i>لوحة الإدارة
+          </h1>
+          <p class="text-teal-100 text-sm mt-1 font-medium">نظام الحوكمة - مديرية الصحة بالفيوم</p>
         </div>
-    </div>
+        <button onclick="logout()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg flex items-center gap-2 transition-all font-bold">
+          <i data-lucide="log-out" class="w-4 h-4"></i><span>خروج</span>
+        </button>
+      </div>
+    </header>
 
-    <!-- Stats Tab -->
-    <div id="stats-tab" class="space-y-8">
-        <!-- Quick Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-                <p class="text-blue-100 text-sm font-bold mb-2">الإجمالي</p>
-                <h2 id="adm-stat-total" class="text-4xl font-black">0</h2>
-            </div>
-            <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white">
-                <p class="text-emerald-100 text-sm font-bold mb-2">المنجزة</p>
-                <h2 id="adm-stat-done" class="text-4xl font-black">0</h2>
-            </div>
-            <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg p-6 text-white">
-                <p class="text-amber-100 text-sm font-bold mb-2">قيد التنفيذ</p>
-                <h2 id="adm-stat-prog" class="text-4xl font-black">0</h2>
-            </div>
-            <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white">
-                <p class="text-red-100 text-sm font-bold mb-2">المتأخرة</p>
-                <h2 id="adm-stat-late" class="text-4xl font-black">0</h2>
-            </div>
+    <div class="container mx-auto px-4 py-8 flex-grow">
+      <div class="main-tabs">
+        <button class="main-tab-btn active" onclick="switchTab('overview')">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>نظرة عامة
+        </button>
+        <button class="main-tab-btn" onclick="switchTab('reports')">
+          <i data-lucide="chart-bar" class="w-4 h-4"></i>التقارير
+        </button>
+        <button class="main-tab-btn" onclick="switchTab('archive')">
+          <i data-lucide="archive" class="w-4 h-4"></i>الأرشيف الإلكتروني
+        </button>
+      </div>
+
+      <div id="tab-overview" class="tab-content fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div class="overview-card overview-new"><h4>إجمالي المهام</h4><div id="stat-total" class="count">-</div></div>
+          <div class="overview-card overview-done"><h4>منجز</h4><div id="stat-done" class="count">-</div></div>
+          <div class="overview-card overview-progress"><h4>جاري العمل</h4><div id="stat-progress" class="count">-</div></div>
+          <div class="overview-card overview-late"><h4>متأخر</h4><div id="stat-overdue" class="count">-</div></div>
         </div>
-
-        <!-- Employees Table -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="bg-slate-800 text-white px-6 py-4">
-                <h3 class="font-bold">تفاصيل أداء الموظفين</h3>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-slate-100">
-                        <tr>
-                            <th class="p-4 text-right text-xs font-bold text-slate-600">الموظف</th>
-                            <th class="p-4 text-center text-xs font-bold text-slate-600">الإجمالي</th>
-                            <th class="p-4 text-center text-xs font-bold text-slate-600">المنجز</th>
-                            <th class="p-4 text-center text-xs font-bold text-slate-600">المتبقي</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adm-employees-table">
-                        <tr>
-                            <td colspan="4" class="p-8 text-center text-slate-400">جاري التحميل...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="stat-card">
+          <h3 class="text-xl font-bold mb-4 text-slate-800 flex items-center gap-2">
+            <i data-lucide="users" class="w-5 h-5 text-teal-600"></i>أداء الموظفين
+          </h3>
+          <div id="employees-table" class="overflow-x-auto"></div>
         </div>
-    </div>
+      </div>
 
-    <!-- Reassign Tab -->
-    <div id="reassign-tab" class="hidden">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="font-bold text-slate-800 mb-6">إعادة تكليف مهمة لموظف آخر</h3>
-            
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">رقم القيد أو الموضوع</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="reassign-search-input" placeholder="ابحث برقم القيد أو كلمة من الموضوع" class="flex-1 px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none">
-                        <button onclick="searchTask('reassign')" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-bold transition-all">
-                            بحث
-                        </button>
-                    </div>
-                </div>
-
-                <div id="reassign-preview" class="hidden bg-slate-50 border-2 border-slate-200 rounded-lg p-4">
-                    <p class="text-xs text-slate-500 mb-2">المهمة المحددة:</p>
-                    <p class="font-bold text-slate-800"><span id="reassign-id"></span> - <span id="reassign-subject"></span></p>
-                    <p class="text-sm text-slate-600 mt-1">الجهة: <span id="reassign-entity"></span></p>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">الموظف الجديد</label>
-                    <select id="reassign-new-emp" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg">
-                        <option value="">-- اختر الموظف --</option>
-                    </select>
-                </div>
-
-                <button onclick="executeReassign()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-all">
-                    تنفيذ إعادة التكليف
-                </button>
-            </div>
+      <div id="tab-reports" class="tab-content hidden-section">
+        <div class="stat-card">
+          <h3 class="text-xl font-bold mb-6 text-slate-800 flex items-center gap-2">
+            <i data-lucide="chart-bar" class="w-5 h-5 text-teal-600"></i>التقارير
+          </h3>
+          <p class="text-slate-500 text-center py-12">قيد التطوير...</p>
         </div>
-    </div>
+      </div>
 
-    <!-- Status Tab -->
-    <div id="status-tab" class="hidden">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="font-bold text-slate-800 mb-6">تعديل حالة مهمة</h3>
-            
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">رقم القيد</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="status-search-input" placeholder="أدخل رقم القيد" class="flex-1 px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none">
-                        <button onclick="searchTask('status')" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-bold transition-all">
-                            بحث
-                        </button>
-                    </div>
-                </div>
-
-                <div id="status-preview" class="hidden bg-slate-50 border-2 border-slate-200 rounded-lg p-4">
-                    <p class="text-xs text-slate-500 mb-2">المهمة المحددة:</p>
-                    <p class="font-bold text-slate-800"><span id="status-id"></span> - <span id="status-subject"></span></p>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">الحالة الجديدة</label>
-                    <select id="status-new-val" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg">
-                        <option value="">-- اختر الحالة --</option>
-                        <option value="جديد">جديد</option>
-                        <option value="جاري التنفيذ">جاري التنفيذ</option>
-                        <option value="قيد المراجعة">قيد المراجعة</option>
-                        <option value="تم الاعتماد والأرشفة">تم الاعتماد والأرشفة</option>
-                        <option value="متأخر">متأخر</option>
-                    </select>
-                </div>
-
-                <button onclick="executeStatusUpdate()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all">
-                    تحديث الحالة
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Tab -->
-    <div id="add-tab" class="hidden">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="font-bold text-slate-800 mb-6">إضافة مهمة يدوياً</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">تاريخ الورود *</label>
-                    <input type="date" id="add-date" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">المصدر *</label>
-                    <input type="text" id="add-source" placeholder="مثال: ديوان المحافظة" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg">
-                </div>
-                <div class="col-span-2">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">الموضوع *</label>
-                    <textarea id="add-subject" rows="3" placeholder="اكتب موضوع المهمة" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">الجهة</label>
-                    <input type="text" id="add-entity" placeholder="مثال: مستشفى الفيوم العام" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">الموظف المكلف</label>
-                    <select id="add-employee" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg">
-                        <option value="">-- اختر الموظف --</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">الموعد النهائي</label>
-                    <input type="date" id="add-deadline" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">رابط المرفق</label>
-                    <input type="url" id="add-attachment" placeholder="https://..." class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg">
-                </div>
-            </div>
-
-            <button onclick="executeAddTask()" class="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition-all">
-                إضافة المهمة
-            </button>
-        </div>
-    </div>
-
-    <!-- Archive Tab -->
-    <div id="archive-tab" class="hidden">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="font-bold text-slate-800 mb-6">البحث في الأرشيف</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">السنة</label>
-                    <select id="arch-year" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
-                        <!-- Will be filled by JS -->
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">الشهر</label>
-                    <select id="arch-month" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
-                        <!-- Will be filled by JS -->
-                    </select>
-                </div>
-                <div class="col-span-2">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">بحث</label>
-                    <input type="text" id="arch-search" placeholder="رقم القيد، الجهة، الموظف..." class="w-full px-4 py-2 border border-slate-300 rounded-lg">
-                </div>
-            </div>
-
-            <button onclick="searchArchive()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-lg transition-all mb-6">
-                بحث
-            </button>
-
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-slate-100">
-                        <tr>
-                            <th class="p-4 text-right text-xs font-bold text-slate-600">رقم القيد</th>
-                            <th class="p-4 text-right text-xs font-bold text-slate-600">التاريخ</th>
-                            <th class="p-4 text-right text-xs font-bold text-slate-600">الجهة</th>
-                            <th class="p-4 text-right text-xs font-bold text-slate-600">الموضوع</th>
-                            <th class="p-4 text-center text-xs font-bold text-slate-600">المرفق</th>
-                        </tr>
-                    </thead>
-                    <tbody id="arch-results">
-                        <tr>
-                            <td colspan="5" class="p-8 text-center text-slate-400">ابحث للحصول على النتائج</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Settings Modal -->
-<div id="settings-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-slate-800 text-white px-6 py-4 flex justify-between items-center">
-            <h2 class="text-xl font-bold">⚙️ إعدادات النظام</h2>
-            <button onclick="closeSettings()" class="text-white hover:text-red-400 transition-colors">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
-        </div>
-
-        <div class="p-6 space-y-6">
-            <!-- Feature Flags -->
+      <div id="tab-archive" class="tab-content hidden-section">
+        <div class="stat-card mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
-                <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <i data-lucide="toggles" class="w-5 h-5 text-teal-600"></i>
-                    تفعيل/إيقاف المميزات
-                </h3>
-                <div class="space-y-3">
-                    <label class="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 cursor-pointer transition-all">
-                        <span class="font-bold text-slate-700">Dashboard Statistics</span>
-                        <input type="checkbox" id="setting-dashboard" class="w-5 h-5 accent-teal-600">
-                    </label>
-                    <label class="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 cursor-pointer transition-all">
-                        <span class="font-bold text-slate-700">Employee Portal</span>
-                        <input type="checkbox" id="setting-employee-portal" class="w-5 h-5 accent-teal-600">
-                    </label>
-                    <label class="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 cursor-pointer transition-all">
-                        <span class="font-bold text-slate-700">Archive Search</span>
-                        <input type="checkbox" id="setting-archive" class="w-5 h-5 accent-teal-600">
-                    </label>
-                </div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">السنة</label>
+              <select id="archive-year" class="input-field">
+                <option value="">الكل</option>
+                <option value="2024">2024</option>
+                <option value="2025" selected>2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+              </select>
             </div>
-
-            <!-- Theme -->
             <div>
-                <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <i data-lucide="palette" class="w-5 h-5 text-purple-600"></i>
-                    الثيم والألوان
-                </h3>
-                <select id="setting-theme" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg">
-                    <option value="teal">Teal (الافتراضي)</option>
-                    <option value="blue">Blue</option>
-                    <option value="purple">Purple</option>
-                    <option value="emerald">Emerald</option>
-                </select>
+              <label class="block text-sm font-bold text-slate-700 mb-2">الشهر</label>
+              <select id="archive-month" class="input-field">
+                <option value="">الكل</option>
+                <option value="1">يناير</option>
+                <option value="2">فبراير</option>
+                <option value="3">مارس</option>
+                <option value="4">أبريل</option>
+                <option value="5">مايو</option>
+                <option value="6">يونيو</option>
+                <option value="7">يوليو</option>
+                <option value="8">أغسطس</option>
+                <option value="9">سبتمبر</option>
+                <option value="10">أكتوبر</option>
+                <option value="11">نوفمبر</option>
+                <option value="12">ديسمبر</option>
+              </select>
             </div>
-
-            <!-- Actions -->
-            <div class="pt-6 border-t border-slate-200 flex gap-4">
-                <button onclick="saveSettings()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition-all">
-                    حفظ الإعدادات
-                </button>
-                <button onclick="resetSettings()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-all">
-                    إعادة تعيين
-                </button>
+            <div class="md:col-span-3">
+              <label class="block text-sm font-bold text-slate-700 mb-2">بحث</label>
+              <input type="text" id="archive-search" placeholder="رقم القيد، الجهة، الموضوع، الموظف..." class="input-field">
             </div>
+          </div>
+          <button onclick="searchArchiveAdmin()" class="btn-primary mt-4">
+            <i data-lucide="search" class="w-4 h-4"></i>بحث
+          </button>
         </div>
+        <div class="stat-card"><div id="archive-results"></div></div>
+      </div>
     </div>
-</div>
+  </div>
 
-<!-- Loader -->
-<div id="loader" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl p-8 flex flex-col items-center gap-4">
-        <div class="animate-spin rounded-full h-16 w-16 border-4 border-slate-800 border-t-transparent"></div>
-        <p class="text-slate-700 font-bold">جاري التحميل...</p>
-    </div>
-</div>
+  <div id="loader" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center hidden-section">
+    <div class="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+    <p class="font-bold text-slate-800 text-lg">جاري التحقق...</p>
+  </div>
 
-<!-- Scripts -->
-<script src="assets/js/core.js"></script>
-<script>
-let dashboardData = null;
-let currentTab = 'stats';
-let currentTaskId = null;
+  <script>
+    let allEmployees=[];
+    
+    async function checkAdminLogin() {
+      const pin = document.getElementById('admin-pin-input').value;
+      const errorMsg = document.getElementById('login-error');
 
-// ═══════════════════════════════════════════════════════════════════════════
-// 🚀 INITIALIZATION
-// ═══════════════════════════════════════════════════════════════════════════
-async function init() {
-    const user = getCurrentUser();
-    if (!user) {
-        window.location.href = 'index.html';
+      if (!pin || pin.length < 4) {
+        errorMsg.innerText = "أدخل الرمز كاملاً (4 أرقام)";
+        errorMsg.classList.remove('hidden-section');
         return;
+      }
+
+      const res = await login(pin);
+      
+      if (res.success && res.role.includes('مدير')) {
+         document.getElementById('admin-login-view').classList.add('hidden-section');
+         document.getElementById('admin-content-view').classList.remove('hidden-section');
+         loadOverview();
+      } else {
+         errorMsg.innerHTML = '<i data-lucide="alert-circle" class="w-4 h-4"></i> <span>كود خطأ أو غير مصرح لك</span>';
+         errorMsg.classList.remove('hidden-section');
+         lucide.createIcons();
+      }
+    }
+
+    function goHome() {
+       window.location.href = 'index.html';
+    }
+
+    async function loadOverview(){
+      const data = await getDashboard('2024-01-01','2027-12-31');
+      
+      document.getElementById('stat-total').innerText=data.totals.periodTotal||0;
+      document.getElementById('stat-done').innerText=data.totals.periodCompleted||0;
+      document.getElementById('stat-progress').innerText=data.totals.periodRemaining||0;
+      document.getElementById('stat-overdue').innerText=data.totals.absoluteOverdue||0;
+      
+      let html='<table class="w-full text-sm"><thead class="bg-slate-100"><tr><th class="p-3 text-right font-bold text-slate-700">الموظف</th><th class="p-3 text-center font-bold text-slate-700">الإجمالي</th><th class="p-3 text-center font-bold text-slate-700">المنجز</th><th class="p-3 text-center font-bold text-slate-700">المتبقي</th></tr></thead><tbody>';
+      
+      (data.employees||[]).forEach(emp=>{
+        html+=`<tr class="border-b hover:bg-slate-50"><td class="p-3 font-bold text-slate-800">${emp.name}</td><td class="p-3 text-center">${emp.periodTotal}</td><td class="p-3 text-center text-emerald-600 font-bold">${emp.periodCompleted}</td><td class="p-3 text-center text-orange-600 font-bold">${emp.periodRemaining}</td></tr>`;
+      });
+      html+='</tbody></table>';
+      document.getElementById('employees-table').innerHTML=html;
     }
     
-    document.getElementById('admin-name').textContent = user.name;
-    
-    // Fill selects
-    document.getElementById('arch-year').innerHTML = getYearOptions();
-    document.getElementById('arch-month').innerHTML = getMonthOptions();
-    
-    // Load settings
-    loadSettings();
-    
-    // Load data
-    await loadAdminData();
-}
-
-async function loadAdminData() {
-    const year = new Date().getFullYear();
-    const data = await fetchDashboardData(`${year}-01-01`, `${year}-12-31`);
-    
-    if (data) {
-        dashboardData = data;
-        fillEmployeeSelects();
-        renderStats();
+    async function searchArchiveAdmin(){
+      const filters={
+        year:document.getElementById('archive-year').value,
+        month:document.getElementById('archive-month').value,
+        search:document.getElementById('archive-search').value
+      };
+      
+      const result = await searchArchive(filters);
+      
+      if(result.success){
+        displayArchive(result.results);
+      }else{
+        alert('❌ خطأ: '+result.error);
+      }
     }
-}
-
-function fillEmployeeSelects() {
-    if (!dashboardData) return;
     
-    const options = dashboardData.employees.map(e => `<option value="${e.name}">${e.name}</option>`).join('');
-    document.getElementById('reassign-new-emp').innerHTML = '<option value="">-- اختر الموظف --</option>' + options;
-    document.getElementById('add-employee').innerHTML = '<option value="">-- اختر الموظف --</option>' + options;
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 📑 TABS
-// ═══════════════════════════════════════════════════════════════════════════
-function switchTab(tab) {
-    currentTab = tab;
-    
-    ['stats', 'reassign', 'status', 'add', 'archive'].forEach(t => {
-        const btn = document.getElementById(`tab-btn-${t}`);
-        const content = document.getElementById(`${t}-tab`);
+    function displayArchive(results){
+      let html='';
+      if(results.length===0){
+        html='<p class="text-center text-slate-400 py-12">لا توجد نتائج</p>';
+      }else{
+        html='<table class="w-full text-sm"><thead class="bg-slate-100"><tr><th class="p-3 text-right font-bold text-slate-700">رقم القيد</th><th class="p-3 font-bold text-slate-700">التاريخ</th><th class="p-3 font-bold text-slate-700">النوع</th><th class="p-3 font-bold text-slate-700">الجهة</th><th class="p-3 font-bold text-slate-700">الموضوع</th><th class="p-3 text-center font-bold text-slate-700">المرفقات</th></tr></thead><tbody>';
         
-        if (t === tab) {
-            btn.className = 'px-6 py-3 rounded-lg font-bold transition-all bg-slate-800 text-white';
-            if (content) content.classList.remove('hidden');
-        } else {
-            btn.className = 'px-6 py-3 rounded-lg font-bold transition-all bg-slate-100 text-slate-600';
-            if (content) content.classList.add('hidden');
-        }
-    });
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 📊 STATS
-// ═══════════════════════════════════════════════════════════════════════════
-function renderStats() {
-    if (!dashboardData) return;
-    
-    const t = dashboardData.totals;
-    document.getElementById('adm-stat-total').textContent = t.periodTotal;
-    document.getElementById('adm-stat-done').textContent = t.periodCompleted;
-    document.getElementById('adm-stat-prog').textContent = t.periodInProgress;
-    document.getElementById('adm-stat-late').textContent = t.absoluteOverdue;
-    
-    const tbody = document.getElementById('adm-employees-table');
-    tbody.innerHTML = '';
-    dashboardData.employees.forEach(emp => {
-        tbody.innerHTML += `
-        <tr class="hover:bg-slate-50 border-b border-slate-100">
-            <td class="p-4 font-bold text-slate-800">${emp.name}</td>
-            <td class="p-4 text-center text-slate-600">${emp.periodTotal}</td>
-            <td class="p-4 text-center text-emerald-600 font-bold">${emp.periodCompleted}</td>
-            <td class="p-4 text-center text-orange-600">${emp.periodRemaining}</td>
-        </tr>`;
-    });
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 🔄 ADMIN ACTIONS
-// ═══════════════════════════════════════════════════════════════════════════
-async function searchTask(type) {
-    const input = document.getElementById(`${type}-search-input`).value.trim();
-    if (!input) return showError('أدخل رقم القيد أو كلمة للبحث');
-    
-    const result = await callAPI('searchArchive', { filters: JSON.stringify({ search: input }) });
-    
-    if (result.success && result.results.length > 0) {
-        const task = result.results[0];
-        currentTaskId = task.id;
-        
-        document.getElementById(`${type}-preview`).classList.remove('hidden');
-        document.getElementById(`${type}-id`).textContent = '#' + task.id;
-        document.getElementById(`${type}-subject`).textContent = task.subject;
-        if (type === 'reassign') {
-            document.getElementById('reassign-entity').textContent = task.entity;
-        }
-    } else {
-        showError('لم يتم العثور على المهمة');
-    }
-}
-
-async function executeReassign() {
-    if (!currentTaskId) return showError('ابحث عن مهمة أولاً');
-    const newEmp = document.getElementById('reassign-new-emp').value;
-    if (!newEmp) return showError('اختر الموظف الجديد');
-    
-    const result = await postAPI('reassignTask', { taskId: currentTaskId, newEmployee: newEmp, user: getCurrentUser().name });
-    
-    if (result.success) {
-        showSuccess('تمت إعادة التكليف بنجاح');
-        location.reload();
-    } else {
-        showError(result.error || 'فشلت العملية');
-    }
-}
-
-async function executeStatusUpdate() {
-    if (!currentTaskId) return showError('ابحث عن مهمة أولاً');
-    const status = document.getElementById('status-new-val').value;
-    if (!status) return showError('اختر الحالة الجديدة');
-    
-    const result = await postAPI('updateStatus', { taskId: currentTaskId, newStatus: status, user: getCurrentUser().name });
-    
-    if (result.success) {
-        showSuccess('تم تحديث الحالة بنجاح');
-        location.reload();
-    } else {
-        showError(result.error || 'فشلت العملية');
-    }
-}
-
-async function executeAddTask() {
-    const taskData = {
-        date: document.getElementById('add-date').value,
-        source: document.getElementById('add-source').value,
-        subject: document.getElementById('add-subject').value,
-        entity: document.getElementById('add-entity').value,
-        employee: document.getElementById('add-employee').value,
-        deadline: document.getElementById('add-deadline').value,
-        attachment: document.getElementById('add-attachment').value
-    };
-    
-    if (!taskData.date || !taskData.source || !taskData.subject) {
-        return showError('أكمل البيانات الأساسية');
-    }
-    
-    const result = await postAPI('addTask', { taskData, user: getCurrentUser().name });
-    
-    if (result.success) {
-        showSuccess(`تمت الإضافة برقم قيد: ${result.id}`);
-        location.reload();
-    } else {
-        showError(result.error || 'فشلت العملية');
-    }
-}
-
-async function searchArchive() {
-    const filters = {
-        year: document.getElementById('arch-year').value,
-        month: document.getElementById('arch-month').value,
-        search: document.getElementById('arch-search').value
-    };
-    
-    const result = await callAPI('searchArchive', { filters: JSON.stringify(filters) });
-    const tbody = document.getElementById('arch-results');
-    
-    if (result.success && result.results.length > 0) {
-        tbody.innerHTML = '';
-        result.results.forEach(r => {
-            const fileIcon = r.taskAttachment ? '📎' : (r.reportDoc ? '📄' : '-');
-            tbody.innerHTML += `
-            <tr class="hover:bg-slate-50 border-b border-slate-100">
-                <td class="p-4 font-bold text-slate-800 text-xs">#${r.id}</td>
-                <td class="p-4 text-xs text-slate-500">${r.date}</td>
-                <td class="p-4 text-xs font-bold">${r.entity}</td>
-                <td class="p-4 text-sm">${r.subject}</td>
-                <td class="p-4 text-center">${fileIcon}</td>
-            </tr>`;
+        results.forEach(r=>{
+          let attachments='';
+          if(r.taskAttachment)attachments+=`<a href="${r.taskAttachment}" target="_blank" class="text-cyan-600 hover:underline mx-1" title="مرفق التكليف">📎</a>`;
+          if(r.reportDoc)attachments+=`<a href="${r.reportDoc}" target="_blank" class="text-blue-600 hover:underline mx-1" title="Google Doc">📄</a>`;
+          if(r.reportPdf)attachments+=`<a href="${r.reportPdf}" target="_blank" class="text-red-600 hover:underline mx-1" title="PDF">📕</a>`;
+          
+          html+=`<tr class="border-b hover:bg-slate-50"><td class="p-3 font-bold text-slate-800">${r.id}</td><td class="p-3 text-slate-600">${r.date}</td><td class="p-3 text-slate-600">${r.type}</td><td class="p-3 text-slate-600">${r.entity}</td><td class="p-3 text-slate-600">${r.subject}</td><td class="p-3 text-center">${attachments||'-'}</td></tr>`;
         });
-    } else {
-        tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-slate-400">لا توجد نتائج</td></tr>';
+        html+='</tbody></table>';
+      }
+      document.getElementById('archive-results').innerHTML=html;
     }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// ⚙️ SETTINGS
-// ═══════════════════════════════════════════════════════════════════════════
-function openSettings() {
-    document.getElementById('settings-modal').classList.remove('hidden');
-    lucide.createIcons();
-}
-
-function closeSettings() {
-    document.getElementById('settings-modal').classList.add('hidden');
-}
-
-function loadSettings() {
-    const settings = getFromStorage('settings') || {
-        dashboard: true,
-        employeePortal: true,
-        archive: true,
-        theme: 'teal'
-    };
     
-    document.getElementById('setting-dashboard').checked = settings.dashboard;
-    document.getElementById('setting-employee-portal').checked = settings.employeePortal;
-    document.getElementById('setting-archive').checked = settings.archive;
-    document.getElementById('setting-theme').value = settings.theme;
-}
-
-function saveSettings() {
-    const settings = {
-        dashboard: document.getElementById('setting-dashboard').checked,
-        employeePortal: document.getElementById('setting-employee-portal').checked,
-        archive: document.getElementById('setting-archive').checked,
-        theme: document.getElementById('setting-theme').value
-    };
-    
-    saveToStorage('settings', settings);
-    showSuccess('تم حفظ الإعدادات بنجاح');
-    closeSettings();
-}
-
-function resetSettings() {
-    if (confirm('هل تريد إعادة تعيين جميع الإعدادات للافتراضية؟')) {
-        clearStorage();
-        loadSettings();
-        showSuccess('تم إعادة التعيين');
+    function switchTab(tabName){
+      document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden-section'));
+      document.querySelectorAll('.main-tab-btn').forEach(b=>b.classList.remove('active'));
+      document.getElementById('tab-'+tabName).classList.remove('hidden-section');
+      event.target.closest('.main-tab-btn').classList.add('active');
+      lucide.createIcons();
     }
-}
-
-// Init
-document.addEventListener('DOMContentLoaded', () => {
+    
+    function logout(){
+      window.location.href = 'index.html';
+    }
+    
     lucide.createIcons();
-    init();
-});
-</script>
-
+  </script>
 </body>
 </html>
