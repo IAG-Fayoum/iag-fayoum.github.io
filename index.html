@@ -3,59 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>إدارة المراجعة الداخلية والحوكمة</title>
+  <title>إدارة المراجعة الداخلية والحوكمة - الفيوم</title>
+  
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
   <style>
-    body { font-family: 'Cairo', sans-serif; }
-    .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to bottom, #f8fafc 0%, #e2e8f0 100%);
+    }
+    .theme-gradient {
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .icon-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .7; }
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-slate-50">
-  <header class="theme-gradient text-white pb-20 pt-12 shadow-lg">
-    <div class="container mx-auto px-6 text-center">
-      <div class="bg-white/10 p-8 rounded-full inline-block mb-6">
-        <i data-lucide="landmark" class="w-24 h-24"></i>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="theme-gradient text-white py-16 shadow-2xl">
+    <div class="container mx-auto px-4 text-center">
+      <div class="bg-white/10 backdrop-blur-sm p-6 rounded-full inline-block mb-6 border-2 border-white/20">
+        <i data-lucide="landmark" class="w-20 h-20 text-white icon-pulse"></i>
       </div>
-      <h1 class="text-4xl font-bold mb-2">إدارة المراجعة الداخلية والحوكمة</h1>
-      <p class="text-lg opacity-90">مديرية الصحة بالفيوم</p>
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-3 drop-shadow-lg">
+        إدارة المراجعة الداخلية والحوكمة
+      </h1>
+      <p class="text-lg md:text-xl text-teal-50 font-medium">
+        مديرية الصحة بالفيوم
+      </p>
     </div>
   </header>
 
-  <main class="container mx-auto px-4 -mt-12 flex-grow">
-    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-4xl mx-auto mb-8">
-      <h2 class="text-2xl font-bold text-slate-800 mb-4 text-center">البوابة الرقمية</h2>
-      <p class="text-slate-600 text-center mb-6">منصة إدارة التكليفات والمراجعة</p>
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-12 flex-grow">
+    
+    <!-- Welcome Card -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 mb-12 max-w-4xl mx-auto border-t-4 border-teal-600">
+      <div class="text-center">
+        <div class="flex justify-center items-center gap-3 mb-4">
+          <i data-lucide="shield-check" class="w-8 h-8 text-teal-600"></i>
+          <h2 class="text-2xl font-bold text-slate-800">البوابة الرقمية الموحدة</h2>
+        </div>
+        <p class="text-slate-600 text-lg leading-relaxed">
+          منصة مركزية لإدارة تكليفات المراجعين الماليين والإداريين
+        </p>
+      </div>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-      <button onclick="location.href='employee.html'" class="bg-white p-6 rounded-xl shadow-md border-b-4 border-teal-600 hover:scale-105 transition">
-        <i data-lucide="bar-chart-2" class="w-8 h-8 text-teal-600 mx-auto mb-2"></i>
-        <p class="font-bold">Dashboard</p>
-      </button>
+    <!-- Action Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
       
-      <button onclick="location.href='employee.html'" class="bg-white p-6 rounded-xl shadow-md border-b-4 border-blue-500 hover:scale-105 transition">
-        <i data-lucide="briefcase" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
-        <p class="font-bold">الخدمات</p>
-      </button>
-      
-      <button onclick="location.href='coordinator.html'" class="bg-white p-6 rounded-xl shadow-md border-b-4 border-violet-500 hover:scale-105 transition">
-        <i data-lucide="users" class="w-8 h-8 text-violet-500 mx-auto mb-2"></i>
-        <p class="font-bold">الموظفين</p>
-      </button>
-      
-      <button onclick="location.href='admin.html'" class="bg-white p-6 rounded-xl shadow-md border-b-4 border-red-500 hover:scale-105 transition">
-        <i data-lucide="settings" class="w-8 h-8 text-red-500 mx-auto mb-2"></i>
-        <p class="font-bold">الإدارة</p>
-      </button>
+      <!-- Dashboard -->
+      <a href="employee.html" class="block">
+        <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-b-4 border-teal-600 card-hover transition-all cursor-pointer">
+          <i data-lucide="bar-chart-2" class="w-12 h-12 text-teal-600 mx-auto mb-4"></i>
+          <h3 class="text-lg font-bold text-slate-800">Dashboard</h3>
+          <p class="text-xs text-slate-500 mt-2">لوحة المتابعة</p>
+        </div>
+      </a>
+
+      <!-- Services -->
+      <a href="employee.html" class="block">
+        <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-b-4 border-blue-500 card-hover transition-all cursor-pointer">
+          <i data-lucide="briefcase" class="w-12 h-12 text-blue-500 mx-auto mb-4"></i>
+          <h3 class="text-lg font-bold text-slate-800">الخدمات</h3>
+          <p class="text-xs text-slate-500 mt-2">الخدمات الإلكترونية</p>
+        </div>
+      </a>
+
+      <!-- Employees -->
+      <a href="coordinator.html" class="block">
+        <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-b-4 border-violet-500 card-hover transition-all cursor-pointer">
+          <i data-lucide="users" class="w-12 h-12 text-violet-500 mx-auto mb-4"></i>
+          <h3 class="text-lg font-bold text-slate-800">الموظفين</h3>
+          <p class="text-xs text-slate-500 mt-2">إدارة الموظفين</p>
+        </div>
+      </a>
+
+      <!-- Admin -->
+      <a href="admin.html" class="block">
+        <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-b-4 border-red-500 card-hover transition-all cursor-pointer">
+          <i data-lucide="settings" class="w-12 h-12 text-red-500 mx-auto mb-4"></i>
+          <h3 class="text-lg font-bold text-slate-800">الإدارة</h3>
+          <p class="text-xs text-slate-500 mt-2">لوحة التحكم</p>
+        </div>
+      </a>
+
     </div>
+
+    <!-- Info Note -->
+    <div class="max-w-3xl mx-auto mt-12">
+      <div class="bg-teal-50 border-r-4 border-teal-600 rounded-lg p-6">
+        <div class="flex items-start gap-4">
+          <i data-lucide="info" class="w-6 h-6 text-teal-600 flex-shrink-0 mt-1"></i>
+          <div>
+            <h4 class="font-bold text-teal-900 mb-2">تنويه هام</h4>
+            <p class="text-sm text-teal-800 leading-relaxed">
+              يقتصر الاستخدام على أعضاء إدارة المراجعة الداخلية والحوكمة المكلفين رسمياً. 
+              للدعم الفني يرجى التواصل مع قسم تكنولوجيا المعلومات.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
-  <footer class="bg-slate-900 text-white py-6 text-center mt-auto">
-    <p class="text-sm">© 2025 إدارة الحوكمة - الفيوم</p>
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-white py-8 mt-auto border-t-4 border-teal-600">
+    <div class="container mx-auto px-4 text-center">
+      <div class="mb-4">
+        <i data-lucide="landmark" class="w-10 h-10 text-slate-600 mx-auto"></i>
+      </div>
+      <p class="text-sm font-bold mb-2">
+        © 2025 إدارة المراجعة الداخلية والحوكمة - الفيوم
+      </p>
+      <p class="text-xs text-slate-400">
+        جميع الحقوق محفوظة
+      </p>
+    </div>
   </footer>
 
-  <script>lucide.createIcons();</script>
+  <!-- Initialize Icons -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    });
+  </script>
+
 </body>
 </html>
