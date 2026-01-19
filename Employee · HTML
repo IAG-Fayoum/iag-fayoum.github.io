@@ -2,73 +2,284 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>صفحة الموظف - قيد الإنشاء</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>لوحة الموظف - IAG System</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
   <style>
-    body {
-      font-family: 'Cairo', sans-serif;
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0;
-      padding: 20px;
+    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+    
+    /* Loading Styles */
+    #loading-overlay {
+      position: fixed; top: 0; right: 0; width: 100%; height: 100%;
+      background: rgba(15, 118, 110, 0.95);
+      display: none; align-items: center; justify-content: center; z-index: 9999;
     }
-    .container {
-      background: white;
-      padding: 60px 40px;
-      border-radius: 24px;
-      text-align: center;
-      max-width: 500px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    .spinner {
+      width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite;
     }
-    h1 {
-      color: #0f766e;
-      font-size: 2rem;
-      margin-bottom: 20px;
-    }
-    p {
-      color: #64748b;
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-    }
-    .success {
-      color: #10b981;
-      font-size: 4rem;
-      margin-bottom: 20px;
-    }
-    .btn {
-      background: #0f766e;
-      color: white;
-      padding: 14px 32px;
-      border-radius: 12px;
-      text-decoration: none;
-      display: inline-block;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-    .btn:hover {
-      background: #115e59;
-      transform: translateY(-2px);
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
-<body>
-  <div class="container">
-    <div class="success">✅</div>
-    <h1>تم تسجيل الدخول بنجاح!</h1>
-    <p>مرحباً بك في نظام الحوكمة<br>صفحة الموظف قيد الإنشاء حالياً</p>
-    <a href="index.html" class="btn">العودة للرئيسية</a>
+<body class="pb-20">
+
+  <div id="loading-overlay"><div class="spinner"></div></div>
+  
+  <div id="message-box" class="hidden"></div>
+
+  <header class="bg-[#0f766e] text-white pt-8 pb-16 px-6 shadow-lg rounded-b-[2.5rem] relative overflow-hidden">
+    <div class="flex justify-between items-center relative z-10">
+      <div>
+        <h1 class="text-2xl font-bold" id="user-name">...</h1>
+        <p class="text-teal-100 text-sm opacity-90 mt-1" id="user-role">...</p>
+      </div>
+      <button onclick="auth.logout()" class="bg-white/20 p-2 rounded-full hover:bg-white/30 transition shadow-lg">
+        <i data-lucide="log-out" class="w-5 h-5 text-white"></i>
+      </button>
+    </div>
+    <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+  </header>
+
+  <div class="container mx-auto px-4 -mt-10 relative z-20">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div class="bg-white p-4 rounded-xl shadow-sm border-b-4 border-blue-500 text-center card-hover transition-all">
+        <div class="text-blue-500 mb-1"><i data-lucide="layers" class="w-6 h-6 mx-auto"></i></div>
+        <div class="text-2xl font-bold text-slate-700" id="stat-total">0</div>
+        <div class="text-xs text-slate-400 font-semibold">إجمالي المهام</div>
+      </div>
+      
+      <div class="bg-white p-4 rounded-xl shadow-sm border-b-4 border-emerald-500 text-center card-hover transition-all">
+        <div class="text-emerald-500 mb-1"><i data-lucide="check-circle-2" class="w-6 h-6 mx-auto"></i></div>
+        <div class="text-2xl font-bold text-slate-700" id="stat-completed">0</div>
+        <div class="text-xs text-slate-400 font-semibold">تم الإنجاز</div>
+      </div>
+      
+      <div class="bg-white p-4 rounded-xl shadow-sm border-b-4 border-amber-500 text-center card-hover transition-all">
+        <div class="text-amber-500 mb-1"><i data-lucide="clock" class="w-6 h-6 mx-auto"></i></div>
+        <div class="text-2xl font-bold text-slate-700" id="stat-pending">0</div>
+        <div class="text-xs text-slate-400 font-semibold">قيد العمل</div>
+      </div>
+      
+      <div class="bg-white p-4 rounded-xl shadow-sm border-b-4 border-red-500 text-center card-hover transition-all">
+        <div class="text-red-500 mb-1"><i data-lucide="alert-circle" class="w-6 h-6 mx-auto"></i></div>
+        <div class="text-2xl font-bold text-slate-700" id="stat-overdue">0</div>
+        <div class="text-xs text-slate-400 font-semibold">متأخرة</div>
+      </div>
+    </div>
   </div>
 
+  <main class="container mx-auto px-4 mt-8">
+    
+    <div class="flex space-x-4 space-x-reverse border-b border-slate-200 mb-6 sticky top-0 bg-[#f8fafc] pt-2 z-10">
+      <button onclick="switchTab('tasks')" id="tab-tasks" class="pb-2 px-4 border-b-2 border-teal-600 text-teal-700 font-bold transition-colors">
+        المهام المسندة
+      </button>
+      <button onclick="switchTab('reports')" id="tab-reports" class="pb-2 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-semibold transition-colors">
+        التقارير
+      </button>
+    </div>
+
+    <div id="view-tasks" class="space-y-4 min-h-[300px]">
+      <div id="tasks-container" class="space-y-3 pb-10">
+        </div>
+    </div>
+
+    <div id="view-reports" class="hidden space-y-4 min-h-[300px]">
+      <div id="reports-container" class="space-y-3 pb-10">
+        </div>
+    </div>
+  </main>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  
   <script>
-    // عرض معلومات المستخدم من Session
-    const userData = sessionStorage.getItem('iag_user');
-    if (userData) {
-      const user = JSON.parse(userData);
-      document.querySelector('p').innerHTML = `مرحباً <strong>${user.name}</strong><br>الصلاحية: ${user.role}<br><br>صفحة الموظف قيد الإنشاء حالياً`;
+    let currentUser = null;
+
+    // 1. عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      
+      // التحقق من تسجيل الدخول
+      currentUser = auth.checkSession();
+      if (!currentUser) return;
+
+      // عرض بيانات المستخدم
+      document.getElementById('user-name').textContent = currentUser.name;
+      document.getElementById('user-role').textContent = currentUser.role;
+
+      // جلب البيانات من السيرفر
+      await loadData();
+    });
+
+    // 2. دالة جلب البيانات
+    async function loadData() {
+      // نستخدم getEmployeeData التي قمنا ببرمجتها في Core.gs
+      const result = await auth.apiCall('getEmployeeData', { name: currentUser.name });
+
+      if (result.success) {
+        updateStats(result.stats);
+        renderTasks(result.tasks);
+        renderReports(result.reports);
+      } else {
+        // إذا فشل الجلب، نعرض رسالة خطأ
+        document.getElementById('tasks-container').innerHTML = 
+          `<div class="text-center text-red-500 py-10 bg-white rounded-xl shadow-sm">
+             <i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2"></i>
+             <p>فشل تحميل البيانات: ${result.error}</p>
+             <button onclick="loadData()" class="mt-4 text-sm text-teal-600 font-bold underline">إعادة المحاولة</button>
+           </div>`;
+        lucide.createIcons();
+      }
+    }
+
+    // 3. تحديث العدادات
+    function updateStats(stats) {
+      if(!stats) return;
+      // نستخدم Animation بسيط للأرقام
+      animateValue("stat-total", 0, stats.total || 0, 1000);
+      animateValue("stat-completed", 0, stats.completed || 0, 1000);
+      animateValue("stat-pending", 0, stats.pending || 0, 1000);
+      animateValue("stat-overdue", 0, stats.overdue || 0, 1000);
+    }
+
+    // 4. رسم قائمة المهام
+    function renderTasks(tasks) {
+      const container = document.getElementById('tasks-container');
+      container.innerHTML = '';
+
+      if (!tasks || tasks.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 opacity-50">
+            <i data-lucide="clipboard-list" class="w-12 h-12 mx-auto mb-3 text-slate-300"></i>
+            <p class="text-slate-500">لا توجد مهام مسندة حالياً</p>
+          </div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      tasks.forEach(task => {
+        const isOverdue = task.status.includes('متأخر');
+        const isDone = task.status.includes('منتهي') || task.status.includes('اعتماد');
+        
+        let statusClass = 'bg-slate-100 text-slate-600'; // Default
+        if (isOverdue) statusClass = 'bg-red-100 text-red-700';
+        else if (isDone) statusClass = 'bg-emerald-100 text-emerald-700';
+        else if (task.status.includes('جاري')) statusClass = 'bg-amber-100 text-amber-700';
+        else if (task.status.includes('جديد')) statusClass = 'bg-blue-100 text-blue-700';
+
+        const html = `
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-all group">
+            <div class="flex justify-between items-start mb-3">
+              <span class="text-[10px] font-mono bg-slate-50 text-slate-400 px-2 py-1 rounded border border-slate-100">
+                ${task.id}
+              </span>
+              <span class="text-[10px] font-bold px-2.5 py-1 rounded-full ${statusClass}">
+                ${task.status}
+              </span>
+            </div>
+            
+            <h3 class="font-bold text-slate-800 text-base mb-2 leading-relaxed group-hover:text-teal-700 transition-colors">
+              ${task.subject}
+            </h3>
+            
+            <div class="text-xs text-slate-500 space-y-2 mb-4">
+              <div class="flex items-center gap-2">
+                <i data-lucide="building-2" class="w-3.5 h-3.5 text-teal-500"></i>
+                <span>${task.entity}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="calendar" class="w-3.5 h-3.5 text-teal-500"></i>
+                <span>${task.date}</span>
+                ${task.delay ? `<span class="text-red-500 font-bold bg-red-50 px-1 rounded">(${task.delay} يوم تأخير)</span>` : ''}
+              </div>
+            </div>
+
+            <div class="border-t border-slate-50 pt-3 flex justify-between items-center">
+               ${task.attachment ? `
+                <a href="${task.attachment}" target="_blank" class="inline-flex items-center gap-1.5 text-teal-600 text-xs font-bold bg-teal-50 px-3 py-1.5 rounded-lg hover:bg-teal-100 transition-colors">
+                  <i data-lucide="paperclip" class="w-3.5 h-3.5"></i> فتح المرفقات
+                </a>` : '<span class="text-slate-300 text-[10px]">لا يوجد مرفقات</span>'}
+            </div>
+          </div>
+        `;
+        container.innerHTML += html;
+      });
+      lucide.createIcons();
+    }
+
+    // 5. رسم قائمة التقارير
+    function renderReports(reports) {
+      const container = document.getElementById('reports-container');
+      container.innerHTML = '';
+
+      if (!reports || reports.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 opacity-50">
+            <i data-lucide="file-x" class="w-12 h-12 mx-auto mb-3 text-slate-300"></i>
+            <p class="text-slate-500">لا توجد تقارير مسجلة</p>
+          </div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      reports.forEach(report => {
+        const html = `
+          <div class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-violet-500 flex items-center justify-between hover:bg-slate-50 transition-colors">
+            <div class="flex-1">
+              <h4 class="font-bold text-slate-800 text-sm mb-1">${report.title}</h4>
+              <div class="flex items-center gap-2 text-[10px] text-slate-500">
+                <span>${report.entity}</span>
+                <span>•</span>
+                <span>${report.date}</span>
+              </div>
+            </div>
+            <div class="flex gap-2 mr-3">
+              ${report.docLink ? `
+              <a href="${report.docLink}" target="_blank" class="w-8 h-8 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors" title="Google Doc">
+                <i data-lucide="file-text" class="w-4 h-4"></i>
+              </a>` : ''}
+              ${report.pdfLink ? `
+              <a href="${report.pdfLink}" target="_blank" class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" title="PDF">
+                <i data-lucide="file-down" class="w-4 h-4"></i>
+              </a>` : ''}
+            </div>
+          </div>
+        `;
+        container.innerHTML += html;
+      });
+      lucide.createIcons();
+    }
+
+    // التبديل بين التبويبات
+    function switchTab(tabName) {
+      document.getElementById('view-tasks').classList.add('hidden');
+      document.getElementById('view-reports').classList.add('hidden');
+      document.getElementById(`view-${tabName}`).classList.remove('hidden');
+
+      const activeClass = 'border-teal-600 text-teal-700 font-bold';
+      const inactiveClass = 'border-transparent text-slate-400 hover:text-slate-600 font-semibold';
+      
+      document.getElementById('tab-tasks').className = `pb-2 px-4 border-b-2 transition-colors ${tabName === 'tasks' ? activeClass : inactiveClass}`;
+      document.getElementById('tab-reports').className = `pb-2 px-4 border-b-2 transition-colors ${tabName === 'reports' ? activeClass : inactiveClass}`;
+    }
+
+    // دالة تحريك الأرقام
+    function animateValue(id, start, end, duration) {
+      const obj = document.getElementById(id);
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = Math.floor(progress * (end - start) + start);
+        if (progress < 1) window.requestAnimationFrame(step);
+      };
+      window.requestAnimationFrame(step);
     }
   </script>
 </body>
