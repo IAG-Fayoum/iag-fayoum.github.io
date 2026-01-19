@@ -1,7 +1,7 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
  * 🔐 IAG System - نظام المصادقة
- * Authentication Module
+ * Authentication & API Handler
  * ═══════════════════════════════════════════════════════════════════════════
  */
 
@@ -11,42 +11,56 @@ class AuthManager {
     this.loadSession();
   }
 
-  // تسجيل الدخول
-  async login(pin) {
+  // 1. دالة الاتصال العامة (الجديدة - ضرورية لجلب البيانات)
+  async apiCall(action, payload = {}) {
     try {
-      showLoading(true);
+      // إظهار التحميل فقط إذا لم يكن مخفياً صراحة
+      if (!payload.hideLoading) showLoading(true);
       
+      const body = {
+        action: action,
+        user: this.currentUser ? this.currentUser.name : 'Guest',
+        ...payload
+      };
+
       const response = await fetch(CONFIG.apiUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'login',
-          pin: pin.trim()
-        })
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // text/plain لتجنب مشاكل CORS
+        body: JSON.stringify(body)
       });
 
       const result = await response.json();
-
-      if (result.success) {
-        this.currentUser = {
-          name: result.name,
-          role: result.role,
-          pin: result.pin,
-          loginTime: new Date().toISOString()
-        };
-        
-        this.saveSession();
-        this.redirectToDashboard();
-        return { success: true };
-      } else {
-        return { success: false, error: result.error || 'فشل تسجيل الدخول' };
-      }
+      
+      if (!payload.hideLoading) showLoading(false);
+      return result;
 
     } catch (error) {
-      console.error('Login error:', error);
-      return { success: false, error: 'خطأ في الاتصال بالسيرفر' };
-    } finally {
       showLoading(false);
+      console.error('API Error:', error);
+      showMessage('خطأ في الاتصال بالسيرفر', 'error');
+      return { success: false, error: error.message };
+    }
+  }
+
+  // 2. تسجيل الدخول
+  async login(pin) {
+    // نستخدم apiCall لتبسيط الكود
+    const result = await this.apiCall('login', { pin: pin });
+
+    if (result.success) {
+      this.currentUser = {
+        name: result.name,
+        role: result.role,
+        email: result.email,
+        pin: result.pin, // نحتفظ به للجلسة
+        loginTime: new Date().toISOString()
+      };
+      
+      this.saveSession();
+      this.redirectToDashboard();
+      return { success: true };
+    } else {
+      return { success: false, error: result.error || 'فشل تسجيل الدخول' };
     }
   }
 
@@ -54,7 +68,6 @@ class AuthManager {
   saveSession() {
     if (this.currentUser) {
       sessionStorage.setItem(STORAGE_KEYS.user, JSON.stringify(this.currentUser));
-      sessionStorage.setItem(STORAGE_KEYS.token, btoa(this.currentUser.pin));
     }
   }
 
@@ -64,16 +77,6 @@ class AuthManager {
       const userData = sessionStorage.getItem(STORAGE_KEYS.user);
       if (userData) {
         this.currentUser = JSON.parse(userData);
-        
-        // فحص انتهاء الجلسة
-        const loginTime = new Date(this.currentUser.loginTime);
-        const elapsed = Date.now() - loginTime.getTime();
-        
-        if (elapsed > CONFIG.settings.sessionTimeout) {
-          this.logout();
-          return null;
-        }
-        
         return this.currentUser;
       }
     } catch (e) {
@@ -89,86 +92,61 @@ class AuthManager {
     window.location.href = 'index.html';
   }
 
-  // فحص الصلاحية
-  hasRole(requiredRole) {
-    if (!this.currentUser) return false;
-    if (this.currentUser.role === CONFIG.roles.admin) return true;
-    return this.currentUser.role === requiredRole;
+  // التحقق من الجلسة في الصفحات الداخلية
+  checkSession() {
+    if (!this.loadSession()) {
+      window.location.href = 'index.html';
+      return null;
+    }
+    return this.currentUser;
   }
 
-  // التوجيه للصفحة المناسبة
+  // التوجيه
   redirectToDashboard() {
     const role = this.currentUser.role;
-    
-    if (role === CONFIG.roles.admin) {
+    if (role === 'مدير' || role === 'Admin') {
       window.location.href = 'admin.html';
+    } else if (role === 'منسق') {
+        window.location.href = 'coordinator.html';
     } else {
       window.location.href = 'employee.html';
     }
   }
-
-  // فحص الجلسة على الصفحات المحمية
-  requireAuth() {
-    if (!this.loadSession()) {
-      window.location.href = 'index.html';
-      return false;
-    }
-    return true;
-  }
 }
 
-// إنشاء instance عام
+// إنشاء الكائن العام
 const auth = new AuthManager();
 
-// دوال مساعدة
+// دوال مساعدة للواجهة
 function showLoading(show) {
   const loader = document.getElementById('loading-overlay');
-  if (loader) {
-    loader.style.display = show ? 'flex' : 'none';
-  }
+  if (loader) loader.style.display = show ? 'flex' : 'none';
 }
 
 function showMessage(message, type = 'error') {
   const msgDiv = document.getElementById('message-box');
   if (msgDiv) {
     msgDiv.textContent = message;
-    msgDiv.className = `message-box ${type} show`;
+    // دعم فئات Tailwind أو CSS العادي
+    msgDiv.className = type === 'error' 
+      ? 'fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg bg-red-500 text-white font-bold z-50 shadow-xl' 
+      : 'fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg bg-emerald-500 text-white font-bold z-50 shadow-xl';
     
-    setTimeout(() => {
-      msgDiv.classList.remove('show');
-    }, 4000);
+    msgDiv.style.display = 'block';
+    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+  } else {
+    alert(message);
   }
 }
 
-// معالج نموذج تسجيل الدخول
-function handleLoginForm() {
+// تفعيل النموذج في صفحة الدخول
+document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('login-form');
-  if (!form) return;
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const pinInput = document.getElementById('pin-input');
-    const pin = pinInput.value.trim();
-    
-    if (!pin) {
-      showMessage('الرجاء إدخال رمز الدخول', 'error');
-      return;
-    }
-
-    const result = await auth.login(pin);
-    
-    if (!result.success) {
-      showMessage(result.error, 'error');
-      pinInput.value = '';
-      pinInput.focus();
-    }
-  });
-}
-
-// تحميل تلقائي
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', handleLoginForm);
-} else {
-  handleLoginForm();
-}
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const pin = document.getElementById('pin-input').value;
+      if (pin) auth.login(pin);
+    });
+  }
+});
