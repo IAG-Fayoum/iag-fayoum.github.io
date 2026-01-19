@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>إدارة النظام - IAG System</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+    /* Loading Overlay */
+    #loading-overlay { position: fixed; top: 0; right: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Custom Inputs */
+    .input-field { width: 100%; padding: 10px 15px; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 5px; transition: all 0.3s; }
+    .input-field:focus { outline: none; border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+    label { font-size: 0.9rem; font-weight: 600; color: #475569; }
+  </style>
+</head>
+<body class="pb-20">
+
+  <div id="loading-overlay"><div class="spinner"></div></div>
+  <div id="message-box" class="hidden"></div>
+
+  <header class="bg-slate-800 text-white py-6 px-6 shadow-md mb-8">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <a href="admin.html" class="bg-white/10 p-2 rounded-full hover:bg-white/20 transition">
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </a>
+        <div>
+          <h1 class="text-xl font-bold">إدارة النظام</h1>
+          <p class="text-slate-400 text-xs">لوحة التحكم والعمليات</p>
+        </div>
+      </div>
+      <div class="bg-slate-700 px-3 py-1 rounded text-xs text-slate-300">Admin Area</div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 max-w-3xl space-y-6">
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="bg-teal-50 px-6 py-4 border-b border-teal-100 flex items-center gap-2">
+        <i data-lucide="plus-circle" class="text-teal-600 w-5 h-5"></i>
+        <h2 class="font-bold text-teal-800">إضافة مهمة جديدة يدوياً</h2>
+      </div>
+      
+      <form id="add-task-form" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label>الموضوع / اسم المهمة</label>
+          <input type="text" name="subject" class="input-field" required>
+        </div>
+        
+        <div>
+          <label>الجهة (المصدر)</label>
+          <input type="text" name="source" class="input-field" placeholder="مثال: الوزارة">
+        </div>
+
+        <div>
+          <label>الجهة محل التنفيذ</label>
+          <input type="text" name="entity" class="input-field" placeholder="مثال: مستشفى العام">
+        </div>
+
+        <div>
+          <label>الموظف المكلف</label>
+          <input type="text" name="employee" class="input-field" required placeholder="الاسم كما في النظام">
+        </div>
+
+        <div>
+          <label>تاريخ الورود</label>
+          <input type="date" name="date" class="input-field" required>
+        </div>
+
+        <div>
+          <label>الموعد النهائي (اختياري)</label>
+          <input type="date" name="deadline" class="input-field">
+        </div>
+        
+        <div class="md:col-span-2">
+           <button type="submit" class="w-full bg-teal-600 text-white py-3 rounded-lg font-bold hover:bg-teal-700 transition shadow-lg shadow-teal-600/20">
+             إضافة المهمة للنظام
+           </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex items-center gap-2">
+        <i data-lucide="user-cog" class="text-indigo-600 w-5 h-5"></i>
+        <h2 class="font-bold text-indigo-800">إعادة تكليف مهمة</h2>
+      </div>
+      
+      <form id="reassign-form" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2">
+          <label>رقم قيد المهمة (ID)</label>
+          <input type="text" id="reassign-id" class="input-field" placeholder="مثال: 24-105" required>
+        </div>
+        
+        <div class="md:col-span-2">
+          <label>الموظف الجديد</label>
+          <input type="text" id="reassign-new-emp" class="input-field" placeholder="اسم الموظف الجديد" required>
+        </div>
+
+        <div class="md:col-span-2">
+           <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-600/20">
+             تحديث المسؤول
+           </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="bg-amber-50 px-6 py-4 border-b border-amber-100 flex items-center gap-2">
+        <i data-lucide="refresh-cw" class="text-amber-600 w-5 h-5"></i>
+        <h2 class="font-bold text-amber-800">تحديث حالة يدوياً</h2>
+      </div>
+      
+      <form id="status-form" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label>رقم قيد المهمة (ID)</label>
+          <input type="text" id="status-id" class="input-field" required>
+        </div>
+        
+        <div>
+          <label>الحالة الجديدة</label>
+          <select id="status-new" class="input-field bg-white" required>
+            <option value="جديد">جديد</option>
+            <option value="جاري">جاري</option>
+            <option value="تم الاعتماد">تم الاعتماد</option>
+            <option value="منتهي">منتهي</option>
+            <option value="متأخر">متأخر</option>
+            <option value="أرشيف">أرشيف</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+           <button type="submit" class="w-full bg-amber-600 text-white py-3 rounded-lg font-bold hover:bg-amber-700 transition shadow-lg shadow-amber-600/20">
+             تغيير الحالة
+           </button>
+        </div>
+      </form>
+    </div>
+
+  </main>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script>
+    // عند التحميل
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      // التحقق من الصلاحية (مدير فقط)
+      const user = auth.checkSession();
+      if (user && user.role !== 'مدير' && user.role !== 'Admin') {
+        alert('غير مصرح لك بدخول هذه الصفحة');
+        window.location.href = 'index.html';
+      }
+    });
+
+    // 1. معالجة إضافة مهمة
+    document.getElementById('add-task-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const taskData = Object.fromEntries(formData.entries());
+
+      // استدعاء API
+      const result = await auth.apiCall('addTask', { taskData: taskData });
+      
+      if (result.success) {
+        auth.showMessage(`تمت إضافة المهمة بنجاح برقم: ${result.id}`, 'success');
+        e.target.reset();
+      }
+    });
+
+    // 2. معالجة إعادة التكليف
+    document.getElementById('reassign-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const taskId = document.getElementById('reassign-id').value;
+      const newEmp = document.getElementById('reassign-new-emp').value;
+
+      const result = await auth.apiCall('reassignTask', { 
+        taskId: taskId, 
+        newEmployee: newEmp 
+      });
+      
+      if (result.success) {
+        auth.showMessage('تم نقل المهمة للموظف الجديد بنجاح', 'success');
+        e.target.reset();
+      }
+    });
+
+    // 3. معالجة تحديث الحالة
+    document.getElementById('status-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const taskId = document.getElementById('status-id').value;
+      const newStatus = document.getElementById('status-new').value;
+
+      const result = await auth.apiCall('updateStatus', { 
+        taskId: taskId, 
+        newStatus: newStatus 
+      });
+      
+      if (result.success) {
+        auth.showMessage('تم تحديث حالة المهمة بنجاح', 'success');
+        e.target.reset();
+      }
+    });
+  </script>
+</body>
+</html>
