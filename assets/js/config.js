@@ -14,7 +14,7 @@ const CONFIG = {
   version: '6.0',
   
   // API Endpoint
-  apiUrl: 'https://script.google.com/macros/s/AKfycbxvVFWza61a404wH_pFwpC-ykul9z6qI7HcX2LcrMsZUM3nU60z315_L0QaRnN83jZXag/exec',
+  apiUrl: 'https://script.google.com/macros/s/AKfycbzB0a7A7Dq4j5-l_-4YkBH1c-cOmgi7kIFP6Da8ZjM1CLfz9xZIncim13cJfc2LPyru3A/exec',
   
   // الألوان الرئيسية
   colors: {
