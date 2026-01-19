@@ -2,72 +2,236 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة المدير - قيد الإنشاء</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>لوحة المدير العام - IAG System</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
   <style>
-    body {
-      font-family: 'Cairo', sans-serif;
-      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      background: white;
-      padding: 60px 40px;
-      border-radius: 24px;
-      text-align: center;
-      max-width: 500px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    }
-    h1 {
-      color: #dc2626;
-      font-size: 2rem;
-      margin-bottom: 20px;
-    }
-    p {
-      color: #64748b;
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-    }
-    .success {
-      color: #10b981;
-      font-size: 4rem;
-      margin-bottom: 20px;
-    }
-    .btn {
-      background: #dc2626;
-      color: white;
-      padding: 14px 32px;
-      border-radius: 12px;
-      text-decoration: none;
-      display: inline-block;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-    .btn:hover {
-      background: #991b1b;
-      transform: translateY(-2px);
-    }
+    body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; }
+    #loading-overlay { position: fixed; top: 0; right: 0; width: 100%; height: 100%; background: rgba(153, 27, 27, 0.95); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
-<body>
-  <div class="container">
-    <div class="success">👨‍💼</div>
-    <h1>مرحباً أيها المدير!</h1>
-    <p>تم تسجيل الدخول بنجاح<br>لوحة التحكم قيد الإنشاء حالياً</p>
-    <a href="index.html" class="btn">العودة للرئيسية</a>
+<body class="pb-20">
+
+  <div id="loading-overlay"><div class="spinner"></div></div>
+  <div id="message-box" class="hidden"></div>
+
+  <header class="bg-[#991b1b] text-white pt-8 pb-20 px-6 shadow-xl rounded-b-[3rem] relative overflow-hidden">
+    <div class="flex justify-between items-start relative z-10">
+      <div>
+        <h1 class="text-3xl font-bold mb-1">لوحة القيادة</h1>
+        <p class="text-red-100 text-sm opacity-90">مديرية الشؤون الصحية - إدارة المراجعة الداخلية</p>
+      </div>
+      
+      <div class="flex gap-3">
+        <a href="settings.html" class="bg-white text-red-700 px-4 py-2 rounded-xl font-bold shadow-lg hover:bg-red-50 transition flex items-center gap-2">
+          <i data-lucide="settings" class="w-5 h-5"></i>
+          <span class="hidden md:inline">إدارة النظام</span>
+        </a>
+        
+        <button onclick="auth.logout()" class="bg-black/20 p-2 rounded-xl hover:bg-black/30 transition text-white">
+          <i data-lucide="log-out" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+  </header>
+
+  <div class="container mx-auto px-4 -mt-16 relative z-20 mb-8">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white p-6 rounded-2xl shadow-md border-b-4 border-blue-600">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-slate-500 text-sm font-bold">إجمالي المهام</span>
+          <i data-lucide="layers" class="text-blue-600 w-6 h-6"></i>
+        </div>
+        <div class="text-3xl font-extrabold text-slate-800" id="total-tasks">0</div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-md border-b-4 border-emerald-600">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-slate-500 text-sm font-bold">نسبة الإنجاز</span>
+          <i data-lucide="pie-chart" class="text-emerald-600 w-6 h-6"></i>
+        </div>
+        <div class="text-3xl font-extrabold text-slate-800" id="completion-rate">0%</div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-md border-b-4 border-amber-500">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-slate-500 text-sm font-bold">قيد العمل</span>
+          <i data-lucide="clock" class="text-amber-500 w-6 h-6"></i>
+        </div>
+        <div class="text-3xl font-extrabold text-slate-800" id="in-progress">0</div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-md border-b-4 border-red-600">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-slate-500 text-sm font-bold">متأخرات</span>
+          <i data-lucide="alert-triangle" class="text-red-600 w-6 h-6"></i>
+        </div>
+        <div class="text-3xl font-extrabold text-slate-800" id="overdue">0</div>
+      </div>
+    </div>
   </div>
 
+  <main class="container mx-auto px-4 space-y-8">
+    
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <i data-lucide="users" class="text-teal-600"></i> أداء الفريق
+        </h2>
+        <span class="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded-lg" id="emp-count">0 موظف</span>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full text-right">
+          <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold">
+            <tr>
+              <th class="px-6 py-4">الموظف</th>
+              <th class="px-6 py-4 text-center">إجمالي</th>
+              <th class="px-6 py-4 text-center">منجز</th>
+              <th class="px-6 py-4 text-center">قيد العمل</th>
+              <th class="px-6 py-4 text-center text-red-600">متأخر</th>
+              <th class="px-6 py-4 text-center">الأداء</th>
+            </tr>
+          </thead>
+          <tbody id="employees-table" class="divide-y divide-slate-100 text-sm font-medium">
+            </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="p-6 border-b border-slate-100 bg-slate-50">
+        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <i data-lucide="building-2" class="text-indigo-600"></i> الجهات الأكثر نشاطاً
+        </h2>
+      </div>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4" id="entities-grid">
+        </div>
+    </div>
+
+  </main>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
   <script>
-    const userData = sessionStorage.getItem('iag_user');
-    if (userData) {
-      const user = JSON.parse(userData);
-      document.querySelector('p').innerHTML = `مرحباً <strong>${user.name}</strong><br>الصلاحية: ${user.role}<br><br>لوحة التحكم قيد الإنشاء حالياً`;
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      
+      // التحقق من الصلاحية
+      const user = auth.checkSession();
+      if (!user) return;
+      if (user.role !== 'مدير' && user.role !== 'Admin') {
+        window.location.href = 'employee.html';
+        return;
+      }
+
+      await loadDashboard();
+    });
+
+    async function loadDashboard() {
+      // نستخدم getAllData بصلاحية مدير لجلب كل شيء
+      const result = await auth.apiCall('getAllData', { 
+        role: 'مدير',
+        name: 'Admin'
+      });
+
+      if (result.success) {
+        renderGlobalStats(result.stats.totals);
+        renderEmployeesTable(result.stats.employees);
+        renderEntities(result.stats.entities);
+      } else {
+        auth.showMessage('فشل تحميل بيانات لوحة القيادة', 'error');
+      }
+    }
+
+    function renderGlobalStats(totals) {
+      if(!totals) return;
+      document.getElementById('total-tasks').textContent = totals.total;
+      document.getElementById('in-progress').textContent = totals.inProgress;
+      document.getElementById('overdue').textContent = totals.overdue;
+      
+      // حساب النسبة المئوية
+      const rate = totals.total > 0 ? Math.round((totals.completed / totals.total) * 100) : 0;
+      document.getElementById('completion-rate').textContent = rate + '%';
+      
+      // تلوين النسبة
+      const rateEl = document.getElementById('completion-rate');
+      if(rate >= 80) rateEl.classList.add('text-emerald-600');
+      else if(rate >= 50) rateEl.classList.add('text-amber-500');
+      else rateEl.classList.add('text-red-600');
+    }
+
+    function renderEmployeesTable(employees) {
+      const tbody = document.getElementById('employees-table');
+      document.getElementById('emp-count').textContent = employees.length + ' موظف';
+      tbody.innerHTML = '';
+
+      employees.forEach(emp => {
+        const rate = emp.total > 0 ? Math.round((emp.completed / emp.total) * 100) : 0;
+        let barColor = 'bg-red-500';
+        if(rate >= 80) barColor = 'bg-emerald-500';
+        else if(rate >= 50) barColor = 'bg-amber-500';
+
+        const html = `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="px-6 py-4 flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600 text-xs">
+                ${emp.name.charAt(0)}
+              </div>
+              <span class="text-slate-700">${emp.name}</span>
+            </td>
+            <td class="px-6 py-4 text-center font-bold">${emp.total}</td>
+            <td class="px-6 py-4 text-center text-emerald-600 font-bold">${emp.completed}</td>
+            <td class="px-6 py-4 text-center text-amber-600">${emp.inProgress}</td>
+            <td class="px-6 py-4 text-center text-red-600 font-bold">${emp.overdue}</td>
+            <td class="px-6 py-4 min-w-[120px]">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold w-8">${rate}%</span>
+                <div class="w-full bg-slate-200 rounded-full h-1.5">
+                  <div class="${barColor} h-1.5 rounded-full" style="width: ${rate}%"></div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+        tbody.innerHTML += html;
+      });
+    }
+
+    function renderEntities(entities) {
+      const container = document.getElementById('entities-grid');
+      container.innerHTML = '';
+      
+      // عرض أعلى 6 جهات فقط
+      entities.slice(0, 6).forEach(ent => {
+        const html = `
+          <div class="flex items-center justify-between p-3 border border-slate-100 rounded-xl hover:shadow-sm transition">
+            <div class="flex items-center gap-3">
+              <div class="bg-indigo-50 p-2 rounded-lg">
+                <i data-lucide="building" class="w-4 h-4 text-indigo-600"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-slate-800">${ent.name}</h4>
+                <p class="text-[10px] text-slate-400">عدد المعاملات: ${ent.total}</p>
+              </div>
+            </div>
+            ${ent.overdue > 0 
+              ? `<span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-bold">${ent.overdue} متأخر</span>`
+              : `<span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded-full font-bold">منتظم</span>`
+            }
+          </div>
+        `;
+        container.innerHTML += html;
+      });
+      lucide.createIcons();
     }
   </script>
 </body>
