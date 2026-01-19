@@ -128,10 +128,15 @@
       // التحقق من الصلاحية
       const user = auth.checkSession();
       if (!user) return;
+      
+      // إذا لم يكن مدير، نعيده لصفحة الموظف
       if (user.role !== 'مدير' && user.role !== 'Admin') {
         window.location.href = 'employee.html';
         return;
       }
+      
+      // عرض اسم المدير
+      // (اختياري: يمكن إضافته للهيدر إذا رغبت)
 
       await loadDashboard();
     });
