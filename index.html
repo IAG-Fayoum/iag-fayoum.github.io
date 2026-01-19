@@ -103,6 +103,63 @@
       color: white;
     }
 
+    /* Login Modal */
+    .login-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .login-modal.show {
+      display: flex;
+    }
+
+    .login-modal-content {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 400px;
+      width: 90%;
+      position: relative;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #f1f5f9;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover {
+      background: #e2e8f0;
+      transform: rotate(90deg);
+    }
+
     /* Login Form */
     .login-container {
       background: white;
@@ -163,7 +220,14 @@
       header .bg-white\/10 { padding: 24px; margin-bottom: 16px; }
       header i { width: 64px !important; height: 64px !important; }
       main { margin-top: -48px; }
-      .login-container { padding: 32px 24px; }
+      main .bg-white { padding: 24px; margin-bottom: 24px; }
+      main h2 { font-size: 1.25rem; }
+      main p { font-size: 0.9rem; }
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .grid button { padding: 16px; }
+      .grid button i { width: 28px !important; height: 28px !important; }
+      .grid button span { font-size: 0.85rem; }
+      .login-modal-content { padding: 32px 24px; }
       footer { padding-top: 24px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
       footer p { font-size: 0.75rem; }
       footer .text-xs { font-size: 0.65rem; }
@@ -171,7 +235,10 @@
     
     @media (max-width: 375px) {
       header h1 { font-size: 1.5rem; }
-      .login-container { padding: 24px 20px; }
+      .grid { gap: 8px; }
+      .grid button { padding: 12px; }
+      .grid button span { font-size: 0.75rem; }
+      .login-modal-content { padding: 24px 20px; }
     }
   </style>
 </head>
@@ -206,8 +273,50 @@
     </header>
 
     <main class="container mx-auto px-4 -mt-12 mb-10 flex-grow relative z-20">
-      <!-- Login Form -->
-      <div class="login-container fade-in">
+      <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 text-center max-w-4xl mx-auto border border-slate-100 mb-8">
+        <h2 class="text-2xl font-bold text-slate-800 mb-4 flex justify-center items-center gap-2">
+          <i data-lucide="shield-check" class="text-teal-600"></i> البوابة الرقمية الموحدة
+        </h2>
+        <p class="text-slate-600 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
+          منصة مركزية لإدارة المراجعة الداخلية والحوكمة بمديرية الشؤون الصحية بالفيوم.
+        </p>
+        <div class="border-t border-slate-100 pt-6 mt-2 max-w-2xl mx-auto">
+          <p class="text-[11px] md:text-xs text-slate-400 font-medium leading-loose">
+            <span class="font-bold text-slate-500">تنويه:</span> يقتصر الاستخدام على أعضاء إدارة المراجعة الداخلية والحوكمة المكلفين رسمياً.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto opacity-95 mb-8">
+        <button onclick="showLoginModal('dashboard')" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-teal-600 hover:scale-105 transition-transform group">
+          <i data-lucide="bar-chart-2" class="w-8 h-8 text-teal-600 mx-auto mb-3"></i>
+          <span class="text-base font-bold text-slate-700">Dashboard</span>
+        </button>
+        
+        <button onclick="showLoginModal('employee')" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-blue-500 hover:scale-105 transition-transform group">
+          <i data-lucide="briefcase" class="w-8 h-8 text-blue-500 mx-auto mb-3"></i>
+          <span class="text-base font-bold text-slate-700">الخدمات</span>
+        </button>
+        
+        <button onclick="showLoginModal('coordinator')" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-violet-500 hover:scale-105 transition-transform group">
+          <i data-lucide="users" class="w-8 h-8 text-violet-500 mx-auto mb-3"></i>
+          <span class="text-base font-bold text-slate-700">أعضاء الإدارة</span>
+        </button>
+        
+        <button onclick="showLoginModal('admin')" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-red-500 hover:scale-105 transition-transform group">
+          <i data-lucide="settings" class="w-8 h-8 text-red-500 mx-auto mb-3"></i>
+          <span class="text-base font-bold text-slate-700">الإدارة</span>
+        </button>
+      </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="login-modal">
+      <div class="login-modal-content">
+        <button onclick="closeLoginModal()" class="close-btn">
+          <i data-lucide="x"></i>
+        </button>
+        
         <div class="text-center mb-8">
           <div class="bg-teal-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
             <i data-lucide="lock-keyhole" class="w-10 h-10 text-teal-600"></i>
@@ -243,7 +352,7 @@
           </p>
         </div>
       </div>
-    </main>
+    </div>
 
     <footer class="bg-[#0f172a] text-white py-8 text-center border-t-4 border-teal-600 mt-auto relative z-10">
       <div class="container mx-auto px-4">
@@ -254,8 +363,8 @@
           © 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة
         </p>
         <div class="text-[10px] md:text-xs text-slate-400 space-y-1 font-[sans-serif]" dir="ltr">
-          <p class="tracking-wider opacity-70">IAG System v6.0 – Governance Hub</p>
-          <p class="tracking-wider opacity-70">Ministry of Health – Fayoum Governorate</p>
+          <p class="tracking-wider opacity-70">MoH Fayoum Governance – Internal Access Page</p>
+          <p class="tracking-wider opacity-70">Developed under Governance Supervision – Dr. MAH</p>
         </div>
       </div>
     </footer>
@@ -266,8 +375,36 @@
   <script>
     lucide.createIcons();
     
-    // Auto-focus on PIN input
-    document.getElementById('pin-input')?.focus();
+    let targetPage = '';
+
+    function showLoginModal(page) {
+      targetPage = page;
+      document.getElementById('login-modal').classList.add('show');
+      document.getElementById('pin-input').focus();
+    }
+
+    function closeLoginModal() {
+      document.getElementById('login-modal').classList.remove('show');
+      document.getElementById('pin-input').value = '';
+      targetPage = '';
+    }
+
+    // Override redirect function
+    auth.redirectToDashboard = function() {
+      const pageMap = {
+        'dashboard': 'employee.html',
+        'employee': 'employee.html',
+        'coordinator': 'coordinator.html',
+        'admin': 'admin.html'
+      };
+      
+      window.location.href = pageMap[targetPage] || 'employee.html';
+    };
+
+    // Close modal on ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLoginModal();
+    });
   </script>
 </body>
 </html>
