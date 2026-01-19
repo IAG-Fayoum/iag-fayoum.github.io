@@ -1,7 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * 🔐 IAG System - نظام المصادقة
- * Authentication & API Handler
+ * 🔐 IAG System - نظام المصادقة والاتصال السريع (Cached)
  * ═══════════════════════════════════════════════════════════════════════════
  */
 
@@ -9,12 +8,29 @@ class AuthManager {
   constructor() {
     this.currentUser = null;
     this.loadSession();
+    // مدة الكاش: 5 دقائق (بالمللي ثانية)
+    this.CACHE_DURATION = 5 * 60 * 1000; 
   }
 
-  // 1. دالة الاتصال العامة (الجديدة - ضرورية لجلب البيانات)
-  async apiCall(action, payload = {}) {
+  // 1. دالة الاتصال الذكية (مع التخزين المؤقت)
+  async apiCall(action, payload = {}, options = { useCache: true }) {
+    const cacheKey = `api_${action}_${JSON.stringify(payload)}`;
+    
+    // أ- محاولة القراءة من الكاش أولاً (لطلبات الجلب فقط)
+    if (options.useCache && action.startsWith('get')) {
+      const cachedItem = sessionStorage.getItem(cacheKey);
+      if (cachedItem) {
+        const { data, timestamp } = JSON.parse(cachedItem);
+        // إذا كانت البيانات حديثة (أقل من 5 دقائق) نرجعها فوراً
+        if (Date.now() - timestamp < this.CACHE_DURATION) {
+          console.log('🚀 Serving from Cache:', action);
+          return data;
+        }
+      }
+    }
+
+    // ب- إذا لم يوجد كاش أو انتهت مدته، نطلب من السيرفر
     try {
-      // إظهار التحميل فقط إذا لم يكن مخفياً صراحة
       if (!payload.hideLoading) showLoading(true);
       
       const body = {
@@ -23,40 +39,68 @@ class AuthManager {
         ...payload
       };
 
-      const response = await fetch(CONFIG.apiUrl, {
+      const response = await fetch(CONFIG.API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // text/plain لتجنب مشاكل CORS
         body: JSON.stringify(body)
       });
 
       const result = await response.json();
       
       if (!payload.hideLoading) showLoading(false);
+
+      // ج- حفظ النتيجة في الكاش (إذا كانت عملية ناجحة ومن نوع get)
+      if (result.success && action.startsWith('get')) {
+        sessionStorage.setItem(cacheKey, JSON.stringify({
+          data: result,
+          timestamp: Date.now()
+        }));
+      }
+
       return result;
 
     } catch (error) {
       showLoading(false);
       console.error('API Error:', error);
       showMessage('خطأ في الاتصال بالسيرفر', 'error');
+      
+      // في حالة الخطأ، نحاول استرجاع نسخة قديمة من الكاش "لإنقاذ الموقف"
+      if (options.useCache && action.startsWith('get')) {
+        const cachedItem = sessionStorage.getItem(cacheKey);
+        if (cachedItem) {
+          showMessage('جاري عرض بيانات محفوظة (وضع الأوفلاين)', 'warning');
+          return JSON.parse(cachedItem).data;
+        }
+      }
+      
       return { success: false, error: error.message };
     }
   }
 
-  // 2. تسجيل الدخول
+  // 2. دالة لمسح الكاش (عند التحديث اليدوي أو تسجيل الخروج)
+  clearCache() {
+    Object.keys(sessionStorage).forEach(key => {
+      if (key.startsWith('api_')) {
+        sessionStorage.removeItem(key);
+      }
+    });
+  }
+
+  // 3. تسجيل الدخول
   async login(pin) {
-    // نستخدم apiCall لتبسيط الكود
-    const result = await this.apiCall('login', { pin: pin });
+    // اللوجن لا يستخدم الكاش أبداً
+    const result = await this.apiCall('login', { pin: pin }, { useCache: false });
 
     if (result.success) {
       this.currentUser = {
         name: result.name,
         role: result.role,
         email: result.email,
-        pin: result.pin, // نحتفظ به للجلسة
+        pin: result.pin,
         loginTime: new Date().toISOString()
       };
       
       this.saveSession();
+      this.clearCache(); // مسح أي كاش قديم عند دخول جديد
       this.redirectToDashboard();
       return { success: true };
     } else {
@@ -64,35 +108,29 @@ class AuthManager {
     }
   }
 
-  // حفظ الجلسة
   saveSession() {
     if (this.currentUser) {
-      sessionStorage.setItem(STORAGE_KEYS.user, JSON.stringify(this.currentUser));
+      sessionStorage.setItem('iag_user', JSON.stringify(this.currentUser));
     }
   }
 
-  // تحميل الجلسة
   loadSession() {
     try {
-      const userData = sessionStorage.getItem(STORAGE_KEYS.user);
+      const userData = sessionStorage.getItem('iag_user');
       if (userData) {
         this.currentUser = JSON.parse(userData);
         return this.currentUser;
       }
-    } catch (e) {
-      console.error('Session load error:', e);
-    }
+    } catch (e) { console.error(e); }
     return null;
   }
 
-  // تسجيل الخروج
   logout() {
     this.currentUser = null;
-    sessionStorage.clear();
+    sessionStorage.clear(); // مسح كل شيء (جلسة + كاش)
     window.location.href = 'index.html';
   }
 
-  // التحقق من الجلسة في الصفحات الداخلية
   checkSession() {
     if (!this.loadSession()) {
       window.location.href = 'index.html';
@@ -101,23 +139,17 @@ class AuthManager {
     return this.currentUser;
   }
 
-  // التوجيه
   redirectToDashboard() {
     const role = this.currentUser.role;
-    if (role === 'مدير' || role === 'Admin') {
-      window.location.href = 'admin.html';
-    } else if (role === 'منسق') {
-        window.location.href = 'coordinator.html';
-    } else {
-      window.location.href = 'employee.html';
-    }
+    if (role === 'مدير' || role === 'Admin') window.location.href = 'admin.html';
+    else if (role === 'منسق') window.location.href = 'coordinator.html';
+    else window.location.href = 'employee.html';
   }
 }
 
-// إنشاء الكائن العام
 const auth = new AuthManager();
 
-// دوال مساعدة للواجهة
+// UI Helpers
 function showLoading(show) {
   const loader = document.getElementById('loading-overlay');
   if (loader) loader.style.display = show ? 'flex' : 'none';
@@ -127,19 +159,18 @@ function showMessage(message, type = 'error') {
   const msgDiv = document.getElementById('message-box');
   if (msgDiv) {
     msgDiv.textContent = message;
-    // دعم فئات Tailwind أو CSS العادي
     msgDiv.className = type === 'error' 
       ? 'fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg bg-red-500 text-white font-bold z-50 shadow-xl' 
-      : 'fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg bg-emerald-500 text-white font-bold z-50 shadow-xl';
+      : (type === 'warning' 
+          ? 'fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg bg-amber-500 text-white font-bold z-50 shadow-xl'
+          : 'fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg bg-emerald-500 text-white font-bold z-50 shadow-xl');
     
     msgDiv.style.display = 'block';
     setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
-  } else {
-    alert(message);
-  }
+  } else { alert(message); }
 }
 
-// تفعيل النموذج في صفحة الدخول
+// Login Handler
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('login-form');
   if (form) {
