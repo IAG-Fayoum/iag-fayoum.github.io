@@ -161,16 +161,6 @@
     }
 
     /* Login Form */
-    .login-container {
-      background: white;
-      border-radius: 24px;
-      padding: 40px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-      max-width: 400px;
-      width: 90%;
-      margin: 0 auto;
-    }
-
     .pin-input {
       width: 100%;
       padding: 16px 20px;
@@ -217,34 +207,18 @@
       header { padding-top: calc(32px + env(safe-area-inset-top)); padding-bottom: 64px; }
       header h1 { font-size: 1.75rem; }
       header p { font-size: 0.9rem; }
-      header .bg-white\/10 { padding: 24px; margin-bottom: 16px; }
-      header i { width: 64px !important; height: 64px !important; }
       main { margin-top: -48px; }
       main .bg-white { padding: 24px; margin-bottom: 24px; }
       main h2 { font-size: 1.25rem; }
       main p { font-size: 0.9rem; }
       .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-      .grid button { padding: 16px; }
-      .grid button i { width: 28px !important; height: 28px !important; }
-      .grid button span { font-size: 0.85rem; }
       .login-modal-content { padding: 32px 24px; }
       footer { padding-top: 24px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
-      footer p { font-size: 0.75rem; }
-      footer .text-xs { font-size: 0.65rem; }
-    }
-    
-    @media (max-width: 375px) {
-      header h1 { font-size: 1.5rem; }
-      .grid { gap: 8px; }
-      .grid button { padding: 12px; }
-      .grid button span { font-size: 0.75rem; }
-      .login-modal-content { padding: 24px 20px; }
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- Loading Overlay -->
   <div id="loading-overlay">
     <div class="text-center">
       <div class="spinner mx-auto mb-4"></div>
@@ -252,10 +226,8 @@
     </div>
   </div>
 
-  <!-- Message Box -->
   <div id="message-box" class="message-box"></div>
 
-  <!-- Main Content -->
   <div id="landing-page" class="flex-grow flex flex-col fade-in">
     <header class="theme-gradient text-white pb-20 pt-12 shadow-lg relative overflow-hidden">
       <div class="container mx-auto px-6 text-center relative z-10">
@@ -288,29 +260,29 @@
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto opacity-95 mb-8">
-        <button onclick="showLoginModal('dashboard')" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-teal-600 hover:scale-105 transition-transform group">
-          <i data-lucide="bar-chart-2" class="w-8 h-8 text-teal-600 mx-auto mb-3"></i>
-          <span class="text-base font-bold text-slate-700">Dashboard</span>
-        </button>
+        
+        <a href="distribution.html" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-teal-600 hover:scale-105 transition-transform group flex flex-col items-center justify-center cursor-pointer text-slate-700 hover:text-teal-700 no-underline">
+          <i data-lucide="pie-chart" class="w-8 h-8 text-teal-600 mx-auto mb-3 group-hover:scale-110 transition-transform"></i>
+          <span class="text-base font-bold">تحليل التوزيع</span>
+        </a>
         
         <button onclick="showLoginModal('employee')" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-blue-500 hover:scale-105 transition-transform group">
-          <i data-lucide="briefcase" class="w-8 h-8 text-blue-500 mx-auto mb-3"></i>
+          <i data-lucide="briefcase" class="w-8 h-8 text-blue-500 mx-auto mb-3 group-hover:scale-110 transition-transform"></i>
           <span class="text-base font-bold text-slate-700">الخدمات</span>
         </button>
         
         <button onclick="showLoginModal('coordinator')" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-violet-500 hover:scale-105 transition-transform group">
-          <i data-lucide="users" class="w-8 h-8 text-violet-500 mx-auto mb-3"></i>
+          <i data-lucide="users" class="w-8 h-8 text-violet-500 mx-auto mb-3 group-hover:scale-110 transition-transform"></i>
           <span class="text-base font-bold text-slate-700">أعضاء الإدارة</span>
         </button>
         
         <button onclick="showLoginModal('admin')" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-red-500 hover:scale-105 transition-transform group">
-          <i data-lucide="settings" class="w-8 h-8 text-red-500 mx-auto mb-3"></i>
+          <i data-lucide="settings" class="w-8 h-8 text-red-500 mx-auto mb-3 group-hover:scale-110 transition-transform"></i>
           <span class="text-base font-bold text-slate-700">الإدارة</span>
         </button>
       </div>
     </main>
 
-    <!-- Login Modal -->
     <div id="login-modal" class="login-modal">
       <div class="login-modal-content">
         <button onclick="closeLoginModal()" class="close-btn">
@@ -389,10 +361,9 @@
       targetPage = '';
     }
 
-    // Override redirect function
+    // Override redirect function based on selection
     auth.redirectToDashboard = function() {
       const pageMap = {
-        'dashboard': 'employee.html',
         'employee': 'employee.html',
         'coordinator': 'coordinator.html',
         'admin': 'admin.html'
