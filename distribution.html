@@ -29,12 +29,12 @@
         .stat-card .icon-box { @apply p-1.5 md:p-2 rounded-lg bg-slate-50 text-slate-400; }
 
         /* ألوان الحالات */
-        .border-new { border-color: #64748b; }
-        .border-review { border-color: #f59e0b; }
-        .border-pending { border-color: #8b5cf6; }
-        .border-done { border-color: #10b981; }
-        .border-follow { border-color: #0ea5e9; }
-        .border-late { border-color: #ef4444; }
+        .border-new { border-color: #64748b; }      /* رمادي */
+        .border-review { border-color: #f59e0b; }   /* برتقالي */
+        .border-pending { border-color: #8b5cf6; }  /* بنفسجي */
+        .border-done { border-color: #10b981; }     /* أخضر */
+        .border-follow { border-color: #0ea5e9; }   /* أزرق سماوي */
+        .border-late { border-color: #ef4444; }     /* أحمر */
 
         /* 4. النافيجيشن بار (Bottom Nav للموبايل - Side Nav للكمبيوتر) */
         .nav-bar {
@@ -47,7 +47,7 @@
         .nav-item {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 12px; color: #64748b; font-size: 10px; font-weight: bold;
-            transition: all 0.2s; width: 100%;
+            transition: all 0.2s; width: 100%; text-decoration: none;
         }
         .nav-item.active { color: #0f766e; }
         .nav-item i { margin-bottom: 4px; width: 24px; height: 24px; }
@@ -290,15 +290,18 @@
 
         function setupFilters() {
             const yearSelect = document.getElementById('filterYear');
-            const currentYear = new Date().getFullYear();
-            // سنوات من 2024 حتى 2028
-            for (let y = currentYear + 1; y >= 2024; y--) {
+            
+            // ✅ تصحيح: إضافة السنوات المطلوبة بوضوح (2024, 2025, 2026, 2027)
+            const years = [2027, 2026, 2025, 2024];
+            
+            years.forEach(y => {
                 const option = document.createElement('option');
                 option.value = y;
                 option.textContent = y;
-                if (y === currentYear) option.selected = true;
+                // تحديد السنة الحالية كافتراضي
+                if (y === new Date().getFullYear()) option.selected = true;
                 yearSelect.appendChild(option);
-            }
+            });
         }
 
         async function loadDashboardData() {
