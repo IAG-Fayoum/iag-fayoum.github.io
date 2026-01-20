@@ -1,158 +1,295 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <title>لوحة الموظف - IAG System</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <title>لوحة الموظف - IAG System</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
-  <style>
-    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
-    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
-    #loading-overlay { position: fixed; top: 0; right: 0; width: 100%; height: 100%; background: rgba(15, 118, 110, 0.95); display: none; align-items: center; justify-content: center; z-index: 9999; }
-    .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-  </style>
+    <style>
+        /* 1. ضبط الأساسيات ودعم النوتش */
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #f8fafc; 
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: calc(90px + env(safe-area-inset-bottom));
+        }
+
+        /* 2. تصميم الكروت (Stats) */
+        .stat-card { 
+            @apply bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between h-24 relative overflow-hidden transition-all hover:-translate-y-1;
+        }
+        .stat-card .label { @apply text-[10px] font-bold text-slate-500 mt-1; }
+        .stat-card .value { @apply text-2xl font-extrabold text-slate-700; }
+        .stat-card .icon-box { @apply p-1.5 rounded-lg bg-slate-50 text-slate-400; }
+
+        /* 3. النافيجيشن بار (Bottom/Side Nav) */
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid #e2e8f0;
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 50; display: flex; justify-content: space-around;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 12px 0; color: #94a3b8; font-size: 10px; font-weight: 700;
+            width: 100%; transition: all 0.2s; text-decoration: none;
+        }
+        .nav-item.active { color: #0f766e; background: linear-gradient(to top, #f0fdfa, transparent); border-top: 3px solid #0f766e; }
+        .nav-item i { margin-bottom: 4px; width: 22px; height: 22px; }
+
+        @media (min-width: 1024px) {
+            body { padding-left: 80px; padding-bottom: 0; }
+            .nav-bar {
+                width: 80px; height: 100%; top: 0; left: 0; bottom: auto;
+                flex-direction: column; justify-content: flex-start;
+                border-top: none; border-right: 1px solid #e2e8f0; padding-top: 20px;
+            }
+            .nav-item { padding: 20px 0; font-size: 11px; border-top: none; border-right: 3px solid transparent; }
+            .nav-item.active { border-top: none; border-right: 3px solid #0f766e; background: linear-gradient(to left, #f0fdfa, transparent); }
+            .nav-item:hover { background-color: #f8fafc; color: #0f766e; }
+        }
+
+        /* Loading */
+        #loading-overlay { position: fixed; top: 0; right: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    </style>
 </head>
-<body class="pb-20">
+<body>
 
-  <div id="loading-overlay"><div class="spinner"></div></div>
-  <div id="message-box" class="hidden"></div>
-
-  <header class="bg-[#0f766e] text-white pt-8 pb-16 px-6 shadow-lg rounded-b-[2.5rem] relative overflow-hidden">
-    <div class="flex justify-between items-center relative z-10">
-      <div>
-        <h1 class="text-2xl font-bold" id="user-name">...</h1>
-        <p class="text-teal-100 text-sm opacity-90 mt-1" id="user-role">...</p>
-      </div>
-      <button onclick="auth.logout()" class="bg-white/20 p-2 rounded-full hover:bg-white/30 transition shadow-lg">
-        <i data-lucide="log-out" class="w-5 h-5 text-white"></i>
-      </button>
-    </div>
-    <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-  </header>
-
-  <div class="container mx-auto px-4 -mt-10 relative z-20">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-      <div class="bg-white p-4 rounded-xl shadow-sm border-b-4 border-blue-500 text-center card-hover transition-all">
-        <div class="text-blue-500 mb-1"><i data-lucide="layers" class="w-6 h-6 mx-auto"></i></div>
-        <div class="text-2xl font-bold text-slate-700" id="stat-total">0</div>
-        <div class="text-xs text-slate-400 font-semibold">إجمالي المهام</div>
-      </div>
-      <div class="bg-white p-4 rounded-xl shadow-sm border-b-4 border-emerald-500 text-center card-hover transition-all">
-        <div class="text-emerald-500 mb-1"><i data-lucide="check-circle-2" class="w-6 h-6 mx-auto"></i></div>
-        <div class="text-2xl font-bold text-slate-700" id="stat-completed">0</div>
-        <div class="text-xs text-slate-400 font-semibold">تم الإنجاز</div>
-      </div>
-      <div class="bg-white p-4 rounded-xl shadow-sm border-b-4 border-amber-500 text-center card-hover transition-all">
-        <div class="text-amber-500 mb-1"><i data-lucide="clock" class="w-6 h-6 mx-auto"></i></div>
-        <div class="text-2xl font-bold text-slate-700" id="stat-pending">0</div>
-        <div class="text-xs text-slate-400 font-semibold">قيد العمل</div>
-      </div>
-      <div class="bg-white p-4 rounded-xl shadow-sm border-b-4 border-red-500 text-center card-hover transition-all">
-        <div class="text-red-500 mb-1"><i data-lucide="alert-circle" class="w-6 h-6 mx-auto"></i></div>
-        <div class="text-2xl font-bold text-slate-700" id="stat-overdue">0</div>
-        <div class="text-xs text-slate-400 font-semibold">متأخرة</div>
-      </div>
-    </div>
-  </div>
-
-  <main class="container mx-auto px-4 mt-8">
-    <div class="flex space-x-4 space-x-reverse border-b border-slate-200 mb-6 sticky top-0 bg-[#f8fafc] pt-2 z-10">
-      <button onclick="switchTab('tasks')" id="tab-tasks" class="pb-2 px-4 border-b-2 border-teal-600 text-teal-700 font-bold transition-colors">المهام</button>
-      <button onclick="switchTab('reports')" id="tab-reports" class="pb-2 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-semibold transition-colors">التقارير</button>
+    <div id="loading-overlay">
+        <div class="flex flex-col items-center">
+            <div class="w-10 h-10 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+            <p class="text-teal-800 font-bold text-sm">جاري التحديث...</p>
+        </div>
     </div>
 
-    <div id="view-tasks" class="space-y-4 min-h-[300px]">
-      <div id="tasks-container" class="space-y-3 pb-10"></div>
-    </div>
-
-    <div id="view-reports" class="hidden space-y-4 min-h-[300px]">
-      <div id="reports-container" class="space-y-3 pb-10"></div>
-    </div>
-  </main>
-
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/auth.js"></script>
-  <script>
-    let currentUser = null;
-    document.addEventListener('DOMContentLoaded', async () => {
-      lucide.createIcons();
-      currentUser = auth.checkSession();
-      if (!currentUser) return;
-      document.getElementById('user-name').textContent = currentUser.name;
-      document.getElementById('user-role').textContent = currentUser.role;
-      await loadData();
-    });
-
-    async function loadData() {
-      const result = await auth.apiCall('getEmployeeData', { name: currentUser.name });
-      if (result.success) {
-        updateStats(result.stats);
-        renderTasks(result.tasks);
-        renderReports(result.reports);
-      } else {
-        document.getElementById('tasks-container').innerHTML = `<p class="text-center text-red-500">فشل تحميل البيانات</p>`;
-      }
-    }
-
-    function updateStats(stats) {
-      if(!stats) return;
-      document.getElementById('stat-total').textContent = stats.total || 0;
-      document.getElementById('stat-completed').textContent = stats.completed || 0;
-      document.getElementById('stat-pending').textContent = stats.pending || 0;
-      document.getElementById('stat-overdue').textContent = stats.overdue || 0;
-    }
-
-    function renderTasks(tasks) {
-      const container = document.getElementById('tasks-container');
-      container.innerHTML = '';
-      if (!tasks || tasks.length === 0) {
-        container.innerHTML = `<div class="text-center py-12 text-slate-400">لا توجد مهام</div>`; return;
-      }
-      tasks.forEach(task => {
-        let statusClass = task.status.includes('متأخر') ? 'bg-red-100 text-red-700' : 
-                          (task.status.includes('منتهي') ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600');
-        container.innerHTML += `
-          <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
-            <div class="flex justify-between items-start mb-3">
-              <span class="text-[10px] bg-slate-50 px-2 py-1 rounded">${task.id}</span>
-              <span class="text-[10px] font-bold px-2 py-1 rounded-full ${statusClass}">${task.status}</span>
+    <header class="bg-white border-b border-slate-100 sticky top-0 z-40 px-6 py-4 shadow-sm bg-opacity-95 backdrop-blur-md">
+        <div class="flex justify-between items-center max-w-7xl mx-auto">
+            <div class="flex items-center gap-3">
+                <div class="bg-teal-50 p-2.5 rounded-xl text-teal-600 shadow-sm border border-teal-100">
+                    <i data-lucide="user" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-800 leading-tight" id="user-name">...</h1>
+                    <p class="text-[10px] text-slate-400 font-bold" id="user-role">...</p>
+                </div>
             </div>
-            <h3 class="font-bold text-slate-800 mb-2">${task.subject}</h3>
-            <div class="text-xs text-slate-500 mb-3">${task.entity} | ${task.date}</div>
-            ${task.attachment ? `<a href="${task.attachment}" target="_blank" class="text-teal-600 text-xs font-bold flex items-center gap-1"><i data-lucide="paperclip" class="w-3 h-3"></i> مرفق</a>` : ''}
-          </div>`;
-      });
-      lucide.createIcons();
-    }
+            
+            <button onclick="auth.logout()" class="bg-slate-50 p-2.5 rounded-full text-slate-500 hover:bg-red-50 hover:text-red-600 transition border border-slate-200 shadow-sm">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
 
-    function renderReports(reports) {
-      const container = document.getElementById('reports-container');
-      container.innerHTML = '';
-      if (!reports || reports.length === 0) {
-        container.innerHTML = `<div class="text-center py-12 text-slate-400">لا توجد تقارير</div>`; return;
-      }
-      reports.forEach(r => {
-        container.innerHTML += `
-          <div class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-violet-500 flex justify-between items-center">
-            <div><h4 class="font-bold text-sm">${r.title}</h4><p class="text-xs text-slate-500">${r.date}</p></div>
-            ${r.docLink ? `<a href="${r.docLink}" target="_blank" class="text-blue-600"><i data-lucide="file-text"></i></a>` : ''}
-          </div>`;
-      });
-      lucide.createIcons();
-    }
+    <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <span class="label text-blue-500">الإجمالي</span>
+                    <div class="icon-box bg-blue-50 text-blue-500"><i data-lucide="layers" class="w-4 h-4"></i></div>
+                </div>
+                <div class="value text-blue-700" id="stat-total">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <span class="label text-emerald-500">تم الإنجاز</span>
+                    <div class="icon-box bg-emerald-50 text-emerald-500"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+                </div>
+                <div class="value text-emerald-700" id="stat-completed">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <span class="label text-amber-500">قيد العمل</span>
+                    <div class="icon-box bg-amber-50 text-amber-500"><i data-lucide="clock" class="w-4 h-4"></i></div>
+                </div>
+                <div class="value text-amber-700" id="stat-pending">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <span class="label text-red-500">متأخرة</span>
+                    <div class="icon-box bg-red-50 text-red-500"><i data-lucide="alert-circle" class="w-4 h-4"></i></div>
+                </div>
+                <div class="value text-red-700" id="stat-overdue">0</div>
+            </div>
+        </div>
 
-    function switchTab(t) {
-      document.getElementById('view-tasks').classList.add('hidden');
-      document.getElementById('view-reports').classList.add('hidden');
-      document.getElementById(`view-${t}`).classList.remove('hidden');
-      document.getElementById('tab-tasks').className = t==='tasks' ? 'pb-2 px-4 border-b-2 border-teal-600 text-teal-700 font-bold' : 'pb-2 px-4 border-b-2 border-transparent text-slate-400';
-      document.getElementById('tab-reports').className = t==='reports' ? 'pb-2 px-4 border-b-2 border-teal-600 text-teal-700 font-bold' : 'pb-2 px-4 border-b-2 border-transparent text-slate-400';
-    }
-  </script>
+        <div class="flex bg-white p-1 rounded-xl shadow-sm border border-slate-200">
+            <button onclick="switchTab('tasks')" id="tab-tasks" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-teal-600 text-white shadow-sm">
+                المهام والتكليفات
+            </button>
+            <button onclick="switchTab('reports')" id="tab-reports" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-500 hover:bg-slate-50">
+                التقارير
+            </button>
+        </div>
+
+        <div id="view-tasks" class="space-y-3 pb-10">
+            </div>
+
+        <div id="view-reports" class="hidden space-y-3 pb-10">
+            </div>
+
+    </main>
+
+    <nav class="nav-bar">
+        <div class="hidden lg:flex flex-col items-center mb-6">
+            <div class="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center text-white mb-2 shadow-lg shadow-teal-600/20">
+                <i data-lucide="landmark" class="w-6 h-6"></i>
+            </div>
+        </div>
+
+        <a href="index.html" class="nav-item">
+            <i data-lucide="home"></i>
+            <span>الرئيسية</span>
+        </a>
+        
+        <a href="distribution.html" class="nav-item">
+            <i data-lucide="pie-chart"></i>
+            <span>المراقبة</span>
+        </a>
+
+        <a href="employee.html" class="nav-item active">
+            <i data-lucide="briefcase"></i>
+            <span>خدماتي</span>
+        </a>
+
+        <a href="settings.html" class="nav-item">
+            <i data-lucide="settings"></i>
+            <span>الإعدادات</span>
+        </a>
+    </nav>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+        let currentUser = null;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            lucide.createIcons();
+            
+            currentUser = auth.checkSession();
+            if (!currentUser) return; // auth.js redirects if null
+            
+            document.getElementById('user-name').textContent = currentUser.name;
+            document.getElementById('user-role').textContent = currentUser.role;
+            
+            await loadData();
+        });
+
+        async function loadData() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            
+            const result = await auth.apiCall('getEmployeeData', { name: currentUser.name });
+            
+            document.getElementById('loading-overlay').style.display = 'none';
+
+            if (result.success) {
+                updateStats(result.stats);
+                renderTasks(result.tasks);
+                renderReports(result.reports);
+            } else {
+                document.getElementById('view-tasks').innerHTML = `<div class="text-center py-10 text-red-400 text-sm">فشل تحميل البيانات</div>`;
+            }
+        }
+
+        function updateStats(stats) {
+            if(!stats) return;
+            document.getElementById('stat-total').textContent = stats.total || 0;
+            document.getElementById('stat-completed').textContent = stats.completed || 0;
+            document.getElementById('stat-pending').textContent = stats.pending || 0;
+            document.getElementById('stat-overdue').textContent = stats.overdue || 0;
+        }
+
+        function renderTasks(tasks) {
+            const container = document.getElementById('view-tasks');
+            container.innerHTML = '';
+            
+            if (!tasks || tasks.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-400 text-sm">لا توجد مهام مسندة حالياً</div>`; 
+                return;
+            }
+            
+            tasks.forEach(task => {
+                let statusClass = 'bg-slate-100 text-slate-600';
+                if (task.status.includes('متأخر')) statusClass = 'bg-red-50 text-red-600 border border-red-100';
+                else if (task.status.includes('منتهي')) statusClass = 'bg-emerald-50 text-emerald-600 border border-emerald-100';
+                else if (task.status.includes('جاري')) statusClass = 'bg-amber-50 text-amber-600 border border-amber-100';
+
+                container.innerHTML += `
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-2 transition hover:shadow-md">
+                        <div class="flex justify-between items-start">
+                            <span class="font-mono text-[10px] text-slate-400 bg-slate-50 px-2 py-0.5 rounded border border-slate-100">#${task.id}</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${statusClass}">${task.status}</span>
+                        </div>
+                        
+                        <h3 class="font-bold text-sm text-slate-800 leading-snug">${task.subject}</h3>
+                        
+                        <div class="flex justify-between items-center pt-2 border-t border-slate-50 mt-1">
+                            <span class="text-[10px] text-slate-500 font-bold truncate max-w-[150px]">
+                                <i data-lucide="building-2" class="w-3 h-3 inline-block ml-1 text-slate-400"></i>${task.entity}
+                            </span>
+                            <span class="text-[10px] text-slate-400 bg-slate-50 px-2 rounded-full">${task.date}</span>
+                        </div>
+
+                        ${task.attachment ? `
+                        <a href="${task.attachment}" target="_blank" class="mt-1 flex items-center justify-center gap-2 w-full py-2 bg-slate-50 rounded-lg text-xs font-bold text-teal-600 hover:bg-teal-50 transition border border-slate-100">
+                            <i data-lucide="paperclip" class="w-3 h-3"></i> فتح المرفقات
+                        </a>` : ''}
+                    </div>`;
+            });
+            lucide.createIcons();
+        }
+
+        function renderReports(reports) {
+            const container = document.getElementById('view-reports');
+            container.innerHTML = '';
+            
+            if (!reports || reports.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-400 text-sm">لا توجد تقارير</div>`; 
+                return;
+            }
+            
+            reports.forEach(r => {
+                container.innerHTML += `
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center hover:border-teal-200 transition">
+                        <div>
+                            <h4 class="font-bold text-sm text-slate-800">${r.title}</h4>
+                            <p class="text-[10px] text-slate-400 mt-1"><i data-lucide="calendar" class="w-3 h-3 inline mr-1"></i>${r.date}</p>
+                        </div>
+                        ${r.docLink ? `
+                        <a href="${r.docLink}" target="_blank" class="bg-teal-50 p-2 rounded-full text-teal-600 hover:bg-teal-600 hover:text-white transition">
+                            <i data-lucide="file-text" class="w-4 h-4"></i>
+                        </a>` : ''}
+                    </div>`;
+            });
+            lucide.createIcons();
+        }
+
+        function switchTab(t) {
+            document.getElementById('view-tasks').classList.add('hidden');
+            document.getElementById('view-reports').classList.add('hidden');
+            document.getElementById(`view-${t}`).classList.remove('hidden');
+            
+            // Reset styles
+            const btnTasks = document.getElementById('tab-tasks');
+            const btnReports = document.getElementById('tab-reports');
+            
+            const activeClass = "bg-teal-600 text-white shadow-md";
+            const inactiveClass = "text-slate-500 hover:bg-slate-50";
+
+            if (t === 'tasks') {
+                btnTasks.className = `flex-1 py-2 text-xs font-bold rounded-lg transition-all ${activeClass}`;
+                btnReports.className = `flex-1 py-2 text-xs font-bold rounded-lg transition-all ${inactiveClass}`;
+            } else {
+                btnReports.className = `flex-1 py-2 text-xs font-bold rounded-lg transition-all ${activeClass}`;
+                btnTasks.className = `flex-1 py-2 text-xs font-bold rounded-lg transition-all ${inactiveClass}`;
+            }
+        }
+    </script>
 </body>
 </html>
