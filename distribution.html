@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحليل التوزيع - إدارة المراجعة الداخلية</title>
+    <title>تحليل التوزيع - IAG System</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,6 +25,7 @@
 <body class="pb-20">
 
     <div id="loading-overlay"><div class="spinner"></div></div>
+    <div id="message-box" class="hidden"></div>
 
     <header class="bg-[#0f766e] text-white pt-8 pb-16 px-6 shadow-lg rounded-b-[2.5rem] relative overflow-hidden mb-8">
         <div class="flex justify-between items-center relative z-10">
@@ -70,13 +71,13 @@
                 <div>
                     <label class="text-xs font-bold text-slate-500 block mb-1">بحث بالاسم</label>
                     <div class="relative">
-                        <input type="text" id="searchEmployee" placeholder="اكتب اسم الموظف..." class="w-full pl-4 pr-10 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500">
+                        <input type="text" id="searchEmployee" placeholder="اكتب اسم الموظف..." class="w-full pl-4 pr-10 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 transition-colors">
                         <i data-lucide="search" class="absolute right-3 top-2.5 text-slate-400 w-4 h-4"></i>
                     </div>
                 </div>
                 <div>
-                    <label class="text-xs font-bold text-slate-500 block mb-1">فلترة</label>
-                    <select id="filterStatus" class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 bg-white">
+                    <label class="text-xs font-bold text-slate-500 block mb-1">فلترة حسب الحالة</label>
+                    <select id="filterStatus" class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 bg-white transition-colors">
                         <option value="all">عرض الكل</option>
                         <option value="active">لديهم تكليفات</option>
                         <option value="inactive">بدون تكليفات</option>
@@ -103,7 +104,8 @@
                             <th class="px-6 py-3 w-1/4">مؤشر التحميل</th>
                         </tr>
                     </thead>
-                    <tbody id="employeeTableBody" class="divide-y divide-slate-100"></tbody>
+                    <tbody id="employeeTableBody" class="divide-y divide-slate-100 font-medium">
+                        </tbody>
                 </table>
             </div>
         </div>
@@ -111,17 +113,20 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                 <h2 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <i data-lucide="clipboard-check" class="text-indigo-600"></i>
+                    <i data-lucide="clipboard-check" class="text-indigo-600 w-5 h-5"></i>
                     تحليل القواعد
                 </h2>
-                <div id="rulesAnalysis" class="space-y-3"></div>
+                <div id="rulesAnalysis" class="space-y-3">
+                    </div>
             </div>
+
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                 <h2 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <i data-lucide="alert-triangle" class="text-amber-500"></i>
+                    <i data-lucide="alert-triangle" class="text-amber-500 w-5 h-5"></i>
                     تنبيهات النظام
                 </h2>
-                <div id="issuesRecommendations" class="space-y-3"></div>
+                <div id="issuesRecommendations" class="space-y-3">
+                    </div>
             </div>
         </div>
     </div>
@@ -132,12 +137,17 @@
     <script>
         let globalData = null;
 
+        // عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            loadData(); // تحميل مباشر للبيانات للجميع
+            // تحميل البيانات فوراً للجميع (لا يشترط تسجيل الدخول)
+            loadData();
         });
 
+        // دالة جلب البيانات من السيرفر
         async function loadData() {
+            // نستخدم apiCall لضمان استخدام الكاش والاتصال الآمن
+            // بما أن auth.js يعالج المستخدمين غير المسجلين كـ 'Guest' فلن تحدث مشكلة
             const result = await auth.apiCall('getDistributionAnalysis');
             
             if (result.success) {
@@ -145,13 +155,17 @@
                 displayData(result);
             } else {
                 document.getElementById('mainContent').innerHTML = `
-                    <div class="text-center py-20">
+                    <div class="text-center py-20 bg-white rounded-xl shadow-sm m-4">
+                        <i data-lucide="wifi-off" class="w-12 h-12 text-red-400 mx-auto mb-4"></i>
                         <p class="text-red-500 font-bold mb-4">فشل تحميل بيانات التحليل</p>
-                        <button onclick="location.reload()" class="bg-teal-600 text-white px-6 py-2 rounded-lg">إعادة المحاولة</button>
+                        <p class="text-slate-400 text-sm mb-6">${result.error || 'يرجى التحقق من الاتصال'}</p>
+                        <button onclick="location.reload()" class="bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition">إعادة المحاولة</button>
                     </div>`;
+                lucide.createIcons();
             }
         }
 
+        // دالة العرض الرئيسية
         function displayData(data) {
             updateStatistics(data);
             populateEmployeeTable(data);
@@ -160,6 +174,7 @@
             lucide.createIcons();
         }
 
+        // تحديث الإحصائيات العلوية
         function updateStatistics(data) {
             const activeEmps = data.employees.filter(e => e.status === "نشط").length;
             const totalTrans = data.totalTransactions;
@@ -170,6 +185,7 @@
             animateValue("avgPerEmployee", 0, activeEmps > 0 ? Math.round(totalTrans / activeEmps) : 0, 1000);
         }
 
+        // ملء جدول الموظفين
         function populateEmployeeTable(data) {
             const tbody = document.getElementById('employeeTableBody');
             const searchTerm = document.getElementById('searchEmployee').value.toLowerCase();
@@ -177,19 +193,30 @@
             
             let filtered = data.employees;
 
+            // تطبيق الفلاتر
             if (searchTerm) filtered = filtered.filter(e => e.name.toLowerCase().includes(searchTerm));
             if (filterStatus === 'active') filtered = filtered.filter(e => e.assignments > 0);
             if (filterStatus === 'inactive') filtered = filtered.filter(e => e.assignments === 0 && e.status === "نشط");
 
+            // الترتيب: الأقل حملاً أولاً (لمساعدة المدير في التوزيع)
             filtered.sort((a, b) => a.assignments - b.assignments);
+
             const maxAssignments = Math.max(...data.employees.map(e => e.assignments)) || 1;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400">لا توجد بيانات مطابقة للبحث</td></tr>`;
+                return;
+            }
 
             tbody.innerHTML = filtered.map(emp => {
                 const percentage = (emp.assignments / maxAssignments) * 100;
+                
+                // تحديد ألوان شريط التقدم
                 let color = 'bg-teal-600';
-                if (percentage > 80) color = 'bg-red-500';
-                else if (percentage < 20 && emp.status === 'نشط') color = 'bg-amber-400';
+                if (percentage > 80) color = 'bg-red-500'; // حمل زائد
+                else if (percentage < 20 && emp.status === 'نشط' && emp.assignments > 0) color = 'bg-amber-400'; // حمل منخفض
 
+                // تحديد حالة الموظف (Badge)
                 let statusHtml = `<span class="badge bg-emerald-100 text-emerald-700">نشط</span>`;
                 if (emp.status !== 'نشط') statusHtml = `<span class="badge bg-slate-100 text-slate-500">إجازة/غير نشط</span>`;
                 else if (emp.assignments === 0) statusHtml = `<span class="badge bg-red-100 text-red-700">بدون تكليف</span>`;
@@ -197,49 +224,89 @@
                 return `
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-6 py-4 font-bold text-slate-700">${emp.name}</td>
-                    <td class="px-6 py-4 text-slate-500">${emp.specialty || '-'}</td>
-                    <td class="px-6 py-4 font-bold">${emp.assignments}</td>
+                    <td class="px-6 py-4 text-slate-500 text-xs">${emp.specialty || '-'}</td>
+                    <td class="px-6 py-4 font-bold text-lg">${emp.assignments}</td>
                     <td class="px-6 py-4">${statusHtml}</td>
                     <td class="px-6 py-4">
                         <div class="flex items-center gap-2">
                             <div class="progress-bar flex-grow">
                                 <div class="progress-fill ${color}" style="width: ${percentage}%"></div>
                             </div>
-                            <span class="text-xs text-slate-400 w-8">${Math.round(percentage)}%</span>
+                            <span class="text-[10px] text-slate-400 w-8 font-mono">${Math.round(percentage)}%</span>
                         </div>
                     </td>
-                </tr>`;
+                </tr>
+                `;
             }).join('');
         }
 
+        // توليد التوصيات والمشاكل
         function generateRecommendations(data) {
             const container = document.getElementById('issuesRecommendations');
             let html = '';
+
+            // 1. كشف الموظفين النشطين بدون عمل
             const zeroActive = data.employees.filter(e => e.assignments === 0 && e.status === "نشط");
             
             if (zeroActive.length > 0) {
                 html += `
-                <div class="p-3 bg-red-50 border border-red-100 rounded-lg">
-                    <h4 class="font-bold text-red-700 text-sm mb-1">🚨 موظفين نشطين بلا تكليفات (${zeroActive.length})</h4>
-                    <ul class="list-disc list-inside text-xs text-red-600">
+                <div class="p-3 bg-red-50 border border-red-100 rounded-lg mb-3">
+                    <h4 class="font-bold text-red-700 text-sm mb-1 flex items-center gap-1">
+                        <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                        موظفين نشطين بلا تكليفات (${zeroActive.length})
+                    </h4>
+                    <ul class="list-disc list-inside text-xs text-red-600 mr-2">
                         ${zeroActive.map(e => `<li>${e.name}</li>`).join('')}
                     </ul>
+                    <p class="text-[10px] text-red-400 mt-2 mr-4">يرجى التحقق من إدراجهم في جدول التوزيع الدوري.</p>
                 </div>`;
             } else {
-                html += `<div class="p-3 bg-emerald-50 border border-emerald-100 rounded-lg text-emerald-700 text-sm font-bold">✅ التوزيع ممتاز! لا يوجد موظفين خاملين.</div>`;
+                html += `<div class="p-3 bg-emerald-50 border border-emerald-100 rounded-lg text-emerald-700 text-sm font-bold flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4"></i> التوزيع ممتاز! لا يوجد موظفين خاملين.</div>`;
             }
+
+            // 2. كشف الحمل الزائد
+            const avg = data.totalTransactions / data.employees.filter(e => e.status === 'نشط').length;
+            const overloaded = data.employees.filter(e => e.assignments > avg * 1.5); // 1.5 ضعف المتوسط
+
+            if (overloaded.length > 0) {
+                html += `
+                <div class="p-3 bg-amber-50 border border-amber-100 rounded-lg mt-3">
+                    <h4 class="font-bold text-amber-700 text-sm mb-1 flex items-center gap-1">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i>
+                        ضغط عمل مرتفع
+                    </h4>
+                    <p class="text-xs text-amber-600 mb-1">الموظفين التاليين يتحملون عبئاً كبيراً:</p>
+                    <ul class="list-disc list-inside text-xs text-amber-600 mr-2">
+                        ${overloaded.slice(0, 5).map(e => `<li>${e.name} (${e.assignments})</li>`).join('')}
+                    </ul>
+                </div>`;
+            }
+
             container.innerHTML = html;
         }
 
+        // تحليل القواعد (Mock Data حالياً - يمكن ربطها بالباك إند لاحقاً)
         function analyzeRules(data) {
             const container = document.getElementById('rulesAnalysis');
             container.innerHTML = `
-                <div class="p-3 border border-slate-100 rounded-lg flex justify-between items-center">
-                    <div><div class="font-bold text-sm text-slate-700">التوزيع الدوري</div><div class="text-xs text-slate-400">حالة النظام</div></div>
-                    <span class="badge bg-green-100 text-green-700">مفعّل ✅</span>
-                </div>`;
+                <div class="p-3 border border-slate-100 rounded-lg flex justify-between items-center bg-slate-50">
+                    <div>
+                        <div class="font-bold text-sm text-slate-700">التوزيع الدوري (Round Robin)</div>
+                        <div class="text-[10px] text-slate-400">القاعدة الأساسية</div>
+                    </div>
+                    <span class="badge bg-green-100 text-green-700 border border-green-200">مفعّل ✅</span>
+                </div>
+                <div class="p-3 border border-slate-100 rounded-lg mt-2 flex justify-between items-center bg-slate-50">
+                    <div>
+                        <div class="font-bold text-sm text-slate-700">التوزيع الجغرافي</div>
+                        <div class="text-[10px] text-slate-400">حسب المنطقة</div>
+                    </div>
+                    <span class="badge bg-blue-100 text-blue-700 border border-blue-200">تلقائي 🤖</span>
+                </div>
+            `;
         }
 
+        // دالة التحريك للأرقام
         function animateValue(id, start, end, duration) {
             const obj = document.getElementById(id);
             if (!obj) return;
@@ -253,6 +320,7 @@
             window.requestAnimationFrame(step);
         }
 
+        // تفعيل مستمعي الأحداث للبحث والفلترة
         document.getElementById('searchEmployee').addEventListener('input', () => populateEmployeeTable(globalData));
         document.getElementById('filterStatus').addEventListener('change', () => populateEmployeeTable(globalData));
     </script>
