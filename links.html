@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الروابط المهمة - IAG</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+    .link-card { transition: all 0.3s ease; }
+    .link-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
+  </style>
+</head>
+<body class="pb-24">
+
+  <!-- Top Navigation -->
+  <header class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white py-6 px-6 shadow-xl sticky top-0 z-40">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition">
+          <i data-lucide="home" class="w-6 h-6"></i>
+        </a>
+        <div>
+          <h1 class="text-2xl font-bold">الروابط المهمة</h1>
+          <p class="text-indigo-100 text-sm">جميع المستندات والنماذج</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8 max-w-5xl">
+
+    <!-- Forms Section -->
+    <section>
+      <h2 class="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+        <i data-lucide="file-text" class="text-indigo-600 w-8 h-8"></i>
+        النماذج الإلكترونية
+      </h2>
+      <div class="grid md:grid-cols-2 gap-5">
+        
+        <!-- نموذج 1: المرور الفني -->
+        <a href="https://forms.gle/YOUR_FORM_1" target="_blank" class="link-card bg-white rounded-2xl p-6 shadow-lg border-r-4 border-teal-600 flex items-center gap-4 hover:shadow-2xl">
+          <div class="bg-teal-50 w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <i data-lucide="clipboard-check" class="w-10 h-10 text-teal-600"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800 text-lg mb-1">نموذج المرور الفني</p>
+            <p class="text-slate-500 text-sm">تقارير الفحص والتفتيش</p>
+          </div>
+        </a>
+
+        <!-- نموذج 2: المراجعة المالية -->
+        <a href="https://forms.gle/YOUR_FORM_2" target="_blank" class="link-card bg-white rounded-2xl p-6 shadow-lg border-r-4 border-amber-600 flex items-center gap-4 hover:shadow-2xl">
+          <div class="bg-amber-50 w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <i data-lucide="calculator" class="w-10 h-10 text-amber-600"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800 text-lg mb-1">نموذج المراجعة المالية</p>
+            <p class="text-slate-500 text-sm">الحسابات والميزانيات</p>
+          </div>
+        </a>
+
+        <!-- نموذج 3: الشكاوى -->
+        <a href="https://forms.gle/YOUR_FORM_3" target="_blank" class="link-card bg-white rounded-2xl p-6 shadow-lg border-r-4 border-rose-600 flex items-center gap-4 hover:shadow-2xl">
+          <div class="bg-rose-50 w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <i data-lucide="alert-triangle" class="w-10 h-10 text-rose-600"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800 text-lg mb-1">نموذج الشكاوى</p>
+            <p class="text-slate-500 text-sm">تحقيقات ومتابعة البلاغات</p>
+          </div>
+        </a>
+
+        <!-- نموذج 4: التقارير الإدارية -->
+        <a href="https://forms.gle/YOUR_FORM_4" target="_blank" class="link-card bg-white rounded-2xl p-6 shadow-lg border-r-4 border-violet-600 flex items-center gap-4 hover:shadow-2xl">
+          <div class="bg-violet-50 w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <i data-lucide="file-bar-chart" class="w-10 h-10 text-violet-600"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800 text-lg mb-1">نموذج التقارير الإدارية</p>
+            <p class="text-slate-500 text-sm">المتابعة والتقييم</p>
+          </div>
+        </a>
+
+        <!-- نموذج 5: المعاملات الواردة -->
+        <a href="https://forms.gle/YOUR_FORM_5" target="_blank" class="link-card bg-white rounded-2xl p-6 shadow-lg border-r-4 border-emerald-600 flex items-center gap-4 hover:shadow-2xl">
+          <div class="bg-emerald-50 w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <i data-lucide="inbox" class="w-10 h-10 text-emerald-600"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800 text-lg mb-1">نموذج المعاملات الواردة</p>
+            <p class="text-slate-500 text-sm">إدخال معاملة جديدة</p>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- Info Box -->
+      <div class="mt-8 bg-blue-50 border-r-4 border-blue-600 rounded-2xl p-6">
+        <div class="flex items-start gap-3">
+          <i data-lucide="info" class="text-blue-600 w-6 h-6 flex-shrink-0 mt-1"></i>
+          <div>
+            <p class="font-bold text-blue-900 mb-2">ملاحظة هامة</p>
+            <p class="text-blue-800 text-sm leading-relaxed">
+              جميع النماذج تُرسل تلقائياً إلى قاعدة البيانات الرئيسية. يرجى ملء البيانات بدقة واكتمال.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-200 shadow-2xl z-50">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-around items-center py-3">
+        <a href="distribution.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
+          <i data-lucide="pie-chart" class="w-6 h-6"></i>
+          <span class="text-xs">Dashboard</span>
+        </a>
+        <a href="employee.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
+          <i data-lucide="briefcase" class="w-6 h-6"></i>
+          <span class="text-xs">الخدمات</span>
+        </a>
+        <a href="links.html" class="flex flex-col items-center gap-1 text-indigo-600 font-bold">
+          <i data-lucide="link" class="w-6 h-6"></i>
+          <span class="text-xs">الروابط</span>
+        </a>
+        <a href="admin.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
+          <i data-lucide="settings" class="w-6 h-6"></i>
+          <span class="text-xs">الإدارة</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>
