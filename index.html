@@ -2,218 +2,43 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
   <meta name="theme-color" content="#0f766e">
-  <title>Governance Hub – IAG System</title>
+  <title>نظام الحوكمة - IAG</title>
   
   <link rel="icon" type="image/png" href="assets/icons/favicon.png">
-  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
-  <link rel="manifest" href="manifest.json">
-  
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="IAG System">
-  
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    * { 
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
+    * { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    body { font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+    .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(15, 118, 110, 0.15); }
     
-    body { 
-      font-family: 'Cairo', sans-serif; 
-      background-color: #f8fafc;
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    
-    .theme-gradient { 
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); 
-    }
-    
-    .fade-in { 
-      animation: fadeIn 0.5s ease-out; 
-    }
-    
-    @keyframes fadeIn { 
-      from { opacity: 0; transform: translateY(10px); } 
-      to { opacity: 1; transform: translateY(0); } 
-    }
-
     /* Loading Overlay */
-    #loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(15, 118, 110, 0.95);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      backdrop-filter: blur(4px);
-    }
-
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Message Box */
-    .message-box {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-100px);
-      padding: 16px 24px;
-      border-radius: 12px;
-      font-weight: 600;
-      z-index: 10000;
-      opacity: 0;
-      transition: all 0.3s ease;
-      max-width: 90%;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    }
-
-    .message-box.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
-
-    .message-box.error {
-      background: #ef4444;
-      color: white;
-    }
-
-    .message-box.success {
-      background: #10b981;
-      color: white;
-    }
+    #loading-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(8px); }
+    .spinner { width: 50px; height: 50px; border: 4px solid rgba(255, 255, 255, 0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Login Modal */
-    .login-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(15, 23, 42, 0.8);
-      backdrop-filter: blur(8px);
-      z-index: 10000;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .login-modal.show {
-      display: flex;
-    }
-
-    .login-modal-content {
-      background: white;
-      border-radius: 24px;
-      padding: 40px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      max-width: 400px;
-      width: 90%;
-      position: relative;
-      animation: slideUp 0.3s ease;
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: #f1f5f9;
-      border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-
-    .close-btn:hover {
-      background: #e2e8f0;
-      transform: rotate(90deg);
-    }
-
-    /* Login Form */
-    .pin-input {
-      width: 100%;
-      padding: 16px 20px;
-      font-size: 18px;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      text-align: center;
-      font-family: 'Cairo', sans-serif;
-      font-weight: 600;
-      letter-spacing: 4px;
-      transition: all 0.3s;
-    }
-
-    .pin-input:focus {
-      outline: none;
-      border-color: #0f766e;
-      box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
-    }
-
-    .login-btn {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-top: 20px;
-    }
-
-    .login-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(15, 118, 110, 0.3);
-    }
-
-    .login-btn:active {
-      transform: translateY(0);
-    }
+    .login-modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); z-index: 10000; align-items: center; justify-content: center; }
+    .login-modal.show { display: flex; }
+    .login-content { background: white; border-radius: 24px; padding: 48px; max-width: 420px; width: 90%; box-shadow: 0 25px 80px rgba(0,0,0,0.3); animation: slideUp 0.4s ease; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
     
+    .pin-input { width: 100%; padding: 18px 24px; font-size: 20px; border: 2px solid #e2e8f0; border-radius: 14px; text-align: center; font-weight: 700; letter-spacing: 6px; transition: all 0.3s; }
+    .pin-input:focus { outline: none; border-color: #0f766e; box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1); }
+    
+    .btn-login { width: 100%; padding: 18px; background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); color: white; border: none; border-radius: 14px; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 24px rgba(15, 118, 110, 0.3); }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(15, 118, 110, 0.4); }
+    .btn-login:active { transform: translateY(0); }
+
     @media (max-width: 768px) {
-      header { padding-top: calc(32px + env(safe-area-inset-top)); padding-bottom: 64px; }
-      header h1 { font-size: 1.75rem; }
-      header p { font-size: 0.9rem; }
-      main { margin-top: -48px; }
-      main .bg-white { padding: 24px; margin-bottom: 24px; }
-      main h2 { font-size: 1.25rem; }
-      main p { font-size: 0.9rem; }
-      .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-      .login-modal-content { padding: 32px 24px; }
-      footer { padding-top: 24px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+      .login-content { padding: 36px 28px; }
+      .grid-cards { grid-template-columns: repeat(2, 1fr) !important; }
     }
   </style>
 </head>
@@ -221,122 +46,129 @@
 
   <div id="loading-overlay">
     <div class="text-center">
-      <div class="spinner mx-auto mb-4"></div>
-      <p class="text-white text-lg font-bold">جاري التحميل...</p>
+      <div class="spinner mx-auto mb-6"></div>
+      <p class="text-white text-xl font-bold">جارٍ التحميل...</p>
     </div>
   </div>
 
-  <div id="message-box" class="message-box"></div>
+  <div id="message-box" class="fixed top-6 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl font-bold z-50 shadow-2xl hidden"></div>
 
-  <div id="landing-page" class="flex-grow flex flex-col fade-in">
-    <header class="theme-gradient text-white pb-20 pt-12 shadow-lg relative overflow-hidden">
+  <div class="flex-grow flex flex-col">
+    <!-- Header -->
+    <header class="theme-gradient text-white py-20 shadow-2xl relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10" style="background: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
       <div class="container mx-auto px-6 text-center relative z-10">
-        <div class="bg-white/10 p-8 rounded-full inline-block mb-6 backdrop-blur-sm border border-white/20 shadow-2xl">
-          <i data-lucide="landmark" class="w-24 h-24 text-teal-50"></i>
+        <div class="bg-white/15 p-10 rounded-full inline-block mb-8 backdrop-blur-md border-2 border-white/30 shadow-2xl">
+          <i data-lucide="landmark" class="w-28 h-28 text-teal-50"></i>
         </div>
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-wide drop-shadow-md">
+        <h1 class="text-5xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-lg">
           إدارة المراجعة الداخلية والحوكمة
         </h1>
-        <p class="text-lg text-teal-100 font-medium opacity-90">
+        <p class="text-xl text-teal-100 font-semibold opacity-95">
           مديرية الشؤون الصحية بالفيوم
         </p>
       </div>
-      <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
     </header>
 
-    <main class="container mx-auto px-4 -mt-12 mb-10 flex-grow relative z-20">
-      <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 text-center max-w-4xl mx-auto border border-slate-100 mb-8">
-        <h2 class="text-2xl font-bold text-slate-800 mb-4 flex justify-center items-center gap-2">
-          <i data-lucide="shield-check" class="text-teal-600"></i> البوابة الرقمية الموحدة
-        </h2>
-        <p class="text-slate-600 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
-          منصة مركزية لإدارة المراجعة الداخلية والحوكمة بمديرية الشؤون الصحية بالفيوم.
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 -mt-16 mb-12 flex-grow relative z-20">
+      <div class="bg-white rounded-3xl shadow-2xl p-10 md:p-14 text-center max-w-5xl mx-auto border-2 border-slate-100 mb-10">
+        <div class="flex items-center justify-center gap-3 mb-5">
+          <i data-lucide="shield-check" class="text-teal-600 w-8 h-8"></i>
+          <h2 class="text-3xl font-bold text-slate-800">البوابة الرقمية الموحدة</h2>
+        </div>
+        <p class="text-slate-600 text-lg leading-relaxed max-w-3xl mx-auto">
+          منصة مركزية لإدارة المراجعة الداخلية والحوكمة بمديرية الشؤون الصحية بالفيوم
         </p>
-        <div class="border-t border-slate-100 pt-6 mt-2 max-w-2xl mx-auto">
-          <p class="text-[11px] md:text-xs text-slate-400 font-medium leading-loose">
-            <span class="font-bold text-slate-500">تنويه:</span> يقتصر الاستخدام على أعضاء إدارة المراجعة الداخلية والحوكمة المكلفين رسمياً.
+        <div class="mt-8 pt-6 border-t border-slate-200">
+          <p class="text-xs text-slate-400 font-medium">
+            <i data-lucide="lock" class="w-4 h-4 inline mr-1"></i>
+            يقتصر الاستخدام على أعضاء الإدارة المكلفين رسمياً
           </p>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto opacity-95 mb-8">
+      <!-- Access Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto grid-cards">
         
-        <a href="distribution.html" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-teal-600 hover:scale-105 transition-transform group flex flex-col items-center justify-center cursor-pointer text-slate-700 hover:text-teal-700 no-underline">
-          <i data-lucide="pie-chart" class="w-8 h-8 text-teal-600 mx-auto mb-3 group-hover:scale-110 transition-transform"></i>
-          <span class="text-base font-bold">Dashboard</span>
+        <a href="distribution.html" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-teal-600 cursor-pointer group">
+          <div class="bg-teal-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-teal-100 transition">
+            <i data-lucide="pie-chart" class="w-10 h-10 text-teal-600"></i>
+          </div>
+          <span class="text-lg font-bold text-slate-700 group-hover:text-teal-700 transition">Dashboard</span>
         </a>
         
-        <button onclick="showLoginModal('employee')" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-blue-500 hover:scale-105 transition-transform group">
-          <i data-lucide="briefcase" class="w-8 h-8 text-blue-500 mx-auto mb-3 group-hover:scale-110 transition-transform"></i>
-          <span class="text-base font-bold text-slate-700">الخدمات</span>
+        <button onclick="showLogin('employee')" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-blue-600 group">
+          <div class="bg-blue-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition">
+            <i data-lucide="briefcase" class="w-10 h-10 text-blue-600"></i>
+          </div>
+          <span class="text-lg font-bold text-slate-700 group-hover:text-blue-700 transition">الخدمات</span>
         </button>
         
-        <button onclick="showLoginModal('coordinator')" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-violet-500 hover:scale-105 transition-transform group">
-          <i data-lucide="users" class="w-8 h-8 text-violet-500 mx-auto mb-3 group-hover:scale-110 transition-transform"></i>
-          <span class="text-base font-bold text-slate-700">أعضاء الإدارة</span>
+        <button onclick="showLogin('coordinator')" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-violet-600 group">
+          <div class="bg-violet-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-violet-100 transition">
+            <i data-lucide="users" class="w-10 h-10 text-violet-600"></i>
+          </div>
+          <span class="text-lg font-bold text-slate-700 group-hover:text-violet-700 transition">أعضاء الإدارة</span>
         </button>
         
-        <button onclick="showLoginModal('admin')" class="bg-white p-6 rounded-xl shadow-md text-center border-b-4 border-red-500 hover:scale-105 transition-transform group">
-          <i data-lucide="settings" class="w-8 h-8 text-red-500 mx-auto mb-3 group-hover:scale-110 transition-transform"></i>
-          <span class="text-base font-bold text-slate-700">الإدارة</span>
+        <button onclick="showLogin('admin')" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-red-600 group">
+          <div class="bg-red-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-red-100 transition">
+            <i data-lucide="settings" class="w-10 h-10 text-red-600"></i>
+          </div>
+          <span class="text-lg font-bold text-slate-700 group-hover:text-red-700 transition">الإدارة</span>
         </button>
       </div>
     </main>
 
+    <!-- Login Modal -->
     <div id="login-modal" class="login-modal">
-      <div class="login-modal-content">
-        <button onclick="closeLoginModal()" class="close-btn">
-          <i data-lucide="x"></i>
+      <div class="login-content">
+        <button onclick="closeLogin()" class="absolute top-5 left-5 bg-slate-100 hover:bg-slate-200 w-12 h-12 rounded-full flex items-center justify-center transition">
+          <i data-lucide="x" class="w-6 h-6 text-slate-600"></i>
         </button>
         
-        <div class="text-center mb-8">
-          <div class="bg-teal-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i data-lucide="lock-keyhole" class="w-10 h-10 text-teal-600"></i>
+        <div class="text-center mb-10">
+          <div class="bg-teal-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-5">
+            <i data-lucide="lock-keyhole" class="w-12 h-12 text-teal-600"></i>
           </div>
-          <h2 class="text-2xl font-bold text-slate-800 mb-2">تسجيل الدخول</h2>
-          <p class="text-slate-500 text-sm">الرجاء إدخال رمز الدخول الخاص بك</p>
+          <h2 class="text-3xl font-bold text-slate-800 mb-3">تسجيل الدخول</h2>
+          <p class="text-slate-500">الرجاء إدخال رمز الدخول الخاص بك</p>
         </div>
 
-        <form id="login-form">
-          <div class="mb-6">
-            <input 
-              type="password" 
-              id="pin-input" 
-              class="pin-input" 
-              placeholder="••••"
-              maxlength="4"
-              inputmode="numeric"
-              pattern="[0-9]*"
-              autocomplete="off"
-              required
-            />
-          </div>
-
-          <button type="submit" class="login-btn">
-            دخول
-          </button>
+        <form id="login-form" onsubmit="handleLogin(event)">
+          <input 
+            type="password" 
+            id="pin-input" 
+            class="pin-input mb-6" 
+            placeholder="••••"
+            maxlength="4"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            required
+          />
+          <button type="submit" class="btn-login">دخول</button>
         </form>
 
-        <div class="mt-6 text-center">
-          <p class="text-xs text-slate-400">
-            <i data-lucide="shield-check" class="w-3 h-3 inline"></i>
+        <div class="mt-8 text-center">
+          <p class="text-xs text-slate-400 flex items-center justify-center gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
             نظام آمن ومحمي
           </p>
         </div>
       </div>
     </div>
 
-    <footer class="bg-[#0f172a] text-white py-8 text-center border-t-4 border-teal-600 mt-auto relative z-10">
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-10 text-center border-t-4 border-teal-600 mt-auto">
       <div class="container mx-auto px-4">
-        <div class="mb-4 text-slate-500 opacity-60">
-          <i data-lucide="landmark" class="w-12 h-12 mx-auto"></i>
-        </div>
-        <p class="text-sm md:text-base font-bold mb-3 opacity-90">
+        <i data-lucide="landmark" class="w-14 h-14 mx-auto mb-4 text-slate-600"></i>
+        <p class="text-base font-bold mb-3 opacity-90">
           © 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة
         </p>
-        <div class="text-[10px] md:text-xs text-slate-400 space-y-1 font-[sans-serif]" dir="ltr">
-          <p class="tracking-wider opacity-70">MoH Fayoum Governance – Internal Access Page</p>
-          <p class="tracking-wider opacity-70">Developed under Governance Supervision – Dr. MAH</p>
+        <div class="text-xs text-slate-500 space-y-1" dir="ltr">
+          <p>MoH Fayoum Governance – Internal Access Page</p>
+          <p>Developed under Governance Supervision – Dr. MAH</p>
         </div>
       </div>
     </footer>
@@ -349,32 +181,36 @@
     
     let targetPage = '';
 
-    function showLoginModal(page) {
+    function showLogin(page) {
       targetPage = page;
       document.getElementById('login-modal').classList.add('show');
       document.getElementById('pin-input').focus();
     }
 
-    function closeLoginModal() {
+    function closeLogin() {
       document.getElementById('login-modal').classList.remove('show');
       document.getElementById('pin-input').value = '';
       targetPage = '';
     }
 
-    // Override redirect function based on selection
-    auth.redirectToDashboard = function() {
-      const pageMap = {
-        'employee': 'employee.html',
-        'coordinator': 'coordinator.html',
-        'admin': 'admin.html'
-      };
+    function handleLogin(e) {
+      e.preventDefault();
+      const pin = document.getElementById('pin-input').value;
       
-      window.location.href = pageMap[targetPage] || 'employee.html';
-    };
+      auth.login(pin).then(result => {
+        if (result.success) {
+          const pageMap = {
+            'employee': 'employee.html',
+            'coordinator': 'coordinator.html',
+            'admin': 'admin.html'
+          };
+          window.location.href = pageMap[targetPage] || 'employee.html';
+        }
+      });
+    }
 
-    // Close modal on ESC
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeLoginModal();
+      if (e.key === 'Escape') closeLogin();
     });
   </script>
 </body>
