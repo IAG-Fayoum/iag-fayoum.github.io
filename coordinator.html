@@ -3,122 +3,421 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بوابة المنسق - IAG</title>
+  <title>صفحة المنسق - IAG</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background: #f8f9fa;
+      padding-bottom: 80px;
+    }
+    
+    /* Side Navigation */
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 260px;
+      height: 100vh;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+      z-index: 100;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar.hidden { transform: translateX(100%); }
+    
+    .sidebar-logo {
+      padding: 24px;
+      border-bottom: 1px solid #e9ecef;
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      color: white;
+    }
+    
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      color: #495057;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border-right: 3px solid transparent;
+    }
+    
+    .sidebar-item:hover {
+      background: #f8f9fa;
+      border-right-color: #7c3aed;
+      color: #7c3aed;
+    }
+    
+    .sidebar-item.active {
+      background: #f3e8ff;
+      border-right-color: #7c3aed;
+      color: #7c3aed;
+    }
+    
+    /* Main Content */
+    .main-content {
+      margin-right: 260px;
+      padding: 24px;
+      max-width: 1400px;
+    }
+    
+    /* Task Card */
+    .task-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 1px solid #e9ecef;
+      transition: all 0.2s ease;
+      margin-bottom: 16px;
+    }
+    
+    .task-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+    
+    .task-card.received {
+      border-right: 4px solid #10b981;
+      background: #f0fdf4;
+    }
+    
+    .task-card.pending {
+      border-right: 4px solid #f59e0b;
+      background: #fffbeb;
+    }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    
+    .status-received {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    /* Attachment Preview */
+    .attachment-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid #e9ecef;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    
+    .attachment-preview:hover {
+      transform: scale(1.05);
+    }
+    
+    /* Filter Panel */
+    .filter-panel {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 1px solid #e9ecef;
+      margin-bottom: 24px;
+    }
+    
+    .filter-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: 2px solid #e9ecef;
+      background: white;
+      color: #495057;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .filter-btn:hover {
+      border-color: #7c3aed;
+      color: #7c3aed;
+    }
+    
+    .filter-btn.active {
+      background: #7c3aed;
+      border-color: #7c3aed;
+      color: white;
+    }
+    
+    /* Employee Group */
+    .employee-section {
+      margin-bottom: 32px;
+    }
+    
+    .employee-header {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      color: white;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #e9ecef;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      z-index: 50;
+      display: none;
+    }
+    
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px;
+      color: #868e96;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+    
+    .bottom-nav-item.active {
+      color: #7c3aed;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(100%); }
+      .sidebar.active { transform: translateX(0); }
+      .main-content { margin-right: 0; }
+      .bottom-nav { display: flex; }
+      body { padding-bottom: 70px; }
+      
+      .mobile-header {
+        background: white;
+        padding: 16px;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 40;
+      }
+    }
+    
+    @media (min-width: 1025px) {
+      .mobile-header { display: none; }
+    }
+    
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 90;
+      display: none;
+    }
+    
+    .overlay.active { display: block; }
+    
+    /* Loading */
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e9ecef;
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
-<body class="pb-24">
+<body>
 
-  <div id="loading-overlay" class="fixed inset-0 bg-slate-900/95 hidden items-center justify-center z-50">
-    <div class="text-center">
-      <div class="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-      <p class="text-white text-lg font-bold">جارٍ التحميل...</p>
-    </div>
+  <div id="loading" class="hidden">
+    <div class="spinner"></div>
   </div>
 
-  <header class="bg-gradient-to-r from-violet-600 to-violet-700 text-white py-6 px-6 shadow-xl sticky top-0 z-40">
-    <div class="container mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-4">
-        <a href="index.html" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition">
-          <i data-lucide="home" class="w-6 h-6"></i>
-        </a>
-        <div>
-          <h1 class="text-2xl font-bold" id="user-name">بوابة المنسق</h1>
-          <p class="text-violet-100 text-sm">إدارة الفريق والمتابعة</p>
-        </div>
-      </div>
-      <button onclick="auth.logout()" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition">
-        <i data-lucide="log-out" class="w-6 h-6"></i>
-      </button>
-    </div>
-  </header>
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-  <main class="container mx-auto px-4 py-8 max-w-6xl">
+  <!-- Mobile Header -->
+  <div class="mobile-header">
+    <button onclick="toggleSidebar()" class="p-2">
+      <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
+    </button>
+    <h1 class="text-lg font-bold text-gray-800">صفحة المنسق</h1>
+    <div class="w-10"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <h2 class="text-xl font-bold mb-1">IAG System</h2>
+      <p class="text-sm opacity-90">إدارة الحوكمة</p>
+    </div>
     
-    <!-- Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-violet-600">
-        <div class="text-center">
-          <i data-lucide="users" class="w-10 h-10 text-violet-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="team-size">0</p>
-          <p class="text-slate-600 font-semibold">أعضاء الفريق</p>
-        </div>
-      </div>
+    <nav class="py-4">
+      <a href="index.html" class="sidebar-item">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span>الرئيسية</span>
+      </a>
+      
+      <a href="distribution.html" class="sidebar-item">
+        <i data-lucide="pie-chart" class="w-5 h-5"></i>
+        <span>Dashboard</span>
+      </a>
+      
+      <a href="forms.html" class="sidebar-item">
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+        <span>النماذج الإلكترونية</span>
+      </a>
+      
+      <a href="employee.html" class="sidebar-item">
+        <i data-lucide="briefcase" class="w-5 h-5"></i>
+        <span>خدمات الموظفين</span>
+      </a>
+      
+      <a href="coordinator.html" class="sidebar-item active">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span>المنسقين</span>
+      </a>
+      
+      <a href="admin.html" class="sidebar-item">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span>لوحة الإدارة</span>
+      </a>
+    </nav>
+  </aside>
 
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-teal-600">
-        <div class="text-center">
-          <i data-lucide="clipboard-list" class="w-10 h-10 text-teal-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="team-total">0</p>
-          <p class="text-slate-600 font-semibold">مهام الفريق</p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-emerald-600">
-        <div class="text-center">
-          <i data-lucide="check-circle" class="w-10 h-10 text-emerald-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="team-completed">0</p>
-          <p class="text-slate-600 font-semibold">المنجزة</p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-amber-600">
-        <div class="text-center">
-          <i data-lucide="clock" class="w-10 h-10 text-amber-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="team-pending">0</p>
-          <p class="text-slate-600 font-semibold">قيد التنفيذ</p>
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Header Section -->
+    <div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 20px; padding: 40px 32px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(124, 58, 237, 0.15);">
+      <div class="text-white">
+        <div class="flex items-center gap-4 mb-3">
+          <div style="background: rgba(255,255,255,0.15); width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.3);">
+            <i data-lucide="users" class="w-10 h-10"></i>
+          </div>
+          <div>
+            <h1 class="text-3xl font-extrabold mb-1">صفحة المنسق</h1>
+            <p class="text-lg opacity-90">توزيع ومتابعة المهام</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Team Members -->
-    <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
-      <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-        <i data-lucide="users" class="text-violet-600 w-7 h-7"></i>
-        أداء الفريق
-      </h2>
-      <div id="team-members" class="space-y-3">
-        <p class="text-slate-400 text-center py-8">جارٍ التحميل...</p>
+    <!-- Filter Panel -->
+    <div class="filter-panel">
+      <div class="grid md:grid-cols-2 gap-6">
+        
+        <!-- Time Filter -->
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-3">فلترة حسب الفترة الزمنية</label>
+          <div class="flex flex-wrap gap-2">
+            <button class="filter-btn active" data-period="today" onclick="setTimePeriod('today')">اليوم</button>
+            <button class="filter-btn" data-period="3days" onclick="setTimePeriod('3days')">آخر 3 أيام</button>
+            <button class="filter-btn" data-period="week" onclick="setTimePeriod('week')">أسبوع</button>
+            <button class="filter-btn" data-period="month" onclick="setTimePeriod('month')">شهر</button>
+            <button class="filter-btn" data-period="custom" onclick="setTimePeriod('custom')">مخصص</button>
+          </div>
+          
+          <div id="custom-date-range" style="display: none;" class="mt-4 grid grid-cols-2 gap-3">
+            <input type="date" id="start-date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-semibold">
+            <input type="date" id="end-date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-semibold">
+          </div>
+        </div>
+
+        <!-- Employee Filter -->
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-3">فلترة حسب الموظف</label>
+          <select id="employee-filter" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg font-semibold focus:border-violet-600 focus:outline-none">
+            <option value="">الكل</option>
+            <optgroup label="المالي والإداري">
+              <option value="نسمة">نسمة</option>
+              <option value="أسماء">أسماء</option>
+              <option value="أ. محمود">أ. محمود</option>
+            </optgroup>
+            <optgroup label="الفنيين">
+              <option value="ريم">ريم</option>
+              <option value="سهى">سهى</option>
+            </optgroup>
+          </select>
+          
+          <button onclick="applyFilters()" class="w-full mt-3 bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-lg font-bold transition">
+            تطبيق الفلتر
+          </button>
+        </div>
+
       </div>
     </div>
 
-    <!-- Recent Tasks -->
-    <div class="bg-white rounded-2xl shadow-xl p-6">
-      <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-        <i data-lucide="list" class="text-teal-600 w-7 h-7"></i>
-        أحدث المهام
-      </h2>
-      <div id="recent-tasks" class="overflow-x-auto">
-        <p class="text-slate-400 text-center py-8">جارٍ التحميل...</p>
-      </div>
+    <!-- Tasks Container -->
+    <div id="tasks-container">
+      <p class="text-center text-gray-400 py-12">جارٍ تحميل المهام...</p>
     </div>
+
   </main>
 
-  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-200 shadow-2xl z-50">
-    <div class="container mx-auto px-4">
-      <div class="flex justify-around items-center py-3">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
-          <i data-lucide="pie-chart" class="w-6 h-6"></i>
-          <span class="text-xs">Dashboard</span>
-        </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
-          <i data-lucide="briefcase" class="w-6 h-6"></i>
-          <span class="text-xs">الخدمات</span>
-        </a>
-        <a href="links.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
-          <i data-lucide="link" class="w-6 h-6"></i>
-          <span class="text-xs">الروابط</span>
-        </a>
-        <a href="admin.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
-          <i data-lucide="settings" class="w-6 h-6"></i>
-          <span class="text-xs">الإدارة</span>
-        </a>
-      </div>
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <div style="display: flex; width: 100%; justify-content: space-around;">
+      <a href="distribution.html" class="bottom-nav-item">
+        <i data-lucide="pie-chart" class="w-6 h-6"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="forms.html" class="bottom-nav-item">
+        <i data-lucide="file-text" class="w-6 h-6"></i>
+        <span>النماذج</span>
+      </a>
+      <a href="employee.html" class="bottom-nav-item">
+        <i data-lucide="briefcase" class="w-6 h-6"></i>
+        <span>الخدمات</span>
+      </a>
+      <a href="admin.html" class="bottom-nav-item">
+        <i data-lucide="settings" class="w-6 h-6"></i>
+        <span>الإدارة</span>
+      </a>
     </div>
   </nav>
 
@@ -127,95 +426,176 @@
   <script>
     lucide.createIcons();
 
-    async function loadCoordinatorData() {
-      const user = auth.checkSession();
-      if (!user) return;
+    let currentPeriod = 'today';
+    let currentEmployee = '';
 
-      document.getElementById('user-name').textContent = `مرحباً، ${user.name}`;
-      document.getElementById('loading-overlay').style.display = 'flex';
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('overlay').classList.toggle('active');
+    }
+
+    function setTimePeriod(period) {
+      currentPeriod = period;
+      
+      // Update button styles
+      document.querySelectorAll('.filter-btn[data-period]').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-period="${period}"]`).classList.add('active');
+      
+      // Show/hide custom date range
+      document.getElementById('custom-date-range').style.display = 
+        period === 'custom' ? 'grid' : 'none';
+    }
+
+    function getDateRange() {
+      const today = new Date();
+      let startDate, endDate;
+
+      switch(currentPeriod) {
+        case 'today':
+          startDate = new Date(today);
+          endDate = new Date(today);
+          break;
+        case '3days':
+          startDate = new Date(today);
+          startDate.setDate(today.getDate() - 3);
+          endDate = new Date(today);
+          break;
+        case 'week':
+          startDate = new Date(today);
+          startDate.setDate(today.getDate() - 7);
+          endDate = new Date(today);
+          break;
+        case 'month':
+          startDate = new Date(today);
+          startDate.setMonth(today.getMonth() - 1);
+          endDate = new Date(today);
+          break;
+        case 'custom':
+          startDate = new Date(document.getElementById('start-date').value);
+          endDate = new Date(document.getElementById('end-date').value);
+          break;
+        default:
+          startDate = new Date(today);
+          endDate = new Date(today);
+      }
+
+      return {
+        start: startDate.toISOString().split('T')[0],
+        end: endDate.toISOString().split('T')[0]
+      };
+    }
+
+    async function applyFilters() {
+      document.getElementById('loading').classList.remove('hidden');
+      currentEmployee = document.getElementById('employee-filter').value;
+
+      const dateRange = getDateRange();
 
       const result = await auth.apiCall('getAllData', {
         role: 'منسق',
-        name: user.name,
-        startDate: null,
-        endDate: null
+        name: 'Coordinator',
+        startDate: dateRange.start,
+        endDate: dateRange.end
       });
 
       if (result.success) {
-        const employees = result.stats.employees || [];
-        
-        document.getElementById('team-size').textContent = employees.length;
-        
-        const teamTotals = employees.reduce((acc, emp) => ({
-          total: acc.total + emp.total,
-          completed: acc.completed + emp.completed,
-          pending: acc.pending + emp.pending
-        }), { total: 0, completed: 0, pending: 0 });
-
-        document.getElementById('team-total').textContent = teamTotals.total;
-        document.getElementById('team-completed').textContent = teamTotals.completed;
-        document.getElementById('team-pending').textContent = teamTotals.pending;
-
-        const membersDiv = document.getElementById('team-members');
-        if (employees.length > 0) {
-          membersDiv.innerHTML = employees.map(emp => {
-            const rate = emp.total > 0 ? Math.round((emp.completed / emp.total) * 100) : 0;
-            return `
-              <div class="bg-slate-50 rounded-xl p-4 flex justify-between items-center">
-                <div>
-                  <p class="font-bold text-slate-800">${emp.name}</p>
-                  <p class="text-sm text-slate-500">${emp.role || 'موظف'}</p>
-                </div>
-                <div class="text-left">
-                  <p class="text-2xl font-bold text-violet-600">${rate}%</p>
-                  <p class="text-xs text-slate-500">${emp.completed}/${emp.total}</p>
-                </div>
-              </div>
-            `;
-          }).join('');
-        } else {
-          membersDiv.innerHTML = '<p class="text-slate-400 text-center py-8">لا يوجد أعضاء</p>';
-        }
-
-        const tasksDiv = document.getElementById('recent-tasks');
-        if (result.tasks && result.tasks.length > 0) {
-          tasksDiv.innerHTML = `
-            <table class="w-full">
-              <thead class="bg-slate-100">
-                <tr>
-                  <th class="p-3 text-right font-bold text-slate-700">رقم القيد</th>
-                  <th class="p-3 text-right font-bold text-slate-700">الموضوع</th>
-                  <th class="p-3 text-right font-bold text-slate-700">المكلف</th>
-                  <th class="p-3 text-right font-bold text-slate-700">الحالة</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${result.tasks.slice(0, 15).map(task => `
-                  <tr class="border-b hover:bg-slate-50">
-                    <td class="p-3 font-bold text-violet-700">${task.id}</td>
-                    <td class="p-3 text-slate-800">${task.subject}</td>
-                    <td class="p-3 text-slate-600">${task.assignee}</td>
-                    <td class="p-3">
-                      <span class="px-3 py-1 rounded-full text-xs font-bold ${
-                        task.status.includes('منتهي') ? 'bg-emerald-100 text-emerald-700' :
-                        task.status.includes('متأخر') ? 'bg-red-100 text-red-700' :
-                        'bg-amber-100 text-amber-700'
-                      }">${task.status}</span>
-                    </td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          `;
-        } else {
-          tasksDiv.innerHTML = '<p class="text-slate-400 text-center py-8">لا توجد مهام</p>';
-        }
+        renderTasks(result.tasks);
       }
 
-      document.getElementById('loading-overlay').style.display = 'none';
+      document.getElementById('loading').classList.add('hidden');
     }
 
-    loadCoordinatorData();
+    function renderTasks(tasks) {
+      // Group by employee
+      const groupedTasks = {};
+      
+      tasks.forEach(task => {
+        // Filter by selected employee
+        if (currentEmployee && task.assignee !== currentEmployee) return;
+
+        if (!groupedTasks[task.assignee]) {
+          groupedTasks[task.assignee] = [];
+        }
+        groupedTasks[task.assignee].push(task);
+      });
+
+      const container = document.getElementById('tasks-container');
+
+      if (Object.keys(groupedTasks).length === 0) {
+        container.innerHTML = '<p class="text-center text-gray-400 py-12">لا توجد مهام في هذه الفترة</p>';
+        return;
+      }
+
+      container.innerHTML = Object.entries(groupedTasks).map(([employee, empTasks]) => {
+        const receivedCount = empTasks.filter(t => t.received).length;
+        const pendingCount = empTasks.length - receivedCount;
+
+        return `
+          <div class="employee-section">
+            <div class="employee-header">
+              <div>
+                <h2 class="text-xl font-bold">${employee}</h2>
+                <p class="text-sm opacity-90">إجمالي المهام: ${empTasks.length}</p>
+              </div>
+              <div class="flex gap-4">
+                <div class="text-center">
+                  <p class="text-2xl font-bold">${receivedCount}</p>
+                  <p class="text-xs opacity-90">تم الاستلام</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-2xl font-bold">${pendingCount}</p>
+                  <p class="text-xs opacity-90">في الانتظار</p>
+                </div>
+              </div>
+            </div>
+
+            ${empTasks.map(task => `
+              <div class="task-card ${task.received ? 'received' : 'pending'}">
+                <div class="flex items-start gap-4">
+                  ${task.attachment ? `
+                    <img src="${task.attachment}" alt="مرفق" class="attachment-preview" onclick="window.open('${task.attachment}', '_blank')">
+                  ` : `
+                    <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 2px solid #e9ecef;">
+                      <i data-lucide="file-text" class="w-8 h-8 text-gray-400"></i>
+                    </div>
+                  `}
+                  
+                  <div class="flex-grow">
+                    <div class="flex items-start justify-between mb-2">
+                      <h3 class="font-bold text-gray-800 text-lg">رقم القيد: ${task.id}</h3>
+                      <span class="status-badge ${task.received ? 'status-received' : 'status-pending'}">
+                        <i data-lucide="${task.received ? 'check-circle' : 'clock'}" class="w-4 h-4"></i>
+                        ${task.received ? 'تم الاستلام' : 'في الانتظار'}
+                      </span>
+                    </div>
+                    
+                    <p class="text-gray-700 font-semibold mb-2">${task.subject}</p>
+                    
+                    <div class="flex items-center gap-4 text-sm text-gray-600">
+                      <div class="flex items-center gap-1">
+                        <i data-lucide="building" class="w-4 h-4"></i>
+                        <span>${task.entity}</span>
+                      </div>
+                      <div class="flex items-center gap-1">
+                        <i data-lucide="calendar" class="w-4 h-4"></i>
+                        <span>${task.date}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // Initial load
+    applyFilters();
   </script>
 </body>
 </html>
