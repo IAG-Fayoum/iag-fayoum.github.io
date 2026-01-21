@@ -10,44 +10,253 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    body { font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
-    .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
-    .form-card { transition: all 0.3s ease; }
-    .form-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background: #f8f9fa;
+      padding-bottom: 80px;
+    }
+    
+    /* Side Navigation */
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 260px;
+      height: 100vh;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+      z-index: 100;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar.hidden { transform: translateX(100%); }
+    
+    .sidebar-logo {
+      padding: 24px;
+      border-bottom: 1px solid #e9ecef;
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+      color: white;
+    }
+    
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      color: #495057;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border-right: 3px solid transparent;
+    }
+    
+    .sidebar-item:hover {
+      background: #f8f9fa;
+      border-right-color: #0f766e;
+      color: #0f766e;
+    }
+    
+    .sidebar-item.active {
+      background: #e6f7f5;
+      border-right-color: #0f766e;
+      color: #0f766e;
+    }
+    
+    /* Main Content */
+    .main-content {
+      margin-right: 260px;
+      padding: 24px;
+    }
+    
+    /* Form Cards */
+    .form-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+      text-decoration: none;
+      display: block;
+      border-right: 4px solid transparent;
+    }
+    
+    .form-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    
+    .form-card.teal:hover { border-right-color: #0f766e; }
+    .form-card.rose:hover { border-right-color: #e11d48; }
+    .form-card.amber:hover { border-right-color: #f59e0b; }
+    .form-card.blue:hover { border-right-color: #3b82f6; }
+    .form-card.violet:hover { border-right-color: #8b5cf6; }
+    
+    .form-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    /* Info Box */
+    .info-box {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 1px solid #e9ecef;
+      border-right: 4px solid #3b82f6;
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #e9ecef;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      z-index: 50;
+      display: none;
+    }
+    
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px;
+      color: #868e96;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+    
+    .bottom-nav-item.active {
+      color: #0f766e;
+    }
+    
+    .bottom-nav-item:hover {
+      color: #0f766e;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(100%); }
+      .sidebar.active { transform: translateX(0); }
+      .main-content { margin-right: 0; }
+      .bottom-nav { display: flex; }
+      body { padding-bottom: 70px; }
+      
+      .mobile-header {
+        background: white;
+        padding: 16px;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 40;
+      }
+    }
+    
+    @media (min-width: 1025px) {
+      .mobile-header { display: none; }
+    }
+    
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 90;
+      display: none;
+    }
+    
+    .overlay.active { display: block; }
   </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-  <header class="theme-gradient text-white pb-20 pt-12 shadow-2xl relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10" style="background: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
-    <div class="container mx-auto px-6 max-w-6xl relative z-10">
-      <div class="flex items-center justify-start mb-6">
-        <a href="index.html" class="bg-white/10 hover:bg-white/20 p-3 rounded-xl transition">
-          <i data-lucide="home" class="w-6 h-6"></i>
-        </a>
-      </div>
-      <div class="text-center">
-        <div class="bg-white/15 p-8 rounded-full inline-block mb-6 backdrop-blur-sm border-2 border-white/30 shadow-2xl">
-          <i data-lucide="file-text" class="w-24 h-24 text-teal-50"></i>
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Mobile Header -->
+  <div class="mobile-header">
+    <button onclick="toggleSidebar()" class="p-2">
+      <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
+    </button>
+    <h1 class="text-lg font-bold text-gray-800">النماذج الإلكترونية</h1>
+    <div class="w-10"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <h2 class="text-xl font-bold mb-1">IAG System</h2>
+      <p class="text-sm opacity-90">إدارة الحوكمة</p>
+    </div>
+    
+    <nav class="py-4">
+      <a href="index.html" class="sidebar-item">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span>الرئيسية</span>
+      </a>
+      
+      <a href="distribution.html" class="sidebar-item">
+        <i data-lucide="pie-chart" class="w-5 h-5"></i>
+        <span>Dashboard</span>
+      </a>
+      
+      <a href="forms.html" class="sidebar-item active">
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+        <span>النماذج الإلكترونية</span>
+      </a>
+      
+      <a href="employee.html" class="sidebar-item">
+        <i data-lucide="briefcase" class="w-5 h-5"></i>
+        <span>خدمات الموظفين</span>
+      </a>
+      
+      <a href="coordinator.html" class="sidebar-item">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span>المنسقين</span>
+      </a>
+      
+      <a href="admin.html" class="sidebar-item">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span>لوحة الإدارة</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Header Section with Teal Gradient -->
+    <div style="background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); border-radius: 20px; padding: 48px 32px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(15, 118, 110, 0.15);">
+      <div class="text-center text-white">
+        <div style="background: rgba(255,255,255,0.15); width: 100px; height: 100px; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; border: 3px solid rgba(255,255,255,0.3);">
+          <i data-lucide="file-text" class="w-16 h-16"></i>
         </div>
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-wide drop-shadow-md">
-          النماذج الإلكترونية
-        </h1>
-        <p class="text-lg text-teal-100 font-medium opacity-90">
-          إدارة المراجعة الداخلية والحوكمة - مديرية الشؤون الصحية بالفيوم
-        </p>
+        <h1 class="text-3xl md:text-4xl font-extrabold mb-3">النماذج الإلكترونية</h1>
+        <p class="text-lg opacity-90">إدارة المراجعة الداخلية والحوكمة - مديرية الشؤون الصحية بالفيوم</p>
       </div>
     </div>
-  </header>
 
-  <main class="container mx-auto px-4 -mt-12 mb-10 max-w-6xl relative z-20">
-
-    <div class="bg-blue-50 border-r-4 border-blue-600 rounded-2xl p-6 mb-10 shadow-lg">
-      <div class="flex items-start gap-4">
-        <i data-lucide="info" class="text-blue-600 w-8 h-8 flex-shrink-0 mt-1"></i>
+    <div class="info-box mb-8">
+      <div class="flex items-start gap-3">
+        <i data-lucide="info" class="w-6 h-6 text-blue-600 flex-shrink-0 mt-1"></i>
         <div>
-          <p class="font-bold text-blue-900 text-lg mb-2">تعليمات الاستخدام</p>
-          <p class="text-blue-800 leading-relaxed">
+          <p class="font-bold text-gray-800 mb-1">تعليمات الاستخدام</p>
+          <p class="text-gray-600 text-sm leading-relaxed">
             الرجاء ملء النماذج أدناه بدقة واكتمال. سيتم إرسال البيانات تلقائياً إلى قاعدة البيانات الرئيسية.
           </p>
         </div>
@@ -57,15 +266,15 @@
     <div class="grid md:grid-cols-2 gap-6">
       
       <!-- نموذج 1: الصادر والوارد -->
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSeJhAdpfoQAs6wqMDUD12N_H4YnL0Xv9KITCj2pHGCaKSyhJA/viewform" target="_blank" class="form-card bg-white rounded-2xl p-8 shadow-lg border-r-4 border-teal-600">
-        <div class="flex items-start gap-6">
-          <div class="bg-teal-50 w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <i data-lucide="inbox" class="w-10 h-10 text-teal-600"></i>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSeJhAdpfoQAs6wqMDUD12N_H4YnL0Xv9KITCj2pHGCaKSyhJA/viewform" target="_blank" class="form-card teal">
+        <div class="flex items-start gap-5">
+          <div class="form-icon" style="background: #e6f7f5;">
+            <i data-lucide="inbox" class="w-9 h-9" style="color: #0f766e;"></i>
           </div>
           <div class="flex-grow">
-            <h3 class="font-bold text-slate-800 text-xl mb-2">الصادر والوارد</h3>
-            <p class="text-slate-500 text-sm mb-4">إدخال معاملة جديدة للنظام</p>
-            <div class="flex items-center gap-2 text-teal-600 font-bold text-sm">
+            <h3 class="font-bold text-gray-800 text-lg mb-2">الصادر والوارد</h3>
+            <p class="text-gray-600 text-sm mb-3">إدخال معاملة جديدة للنظام</p>
+            <div class="flex items-center gap-2 text-teal-700 font-semibold text-sm">
               <span>فتح النموذج</span>
               <i data-lucide="arrow-left" class="w-4 h-4"></i>
             </div>
@@ -74,15 +283,15 @@
       </a>
 
       <!-- نموذج 2: فحص الشكاوى -->
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSeLbdP8tzEyNFaVI53h0jfHMp3j9uJL-mLors14rIjuUQaGIg/viewform" target="_blank" class="form-card bg-white rounded-2xl p-8 shadow-lg border-r-4 border-rose-600">
-        <div class="flex items-start gap-6">
-          <div class="bg-rose-50 w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <i data-lucide="alert-triangle" class="w-10 h-10 text-rose-600"></i>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSeLbdP8tzEyNFaVI53h0jfHMp3j9uJL-mLors14rIjuUQaGIg/viewform" target="_blank" class="form-card rose">
+        <div class="flex items-start gap-5">
+          <div class="form-icon" style="background: #ffe4e6;">
+            <i data-lucide="alert-triangle" class="w-9 h-9" style="color: #e11d48;"></i>
           </div>
           <div class="flex-grow">
-            <h3 class="font-bold text-slate-800 text-xl mb-2">فحص الشكاوى</h3>
-            <p class="text-slate-500 text-sm mb-4">تحقيقات ومتابعة البلاغات</p>
-            <div class="flex items-center gap-2 text-rose-600 font-bold text-sm">
+            <h3 class="font-bold text-gray-800 text-lg mb-2">فحص الشكاوى</h3>
+            <p class="text-gray-600 text-sm mb-3">تحقيقات ومتابعة البلاغات</p>
+            <div class="flex items-center gap-2 text-rose-600 font-semibold text-sm">
               <span>فتح النموذج</span>
               <i data-lucide="arrow-left" class="w-4 h-4"></i>
             </div>
@@ -91,15 +300,15 @@
       </a>
 
       <!-- نموذج 3: المرور المالي والإداري -->
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfe94k6Im0Y4IODqw3UCLAczVQYdKivnyZ2s8SiCAU4uTwwpA/viewform" target="_blank" class="form-card bg-white rounded-2xl p-8 shadow-lg border-r-4 border-amber-600">
-        <div class="flex items-start gap-6">
-          <div class="bg-amber-50 w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <i data-lucide="calculator" class="w-10 h-10 text-amber-600"></i>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfe94k6Im0Y4IODqw3UCLAczVQYdKivnyZ2s8SiCAU4uTwwpA/viewform" target="_blank" class="form-card amber">
+        <div class="flex items-start gap-5">
+          <div class="form-icon" style="background: #fef3c7;">
+            <i data-lucide="calculator" class="w-9 h-9" style="color: #f59e0b;"></i>
           </div>
           <div class="flex-grow">
-            <h3 class="font-bold text-slate-800 text-xl mb-2">المرور المالي والإداري</h3>
-            <p class="text-slate-500 text-sm mb-4">مراجعة الحسابات والإدارة</p>
-            <div class="flex items-center gap-2 text-amber-600 font-bold text-sm">
+            <h3 class="font-bold text-gray-800 text-lg mb-2">المرور المالي والإداري</h3>
+            <p class="text-gray-600 text-sm mb-3">مراجعة الحسابات والإدارة</p>
+            <div class="flex items-center gap-2 text-amber-600 font-semibold text-sm">
               <span>فتح النموذج</span>
               <i data-lucide="arrow-left" class="w-4 h-4"></i>
             </div>
@@ -108,15 +317,15 @@
       </a>
 
       <!-- نموذج 4: نموذج فني وحدات الرعاية الأولية -->
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSePbkn17cO2EFDUm4-7A4Le560ep6Zce9-QlyTdP7MEG_eAew/viewform" target="_blank" class="form-card bg-white rounded-2xl p-8 shadow-lg border-r-4 border-blue-600">
-        <div class="flex items-start gap-6">
-          <div class="bg-blue-50 w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <i data-lucide="stethoscope" class="w-10 h-10 text-blue-600"></i>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSePbkn17cO2EFDUm4-7A4Le560ep6Zce9-QlyTdP7MEG_eAew/viewform" target="_blank" class="form-card blue">
+        <div class="flex items-start gap-5">
+          <div class="form-icon" style="background: #dbeafe;">
+            <i data-lucide="stethoscope" class="w-9 h-9" style="color: #3b82f6;"></i>
           </div>
           <div class="flex-grow">
-            <h3 class="font-bold text-slate-800 text-xl mb-2">نموذج فني وحدات الرعاية الأولية</h3>
-            <p class="text-slate-500 text-sm mb-4">تفتيش وحدات الرعاية الصحية</p>
-            <div class="flex items-center gap-2 text-blue-600 font-bold text-sm">
+            <h3 class="font-bold text-gray-800 text-lg mb-2">نموذج فني وحدات الرعاية الأولية</h3>
+            <p class="text-gray-600 text-sm mb-3">تفتيش وحدات الرعاية الصحية</p>
+            <div class="flex items-center gap-2 text-blue-600 font-semibold text-sm">
               <span>فتح النموذج</span>
               <i data-lucide="arrow-left" class="w-4 h-4"></i>
             </div>
@@ -125,15 +334,15 @@
       </a>
 
       <!-- نموذج 5: مرور فني مستشفيات -->
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSedsoD3zW51Lwd7VanPQ1hVMB3OTmmaorOATiMieTXjaOBbRw/viewform" target="_blank" class="form-card bg-white rounded-2xl p-8 shadow-lg border-r-4 border-violet-600">
-        <div class="flex items-start gap-6">
-          <div class="bg-violet-50 w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <i data-lucide="clipboard-check" class="w-10 h-10 text-violet-600"></i>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSedsoD3zW51Lwd7VanPQ1hVMB3OTmmaorOATiMieTXjaOBbRw/viewform" target="_blank" class="form-card violet">
+        <div class="flex items-start gap-5">
+          <div class="form-icon" style="background: #ede9fe;">
+            <i data-lucide="clipboard-check" class="w-9 h-9" style="color: #8b5cf6;"></i>
           </div>
           <div class="flex-grow">
-            <h3 class="font-bold text-slate-800 text-xl mb-2">مرور فني مستشفيات</h3>
-            <p class="text-slate-500 text-sm mb-4">تقارير الفحص الفني للمستشفيات</p>
-            <div class="flex items-center gap-2 text-violet-600 font-bold text-sm">
+            <h3 class="font-bold text-gray-800 text-lg mb-2">مرور فني مستشفيات</h3>
+            <p class="text-gray-600 text-sm mb-3">تقارير الفحص الفني للمستشفيات</p>
+            <div class="flex items-center gap-2 text-violet-600 font-semibold text-sm">
               <span>فتح النموذج</span>
               <i data-lucide="arrow-left" class="w-4 h-4"></i>
             </div>
@@ -145,19 +354,35 @@
 
   </main>
 
-  <footer class="bg-slate-900 text-white py-10 text-center border-t-4 border-teal-600 mt-12">
-    <div class="container mx-auto px-4">
-      <i data-lucide="landmark" class="w-14 h-14 mx-auto mb-4 text-slate-600"></i>
-      <p class="text-base font-bold mb-3 opacity-90">
-        © 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة
-      </p>
-      <div class="text-xs text-slate-500 space-y-1" dir="ltr">
-        <p>MoH Fayoum Governance – Internal Access Page</p>
-        <p>Developed under Governance Supervision – Dr. MAH</p>
-      </div>
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <div style="display: flex; width: 100%; justify-content: space-around;">
+      <a href="distribution.html" class="bottom-nav-item">
+        <i data-lucide="pie-chart" class="w-6 h-6"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="forms.html" class="bottom-nav-item active">
+        <i data-lucide="file-text" class="w-6 h-6"></i>
+        <span>النماذج</span>
+      </a>
+      <a href="employee.html" class="bottom-nav-item">
+        <i data-lucide="briefcase" class="w-6 h-6"></i>
+        <span>الخدمات</span>
+      </a>
+      <a href="admin.html" class="bottom-nav-item">
+        <i data-lucide="settings" class="w-6 h-6"></i>
+        <span>الإدارة</span>
+      </a>
     </div>
-  </footer>
+  </nav>
 
-  <script>lucide.createIcons();</script>
+  <script>
+    lucide.createIcons();
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('overlay').classList.toggle('active');
+    }
+  </script>
 </body>
 </html>
