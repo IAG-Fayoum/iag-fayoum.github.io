@@ -11,12 +11,10 @@
 
   <style>
     body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
-    /* Loading Overlay */
     #loading-overlay { position: fixed; top: 0; right: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); display: none; align-items: center; justify-content: center; z-index: 9999; }
     .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     
-    /* Custom Inputs */
     .input-field { width: 100%; padding: 10px 15px; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 5px; transition: all 0.3s; }
     .input-field:focus { outline: none; border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
     label { font-size: 0.9rem; font-weight: 600; color: #475569; }
@@ -27,10 +25,10 @@
   <div id="loading-overlay"><div class="spinner"></div></div>
   <div id="message-box" class="hidden"></div>
 
-  <header class="bg-slate-800 text-white py-6 px-6 shadow-md mb-8">
+  <header class="bg-gradient-to-r from-slate-800 to-slate-900 text-white py-6 px-6 shadow-xl sticky top-0 z-40">
     <div class="container mx-auto flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <a href="admin.html" class="bg-white/10 p-2 rounded-full hover:bg-white/20 transition">
+        <a href="admin.html" class="bg-white/10 hover:bg-white/20 p-2 rounded-full transition">
           <i data-lucide="arrow-right" class="w-5 h-5"></i>
         </a>
         <div>
@@ -42,7 +40,7 @@
     </div>
   </header>
 
-  <main class="container mx-auto px-4 max-w-3xl space-y-6">
+  <main class="container mx-auto px-4 py-8 max-w-3xl space-y-6">
 
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <div class="bg-teal-50 px-6 py-4 border-b border-teal-100 flex items-center gap-2">
@@ -129,11 +127,13 @@
         <div>
           <label>الحالة الجديدة</label>
           <select id="status-new" class="input-field bg-white" required>
-            <option value="جديد">جديد</option>
-            <option value="جاري">جاري</option>
-            <option value="تم الاعتماد">تم الاعتماد</option>
+            <option value="لم يتم البدء">لم يتم البدء</option>
+            <option value="قيد المراجعة">قيد المراجعة</option>
+            <option value="بانتظار الاعتماد">بانتظار الاعتماد</option>
+            <option value="تم الاعتماد والأرشفة">تم الاعتماد والأرشفة</option>
             <option value="منتهي">منتهي</option>
             <option value="متأخر">متأخر</option>
+            <option value="بحاجة إلى متابعة">بحاجة إلى متابعة</option>
             <option value="أرشيف">أرشيف</option>
           </select>
         </div>
@@ -151,10 +151,8 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
-    // عند التحميل
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
-      // التحقق من الصلاحية (مدير فقط)
       const user = auth.checkSession();
       if (user && user.role !== 'مدير' && user.role !== 'Admin') {
         alert('غير مصرح لك بدخول هذه الصفحة');
@@ -162,22 +160,21 @@
       }
     });
 
-    // 1. معالجة إضافة مهمة
     document.getElementById('add-task-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
       const taskData = Object.fromEntries(formData.entries());
 
-      // استدعاء API
-      const result = await auth.apiCall('addTask', { taskData: taskData });
+      const result = await auth.apiCall('addTask', { taskData: taskData }, { useCache: false });
       
       if (result.success) {
-        auth.showMessage(`تمت إضافة المهمة بنجاح برقم: ${result.id}`, 'success');
+        alert(`تمت إضافة المهمة بنجاح برقم: ${result.id}`);
         e.target.reset();
+      } else {
+        alert('حدث خطأ: ' + (result.error || 'غير معروف'));
       }
     });
 
-    // 2. معالجة إعادة التكليف
     document.getElementById('reassign-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const taskId = document.getElementById('reassign-id').value;
@@ -186,15 +183,16 @@
       const result = await auth.apiCall('reassignTask', { 
         taskId: taskId, 
         newEmployee: newEmp 
-      });
+      }, { useCache: false });
       
       if (result.success) {
-        auth.showMessage('تم نقل المهمة للموظف الجديد بنجاح', 'success');
+        alert('تم نقل المهمة للموظف الجديد بنجاح');
         e.target.reset();
+      } else {
+        alert('حدث خطأ: ' + (result.error || 'غير معروف'));
       }
     });
 
-    // 3. معالجة تحديث الحالة
     document.getElementById('status-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const taskId = document.getElementById('status-id').value;
@@ -203,11 +201,13 @@
       const result = await auth.apiCall('updateStatus', { 
         taskId: taskId, 
         newStatus: newStatus 
-      });
+      }, { useCache: false });
       
       if (result.success) {
-        auth.showMessage('تم تحديث حالة المهمة بنجاح', 'success');
+        alert('تم تحديث حالة المهمة بنجاح');
         e.target.reset();
+      } else {
+        alert('حدث خطأ: ' + (result.error || 'غير معروف'));
       }
     });
   </script>
