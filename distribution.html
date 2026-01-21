@@ -10,292 +10,478 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; padding-bottom: 80px; }
-    .stat-card { transition: all 0.3s ease; }
-    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
-    
-    /* Google Sheet Status Colors */
-    .status-new { background: #cfe2ff; color: #084298; }
-    .status-progress { background: #fff3cd; color: #997404; }
-    .status-approved { background: #d1e7dd; color: #0f5132; }
-    .status-done { background: #d3d3f9; color: #3730a3; }
-    .status-overdue { background: #f8d7da; color: #842029; }
-    .status-followup { background: #f8d7da; color: #842029; }
-    .status-archive { background: #e2e3e5; color: #41464b; }
-    
-    .status-pill { padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
-    
-    /* Scrollable Table */
-    .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .table-container table { min-width: 800px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background: #f8f9fa;
+      padding-bottom: 80px;
+    }
     
     /* Side Navigation */
-    .side-nav { position: fixed; right: 0; top: 0; height: 100vh; width: 280px; background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.1); transform: translateX(100%); transition: transform 0.3s ease; z-index: 100; overflow-y: auto; }
-    .side-nav.active { transform: translateX(0); }
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; display: none; }
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 260px;
+      height: 100vh;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+      z-index: 100;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar.hidden { transform: translateX(100%); }
+    
+    .sidebar-logo {
+      padding: 24px;
+      border-bottom: 1px solid #e9ecef;
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+      color: white;
+    }
+    
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      color: #495057;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border-right: 3px solid transparent;
+    }
+    
+    .sidebar-item:hover {
+      background: #f8f9fa;
+      border-right-color: #0f766e;
+      color: #0f766e;
+    }
+    
+    .sidebar-item.active {
+      background: #e6f7f5;
+      border-right-color: #0f766e;
+      color: #0f766e;
+    }
+    
+    /* Main Content */
+    .main-content {
+      margin-right: 260px;
+      padding: 24px;
+    }
+    
+    /* Stat Cards */
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    
+    .stat-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    
+    /* Status Pills */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .status-new { background: #e7f5ff; color: #1971c2; }
+    .status-progress { background: #fff3cd; color: #997404; }
+    .status-approved { background: #d3f9d8; color: #2f9e44; }
+    .status-done { background: #e5dbff; color: #5f3dc4; }
+    .status-overdue { background: #ffe3e3; color: #c92a2a; }
+    .status-followup { background: #ffdeeb; color: #a61e4d; }
+    
+    /* Table */
+    .data-table {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+    
+    thead {
+      background: #f8f9fa;
+    }
+    
+    th {
+      padding: 16px;
+      text-align: right;
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: #495057;
+      border-bottom: 2px solid #e9ecef;
+    }
+    
+    td {
+      padding: 16px;
+      border-bottom: 1px solid #f1f3f5;
+      color: #495057;
+      font-size: 0.875rem;
+    }
+    
+    tbody tr:hover {
+      background: #f8f9fa;
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #e9ecef;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      z-index: 50;
+      display: none;
+    }
+    
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px;
+      color: #868e96;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+    
+    .bottom-nav-item.active {
+      color: #0f766e;
+    }
+    
+    .bottom-nav-item:hover {
+      color: #0f766e;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(100%); }
+      .sidebar.active { transform: translateX(0); }
+      .main-content { margin-right: 0; }
+      .bottom-nav { display: flex; }
+      body { padding-bottom: 70px; }
+      
+      .mobile-header {
+        background: white;
+        padding: 16px;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 40;
+      }
+    }
+    
+    @media (min-width: 1025px) {
+      .mobile-header { display: none; }
+      .menu-toggle { display: none; }
+    }
+    
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 90;
+      display: none;
+    }
+    
     .overlay.active { display: block; }
     
-    @media (max-width: 768px) {
-      body { padding-bottom: 100px; }
+    /* Loading */
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e9ecef;
+      border-top-color: #0f766e;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
-<body class="pb-8">
+<body>
 
-  <div id="loading-overlay" class="fixed inset-0 bg-slate-900/95 hidden items-center justify-center z-50">
-    <div class="text-center">
-      <div class="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-      <p class="text-white text-lg font-bold">جارٍ التحميل...</p>
-    </div>
+  <div id="loading" class="hidden">
+    <div class="spinner"></div>
   </div>
 
-  <!-- Overlay -->
-  <div class="overlay" id="overlay" onclick="toggleSideNav()"></div>
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-  <!-- Side Navigation -->
-  <div class="side-nav" id="sideNav">
-    <div class="p-6 border-b-2 border-slate-200 bg-gradient-to-r from-teal-600 to-teal-700 text-white">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold">القائمة</h2>
-        <button onclick="toggleSideNav()" class="bg-white/10 hover:bg-white/20 p-2 rounded-lg transition">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
+  <!-- Mobile Header -->
+  <div class="mobile-header">
+    <button onclick="toggleSidebar()" class="p-2">
+      <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
+    </button>
+    <h1 class="text-lg font-bold text-gray-800">لوحة المتابعة</h1>
+    <button onclick="toggleFilters()" class="p-2">
+      <i data-lucide="filter" class="w-6 h-6 text-gray-700"></i>
+    </button>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <h2 class="text-xl font-bold mb-1">IAG System</h2>
+      <p class="text-sm opacity-90">إدارة الحوكمة</p>
     </div>
     
-    <div class="p-4 space-y-2">
-      <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 transition text-slate-700 font-semibold">
-        <i data-lucide="home" class="w-5 h-5 text-teal-600"></i>
+    <nav class="py-4">
+      <a href="index.html" class="sidebar-item">
+        <i data-lucide="home" class="w-5 h-5"></i>
         <span>الرئيسية</span>
       </a>
       
-      <a href="forms.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 transition text-slate-700 font-semibold">
-        <i data-lucide="file-text" class="w-5 h-5 text-indigo-600"></i>
-        <span>النماذج الإلكترونية</span>
-      </a>
-      
-      <a href="distribution.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-teal-50 text-teal-700 font-bold">
-        <i data-lucide="pie-chart" class="w-5 h-5 text-teal-600"></i>
+      <a href="distribution.html" class="sidebar-item active">
+        <i data-lucide="pie-chart" class="w-5 h-5"></i>
         <span>Dashboard</span>
       </a>
       
-      <a href="employee.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 transition text-slate-700 font-semibold">
-        <i data-lucide="briefcase" class="w-5 h-5 text-blue-600"></i>
+      <a href="forms.html" class="sidebar-item">
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+        <span>النماذج الإلكترونية</span>
+      </a>
+      
+      <a href="employee.html" class="sidebar-item">
+        <i data-lucide="briefcase" class="w-5 h-5"></i>
         <span>خدمات الموظفين</span>
       </a>
       
-      <a href="coordinator.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 transition text-slate-700 font-semibold">
-        <i data-lucide="users" class="w-5 h-5 text-violet-600"></i>
+      <a href="coordinator.html" class="sidebar-item">
+        <i data-lucide="users" class="w-5 h-5"></i>
         <span>المنسقين</span>
       </a>
       
-      <a href="admin.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 transition text-slate-700 font-semibold">
-        <i data-lucide="settings" class="w-5 h-5 text-red-600"></i>
+      <a href="admin.html" class="sidebar-item">
+        <i data-lucide="settings" class="w-5 h-5"></i>
         <span>لوحة الإدارة</span>
       </a>
-    </div>
-  </div>
+    </nav>
+  </aside>
 
-  <header class="bg-gradient-to-r from-teal-600 to-teal-700 text-white py-6 px-6 shadow-xl">
-    <div class="container mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-4">
-        <button onclick="toggleSideNav()" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition md:hidden">
-          <i data-lucide="menu" class="w-6 h-6"></i>
-        </button>
-        <a href="index.html" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition">
-          <i data-lucide="home" class="w-6 h-6"></i>
-        </a>
-        <div>
-          <h1 class="text-2xl font-bold">لوحة المتابعة</h1>
-          <p class="text-teal-100 text-sm">مراقبة الأداء والإحصائيات</p>
-        </div>
-      </div>
-      <button onclick="toggleFilters()" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl font-bold transition flex items-center gap-2">
-        <i data-lucide="filter" class="w-5 h-5"></i>
-        <span class="hidden md:inline">تصفية</span>
-      </button>
-    </div>
-  </header>
-
-  <div id="filter-panel" class="hidden bg-white shadow-lg border-b-2 border-slate-200">
-    <div class="container mx-auto px-6 py-4">
-      <div class="grid md:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-2">السنة</label>
-          <select id="filter-year" class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl font-bold focus:border-teal-600 focus:outline-none">
-            <option value="">الكل</option>
-            <option value="2024">2024</option>
-            <option value="2025" selected>2025</option>
-            <option value="2026">2026</option>
-            <option value="2027">2027</option>
-            <option value="2028">2028</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-2">الفترة</label>
-          <select id="filter-period" class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl font-bold focus:border-teal-600 focus:outline-none">
-            <option value="">السنة كاملة</option>
-            <option value="Q1">الربع الأول</option>
-            <option value="Q2">الربع الثاني</option>
-            <option value="Q3">الربع الثالث</option>
-            <option value="Q4">الربع الرابع</option>
-            <option value="1">يناير</option>
-            <option value="2">فبراير</option>
-            <option value="3">مارس</option>
-            <option value="4">أبريل</option>
-            <option value="5">مايو</option>
-            <option value="6">يونيو</option>
-            <option value="7">يوليو</option>
-            <option value="8">أغسطس</option>
-            <option value="9">سبتمبر</option>
-            <option value="10">أكتوبر</option>
-            <option value="11">نوفمبر</option>
-            <option value="12">ديسمبر</option>
-          </select>
-        </div>
-        <div class="flex items-end">
-          <button onclick="applyFilters()" class="w-full bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-xl font-bold transition shadow-lg">
-            تطبيق
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <main class="container mx-auto px-4 py-8 max-w-7xl">
+  <!-- Main Content -->
+  <main class="main-content">
     
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-8">
-      <div class="stat-card bg-white rounded-2xl p-5 shadow-lg border-b-4 border-slate-600">
-        <div class="text-center">
-          <i data-lucide="clipboard-list" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="stat-total">0</p>
-          <p class="text-slate-600 font-semibold text-sm">الإجمالي</p>
-        </div>
-      </div>
-
-      <div class="stat-card bg-white rounded-2xl p-5 shadow-lg border-b-4 border-blue-600">
-        <div class="text-center">
-          <i data-lucide="circle" class="w-8 h-8 text-blue-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="stat-new">0</p>
-          <p class="text-slate-600 font-semibold text-sm">لم يتم البدء</p>
-        </div>
-      </div>
-
-      <div class="stat-card bg-white rounded-2xl p-5 shadow-lg border-b-4 border-amber-600">
-        <div class="text-center">
-          <i data-lucide="clock" class="w-8 h-8 text-amber-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="stat-progress">0</p>
-          <p class="text-slate-600 font-semibold text-sm">قيد المراجعة</p>
-        </div>
-      </div>
-
-      <div class="stat-card bg-white rounded-2xl p-5 shadow-lg border-b-4 border-green-600">
-        <div class="text-center">
-          <i data-lucide="check-circle" class="w-8 h-8 text-green-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="stat-approval">0</p>
-          <p class="text-slate-600 font-semibold text-sm">بانتظار اعتماد</p>
-        </div>
-      </div>
-
-      <div class="stat-card bg-white rounded-2xl p-5 shadow-lg border-b-4 border-indigo-600">
-        <div class="text-center">
-          <i data-lucide="check-check" class="w-8 h-8 text-indigo-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="stat-done">0</p>
-          <p class="text-slate-600 font-semibold text-sm">منتهي/أرشيف</p>
-        </div>
-      </div>
-
-      <div class="stat-card bg-white rounded-2xl p-5 shadow-lg border-b-4 border-red-600">
-        <div class="text-center">
-          <i data-lucide="alert-circle" class="w-8 h-8 text-red-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="stat-overdue">0</p>
-          <p class="text-slate-600 font-semibold text-sm">متأخر</p>
-        </div>
-      </div>
-
-      <div class="stat-card bg-white rounded-2xl p-5 shadow-lg border-b-4 border-pink-600">
-        <div class="text-center">
-          <i data-lucide="bell" class="w-8 h-8 text-pink-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="stat-followup">0</p>
-          <p class="text-slate-600 font-semibold text-sm">يحتاج متابعة</p>
+    <div class="mb-6" style="display: none;" id="filter-panel">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+        <h3 class="font-bold text-gray-800 mb-4">تصفية البيانات</h3>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">السنة</label>
+            <select id="filter-year" class="w-full px-4 py-2 border border-gray-300 rounded-lg font-semibold focus:border-teal-600 focus:outline-none">
+              <option value="">الكل</option>
+              <option value="2024">2024</option>
+              <option value="2025" selected>2025</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">الفترة</label>
+            <select id="filter-period" class="w-full px-4 py-2 border border-gray-300 rounded-lg font-semibold focus:border-teal-600 focus:outline-none">
+              <option value="">السنة كاملة</option>
+              <option value="Q1">الربع الأول</option>
+              <option value="Q2">الربع الثاني</option>
+              <option value="Q3">الربع الثالث</option>
+              <option value="Q4">الربع الرابع</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <button onclick="applyFilters()" class="w-full bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-bold transition">
+              تطبيق
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
-      <div class="flex justify-between items-center mb-3">
-        <h3 class="text-lg font-bold text-slate-800">نسبة الإنجاز</h3>
-        <span class="text-2xl font-bold text-teal-600" id="completion-rate">0%</span>
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">لوحة المتابعة</h1>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #e7f5ff;">
+          <i data-lucide="clipboard-list" class="w-7 h-7" style="color: #1971c2;"></i>
+        </div>
+        <p class="text-3xl font-bold text-gray-800 mb-1" id="stat-total">0</p>
+        <p class="text-sm text-gray-600 font-semibold">الإجمالي</p>
       </div>
-      <div class="w-full bg-slate-200 rounded-full h-6 overflow-hidden">
-        <div id="progress-bar" class="bg-gradient-to-r from-teal-500 to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #e7f5ff;">
+          <i data-lucide="circle" class="w-7 h-7" style="color: #1971c2;"></i>
+        </div>
+        <p class="text-3xl font-bold text-gray-800 mb-1" id="stat-new">0</p>
+        <p class="text-sm text-gray-600 font-semibold">لم يتم البدء</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #fff3cd;">
+          <i data-lucide="clock" class="w-7 h-7" style="color: #997404;"></i>
+        </div>
+        <p class="text-3xl font-bold text-gray-800 mb-1" id="stat-progress">0</p>
+        <p class="text-sm text-gray-600 font-semibold">قيد المراجعة</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #d3f9d8;">
+          <i data-lucide="check-circle" class="w-7 h-7" style="color: #2f9e44;"></i>
+        </div>
+        <p class="text-3xl font-bold text-gray-800 mb-1" id="stat-approval">0</p>
+        <p class="text-sm text-gray-600 font-semibold">بانتظار اعتماد</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #e5dbff;">
+          <i data-lucide="check-check" class="w-7 h-7" style="color: #5f3dc4;"></i>
+        </div>
+        <p class="text-3xl font-bold text-gray-800 mb-1" id="stat-done">0</p>
+        <p class="text-sm text-gray-600 font-semibold">منتهي</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #ffe3e3;">
+          <i data-lucide="alert-circle" class="w-7 h-7" style="color: #c92a2a;"></i>
+        </div>
+        <p class="text-3xl font-bold text-gray-800 mb-1" id="stat-overdue">0</p>
+        <p class="text-sm text-gray-600 font-semibold">متأخر</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #ffdeeb;">
+          <i data-lucide="bell" class="w-7 h-7" style="color: #a61e4d;"></i>
+        </div>
+        <p class="text-3xl font-bold text-gray-800 mb-1" id="stat-followup">0</p>
+        <p class="text-sm text-gray-600 font-semibold">يحتاج متابعة</p>
       </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-xl p-6">
-      <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-        <i data-lucide="list" class="text-teal-600 w-7 h-7"></i>
-        جميع المهام
-      </h2>
-      <div id="tasks-list" class="table-container">
-        <p class="text-slate-400 text-center py-8">جارٍ تحميل البيانات...</p>
+    <div class="data-table">
+      <div class="p-6 border-b border-gray-200">
+        <h2 class="text-xl font-bold text-gray-800">جميع المهام</h2>
+      </div>
+      <div class="table-container" id="tasks-container">
+        <table>
+          <thead>
+            <tr>
+              <th>رقم القيد</th>
+              <th>التاريخ</th>
+              <th>الجهة</th>
+              <th>الموضوع</th>
+              <th>المكلف</th>
+              <th>الحالة</th>
+            </tr>
+          </thead>
+          <tbody id="tasks-tbody">
+            <tr><td colspan="6" class="text-center py-8 text-gray-400">جارٍ التحميل...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
+
   </main>
 
   <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-200 shadow-2xl z-50">
-    <div class="container mx-auto px-4">
-      <div class="flex justify-around items-center py-3">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 text-teal-600 font-bold">
-          <i data-lucide="pie-chart" class="w-6 h-6"></i>
-          <span class="text-xs">Dashboard</span>
-        </a>
-        <a href="forms.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
-          <i data-lucide="file-text" class="w-6 h-6"></i>
-          <span class="text-xs">النماذج</span>
-        </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
-          <i data-lucide="briefcase" class="w-6 h-6"></i>
-          <span class="text-xs">الخدمات</span>
-        </a>
-        <a href="admin.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
-          <i data-lucide="settings" class="w-6 h-6"></i>
-          <span class="text-xs">الإدارة</span>
-        </a>
-      </div>
+  <nav class="bottom-nav">
+    <div style="display: flex; width: 100%; justify-content: space-around;">
+      <a href="distribution.html" class="bottom-nav-item active">
+        <i data-lucide="pie-chart" class="w-6 h-6"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="forms.html" class="bottom-nav-item">
+        <i data-lucide="file-text" class="w-6 h-6"></i>
+        <span>النماذج</span>
+      </a>
+      <a href="employee.html" class="bottom-nav-item">
+        <i data-lucide="briefcase" class="w-6 h-6"></i>
+        <span>الخدمات</span>
+      </a>
+      <a href="admin.html" class="bottom-nav-item">
+        <i data-lucide="settings" class="w-6 h-6"></i>
+        <span>الإدارة</span>
+      </a>
     </div>
   </nav>
-
-  <footer class="bg-slate-900 text-white py-10 text-center border-t-4 border-teal-600 mt-12">
-    <div class="container mx-auto px-4">
-      <i data-lucide="landmark" class="w-14 h-14 mx-auto mb-4 text-slate-600"></i>
-      <p class="text-base font-bold mb-3 opacity-90">
-        © 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة
-      </p>
-      <div class="text-xs text-slate-500 space-y-1" dir="ltr">
-        <p>MoH Fayoum Governance – Internal Access Page</p>
-        <p>Developed under Governance Supervision – Dr. MAH</p>
-      </div>
-    </div>
-  </footer>
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
     lucide.createIcons();
 
-    function toggleSideNav() {
-      document.getElementById('sideNav').classList.toggle('active');
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
       document.getElementById('overlay').classList.toggle('active');
     }
 
     function toggleFilters() {
-      document.getElementById('filter-panel').classList.toggle('hidden');
+      document.getElementById('filter-panel').style.display = 
+        document.getElementById('filter-panel').style.display === 'none' ? 'block' : 'none';
+    }
+
+    function getStatusClass(status) {
+      const s = status.trim();
+      if (s.includes('لم يتم البدء')) return 'status-new';
+      else if (s.includes('قيد المراجعة') || s.includes('جاري')) return 'status-progress';
+      else if (s.includes('بانتظار الاعتماد')) return 'status-approved';
+      else if (s.includes('تم الاعتماد') || s.includes('منتهي')) return 'status-done';
+      else if (s.includes('متأخر')) return 'status-overdue';
+      else if (s.includes('بحاجة إلى متابعة')) return 'status-followup';
+      return 'status-new';
     }
 
     async function loadDashboard() {
-      document.getElementById('loading-overlay').style.display = 'flex';
+      document.getElementById('loading').classList.remove('hidden');
 
       const year = document.getElementById('filter-year').value;
 
@@ -307,80 +493,45 @@
       });
 
       if (result.success) {
-        renderDashboard(result);
+        let statusCount = { new: 0, progress: 0, approval: 0, done: 0, overdue: 0, followup: 0 };
+
+        result.tasks.forEach(task => {
+          const s = task.status.trim();
+          if (s.includes('لم يتم البدء')) statusCount.new++;
+          else if (s.includes('قيد المراجعة') || s.includes('جاري')) statusCount.progress++;
+          else if (s.includes('بانتظار الاعتماد')) statusCount.approval++;
+          else if (s.includes('تم الاعتماد') || s.includes('منتهي') || s.includes('أرشيف')) statusCount.done++;
+          else if (s.includes('متأخر')) statusCount.overdue++;
+          else if (s.includes('بحاجة إلى متابعة')) statusCount.followup++;
+        });
+
+        document.getElementById('stat-total').textContent = result.stats.totals.total || 0;
+        document.getElementById('stat-new').textContent = statusCount.new;
+        document.getElementById('stat-progress').textContent = statusCount.progress;
+        document.getElementById('stat-approval').textContent = statusCount.approval;
+        document.getElementById('stat-done').textContent = statusCount.done;
+        document.getElementById('stat-overdue').textContent = statusCount.overdue;
+        document.getElementById('stat-followup').textContent = statusCount.followup;
+
+        const tbody = document.getElementById('tasks-tbody');
+        if (result.tasks && result.tasks.length > 0) {
+          tbody.innerHTML = result.tasks.map(task => `
+            <tr>
+              <td><span class="font-bold text-teal-700">${task.id}</span></td>
+              <td class="text-gray-600">${task.date}</td>
+              <td class="font-semibold">${task.entity}</td>
+              <td>${task.subject}</td>
+              <td class="text-gray-600">${task.assignee}</td>
+              <td><span class="status-pill ${getStatusClass(task.status)}">${task.status}</span></td>
+            </tr>
+          `).join('');
+        } else {
+          tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-400">لا توجد مهام</td></tr>';
+        }
       }
 
-      document.getElementById('loading-overlay').style.display = 'none';
-    }
-
-    function getStatusClass(status) {
-      const s = status.trim();
-      if (s.includes('لم يتم البدء')) return 'status-new';
-      else if (s.includes('قيد المراجعة') || s.includes('جاري')) return 'status-progress';
-      else if (s.includes('بانتظار الاعتماد')) return 'status-approved';
-      else if (s.includes('تم الاعتماد') || s.includes('منتهي')) return 'status-done';
-      else if (s.includes('متأخر')) return 'status-overdue';
-      else if (s.includes('أرشيف')) return 'status-archive';
-      else if (s.includes('بحاجة إلى متابعة')) return 'status-followup';
-      return 'status-new';
-    }
-
-    function renderDashboard(data) {
-      let statusCount = { new: 0, progress: 0, approval: 0, done: 0, overdue: 0, followup: 0 };
-
-      data.tasks.forEach(task => {
-        const s = task.status.trim();
-        if (s.includes('لم يتم البدء')) statusCount.new++;
-        else if (s.includes('قيد المراجعة') || s.includes('جاري')) statusCount.progress++;
-        else if (s.includes('بانتظار الاعتماد')) statusCount.approval++;
-        else if (s.includes('تم الاعتماد') || s.includes('منتهي') || s.includes('أرشيف')) statusCount.done++;
-        else if (s.includes('متأخر')) statusCount.overdue++;
-        else if (s.includes('بحاجة إلى متابعة')) statusCount.followup++;
-      });
-
-      document.getElementById('stat-total').textContent = data.stats.totals.total || 0;
-      document.getElementById('stat-new').textContent = statusCount.new;
-      document.getElementById('stat-progress').textContent = statusCount.progress;
-      document.getElementById('stat-approval').textContent = statusCount.approval;
-      document.getElementById('stat-done').textContent = statusCount.done;
-      document.getElementById('stat-overdue').textContent = statusCount.overdue;
-      document.getElementById('stat-followup').textContent = statusCount.followup;
-
-      const rate = data.stats.totals.total > 0 ? Math.round((data.stats.totals.completed / data.stats.totals.total) * 100) : 0;
-      document.getElementById('completion-rate').textContent = rate + '%';
-      document.getElementById('progress-bar').style.width = rate + '%';
-
-      const tasksList = document.getElementById('tasks-list');
-      if (data.tasks && data.tasks.length > 0) {
-        tasksList.innerHTML = `
-          <table class="w-full">
-            <thead class="bg-slate-100">
-              <tr>
-                <th class="p-3 text-right font-bold text-slate-700">رقم القيد</th>
-                <th class="p-3 text-right font-bold text-slate-700">التاريخ</th>
-                <th class="p-3 text-right font-bold text-slate-700">الجهة</th>
-                <th class="p-3 text-right font-bold text-slate-700">الموضوع</th>
-                <th class="p-3 text-right font-bold text-slate-700">المكلف</th>
-                <th class="p-3 text-right font-bold text-slate-700">الحالة</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${data.tasks.map(task => `
-                <tr class="border-b hover:bg-slate-50">
-                  <td class="p-3 font-bold text-teal-700">${task.id}</td>
-                  <td class="p-3 text-slate-600 text-sm">${task.date}</td>
-                  <td class="p-3 text-slate-800 font-semibold">${task.entity}</td>
-                  <td class="p-3 text-slate-700">${task.subject}</td>
-                  <td class="p-3 text-slate-600 text-sm">${task.assignee}</td>
-                  <td class="p-3"><span class="status-pill ${getStatusClass(task.status)}">${task.status}</span></td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        `;
-      } else {
-        tasksList.innerHTML = '<p class="text-slate-400 text-center py-8">لا توجد مهام</p>';
-      }
+      document.getElementById('loading').classList.add('hidden');
+      lucide.createIcons();
     }
 
     function applyFilters() {
