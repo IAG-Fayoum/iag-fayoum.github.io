@@ -5,39 +5,187 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>المنسق - IAG</title>
   
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background: #f8f9fa;
+      margin: 0;
+    }
+    
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 260px;
+      height: 100vh;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.08);
+      z-index: 100;
+      overflow-y: auto;
+    }
+    
+    .sidebar-logo {
+      padding: 24px;
+      background: linear-gradient(135deg, #0f766e, #115e59);
+      color: white;
+    }
+    
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      color: #495057;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+      border-right: 3px solid transparent;
+    }
+    
+    .sidebar-item:hover, .sidebar-item.active {
+      background: #e6f7f5;
+      border-right-color: #0f766e;
+      color: #0f766e;
+    }
+    
+    .main-content {
+      margin-right: 260px;
+      padding: 24px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+    }
+    
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: #0f766e;
+    }
+    
+    button {
+      background: #0f766e;
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+    
+    button:hover {
+      background: #115e59;
+    }
+    
+    .employee-group {
+      margin-bottom: 30px;
+    }
+    
+    .employee-header {
+      background: linear-gradient(135deg, #0f766e, #115e59);
+      color: white;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .task-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    
+    .task-card {
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 16px;
+      transition: all 0.2s;
+    }
+    
+    .task-card:hover {
+      border-color: #0f766e;
+      box-shadow: 0 2px 12px rgba(15,118,110,0.1);
+    }
+    
+    .task-done {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+    
+    .task-pending {
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+    
+    .badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    
+    .badge-done { background: #dcfce7; color: #166534; }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(100%); }
+      .main-content { margin-right: 0; }
+    }
+  </style>
 </head>
 <body>
 
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <h2 class="text-xl font-bold mb-2">IAG System</h2>
+      <h2 class="text-xl font-bold mb-1">IAG System</h2>
       <p id="user-name" class="text-sm opacity-90">مرحباً</p>
     </div>
     
-    <nav style="padding: 16px 0;">
+    <nav class="py-4">
       <a href="index.html" class="sidebar-item">
-        <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+        <i data-lucide="home" class="w-5 h-5"></i>
         <span>الرئيسية</span>
       </a>
       <a href="distribution.html" class="sidebar-item">
-        <i data-lucide="pie-chart" style="width: 20px; height: 20px;"></i>
+        <i data-lucide="pie-chart" class="w-5 h-5"></i>
         <span>Dashboard</span>
       </a>
       <a href="forms.html" class="sidebar-item">
-        <i data-lucide="file-text" style="width: 20px; height: 20px;"></i>
+        <i data-lucide="file-text" class="w-5 h-5"></i>
         <span>النماذج</span>
       </a>
-      <a href="coordinator.html" class="sidebar-item active" id="coordinator-link" style="display: none;">
-        <i data-lucide="users" style="width: 20px; height: 20px;"></i>
+      <a href="coordinator.html" class="sidebar-item active">
+        <i data-lucide="users" class="w-5 h-5"></i>
         <span>المنسقين</span>
       </a>
-      <a href="admin.html" class="sidebar-item admin" id="admin-link" style="display: none;">
-        <i data-lucide="settings" style="width: 20px; height: 20px;"></i>
+      <a href="admin.html" class="sidebar-item">
+        <i data-lucide="settings" class="w-5 h-5"></i>
         <span>الإدارة</span>
       </a>
     </nav>
@@ -45,9 +193,8 @@
 
   <main class="main-content">
     
-    <div class="card header-card">
+    <div class="card" style="background: linear-gradient(135deg, #0f766e, #115e59); color: white;">
       <h1 style="font-size: 1.75rem; font-weight: 800;">صفحة المنسق</h1>
-      <p style="opacity: 0.9; margin-top: 4px;">توزيع ومتابعة المهام</p>
     </div>
 
     <div class="card">
@@ -55,7 +202,7 @@
       
       <div class="filter-grid">
         <div>
-          <label class="filter-label">الموظف</label>
+          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">الموظف</label>
           <select id="emp-filter">
             <option value="">جميع الموظفين</option>
             <option value="ALL_FINANCIAL">🔹 المالي والإداري</option>
@@ -64,26 +211,22 @@
         </div>
 
         <div>
-          <label class="filter-label">الفترة</label>
+          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">الفترة</label>
           <select id="period-filter">
             <option value="week">آخر أسبوع</option>
             <option value="month">آخر شهر</option>
             <option value="3months">آخر 3 أشهر</option>
             <option value="year">السنة الحالية</option>
-            <option value="all">جميع الفترات</option>
+            <option value="all">الكل</option>
           </select>
         </div>
       </div>
 
-      <button onclick="loadData()">
-        <i data-lucide="search" style="width: 18px; height: 18px; display: inline; vertical-align: middle; margin-left: 6px;"></i>
-        تطبيق الفلتر
-      </button>
+      <button onclick="loadData()">تطبيق الفلتر</button>
     </div>
 
     <div id="results" style="color: #94a3b8; text-align: center; padding: 40px;">
-      <div style="font-size: 2rem; margin-bottom: 12px;">⏳</div>
-      <p style="font-weight: 600;">جارٍ التحميل...</p>
+      جارٍ التحميل...
     </div>
 
   </main>
@@ -91,29 +234,12 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
-    // ═══════════════════════════════════════════════════
-    // 🔒 SECURITY CHECK - Coordinators & Admins Only
-    // ═══════════════════════════════════════════════════
-    const user = auth.checkSession();
-    if (!user) {
-      alert('يجب تسجيل الدخول أولاً');
-      window.location.href = 'index.html';
-    }
-
-    const allowedRoles = ['منسق', 'مدير', 'Admin', 'Coordinator'];
-    if (!allowedRoles.includes(user.role)) {
-      alert('⛔ هذه الصفحة للمنسقين والمديرين فقط!\n\nسيتم تحويلك للصفحة الرئيسية');
-      window.location.href = 'index.html';
-    }
-
     lucide.createIcons();
 
-    // Show/Hide Sidebar Links Based on Role
-    if (user.role === 'منسق' || user.role === 'Coordinator') {
-      document.getElementById('coordinator-link').style.display = 'flex';
-    } else if (user.role === 'مدير' || user.role === 'Admin') {
-      document.getElementById('coordinator-link').style.display = 'flex';
-      document.getElementById('admin-link').style.display = 'flex';
+    const user = auth.checkSession();
+    if (!user) {
+      alert('يجب تسجيل الدخول');
+      window.location.href = 'index.html';
     }
 
     document.getElementById('user-name').textContent = `${user.name} 👋`;
@@ -121,9 +247,6 @@
     let allEmployees = [];
     let allTasks = [];
 
-    // ═══════════════════════════════════════════════════
-    // Get Date Range
-    // ═══════════════════════════════════════════════════
     function getDateRange() {
       const today = new Date();
       const period = document.getElementById('period-filter').value;
@@ -143,11 +266,8 @@
       };
     }
 
-    // ═══════════════════════════════════════════════════
-    // Load Data
-    // ═══════════════════════════════════════════════════
     async function loadData() {
-      document.getElementById('results').innerHTML = '<div style="color: #94a3b8; text-align: center; padding: 60px;"><div style="font-size: 2rem; margin-bottom: 12px;">⏳</div><p style="font-weight: 600;">جارٍ التحميل...</p></div>';
+      document.getElementById('results').innerHTML = '<div style="color: #94a3b8; text-align: center; padding: 40px;">⏳ جارٍ التحميل...</div>';
 
       try {
         const range = getDateRange();
@@ -159,9 +279,7 @@
           endDate: range.end
         });
 
-        if (!result || !result.success) {
-          throw new Error('فشل تحميل البيانات');
-        }
+        if (!result || !result.success) throw new Error('فشل التحميل');
 
         allTasks = result.tasks || [];
         allEmployees = result.stats.employees || [];
@@ -172,45 +290,28 @@
         options += '<option value="ALL_FINANCIAL">🔹 المالي والإداري</option>';
         options += '<option value="ALL_TECHNICAL">🔧 الفنيين</option>';
         options += '<optgroup label="أفراد">';
-        
         allEmployees.forEach(e => {
           options += `<option value="${e.name}">${e.name}</option>`;
         });
-        
         options += '</optgroup>';
         empFilter.innerHTML = options;
 
         filterAndDisplay();
 
       } catch (err) {
-        document.getElementById('results').innerHTML = `
-          <div style="text-align: center; padding: 60px; color: #dc2626;">
-            <div style="font-size: 3rem; margin-bottom: 12px;">❌</div>
-            <h3 style="font-weight: 700; margin-bottom: 8px;">خطأ في التحميل</h3>
-            <p style="color: #64748b;">${err.message}</p>
-            <button onclick="loadData()" style="width: auto; margin: 16px auto 0; padding: 10px 24px;">إعادة المحاولة</button>
-          </div>
-        `;
-        lucide.createIcons();
+        document.getElementById('results').innerHTML = `<div style="color: #dc2626; text-align: center; padding: 40px;">❌ ${err.message}</div>`;
       }
     }
 
-    // ═══════════════════════════════════════════════════
-    // Filter and Display
-    // ═══════════════════════════════════════════════════
     function filterAndDisplay() {
       const empFilter = document.getElementById('emp-filter').value;
       let filtered = allTasks;
 
       if (empFilter === 'ALL_FINANCIAL') {
-        const names = allEmployees
-          .filter(e => e.role && (e.role.includes('مالي') || e.role.includes('إداري') || e.role.includes('مراجع')))
-          .map(e => e.name);
+        const names = allEmployees.filter(e => e.role && (e.role.includes('مالي') || e.role.includes('إداري'))).map(e => e.name);
         filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
       } else if (empFilter === 'ALL_TECHNICAL') {
-        const names = allEmployees
-          .filter(e => e.role && (e.role.includes('فني') || e.role.includes('تفتيش')))
-          .map(e => e.name);
+        const names = allEmployees.filter(e => e.role && e.role.includes('فني')).map(e => e.name);
         filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
       } else if (empFilter) {
         filtered = allTasks.filter(t => t.assignee && t.assignee.includes(empFilter));
@@ -219,19 +320,11 @@
       displayTasks(filtered);
     }
 
-    // ═══════════════════════════════════════════════════
-    // Display Tasks
-    // ═══════════════════════════════════════════════════
     function displayTasks(tasks) {
       const container = document.getElementById('results');
 
       if (!tasks || tasks.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 60px; color: #94a3b8;">
-            <div style="font-size: 3rem; margin-bottom: 12px;">📭</div>
-            <p style="font-size: 1.1rem; font-weight: 600;">لا توجد مهام</p>
-          </div>
-        `;
+        container.innerHTML = '<div style="text-align: center; padding: 60px; color: #94a3b8;"><div style="font-size: 3rem;">📭</div><p style="font-weight: 600; margin-top: 12px;">لا توجد مهام</p></div>';
         return;
       }
 
@@ -250,14 +343,13 @@
           const s = t.status || '';
           return s.includes('تم الاعتماد') || s.includes('منتهي') || s.includes('أرشيف');
         }).length;
-        const pending = empTasks.length - done;
 
         html += `
           <div class="employee-group">
             <div class="employee-header">
               <div>
                 <div style="font-size: 1.25rem; font-weight: 800;">${emp}</div>
-                <div style="font-size: 0.875rem; opacity: 0.9;">إجمالي: ${empTasks.length} مهمة</div>
+                <div style="font-size: 0.875rem; opacity: 0.9;">إجمالي: ${empTasks.length}</div>
               </div>
               <div style="display: flex; gap: 20px;">
                 <div style="text-align: center;">
@@ -265,7 +357,7 @@
                   <div style="font-size: 0.75rem; opacity: 0.9;">منتهي</div>
                 </div>
                 <div style="text-align: center;">
-                  <div style="font-size: 1.5rem; font-weight: 800;">${pending}</div>
+                  <div style="font-size: 1.5rem; font-weight: 800;">${empTasks.length - done}</div>
                   <div style="font-size: 0.75rem; opacity: 0.9;">جاري</div>
                 </div>
               </div>
@@ -277,21 +369,23 @@
               
               return `
                 <div class="task-card ${isDone ? 'task-done' : 'task-pending'}">
-                  <div class="task-header">
-                    <div class="task-id">${t.id}</div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <div style="font-weight: 700; color: #1e293b;">${t.id}</div>
                     <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">
                       ${isDone ? '✅ منتهي' : '⏳ جاري'}
                     </span>
                   </div>
                   
-                  <div class="task-subject">${t.subject}</div>
+                  <div style="color: #475569; font-weight: 600; margin-bottom: 12px; min-height: 40px;">
+                    ${t.subject}
+                  </div>
                   
-                  <div class="task-meta">
+                  <div style="font-size: 0.8rem; color: #64748b; display: flex; flex-direction: column; gap: 4px;">
                     <div><strong>📥 من:</strong> ${t.source || t.entity}</div>
                     <div><strong>📍 التنفيذ:</strong> ${t.executionLocation || t.entity}</div>
                     <div><strong>📅 التاريخ:</strong> ${t.date}</div>
-                    ${t.attachment ? `<div><a href="${t.attachment}" target="_blank" style="color: #0f766e; text-decoration: underline; font-weight: 700;">📎 المرفق</a></div>` : ''}
-                    ${t.report ? `<div><a href="${t.report}" target="_blank" style="color: #dc2626; text-decoration: underline; font-weight: 700;">📄 التقرير</a></div>` : ''}
+                    ${t.attachment ? `<div><a href="${t.attachment}" target="_blank" style="color: #0f766e; text-decoration: underline;">📎 المرفق</a></div>` : ''}
+                    ${t.report ? `<div><a href="${t.report}" target="_blank" style="color: #dc2626; text-decoration: underline;">📄 التقرير</a></div>` : ''}
                   </div>
                 </div>
               `;
@@ -305,7 +399,6 @@
       lucide.createIcons();
     }
 
-    // Initial Load
     loadData();
   </script>
 </body>
