@@ -259,7 +259,6 @@
 
   <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-  <!-- Mobile Header -->
   <div class="mobile-header">
     <button onclick="toggleSidebar()" class="p-2">
       <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
@@ -270,7 +269,6 @@
     </button>
   </div>
 
-  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <h2 class="text-xl font-bold mb-1">IAG System</h2>
@@ -310,7 +308,6 @@
     </nav>
   </aside>
 
-  <!-- Main Content -->
   <main class="main-content">
     
     <div class="mb-6" style="display: none;" id="filter-panel">
@@ -432,7 +429,6 @@
 
   </main>
 
-  <!-- Bottom Navigation -->
   <nav class="bottom-nav">
     <div style="display: flex; width: 100%; justify-content: space-around;">
       <a href="distribution.html" class="bottom-nav-item active">
@@ -459,6 +455,13 @@
   <script>
     lucide.createIcons();
 
+    // 1. Security: Check Session with correct redirect
+    const user = auth.checkSession();
+    if (!user) {
+      // Security Fix: Prevent back button usage
+      window.location.replace('index.html');
+    }
+
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('active');
       document.getElementById('overlay').classList.toggle('active');
@@ -469,7 +472,19 @@
         document.getElementById('filter-panel').style.display === 'none' ? 'block' : 'none';
     }
 
+    // 2. Helper: Sanitization for Table Data
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
     function getStatusClass(status) {
+      if (!status) return 'status-new';
       const s = status.trim();
       if (s.includes('لم يتم البدء')) return 'status-new';
       else if (s.includes('قيد المراجعة') || s.includes('جاري')) return 'status-progress';
@@ -485,53 +500,58 @@
 
       const year = document.getElementById('filter-year').value;
 
-      const result = await auth.apiCall('getAllData', {
-        role: 'مدير',
-        name: 'Dashboard',
-        startDate: year ? `${year}-01-01` : '2024-01-01',
-        endDate: year ? `${year}-12-31` : '2028-12-31'
-      });
-
-      if (result.success) {
-        let statusCount = { new: 0, progress: 0, approval: 0, done: 0, overdue: 0, followup: 0 };
-
-        result.tasks.forEach(task => {
-          const s = task.status.trim();
-          if (s.includes('لم يتم البدء')) statusCount.new++;
-          else if (s.includes('قيد المراجعة') || s.includes('جاري')) statusCount.progress++;
-          else if (s.includes('بانتظار الاعتماد')) statusCount.approval++;
-          else if (s.includes('تم الاعتماد') || s.includes('منتهي') || s.includes('أرشيف')) statusCount.done++;
-          else if (s.includes('متأخر')) statusCount.overdue++;
-          else if (s.includes('بحاجة إلى متابعة')) statusCount.followup++;
+      try {
+        const result = await auth.apiCall('getAllData', {
+          role: 'مدير',
+          name: 'Dashboard',
+          startDate: year ? `${year}-01-01` : '2024-01-01',
+          endDate: year ? `${year}-12-31` : '2028-12-31'
         });
 
-        document.getElementById('stat-total').textContent = result.stats.totals.total || 0;
-        document.getElementById('stat-new').textContent = statusCount.new;
-        document.getElementById('stat-progress').textContent = statusCount.progress;
-        document.getElementById('stat-approval').textContent = statusCount.approval;
-        document.getElementById('stat-done').textContent = statusCount.done;
-        document.getElementById('stat-overdue').textContent = statusCount.overdue;
-        document.getElementById('stat-followup').textContent = statusCount.followup;
+        if (result.success) {
+          let statusCount = { new: 0, progress: 0, approval: 0, done: 0, overdue: 0, followup: 0 };
 
-        const tbody = document.getElementById('tasks-tbody');
-        if (result.tasks && result.tasks.length > 0) {
-          tbody.innerHTML = result.tasks.map(task => `
-            <tr>
-              <td><span class="font-bold text-teal-700">${task.id}</span></td>
-              <td class="text-gray-600">${task.date}</td>
-              <td class="font-semibold">${task.entity}</td>
-              <td>${task.subject}</td>
-              <td class="text-gray-600">${task.assignee}</td>
-              <td><span class="status-pill ${getStatusClass(task.status)}">${task.status}</span></td>
-            </tr>
-          `).join('');
-        } else {
-          tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-400">لا توجد مهام</td></tr>';
+          result.tasks.forEach(task => {
+            const s = (task.status || '').trim();
+            if (s.includes('لم يتم البدء')) statusCount.new++;
+            else if (s.includes('قيد المراجعة') || s.includes('جاري')) statusCount.progress++;
+            else if (s.includes('بانتظار الاعتماد')) statusCount.approval++;
+            else if (s.includes('تم الاعتماد') || s.includes('منتهي') || s.includes('أرشيف')) statusCount.done++;
+            else if (s.includes('متأخر')) statusCount.overdue++;
+            else if (s.includes('بحاجة إلى متابعة')) statusCount.followup++;
+          });
+
+          document.getElementById('stat-total').textContent = result.stats.totals.total || 0;
+          document.getElementById('stat-new').textContent = statusCount.new;
+          document.getElementById('stat-progress').textContent = statusCount.progress;
+          document.getElementById('stat-approval').textContent = statusCount.approval;
+          document.getElementById('stat-done').textContent = statusCount.done;
+          document.getElementById('stat-overdue').textContent = statusCount.overdue;
+          document.getElementById('stat-followup').textContent = statusCount.followup;
+
+          const tbody = document.getElementById('tasks-tbody');
+          if (result.tasks && result.tasks.length > 0) {
+            tbody.innerHTML = result.tasks.map(task => `
+              <tr>
+                <td><span class="font-bold text-teal-700">${escapeHtml(task.id)}</span></td>
+                <td class="text-gray-600">${escapeHtml(task.date)}</td>
+                <td class="font-semibold">${escapeHtml(task.entity)}</td>
+                <td>${escapeHtml(task.subject)}</td>
+                <td class="text-gray-600">${escapeHtml(task.assignee)}</td>
+                <td><span class="status-pill ${getStatusClass(task.status || '')}">${escapeHtml(task.status || 'جديد')}</span></td>
+              </tr>
+            `).join('');
+          } else {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-400">لا توجد مهام</td></tr>';
+          }
         }
+      } catch (err) {
+        console.error("Dashboard Load Error:", err);
+        document.getElementById('tasks-tbody').innerHTML = '<tr><td colspan="6" class="text-center py-8 text-red-400">خطأ في تحميل البيانات</td></tr>';
+      } finally {
+        document.getElementById('loading').classList.add('hidden');
+        lucide.createIcons();
       }
-
-      document.getElementById('loading').classList.add('hidden');
-      lucide.createIcons();
     }
 
     function applyFilters() {
