@@ -10,18 +10,112 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background: #f8f9fa;
+      padding-bottom: 80px;
+    }
+    
+    /* Tab System */
+    .tab-button {
+      padding: 14px 28px;
+      font-weight: 700;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+      color: #6b7280;
+      cursor: pointer;
+    }
+    
+    .tab-button:hover {
+      color: #dc2626;
+      background: #fef2f2;
+    }
+    
+    .tab-button.active {
+      color: #dc2626;
+      border-bottom-color: #dc2626;
+      background: white;
+    }
+    
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Task Card */
+    .task-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 1px solid #e9ecef;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .task-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+    
+    /* Status Pills */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    
+    .status-new { background: #e7f5ff; color: #1971c2; }
+    .status-progress { background: #fff3cd; color: #997404; }
+    .status-done { background: #d3f9d8; color: #2f9e44; }
+    .status-overdue { background: #ffe3e3; color: #c92a2a; }
+    
+    /* Loading */
+    #loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e9ecef;
+      border-top-color: #dc2626;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
-<body class="pb-24">
+<body>
 
-  <div id="loading-overlay" class="fixed inset-0 bg-slate-900/95 hidden items-center justify-center z-50">
-    <div class="text-center">
-      <div class="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-      <p class="text-white text-lg font-bold">جارٍ التحميل...</p>
-    </div>
+  <div id="loading-overlay" class="hidden">
+    <div class="spinner"></div>
   </div>
 
+  <!-- Header -->
   <header class="bg-gradient-to-r from-red-600 to-red-700 text-white py-6 px-6 shadow-xl sticky top-0 z-40">
     <div class="container mx-auto flex justify-between items-center">
       <div class="flex items-center gap-4">
@@ -30,237 +124,435 @@
         </a>
         <div>
           <h1 class="text-2xl font-bold">لوحة الإدارة</h1>
-          <p class="text-red-100 text-sm">التحكم الكامل بالنظام</p>
+          <p class="text-red-100 text-sm" id="admin-name">مرحباً بك</p>
         </div>
       </div>
-      <div class="flex items-center gap-3">
-        <a href="settings.html" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl font-bold transition flex items-center gap-2">
-          <i data-lucide="settings" class="w-5 h-5"></i>
-          <span class="hidden md:inline">إدارة النظام</span>
-        </a>
-        <button onclick="auth.logout()" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition">
-          <i data-lucide="log-out" class="w-6 h-6"></i>
-        </button>
-      </div>
+      <button onclick="auth.logout()" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition">
+        <i data-lucide="log-out" class="w-6 h-6"></i>
+      </button>
     </div>
   </header>
 
+  <!-- Tabs Navigation -->
+  <div class="bg-white border-b border-gray-200 sticky top-20 z-30">
+    <div class="container mx-auto">
+      <div class="flex overflow-x-auto">
+        <button class="tab-button active" onclick="switchTab('dashboard')">
+          <i data-lucide="layout-dashboard" class="w-5 h-5 inline"></i>
+          Dashboard
+        </button>
+        <button class="tab-button" onclick="switchTab('reassign')">
+          <i data-lucide="refresh-cw" class="w-5 h-5 inline"></i>
+          إعادة تكليف
+        </button>
+        <button class="tab-button" onclick="switchTab('new-task')">
+          <i data-lucide="plus-circle" class="w-5 h-5 inline"></i>
+          تكليف جديد
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
   <main class="container mx-auto px-4 py-8 max-w-7xl">
     
-    <!-- Overview Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-slate-600">
-        <div class="text-center">
-          <i data-lucide="clipboard-list" class="w-10 h-10 text-slate-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="admin-total">0</p>
-          <p class="text-slate-600 font-semibold">إجمالي المهام</p>
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- TAB 1: Dashboard -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="tab-dashboard" class="tab-content active">
+      
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-blue-500">
+          <div class="flex items-center justify-between mb-2">
+            <i data-lucide="inbox" class="w-8 h-8 text-blue-500"></i>
+          </div>
+          <p class="text-3xl font-bold text-gray-800" id="stat-total">0</p>
+          <p class="text-sm text-gray-600 font-semibold">إجمالي المهام</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-green-500">
+          <div class="flex items-center justify-between mb-2">
+            <i data-lucide="check-circle" class="w-8 h-8 text-green-500"></i>
+          </div>
+          <p class="text-3xl font-bold text-gray-800" id="stat-completed">0</p>
+          <p class="text-sm text-gray-600 font-semibold">منتهية</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-amber-500">
+          <div class="flex items-center justify-between mb-2">
+            <i data-lucide="clock" class="w-8 h-8 text-amber-500"></i>
+          </div>
+          <p class="text-3xl font-bold text-gray-800" id="stat-progress">0</p>
+          <p class="text-sm text-gray-600 font-semibold">قيد التنفيذ</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-red-500">
+          <div class="flex items-center justify-between mb-2">
+            <i data-lucide="alert-circle" class="w-8 h-8 text-red-500"></i>
+          </div>
+          <p class="text-3xl font-bold text-gray-800" id="stat-overdue">0</p>
+          <p class="text-sm text-gray-600 font-semibold">متأخرة</p>
         </div>
       </div>
 
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-emerald-600">
-        <div class="text-center">
-          <i data-lucide="check-circle" class="w-10 h-10 text-emerald-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="admin-completed">0</p>
-          <p class="text-slate-600 font-semibold">المنجزة</p>
+      <!-- Recent Tasks -->
+      <div class="bg-white rounded-2xl shadow-lg p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">آخر المهام</h2>
+        <div id="dashboard-tasks">
+          <p class="text-gray-400 text-center py-8">جارٍ التحميل...</p>
         </div>
       </div>
 
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-amber-600">
-        <div class="text-center">
-          <i data-lucide="clock" class="w-10 h-10 text-amber-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="admin-pending">0</p>
-          <p class="text-slate-600 font-semibold">قيد التنفيذ</p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-red-600">
-        <div class="text-center">
-          <i data-lucide="alert-circle" class="w-10 h-10 text-red-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="admin-overdue">0</p>
-          <p class="text-slate-600 font-semibold">المتأخرة</p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-blue-600">
-        <div class="text-center">
-          <i data-lucide="users" class="w-10 h-10 text-blue-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="admin-employees">0</p>
-          <p class="text-slate-600 font-semibold">الموظفين</p>
-        </div>
-      </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="grid md:grid-cols-3 gap-4 mb-8">
-      <a href="settings.html" class="bg-white rounded-2xl p-6 shadow-lg border-r-4 border-teal-600 hover:shadow-xl transition">
-        <div class="flex items-center gap-4">
-          <div class="bg-teal-50 w-16 h-16 rounded-2xl flex items-center justify-center">
-            <i data-lucide="plus-circle" class="w-8 h-8 text-teal-600"></i>
-          </div>
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- TAB 2: إعادة تكليف -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="tab-reassign" class="tab-content">
+      
+      <!-- Search Bar -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">بحث عن مهمة لإعادة تكليفها</h2>
+        <div class="flex gap-3">
+          <input 
+            type="text" 
+            id="search-task" 
+            placeholder="ابحث برقم القيد أو الموضوع أو اسم الموظف..."
+            class="flex-grow px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none"
+          >
+          <button onclick="searchTasks()" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-bold transition">
+            <i data-lucide="search" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tasks List for Reassignment -->
+      <div id="reassign-tasks">
+        <p class="text-gray-400 text-center py-8 bg-white rounded-2xl">استخدم البحث للعثور على المهام</p>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- TAB 3: تكليف جديد -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="tab-new-task" class="tab-content">
+      
+      <div class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">إضافة تكليف يدوي جديد</h2>
+        
+        <form id="new-task-form" class="space-y-4">
+          
           <div>
-            <p class="font-bold text-slate-800 text-lg">إضافة مهمة</p>
-            <p class="text-slate-500 text-sm">تكليف مهمة جديدة</p>
+            <label class="block text-sm font-bold text-gray-700 mb-2">التاريخ *</label>
+            <input type="date" id="task-date" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
           </div>
-        </div>
-      </a>
 
-      <a href="settings.html" class="bg-white rounded-2xl p-6 shadow-lg border-r-4 border-indigo-600 hover:shadow-xl transition">
-        <div class="flex items-center gap-4">
-          <div class="bg-indigo-50 w-16 h-16 rounded-2xl flex items-center justify-center">
-            <i data-lucide="user-cog" class="w-8 h-8 text-indigo-600"></i>
-          </div>
           <div>
-            <p class="font-bold text-slate-800 text-lg">إعادة تكليف</p>
-            <p class="text-slate-500 text-sm">نقل مهمة لموظف آخر</p>
+            <label class="block text-sm font-bold text-gray-700 mb-2">الجهة *</label>
+            <input type="text" id="task-source" required placeholder="مثال: وزارة الصحة" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
           </div>
-        </div>
-      </a>
 
-      <a href="settings.html" class="bg-white rounded-2xl p-6 shadow-lg border-r-4 border-amber-600 hover:shadow-xl transition">
-        <div class="flex items-center gap-4">
-          <div class="bg-amber-50 w-16 h-16 rounded-2xl flex items-center justify-center">
-            <i data-lucide="refresh-cw" class="w-8 h-8 text-amber-600"></i>
-          </div>
           <div>
-            <p class="font-bold text-slate-800 text-lg">تحديث الحالة</p>
-            <p class="text-slate-500 text-sm">تعديل حالة المهام</p>
+            <label class="block text-sm font-bold text-gray-700 mb-2">الجهة محل التنفيذ *</label>
+            <input type="text" id="task-entity" required placeholder="مثال: مستشفى الفيوم العام" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
           </div>
-        </div>
-      </a>
+
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">الموضوع *</label>
+            <textarea id="task-subject" required rows="3" placeholder="وصف الموضوع..." class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">الموظف المكلف *</label>
+            <select id="task-employee" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
+              <option value="">اختر الموظف...</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">الموعد النهائي</label>
+            <input type="date" id="task-deadline" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">رابط المرفقات</label>
+            <input type="url" id="task-attachment" placeholder="https://..." class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
+          </div>
+
+          <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-lg font-bold text-lg transition">
+            <i data-lucide="plus-circle" class="w-6 h-6 inline mr-2"></i>
+            إضافة المهمة
+          </button>
+
+        </form>
+      </div>
+
     </div>
 
-    <!-- Employees Performance -->
-    <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
-      <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-        <i data-lucide="trophy" class="text-amber-500 w-7 h-7"></i>
-        أداء الموظفين
-      </h2>
-      <div id="employees-list" class="space-y-3">
-        <p class="text-slate-400 text-center py-8">جارٍ التحميل...</p>
-      </div>
-    </div>
-
-    <!-- Entities Stats -->
-    <div class="bg-white rounded-2xl shadow-xl p-6">
-      <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-        <i data-lucide="building" class="text-teal-600 w-7 h-7"></i>
-        إحصائيات الجهات
-      </h2>
-      <div id="entities-list" class="overflow-x-auto">
-        <p class="text-slate-400 text-center py-8">جارٍ التحميل...</p>
-      </div>
-    </div>
   </main>
-
-  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-200 shadow-2xl z-50">
-    <div class="container mx-auto px-4">
-      <div class="flex justify-around items-center py-3">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
-          <i data-lucide="pie-chart" class="w-6 h-6"></i>
-          <span class="text-xs">Dashboard</span>
-        </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
-          <i data-lucide="briefcase" class="w-6 h-6"></i>
-          <span class="text-xs">الخدمات</span>
-        </a>
-        <a href="links.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
-          <i data-lucide="link" class="w-6 h-6"></i>
-          <span class="text-xs">الروابط</span>
-        </a>
-        <a href="admin.html" class="flex flex-col items-center gap-1 text-red-600 font-bold">
-          <i data-lucide="settings" class="w-6 h-6"></i>
-          <span class="text-xs">الإدارة</span>
-        </a>
-      </div>
-    </div>
-  </nav>
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
+    // ═══════════════════════════════════════════════════
+    // Authentication Check
+    // ═══════════════════════════════════════════════════
+    const currentUser = auth.checkSession();
+    if (!currentUser) {
+      alert('يجب تسجيل الدخول أولاً');
+      window.location.href = 'index.html';
+    }
+
+    // Display admin name
+    if (currentUser) {
+      document.getElementById('admin-name').textContent = `مرحباً ${currentUser.name} 👋`;
+    }
+
     lucide.createIcons();
 
-    async function loadAdminData() {
-      const user = auth.checkSession();
-      if (!user || (user.role !== 'مدير' && user.role !== 'Admin')) {
-        alert('غير مصرح لك بدخول هذه الصفحة');
-        window.location.href = 'index.html';
+    let allTasks = [];
+    let allEmployees = [];
+
+    // ═══════════════════════════════════════════════════
+    // Tab System
+    // ═══════════════════════════════════════════════════
+    function switchTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Remove active from all buttons
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Show selected tab
+      document.getElementById('tab-' + tabName).classList.add('active');
+      
+      // Activate button
+      event.target.closest('.tab-button').classList.add('active');
+      
+      lucide.createIcons();
+    }
+
+    // ═══════════════════════════════════════════════════
+    // Load Data
+    // ═══════════════════════════════════════════════════
+    async function loadDashboard() {
+      document.getElementById('loading-overlay').classList.remove('hidden');
+
+      try {
+        const result = await auth.apiCall('getAllData', {
+          role: 'مدير',
+          name: currentUser.name,
+          startDate: '2024-01-01',
+          endDate: '2028-12-31'
+        });
+
+        if (result && result.success) {
+          allTasks = result.tasks || [];
+          allEmployees = result.stats.employees || [];
+
+          // Update stats
+          const stats = result.stats.totals;
+          document.getElementById('stat-total').textContent = stats.total || 0;
+          document.getElementById('stat-completed').textContent = stats.completed || 0;
+          document.getElementById('stat-progress').textContent = stats.inProgress || 0;
+          document.getElementById('stat-overdue').textContent = stats.overdue || 0;
+
+          // Render recent tasks
+          renderDashboardTasks(allTasks.slice(0, 10));
+
+          // Populate employee dropdown
+          populateEmployeeDropdown();
+        }
+
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+        alert('خطأ في تحميل البيانات');
+      } finally {
+        document.getElementById('loading-overlay').classList.add('hidden');
+      }
+    }
+
+    function renderDashboardTasks(tasks) {
+      const container = document.getElementById('dashboard-tasks');
+      
+      if (!tasks || tasks.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-center py-8">لا توجد مهام</p>';
         return;
       }
 
-      document.getElementById('loading-overlay').style.display = 'flex';
+      container.innerHTML = tasks.map(task => `
+        <div class="task-card">
+          <div class="flex items-start justify-between mb-2">
+            <div>
+              <h3 class="font-bold text-gray-800 text-lg">${task.id}</h3>
+              <p class="text-gray-600 text-sm">${task.date}</p>
+            </div>
+            <span class="status-pill status-progress">${task.status}</span>
+          </div>
+          <p class="text-gray-700 font-semibold mb-2">${task.subject}</p>
+          <div class="flex items-center gap-4 text-sm text-gray-600">
+            <span><i data-lucide="building" class="w-4 h-4 inline"></i> ${task.entity}</span>
+            <span><i data-lucide="user" class="w-4 h-4 inline"></i> ${task.assignee}</span>
+          </div>
+        </div>
+      `).join('');
 
-      const result = await auth.apiCall('getAllData', {
-        role: 'مدير',
-        name: 'Admin',
-        startDate: null,
-        endDate: null
-      });
-
-      if (result.success) {
-        const stats = result.stats.totals;
-        
-        document.getElementById('admin-total').textContent = stats.total || 0;
-        document.getElementById('admin-completed').textContent = stats.completed || 0;
-        document.getElementById('admin-pending').textContent = stats.pending || 0;
-        document.getElementById('admin-overdue').textContent = stats.overdue || 0;
-        document.getElementById('admin-employees').textContent = result.stats.employees.length;
-
-        const empDiv = document.getElementById('employees-list');
-        if (result.stats.employees && result.stats.employees.length > 0) {
-          empDiv.innerHTML = result.stats.employees.map((emp, idx) => {
-            const rate = emp.total > 0 ? Math.round((emp.completed / emp.total) * 100) : 0;
-            return `
-              <div class="bg-slate-50 rounded-xl p-4 flex justify-between items-center hover:bg-slate-100 transition">
-                <div class="flex items-center gap-4">
-                  <span class="text-2xl font-bold text-slate-600">#${idx + 1}</span>
-                  <div>
-                    <p class="font-bold text-slate-800">${emp.name}</p>
-                    <p class="text-xs text-slate-500">${emp.role || 'موظف'}</p>
-                  </div>
-                </div>
-                <div class="text-left">
-                  <p class="text-2xl font-bold text-teal-600">${rate}%</p>
-                  <p class="text-xs text-slate-500">${emp.completed}/${emp.total}</p>
-                </div>
-              </div>
-            `;
-          }).join('');
-        }
-
-        const entDiv = document.getElementById('entities-list');
-        if (result.stats.entities && result.stats.entities.length > 0) {
-          entDiv.innerHTML = `
-            <table class="w-full">
-              <thead class="bg-slate-100">
-                <tr>
-                  <th class="p-3 text-right font-bold text-slate-700">الجهة</th>
-                  <th class="p-3 text-center font-bold text-slate-700">إجمالي المهام</th>
-                  <th class="p-3 text-center font-bold text-slate-700">المنجزة</th>
-                  <th class="p-3 text-center font-bold text-slate-700">المتأخرة</th>
-                  <th class="p-3 text-center font-bold text-slate-700">قيد التنفيذ</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${result.stats.entities.map(ent => `
-                  <tr class="border-b hover:bg-slate-50">
-                    <td class="p-3 font-bold text-slate-800">${ent.name}</td>
-                    <td class="p-3 text-center text-slate-600">${ent.total}</td>
-                    <td class="p-3 text-center text-emerald-600 font-bold">${ent.completed}</td>
-                    <td class="p-3 text-center text-red-600 font-bold">${ent.overdue}</td>
-                    <td class="p-3 text-center text-amber-600 font-bold">${ent.pending}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          `;
-        }
-      }
-
-      document.getElementById('loading-overlay').style.display = 'none';
+      lucide.createIcons();
     }
 
-    loadAdminData();
+    // ═══════════════════════════════════════════════════
+    // Search & Reassign
+    // ═══════════════════════════════════════════════════
+    function searchTasks() {
+      const query = document.getElementById('search-task').value.toLowerCase().trim();
+      
+      if (!query) {
+        alert('الرجاء إدخال نص للبحث');
+        return;
+      }
+
+      const filtered = allTasks.filter(task => 
+        task.id.toLowerCase().includes(query) ||
+        task.subject.toLowerCase().includes(query) ||
+        task.assignee.toLowerCase().includes(query) ||
+        task.entity.toLowerCase().includes(query)
+      );
+
+      renderReassignTasks(filtered);
+    }
+
+    function renderReassignTasks(tasks) {
+      const container = document.getElementById('reassign-tasks');
+      
+      if (!tasks || tasks.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-center py-8 bg-white rounded-2xl">لم يتم العثور على نتائج</p>';
+        return;
+      }
+
+      container.innerHTML = tasks.map(task => `
+        <div class="task-card">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex-grow">
+              <h3 class="font-bold text-gray-800 text-lg mb-1">${task.id}</h3>
+              <p class="text-gray-700 font-semibold mb-2">${task.subject}</p>
+              <div class="flex items-center gap-4 text-sm text-gray-600">
+                <span><i data-lucide="building" class="w-4 h-4 inline"></i> ${task.entity}</span>
+                <span><i data-lucide="calendar" class="w-4 h-4 inline"></i> ${task.date}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-3">
+            <p class="text-sm font-bold text-gray-700 mb-2">
+              الموظف الحالي: <span class="text-teal-700">${task.assignee}</span>
+            </p>
+            <div class="flex gap-2">
+              <select id="new-emp-${task.id}" class="flex-grow px-3 py-2 border-2 border-gray-300 rounded-lg text-sm font-semibold">
+                <option value="">اختر موظف جديد...</option>
+                ${allEmployees.map(emp => `<option value="${emp.name}">${emp.name}</option>`).join('')}
+              </select>
+              <button onclick="reassignTask('${task.id}')" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold text-sm transition">
+                <i data-lucide="refresh-cw" class="w-4 h-4 inline"></i>
+                إعادة تكليف
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    async function reassignTask(taskId) {
+      const newEmployee = document.getElementById(`new-emp-${taskId}`).value;
+      
+      if (!newEmployee) {
+        alert('الرجاء اختيار موظف جديد');
+        return;
+      }
+
+      if (!confirm(`هل أنت متأكد من إعادة تكليف المهمة ${taskId} إلى ${newEmployee}؟`)) {
+        return;
+      }
+
+      document.getElementById('loading-overlay').classList.remove('hidden');
+
+      try {
+        const result = await auth.apiCall('reassignTask', {
+          taskId: taskId,
+          newEmployee: newEmployee
+        });
+
+        if (result && result.success) {
+          alert('✅ تم إعادة التكليف بنجاح!');
+          loadDashboard(); // Reload data
+          switchTab('dashboard');
+        } else {
+          alert('❌ فشل إعادة التكليف: ' + (result.error || 'خطأ غير معروف'));
+        }
+      } catch (error) {
+        alert('❌ خطأ: ' + error.message);
+      } finally {
+        document.getElementById('loading-overlay').classList.add('hidden');
+      }
+    }
+
+    // ═══════════════════════════════════════════════════
+    // New Task
+    // ═══════════════════════════════════════════════════
+    function populateEmployeeDropdown() {
+      const select = document.getElementById('task-employee');
+      select.innerHTML = '<option value="">اختر الموظف...</option>' +
+        allEmployees.map(emp => `<option value="${emp.name}">${emp.name}</option>`).join('');
+    }
+
+    document.getElementById('new-task-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const taskData = {
+        date: document.getElementById('task-date').value,
+        source: document.getElementById('task-source').value,
+        entity: document.getElementById('task-entity').value,
+        subject: document.getElementById('task-subject').value,
+        employee: document.getElementById('task-employee').value,
+        deadline: document.getElementById('task-deadline').value || '',
+        attachment: document.getElementById('task-attachment').value || ''
+      };
+
+      if (!confirm('هل أنت متأكد من إضافة هذه المهمة؟')) {
+        return;
+      }
+
+      document.getElementById('loading-overlay').classList.remove('hidden');
+
+      try {
+        const result = await auth.apiCall('addTask', {
+          taskData: taskData
+        });
+
+        if (result && result.success) {
+          alert('✅ تم إضافة المهمة بنجاح! رقم القيد: ' + result.id);
+          document.getElementById('new-task-form').reset();
+          loadDashboard();
+          switchTab('dashboard');
+        } else {
+          alert('❌ فشل إضافة المهمة: ' + (result.error || 'خطأ غير معروف'));
+        }
+      } catch (error) {
+        alert('❌ خطأ: ' + error.message);
+      } finally {
+        document.getElementById('loading-overlay').classList.add('hidden');
+      }
+    });
+
+    // Initial load
+    loadDashboard();
   </script>
 </body>
 </html>
