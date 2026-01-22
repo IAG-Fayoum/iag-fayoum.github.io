@@ -534,21 +534,46 @@
               <span class="status-badge ${statusClass}">${task.status}</span>
             </div>
             
-            <div class="task-subject">${task.subject}</div>
+            <div class="task-subject" style="margin-bottom: 16px; min-height: 50px;">${task.subject}</div>
             
             <div class="task-meta">
               <div class="task-meta-item">
-                <i data-lucide="building" style="width: 14px; height: 14px;"></i>
-                <span>${task.entity}</span>
+                <i data-lucide="inbox" style="width: 14px; height: 14px;"></i>
+                <span><strong>من:</strong> ${task.source || task.entity}</span>
               </div>
+              
+              <div class="task-meta-item">
+                <i data-lucide="map-pin" style="width: 14px; height: 14px;"></i>
+                <span><strong>التنفيذ:</strong> ${task.executionLocation || task.entity}</span>
+              </div>
+              
               <div class="task-meta-item">
                 <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
-                <span>${task.date}</span>
+                <span><strong>التاريخ:</strong> ${task.date}</span>
               </div>
+              
+              ${task.attachment || task.attachments ? `
+              <div class="task-meta-item">
+                <i data-lucide="paperclip" style="width: 14px; height: 14px;"></i>
+                <a href="${task.attachment || task.attachments}" target="_blank" style="color: #0f766e; text-decoration: underline;">
+                  📎 عرض المرفق
+                </a>
+              </div>
+              ` : ''}
+              
+              ${task.report ? `
+              <div class="task-meta-item">
+                <i data-lucide="file-text" style="width: 14px; height: 14px;"></i>
+                <a href="${task.report}" target="_blank" style="color: #dc2626; text-decoration: underline;">
+                  📄 عرض التقرير
+                </a>
+              </div>
+              ` : ''}
             </div>
 
             <div class="reassign-section">
               <div class="reassign-current">
+                <i data-lucide="user" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i>
                 الموظف الحالي: <span style="color: #0f766e;">${task.assignee}</span>
               </div>
               <div class="reassign-controls">
