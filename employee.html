@@ -1,89 +1,83 @@
-<!-- ═══════════════════════════════════════════════════════════════════════════
-     📄 employee.html - صفحة الموظف (محدّث ومرقم هرمياً)
-     ═══════════════════════════════════════════════════════════════════════════ -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <!-- 1.1 META -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>صفحتي - IAG</title>
   
-  <!-- 1.2 STYLES -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <style>
+    /* Basic Reset & Styles ensuring consistency */
+    body { font-family: 'Cairo', sans-serif; background: #f8f9fa; margin: 0; }
+    
+    .sidebar { position: fixed; right: 0; top: 0; width: 260px; height: 100vh; background: white; box-shadow: -2px 0 10px rgba(0,0,0,0.08); z-index: 100; overflow-y: auto; }
+    .sidebar-logo { padding: 24px; background: linear-gradient(135deg, #0f766e, #115e59); color: white; }
+    .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 14px 24px; color: #495057; text-decoration: none; font-weight: 600; transition: all 0.2s; border-right: 3px solid transparent; }
+    .sidebar-item:hover, .sidebar-item.active { background: #e6f7f5; border-right-color: #0f766e; color: #0f766e; }
+    
+    .main-content { margin-right: 260px; padding: 24px; }
+    
+    .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; }
+    .header-card { background: linear-gradient(135deg, #2563eb, #1e40af); color: white; }
+    
+    .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .task-card { background: white; border: 2px solid #e9ecef; border-radius: 12px; padding: 20px; transition: all 0.2s; }
+    .task-card:hover { border-color: #2563eb; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1); }
+    
+    .task-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
+    .task-id { font-weight: 800; color: #1e293b; }
+    .badge { padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; }
+    .badge-done { background: #dcfce7; color: #166534; }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    
+    .task-subject { font-weight: 600; color: #334155; margin-bottom: 12px; line-height: 1.5; }
+    .task-meta { font-size: 0.85rem; color: #64748b; display: flex; flex-direction: column; gap: 6px; }
+
+    @media (max-width: 1024px) {
+      .sidebar { display: none; } /* Simplified for mobile example */
+      .main-content { margin-right: 0; }
+    }
+  </style>
 </head>
 
 <body>
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       2. SIDEBAR
-       ═══════════════════════════════════════════════════════════════════════ -->
   <aside class="sidebar">
-    <!-- 2.1 LOGO -->
     <div class="sidebar-logo">
       <h2 class="text-xl font-bold mb-2">IAG System</h2>
       <p id="user-name" class="text-sm opacity-90">مرحباً</p>
     </div>
     
-    <!-- 2.2 NAVIGATION -->
     <nav style="padding: 16px 0;">
-      <!-- 2.2.1 Home -->
       <a href="index.html" class="sidebar-item">
-        <i data-lucide="home" style="width: 20px; height: 20px;"></i>
-        <span>الرئيسية</span>
+        <i data-lucide="home" class="w-5 h-5"></i><span>الرئيسية</span>
       </a>
-      
-      <!-- 2.2.2 Dashboard -->
       <a href="distribution.html" class="sidebar-item">
-        <i data-lucide="pie-chart" style="width: 20px; height: 20px;"></i>
-        <span>Dashboard</span>
+        <i data-lucide="pie-chart" class="w-5 h-5"></i><span>Dashboard</span>
       </a>
-      
-      <!-- 2.2.3 Forms -->
       <a href="forms.html" class="sidebar-item">
-        <i data-lucide="file-text" style="width: 20px; height: 20px;"></i>
-        <span>النماذج</span>
+        <i data-lucide="file-text" class="w-5 h-5"></i><span>النماذج</span>
       </a>
-      
-      <!-- 2.2.4 Notifications -->
-      <a href="notifications.html" class="sidebar-item" style="position: relative;">
-        <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
-        <span>الإشعارات</span>
-        <span id="notif-badge" style="position: absolute; top: 8px; left: 8px; background: #dc2626; color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;"></span>
+      <a href="employee.html" class="sidebar-item active" id="employee-link">
+        <i data-lucide="briefcase" class="w-5 h-5"></i><span>صفحتي</span>
       </a>
-      
-      <!-- 2.2.5 Employee (Active) -->
-      <a href="employee.html" class="sidebar-item active" id="employee-link" style="display: none;">
-        <i data-lucide="briefcase" style="width: 20px; height: 20px;"></i>
-        <span>صفحتي</span>
-      </a>
-      
-      <!-- 2.2.6 Coordinator (Hidden) -->
       <a href="coordinator.html" class="sidebar-item" id="coordinator-link" style="display: none;">
-        <i data-lucide="users" style="width: 20px; height: 20px;"></i>
-        <span>المنسقين</span>
+        <i data-lucide="users" class="w-5 h-5"></i><span>المنسقين</span>
       </a>
-      
-      <!-- 2.2.7 Admin (Hidden) -->
       <a href="admin.html" class="sidebar-item" id="admin-link" style="display: none;">
-        <i data-lucide="settings" style="width: 20px; height: 20px;"></i>
-        <span>الإدارة</span>
+        <i data-lucide="settings" class="w-5 h-5"></i><span>الإدارة</span>
       </a>
     </nav>
   </aside>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       3. MAIN CONTENT
-       ═══════════════════════════════════════════════════════════════════════ -->
   <main class="main-content">
-    <!-- 3.1 HEADER -->
     <div class="card header-card">
       <h1 style="font-size: 1.75rem; font-weight: 800;">صفحتي</h1>
-      <p style="opacity: 0.9; margin-top: 4px;">المهام والتكليفات</p>
+      <p style="opacity: 0.9; margin-top: 4px;">المهام والتكليفات الحالية</p>
     </div>
 
-    <!-- 3.2 TASKS CONTAINER -->
     <div id="tasks-container">
       <div style="text-align: center; padding: 60px; color: #94a3b8;">
         <div style="font-size: 2rem; margin-bottom: 12px;">⏳</div>
@@ -92,72 +86,75 @@
     </div>
   </main>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       4. SCRIPTS
-       ═══════════════════════════════════════════════════════════════════════ -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
-    // 4.1 AUTH CHECK
+    // 1. Security & Auth Check
     const user = auth.checkSession();
     if (!user) {
-      alert('⛔ لابد من تسجيل الدخول أولاً');
-      window.location.href = 'index.html';
+      window.location.replace('index.html');
+    }
+    
+    // 2. Role Based Display
+    if (['موظف', 'Employee', 'مدير', 'Admin', 'منسق', 'Coordinator'].includes(user.role)) {
+      document.getElementById('user-name').textContent = user.name + ' 👋';
+      
+      // Toggle Links
+      if (user.role === 'منسق' || user.role === 'Coordinator') document.getElementById('coordinator-link').style.display = 'flex';
+      if (user.role === 'مدير' || user.role === 'Admin') {
+        document.getElementById('coordinator-link').style.display = 'flex';
+        document.getElementById('admin-link').style.display = 'flex';
+      }
+    } else {
+      alert('غير مصرح لك بالدخول');
+      window.location.replace('index.html');
     }
 
-    // 4.2 ROLE CHECK (Employee or Admin only)
-    if (user.role !== 'موظف' && user.role !== 'Employee' && user.role !== 'مدير' && user.role !== 'Admin') {
-      alert('⛔ هذه الصفحة للموظفين فقط!');
-      window.location.href = 'index.html';
-    }
-
-    // 4.3 INIT UI
     lucide.createIcons();
-    document.getElementById('user-name').textContent = user.name + ' 👋';
 
-    // 4.4 SHOW LINKS BY ROLE
-    if (user.role === 'موظف' || user.role === 'Employee') {
-      document.getElementById('employee-link').style.display = 'flex';
-    } else if (user.role === 'منسق' || user.role === 'Coordinator') {
-      document.getElementById('coordinator-link').style.display = 'flex';
-    } else if (user.role === 'مدير' || user.role === 'Admin') {
-      document.getElementById('employee-link').style.display = 'flex';
-      document.getElementById('coordinator-link').style.display = 'flex';
-      document.getElementById('admin-link').style.display = 'flex';
+    // 3. Helper: Sanitize Output (XSS Protection)
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text
+        .toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
-    // 4.5 NOTIFICATIONS BADGE
-    const unreadCount = auth.getUnreadNotifications();
-    const badge = document.getElementById('notif-badge');
-    if (badge && unreadCount > 0) {
-      badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
-      badge.style.display = 'block';
-    }
-
-    // 4.6 LOAD TASKS
+    // 4. Load Data
     loadTasks();
 
     async function loadTasks() {
       try {
+        // Use 'Employee' role specifically to get assigned tasks
         const result = await auth.apiCall('getEmployeeData', { name: user.name });
-        if (result.success) displayTasks(result.tasks);
+        
+        if (result.success) {
+          displayTasks(result.tasks);
+        } else {
+          throw new Error(result.error || 'فشل جلب البيانات');
+        }
       } catch (err) {
         document.getElementById('tasks-container').innerHTML = `
           <div style="text-align: center; padding: 60px; color: #dc2626;">
             <div style="font-size: 3rem; margin-bottom: 12px;">❌</div>
-            <p style="font-weight: 700;">خطأ في التحميل</p>
+            <p style="font-weight: 700;">خطأ في تحميل المهام</p>
+            <p style="font-size: 0.9rem; opacity: 0.8;">${escapeHtml(err.message)}</p>
+            <button onclick="loadTasks()" style="margin-top:16px; padding:8px 16px; cursor:pointer;">إعادة المحاولة</button>
           </div>
         `;
       }
     }
 
-    // 4.7 DISPLAY TASKS
     function displayTasks(tasks) {
       if (!tasks || tasks.length === 0) {
         document.getElementById('tasks-container').innerHTML = `
           <div style="text-align: center; padding: 60px; color: #94a3b8;">
-            <div style="font-size: 3rem; margin-bottom: 12px;">📋</div>
-            <p style="font-weight: 600;">لا توجد مهام حالياً</p>
+            <div style="font-size: 3rem; margin-bottom: 12px;">🎉</div>
+            <p style="font-weight: 600;">لا توجد مهام معلقة حالياً</p>
           </div>
         `;
         return;
@@ -165,21 +162,28 @@
 
       document.getElementById('tasks-container').innerHTML = `
         <div class="card">
-          <h2 style="font-weight: 700; margin-bottom: 16px;">المهام (${tasks.length})</h2>
+          <h2 style="font-weight: 700; margin-bottom: 16px;">قائمة المهام (${tasks.length})</h2>
           <div class="task-grid">
-            ${tasks.map(t => `
+            ${tasks.map(t => {
+              const status = escapeHtml(t.status || 'جديد');
+              const isDone = status.includes('تم') || status.includes('منتهي');
+              
+              return `
               <div class="task-card">
                 <div class="task-header">
-                  <div class="task-id">${t.id}</div>
-                  <span class="badge ${t.status.includes('تم') ? 'badge-done' : 'badge-pending'}">${t.status}</span>
+                  <div class="task-id">#${escapeHtml(t.id)}</div>
+                  <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">${status}</span>
                 </div>
-                <div class="task-subject">${t.subject}</div>
+                
+                <div class="task-subject">${escapeHtml(t.subject || 'بدون عنوان')}</div>
+                
                 <div class="task-meta">
-                  <div><strong>الجهة:</strong> ${t.entity}</div>
-                  <div><strong>التاريخ:</strong> ${t.date}</div>
+                  <div><strong>📥 الجهة:</strong> ${escapeHtml(t.entity || t.source || '-')}</div>
+                  <div><strong>📅 التاريخ:</strong> ${escapeHtml(t.date || '-')}</div>
+                  ${t.attachment ? `<div style="margin-top:4px;"><a href="${t.attachment}" target="_blank" rel="noopener noreferrer" style="color:#2563eb; text-decoration:underline; font-weight:700;">📎 عرض المرفق</a></div>` : ''}
                 </div>
               </div>
-            `).join('')}
+            `}).join('')}
           </div>
         </div>
       `;
