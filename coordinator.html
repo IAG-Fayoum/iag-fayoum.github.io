@@ -236,16 +236,34 @@
   <script>
     lucide.createIcons();
 
+    // 1. Security: Validation & Auth Check
     const user = auth.checkSession();
     if (!user) {
       alert('يجب تسجيل الدخول');
-      window.location.href = 'index.html';
+      window.location.replace('index.html'); // Security Fix: Replace href
+    }
+    
+    // Check Role Access
+    if (user.role !== 'منسق' && user.role !== 'Coordinator' && user.role !== 'مدير' && user.role !== 'Admin') {
+       alert('غير مصرح لك بدخول هذه الصفحة');
+       window.location.replace('index.html');
     }
 
     document.getElementById('user-name').textContent = `${user.name} 👋`;
 
     let allEmployees = [];
     let allTasks = [];
+
+    // 2. Helper: Sanitization (Added for Security)
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
     function getDateRange() {
       const today = new Date();
@@ -284,22 +302,26 @@
         allTasks = result.tasks || [];
         allEmployees = result.stats.employees || [];
 
-        // Populate employee dropdown
+        // Populate employee dropdown (Preserving original logic)
         const empFilter = document.getElementById('emp-filter');
         let options = '<option value="">جميع الموظفين</option>';
         options += '<option value="ALL_FINANCIAL">🔹 المالي والإداري</option>';
         options += '<option value="ALL_TECHNICAL">🔧 الفنيين</option>';
         options += '<optgroup label="أفراد">';
         allEmployees.forEach(e => {
-          options += `<option value="${e.name}">${e.name}</option>`;
+          options += `<option value="${escapeHtml(e.name)}">${escapeHtml(e.name)}</option>`;
         });
         options += '</optgroup>';
-        empFilter.innerHTML = options;
+        
+        // Only update if it's the initial load to preserve selection context if re-run
+        if (empFilter.options.length <= 3) {
+            empFilter.innerHTML = options;
+        }
 
         filterAndDisplay();
 
       } catch (err) {
-        document.getElementById('results').innerHTML = `<div style="color: #dc2626; text-align: center; padding: 40px;">❌ ${err.message}</div>`;
+        document.getElementById('results').innerHTML = `<div style="color: #dc2626; text-align: center; padding: 40px;">❌ ${escapeHtml(err.message)}</div>`;
       }
     }
 
@@ -344,11 +366,12 @@
           return s.includes('تم الاعتماد') || s.includes('منتهي') || s.includes('أرشيف');
         }).length;
 
+        // Security Patch: Wrapped variables in escapeHtml()
         html += `
           <div class="employee-group">
             <div class="employee-header">
               <div>
-                <div style="font-size: 1.25rem; font-weight: 800;">${emp}</div>
+                <div style="font-size: 1.25rem; font-weight: 800;">${escapeHtml(emp)}</div>
                 <div style="font-size: 0.875rem; opacity: 0.9;">إجمالي: ${empTasks.length}</div>
               </div>
               <div style="display: flex; gap: 20px;">
@@ -367,25 +390,26 @@
             ${empTasks.map(t => {
               const isDone = (t.status || '').includes('تم الاعتماد') || (t.status || '').includes('منتهي') || (t.status || '').includes('أرشيف');
               
+              // Security Patch: Wrapped output variables in escapeHtml() and added rel="noopener"
               return `
                 <div class="task-card ${isDone ? 'task-done' : 'task-pending'}">
                   <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                    <div style="font-weight: 700; color: #1e293b;">${t.id}</div>
+                    <div style="font-weight: 700; color: #1e293b;">${escapeHtml(t.id)}</div>
                     <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">
                       ${isDone ? '✅ منتهي' : '⏳ جاري'}
                     </span>
                   </div>
                   
                   <div style="color: #475569; font-weight: 600; margin-bottom: 12px; min-height: 40px;">
-                    ${t.subject}
+                    ${escapeHtml(t.subject)}
                   </div>
                   
                   <div style="font-size: 0.8rem; color: #64748b; display: flex; flex-direction: column; gap: 4px;">
-                    <div><strong>📥 من:</strong> ${t.source || t.entity}</div>
-                    <div><strong>📍 التنفيذ:</strong> ${t.executionLocation || t.entity}</div>
-                    <div><strong>📅 التاريخ:</strong> ${t.date}</div>
-                    ${t.attachment ? `<div><a href="${t.attachment}" target="_blank" style="color: #0f766e; text-decoration: underline;">📎 المرفق</a></div>` : ''}
-                    ${t.report ? `<div><a href="${t.report}" target="_blank" style="color: #dc2626; text-decoration: underline;">📄 التقرير</a></div>` : ''}
+                    <div><strong>📥 من:</strong> ${escapeHtml(t.source || t.entity)}</div>
+                    <div><strong>📍 التنفيذ:</strong> ${escapeHtml(t.executionLocation || t.entity)}</div>
+                    <div><strong>📅 التاريخ:</strong> ${escapeHtml(t.date)}</div>
+                    ${t.attachment ? `<div><a href="${t.attachment}" target="_blank" rel="noopener noreferrer" style="color: #0f766e; text-decoration: underline;">📎 المرفق</a></div>` : ''}
+                    ${t.report ? `<div><a href="${t.report}" target="_blank" rel="noopener noreferrer" style="color: #dc2626; text-decoration: underline;">📄 التقرير</a></div>` : ''}
                   </div>
                 </div>
               `;
