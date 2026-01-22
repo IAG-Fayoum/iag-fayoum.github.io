@@ -1,206 +1,189 @@
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     📄 employee.html - صفحة الموظف (محدّث ومرقم هرمياً)
+     ═══════════════════════════════════════════════════════════════════════════ -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+  <!-- 1.1 META -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بوابة الموظف - IAG</title>
+  <title>صفحتي - IAG</title>
   
+  <!-- 1.2 STYLES -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/styles.css">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-
-  <style>
-    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
-    .task-card { transition: all 0.3s ease; }
-    .task-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
-  </style>
 </head>
-<body class="pb-24">
 
-  <div id="loading-overlay" class="fixed inset-0 bg-slate-900/95 hidden items-center justify-center z-50">
-    <div class="text-center">
-      <div class="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-      <p class="text-white text-lg font-bold">جارٍ التحميل...</p>
+<body>
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       2. SIDEBAR
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <!-- 2.1 LOGO -->
+    <div class="sidebar-logo">
+      <h2 class="text-xl font-bold mb-2">IAG System</h2>
+      <p id="user-name" class="text-sm opacity-90">مرحباً</p>
     </div>
-  </div>
-
-  <header class="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-6 px-6 shadow-xl sticky top-0 z-40">
-    <div class="container mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-4">
-        <a href="index.html" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition">
-          <i data-lucide="home" class="w-6 h-6"></i>
-        </a>
-        <div>
-          <h1 class="text-2xl font-bold" id="user-name">بوابة الموظف</h1>
-          <p class="text-blue-100 text-sm">المهام والتقارير</p>
-        </div>
-      </div>
-      <button onclick="auth.logout()" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition">
-        <i data-lucide="log-out" class="w-6 h-6"></i>
-      </button>
-    </div>
-  </header>
-
-  <main class="container mx-auto px-4 py-8 max-w-6xl">
     
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-blue-600">
-        <div class="text-center">
-          <i data-lucide="clipboard-list" class="w-10 h-10 text-blue-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="my-total">0</p>
-          <p class="text-slate-600 font-semibold">مهامي</p>
-        </div>
-      </div>
+    <!-- 2.2 NAVIGATION -->
+    <nav style="padding: 16px 0;">
+      <!-- 2.2.1 Home -->
+      <a href="index.html" class="sidebar-item">
+        <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+        <span>الرئيسية</span>
+      </a>
+      
+      <!-- 2.2.2 Dashboard -->
+      <a href="distribution.html" class="sidebar-item">
+        <i data-lucide="pie-chart" style="width: 20px; height: 20px;"></i>
+        <span>Dashboard</span>
+      </a>
+      
+      <!-- 2.2.3 Forms -->
+      <a href="forms.html" class="sidebar-item">
+        <i data-lucide="file-text" style="width: 20px; height: 20px;"></i>
+        <span>النماذج</span>
+      </a>
+      
+      <!-- 2.2.4 Notifications -->
+      <a href="notifications.html" class="sidebar-item" style="position: relative;">
+        <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+        <span>الإشعارات</span>
+        <span id="notif-badge" style="position: absolute; top: 8px; left: 8px; background: #dc2626; color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; display: none;"></span>
+      </a>
+      
+      <!-- 2.2.5 Employee (Active) -->
+      <a href="employee.html" class="sidebar-item active" id="employee-link" style="display: none;">
+        <i data-lucide="briefcase" style="width: 20px; height: 20px;"></i>
+        <span>صفحتي</span>
+      </a>
+      
+      <!-- 2.2.6 Coordinator (Hidden) -->
+      <a href="coordinator.html" class="sidebar-item" id="coordinator-link" style="display: none;">
+        <i data-lucide="users" style="width: 20px; height: 20px;"></i>
+        <span>المنسقين</span>
+      </a>
+      
+      <!-- 2.2.7 Admin (Hidden) -->
+      <a href="admin.html" class="sidebar-item" id="admin-link" style="display: none;">
+        <i data-lucide="settings" style="width: 20px; height: 20px;"></i>
+        <span>الإدارة</span>
+      </a>
+    </nav>
+  </aside>
 
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-emerald-600">
-        <div class="text-center">
-          <i data-lucide="check-circle" class="w-10 h-10 text-emerald-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="my-completed">0</p>
-          <p class="text-slate-600 font-semibold">المنجزة</p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-amber-600">
-        <div class="text-center">
-          <i data-lucide="clock" class="w-10 h-10 text-amber-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="my-pending">0</p>
-          <p class="text-slate-600 font-semibold">قيد التنفيذ</p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-6 shadow-lg border-b-4 border-red-600">
-        <div class="text-center">
-          <i data-lucide="alert-circle" class="w-10 h-10 text-red-600 mx-auto mb-2"></i>
-          <p class="text-3xl font-bold text-slate-800" id="my-overdue">0</p>
-          <p class="text-slate-600 font-semibold">المتأخرة</p>
-        </div>
-      </div>
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       3. MAIN CONTENT
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <main class="main-content">
+    <!-- 3.1 HEADER -->
+    <div class="card header-card">
+      <h1 style="font-size: 1.75rem; font-weight: 800;">صفحتي</h1>
+      <p style="opacity: 0.9; margin-top: 4px;">المهام والتكليفات</p>
     </div>
 
-    <!-- My Tasks -->
-    <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
-      <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-        <i data-lucide="briefcase" class="text-blue-600 w-7 h-7"></i>
-        مهامي الحالية
-      </h2>
-      <div id="my-tasks" class="space-y-3">
-        <p class="text-slate-400 text-center py-8">جارٍ التحميل...</p>
-      </div>
-    </div>
-
-    <!-- My Reports -->
-    <div class="bg-white rounded-2xl shadow-xl p-6">
-      <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-        <i data-lucide="file-text" class="text-violet-600 w-7 h-7"></i>
-        تقاريري
-      </h2>
-      <div id="my-reports" class="space-y-3">
-        <p class="text-slate-400 text-center py-8">لا توجد تقارير</p>
+    <!-- 3.2 TASKS CONTAINER -->
+    <div id="tasks-container">
+      <div style="text-align: center; padding: 60px; color: #94a3b8;">
+        <div style="font-size: 2rem; margin-bottom: 12px;">⏳</div>
+        <p style="font-weight: 600;">جارٍ تحميل المهام...</p>
       </div>
     </div>
   </main>
 
-  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-200 shadow-2xl z-50">
-    <div class="container mx-auto px-4">
-      <div class="flex justify-around items-center py-3">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
-          <i data-lucide="pie-chart" class="w-6 h-6"></i>
-          <span class="text-xs">Dashboard</span>
-        </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 text-blue-600 font-bold">
-          <i data-lucide="briefcase" class="w-6 h-6"></i>
-          <span class="text-xs">الخدمات</span>
-        </a>
-        <a href="links.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
-          <i data-lucide="link" class="w-6 h-6"></i>
-          <span class="text-xs">الروابط</span>
-        </a>
-        <a href="admin.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
-          <i data-lucide="settings" class="w-6 h-6"></i>
-          <span class="text-xs">الإدارة</span>
-        </a>
-      </div>
-    </div>
-  </nav>
-
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       4. SCRIPTS
+       ═══════════════════════════════════════════════════════════════════════ -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
-    lucide.createIcons();
-
-    async function loadEmployeeData() {
-      const user = auth.checkSession();
-      if (!user) return;
-
-      document.getElementById('user-name').textContent = `مرحباً، ${user.name}`;
-      document.getElementById('loading-overlay').style.display = 'flex';
-
-      const result = await auth.apiCall('getAllData', {
-        role: user.role,
-        name: user.name,
-        startDate: null,
-        endDate: null
-      });
-
-      if (result.success) {
-        const myStats = result.stats.employees.find(e => e.name === user.name) || { total: 0, completed: 0, pending: 0, overdue: 0 };
-        
-        document.getElementById('my-total').textContent = myStats.total;
-        document.getElementById('my-completed').textContent = myStats.completed;
-        document.getElementById('my-pending').textContent = myStats.pending;
-        document.getElementById('my-overdue').textContent = myStats.overdue;
-
-        const tasksDiv = document.getElementById('my-tasks');
-        if (result.tasks && result.tasks.length > 0) {
-          tasksDiv.innerHTML = result.tasks.map(task => `
-            <div class="task-card bg-slate-50 rounded-xl p-4 border-r-4 ${task.status.includes('متأخر') ? 'border-red-600' : 'border-blue-600'}">
-              <div class="flex justify-between items-start mb-2">
-                <div>
-                  <p class="font-bold text-slate-800">${task.subject}</p>
-                  <p class="text-sm text-slate-500 mt-1">${task.entity}</p>
-                </div>
-                <span class="px-3 py-1 rounded-full text-xs font-bold ${
-                  task.status.includes('منتهي') ? 'bg-emerald-100 text-emerald-700' :
-                  task.status.includes('متأخر') ? 'bg-red-100 text-red-700' :
-                  'bg-amber-100 text-amber-700'
-                }">${task.status}</span>
-              </div>
-              <div class="flex justify-between items-center mt-3 text-xs text-slate-500">
-                <span><i data-lucide="calendar" class="w-4 h-4 inline"></i> ${task.date}</span>
-                <span><i data-lucide="hash" class="w-4 h-4 inline"></i> ${task.id}</span>
-              </div>
-            </div>
-          `).join('');
-          lucide.createIcons();
-        } else {
-          tasksDiv.innerHTML = '<p class="text-slate-400 text-center py-8">لا توجد مهام</p>';
-        }
-
-        const reportsDiv = document.getElementById('my-reports');
-        if (result.reports && result.reports.length > 0) {
-          reportsDiv.innerHTML = result.reports.map(rep => `
-            <div class="bg-slate-50 rounded-xl p-4 border-r-4 border-violet-600">
-              <div class="flex justify-between items-start">
-                <div>
-                  <p class="font-bold text-slate-800">${rep.title}</p>
-                  <p class="text-sm text-slate-500 mt-1">${rep.type} - ${rep.entity}</p>
-                </div>
-                <div class="flex gap-2">
-                  ${rep.docLink ? `<a href="${rep.docLink}" target="_blank" class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold">Doc</a>` : ''}
-                  ${rep.pdfLink ? `<a href="${rep.pdfLink}" target="_blank" class="bg-red-100 text-red-700 px-3 py-1 rounded-lg text-xs font-bold">PDF</a>` : ''}
-                </div>
-              </div>
-              <p class="text-xs text-slate-500 mt-2">${rep.date}</p>
-            </div>
-          `).join('');
-        }
-      }
-
-      document.getElementById('loading-overlay').style.display = 'none';
+    // 4.1 AUTH CHECK
+    const user = auth.checkSession();
+    if (!user) {
+      alert('⛔ لابد من تسجيل الدخول أولاً');
+      window.location.href = 'index.html';
     }
 
-    loadEmployeeData();
+    // 4.2 ROLE CHECK (Employee or Admin only)
+    if (user.role !== 'موظف' && user.role !== 'Employee' && user.role !== 'مدير' && user.role !== 'Admin') {
+      alert('⛔ هذه الصفحة للموظفين فقط!');
+      window.location.href = 'index.html';
+    }
+
+    // 4.3 INIT UI
+    lucide.createIcons();
+    document.getElementById('user-name').textContent = user.name + ' 👋';
+
+    // 4.4 SHOW LINKS BY ROLE
+    if (user.role === 'موظف' || user.role === 'Employee') {
+      document.getElementById('employee-link').style.display = 'flex';
+    } else if (user.role === 'منسق' || user.role === 'Coordinator') {
+      document.getElementById('coordinator-link').style.display = 'flex';
+    } else if (user.role === 'مدير' || user.role === 'Admin') {
+      document.getElementById('employee-link').style.display = 'flex';
+      document.getElementById('coordinator-link').style.display = 'flex';
+      document.getElementById('admin-link').style.display = 'flex';
+    }
+
+    // 4.5 NOTIFICATIONS BADGE
+    const unreadCount = auth.getUnreadNotifications();
+    const badge = document.getElementById('notif-badge');
+    if (badge && unreadCount > 0) {
+      badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+      badge.style.display = 'block';
+    }
+
+    // 4.6 LOAD TASKS
+    loadTasks();
+
+    async function loadTasks() {
+      try {
+        const result = await auth.apiCall('getEmployeeData', { name: user.name });
+        if (result.success) displayTasks(result.tasks);
+      } catch (err) {
+        document.getElementById('tasks-container').innerHTML = `
+          <div style="text-align: center; padding: 60px; color: #dc2626;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">❌</div>
+            <p style="font-weight: 700;">خطأ في التحميل</p>
+          </div>
+        `;
+      }
+    }
+
+    // 4.7 DISPLAY TASKS
+    function displayTasks(tasks) {
+      if (!tasks || tasks.length === 0) {
+        document.getElementById('tasks-container').innerHTML = `
+          <div style="text-align: center; padding: 60px; color: #94a3b8;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">📋</div>
+            <p style="font-weight: 600;">لا توجد مهام حالياً</p>
+          </div>
+        `;
+        return;
+      }
+
+      document.getElementById('tasks-container').innerHTML = `
+        <div class="card">
+          <h2 style="font-weight: 700; margin-bottom: 16px;">المهام (${tasks.length})</h2>
+          <div class="task-grid">
+            ${tasks.map(t => `
+              <div class="task-card">
+                <div class="task-header">
+                  <div class="task-id">${t.id}</div>
+                  <span class="badge ${t.status.includes('تم') ? 'badge-done' : 'badge-pending'}">${t.status}</span>
+                </div>
+                <div class="task-subject">${t.subject}</div>
+                <div class="task-meta">
+                  <div><strong>الجهة:</strong> ${t.entity}</div>
+                  <div><strong>التاريخ:</strong> ${t.date}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
   </script>
 </body>
 </html>
