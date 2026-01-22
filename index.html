@@ -2,8 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#0f766e">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <title>نظام الحوكمة - IAG</title>
   
   <link rel="icon" type="image/png" href="assets/icons/favicon.png">
@@ -35,6 +36,7 @@
     .btn-login { width: 100%; padding: 18px; background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); color: white; border: none; border-radius: 14px; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 24px rgba(15, 118, 110, 0.3); }
     .btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(15, 118, 110, 0.4); }
     .btn-login:active { transform: translateY(0); }
+    .btn-login:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
     @media (max-width: 768px) {
       .login-content { padding: 36px 28px; }
@@ -54,7 +56,6 @@
   <div id="message-box" class="fixed top-6 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl font-bold z-50 shadow-2xl hidden"></div>
 
   <div class="flex-grow flex flex-col">
-    <!-- Header -->
     <header class="theme-gradient text-white py-20 shadow-2xl relative overflow-hidden">
       <div class="absolute inset-0 opacity-10" style="background: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
       <div class="container mx-auto px-6 text-center relative z-10">
@@ -70,7 +71,6 @@
       </div>
     </header>
 
-    <!-- Main Content -->
     <main class="container mx-auto px-6 -mt-16 mb-12 flex-grow relative z-20">
       <div class="bg-white rounded-3xl shadow-2xl p-10 md:p-14 text-center max-w-5xl mx-auto border-2 border-slate-100 mb-10">
         <div class="flex items-center justify-center gap-3 mb-5">
@@ -88,7 +88,6 @@
         </div>
       </div>
 
-      <!-- Access Cards -->
       <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-6xl mx-auto grid-cards">
         
         <a href="distribution.html" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-teal-600 cursor-pointer group">
@@ -128,7 +127,6 @@
       </div>
     </main>
 
-    <!-- Login Modal -->
     <div id="login-modal" class="login-modal">
       <div class="login-content">
         <button onclick="closeLogin()" class="absolute top-5 left-5 bg-slate-100 hover:bg-slate-200 w-12 h-12 rounded-full flex items-center justify-center transition">
@@ -152,9 +150,11 @@
             maxlength="4"
             inputmode="numeric"
             pattern="[0-9]*"
+            autocomplete="one-time-code"
+            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
             required
           />
-          <button type="submit" class="btn-login">دخول</button>
+          <button type="submit" id="login-btn" class="btn-login">دخول</button>
         </form>
 
         <div class="mt-8 text-center">
@@ -166,7 +166,6 @@
       </div>
     </div>
 
-    <!-- Footer -->
     <footer class="bg-slate-900 text-white py-10 text-center border-t-4 border-teal-600 mt-auto">
       <div class="container mx-auto px-4">
         <i data-lucide="landmark" class="w-14 h-14 mx-auto mb-4 text-slate-600"></i>
@@ -191,7 +190,7 @@
     function showLogin(page) {
       targetPage = page;
       document.getElementById('login-modal').classList.add('show');
-      document.getElementById('pin-input').focus();
+      setTimeout(() => document.getElementById('pin-input').focus(), 100);
     }
 
     function closeLogin() {
@@ -200,20 +199,49 @@
       targetPage = '';
     }
 
-    function handleLogin(e) {
+    async function handleLogin(e) {
       e.preventDefault();
-      const pin = document.getElementById('pin-input').value;
       
-      auth.login(pin).then(result => {
+      const pinInput = document.getElementById('pin-input');
+      const loginBtn = document.getElementById('login-btn');
+      const pin = pinInput.value;
+
+      // Basic Client-side Validation
+      if (pin.length < 4) {
+        alert('الرجاء إدخال 4 أرقام');
+        return;
+      }
+
+      // UX: Loading State
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'جارٍ التحقق...';
+      
+      try {
+        const result = await auth.login(pin);
+        
         if (result.success) {
           const pageMap = {
             'employee': 'employee.html',
             'coordinator': 'coordinator.html',
             'admin': 'admin.html'
           };
-          window.location.href = pageMap[targetPage] || 'employee.html';
+          const destination = pageMap[targetPage] || 'employee.html';
+          
+          // SECURITY FIX: Use replace instead of href to prevent "Back" navigation
+          window.location.replace(destination);
+        } else {
+          alert('❌ رمز الدخول غير صحيح');
+          pinInput.value = '';
+          pinInput.focus();
         }
-      });
+      } catch (error) {
+        console.error('Login Error:', error);
+        alert('⚠️ حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى');
+      } finally {
+        // Reset UX State
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'دخول';
+      }
     }
 
     document.addEventListener('keydown', (e) => {
