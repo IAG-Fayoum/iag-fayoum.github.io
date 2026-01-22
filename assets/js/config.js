@@ -1,29 +1,28 @@
 /**
- * ═══════════════════════════════════════════════════════════════════════════
- * 🏛️ IAG System - التكوين المركزي (Config)
- * تم التحديث ليتوافق مع auth.js الجديد
- * ═══════════════════════════════════════════════════════════════════════════
+ * IAG System Configuration
+ * ------------------------
+ * مركز التحكم في الروابط والإعدادات
  */
 
 const CONFIG = {
-  // 1. رابط السيرفر (Google Apps Script Web App URL)
-  // هام جداً: يجب أن يكون الاسم API_URL بحروف كبيرة
-  API_URL: 'https://script.google.com/macros/s/AKfycbzB0a7A7Dq4j5-l_-4YkBH1c-cOmgi7kIFP6Da8ZjM1CLfz9xZIncim13cJfc2LPyru3A/exec',
-  
-  // 2. معلومات الإصدار
-  VERSION: '6.1.0',
-  
-  // 3. تعريف الصلاحيات (للمطابقة مع شيت الإكسل)
-  ROLES: {
-    ADMIN: 'مدير',
-    COORDINATOR: 'منسق',
-    EMPLOYEE: 'موظف'
+  // 1. رابط الـ Backend (Google Apps Script Web App URL)
+  // ⚠️ هام: استبدل هذا الرابط برابط السكربت الخاص بك بعد النشر
+  API_URL: 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE',
+
+  // 2. روابط النماذج الإلكترونية (Google Forms)
+  // يمكنك تحديث الروابط هنا فقط وسيتغير في الموقع بالكامل
+  FORMS: {
+    INBOX: "https://docs.google.com/forms/d/e/1FAIpQLSeJhAdpfoQAs6wqMDUD12N_H4YnL0Xv9KITCj2pHGCaKSyhJA/viewform",
+    COMPLAINTS: "https://docs.google.com/forms/d/e/1FAIpQLSeLbdP8tzEyNFaVI53h0jfHMp3j9uJL-mLors14rIjuUQaGIg/viewform",
+    FINANCIAL: "https://docs.google.com/forms/d/e/1FAIpQLSfe94k6Im0Y4IODqw3UCLAczVQYdKivnyZ2s8SiCAU4uTwwpA/viewform",
+    PRIMARY_CARE: "https://docs.google.com/forms/d/e/1FAIpQLSePbkn17cO2EFDUm4-7A4Le560ep6Zce9-QlyTdP7MEG_eAew/viewform",
+    HOSPITALS: "https://docs.google.com/forms/d/e/1FAIpQLSedsoD3zW51Lwd7VanPQ1hVMB3OTmmaorOATiMieTXjaOBbRw/viewform"
   },
 
-  // 4. إعدادات النظام العامة
-  SETTINGS: {
-    APP_NAME: 'IAG Governance Hub',
-    ORG_NAME: 'مديرية الشؤون الصحية بالفيوم',
-    TIMEOUT_MS: 30000 // 30 ثانية حد أقصى للانتظار
-  }
+  // 3. إعدادات النظام العامة
+  APP_VERSION: "1.2.0",
+  ORG_NAME: "مديرية الشؤون الصحية بالفيوم"
 };
+
+// تجميد الكائن لمنع التعديل عليه بالخطأ أثناء التشغيل
+Object.freeze(CONFIG);
