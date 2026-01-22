@@ -10,41 +10,59 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body { 
       font-family: 'Cairo', sans-serif; 
       background: #f8f9fa;
+      padding: 20px;
       padding-bottom: 80px;
     }
     
-    /* Tab System */
-    .tab-button {
-      padding: 14px 28px;
-      font-weight: 700;
-      border-bottom: 3px solid transparent;
-      transition: all 0.3s ease;
-      color: #6b7280;
-      cursor: pointer;
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+      border: 1px solid #e9ecef;
     }
     
-    .tab-button:hover {
+    /* Tab System */
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid #e9ecef;
+      margin-bottom: 24px;
+    }
+    
+    .tab-btn {
+      padding: 14px 24px;
+      font-weight: 700;
+      border: none;
+      background: none;
+      color: #6b7280;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+    }
+    
+    .tab-btn:hover {
       color: #dc2626;
       background: #fef2f2;
     }
     
-    .tab-button.active {
+    .tab-btn.active {
       color: #dc2626;
       border-bottom-color: #dc2626;
-      background: white;
     }
     
     .tab-content {
       display: none;
-      animation: fadeIn 0.3s ease;
     }
     
     .tab-content.active {
       display: block;
+      animation: fadeIn 0.3s ease;
     }
     
     @keyframes fadeIn {
@@ -52,40 +70,167 @@
       to { opacity: 1; transform: translateY(0); }
     }
     
-    /* Task Card */
+    /* Task Grid */
+    .task-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    
     .task-card {
       background: white;
+      border: 2px solid #e9ecef;
       border-radius: 12px;
       padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      border: 1px solid #e9ecef;
-      margin-bottom: 12px;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
+      cursor: pointer;
     }
     
     .task-card:hover {
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      border-color: #dc2626;
+      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.1);
       transform: translateY(-2px);
     }
     
-    /* Status Pills */
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
+    .task-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+    
+    .task-id {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #1e293b;
+    }
+    
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.7rem;
       font-weight: 700;
     }
     
-    .status-new { background: #e7f5ff; color: #1971c2; }
-    .status-progress { background: #fff3cd; color: #997404; }
-    .status-done { background: #d3f9d8; color: #2f9e44; }
-    .status-overdue { background: #ffe3e3; color: #c92a2a; }
+    .status-new { background: #dbeafe; color: #1e40af; }
+    .status-progress { background: #fef3c7; color: #92400e; }
+    .status-done { background: #dcfce7; color: #166534; }
+    .status-overdue { background: #fee2e2; color: #991b1b; }
+    
+    .task-subject {
+      color: #475569;
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    
+    .task-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    
+    .task-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    /* Reassign Section */
+    .reassign-section {
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 12px;
+      border: 2px dashed #cbd5e1;
+    }
+    
+    .reassign-current {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 10px;
+    }
+    
+    .reassign-controls {
+      display: flex;
+      gap: 8px;
+    }
+    
+    select {
+      flex-grow: 1;
+      padding: 8px 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: #dc2626;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .btn-primary {
+      background: #dc2626;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #b91c1c;
+    }
+    
+    .btn-block {
+      width: 100%;
+      justify-content: center;
+      padding: 12px;
+      font-size: 1rem;
+    }
+    
+    /* Search Bar */
+    .search-box {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    
+    input[type="text"],
+    input[type="date"],
+    input[type="url"],
+    textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-weight: 600;
+      font-family: 'Cairo', sans-serif;
+    }
+    
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #dc2626;
+    }
     
     /* Loading */
-    #loading-overlay {
+    .loading-overlay {
       position: fixed;
       inset: 0;
       background: rgba(255,255,255,0.95);
@@ -93,6 +238,10 @@
       align-items: center;
       justify-content: center;
       z-index: 999;
+    }
+    
+    .loading-overlay.hidden {
+      display: none;
     }
     
     .spinner {
@@ -107,243 +256,194 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #94a3b8;
+    }
+    
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+    }
+    
+    .empty-state-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
 
-  <div id="loading-overlay" class="hidden">
+  <div class="loading-overlay hidden" id="loading-overlay">
     <div class="spinner"></div>
   </div>
 
   <!-- Header -->
-  <header class="bg-gradient-to-r from-red-600 to-red-700 text-white py-6 px-6 shadow-xl sticky top-0 z-40">
-    <div class="container mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-4">
-        <a href="index.html" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition">
-          <i data-lucide="home" class="w-6 h-6"></i>
+  <div class="card" style="background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; border: none;">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <a href="index.html" style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; display: flex;">
+          <i data-lucide="arrow-right" class="w-6 h-6"></i>
         </a>
         <div>
-          <h1 class="text-2xl font-bold">لوحة الإدارة</h1>
-          <p class="text-red-100 text-sm" id="admin-name">مرحباً بك</p>
+          <h1 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 4px;">لوحة الإدارة</h1>
+          <p id="admin-name" style="opacity: 0.9;">مرحباً بك</p>
         </div>
       </div>
-      <button onclick="auth.logout()" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition">
-        <i data-lucide="log-out" class="w-6 h-6"></i>
+      <button onclick="auth.logout()" style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; border: none; cursor: pointer;">
+        <i data-lucide="log-out" class="w-6 h-6" style="color: white;"></i>
       </button>
-    </div>
-  </header>
-
-  <!-- Tabs Navigation -->
-  <div class="bg-white border-b border-gray-200 sticky top-20 z-30">
-    <div class="container mx-auto">
-      <div class="flex overflow-x-auto">
-        <button class="tab-button active" onclick="switchTab('dashboard')">
-          <i data-lucide="layout-dashboard" class="w-5 h-5 inline"></i>
-          Dashboard
-        </button>
-        <button class="tab-button" onclick="switchTab('reassign')">
-          <i data-lucide="refresh-cw" class="w-5 h-5 inline"></i>
-          إعادة تكليف
-        </button>
-        <button class="tab-button" onclick="switchTab('new-task')">
-          <i data-lucide="plus-circle" class="w-5 h-5 inline"></i>
-          تكليف جديد
-        </button>
-      </div>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <main class="container mx-auto px-4 py-8 max-w-7xl">
-    
-    <!-- ═══════════════════════════════════════════════════ -->
-    <!-- TAB 1: Dashboard -->
-    <!-- ═══════════════════════════════════════════════════ -->
-    <div id="tab-dashboard" class="tab-content active">
-      
-      <!-- Stats Cards -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-blue-500">
-          <div class="flex items-center justify-between mb-2">
-            <i data-lucide="inbox" class="w-8 h-8 text-blue-500"></i>
-          </div>
-          <p class="text-3xl font-bold text-gray-800" id="stat-total">0</p>
-          <p class="text-sm text-gray-600 font-semibold">إجمالي المهام</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-green-500">
-          <div class="flex items-center justify-between mb-2">
-            <i data-lucide="check-circle" class="w-8 h-8 text-green-500"></i>
-          </div>
-          <p class="text-3xl font-bold text-gray-800" id="stat-completed">0</p>
-          <p class="text-sm text-gray-600 font-semibold">منتهية</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-amber-500">
-          <div class="flex items-center justify-between mb-2">
-            <i data-lucide="clock" class="w-8 h-8 text-amber-500"></i>
-          </div>
-          <p class="text-3xl font-bold text-gray-800" id="stat-progress">0</p>
-          <p class="text-sm text-gray-600 font-semibold">قيد التنفيذ</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-red-500">
-          <div class="flex items-center justify-between mb-2">
-            <i data-lucide="alert-circle" class="w-8 h-8 text-red-500"></i>
-          </div>
-          <p class="text-3xl font-bold text-gray-800" id="stat-overdue">0</p>
-          <p class="text-sm text-gray-600 font-semibold">متأخرة</p>
-        </div>
-      </div>
-
-      <!-- Recent Tasks -->
-      <div class="bg-white rounded-2xl shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">آخر المهام</h2>
-        <div id="dashboard-tasks">
-          <p class="text-gray-400 text-center py-8">جارٍ التحميل...</p>
-        </div>
-      </div>
-
+  <!-- Tabs Navigation -->
+  <div class="card">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('reassign', this)">
+        <i data-lucide="refresh-cw" style="width: 18px; height: 18px; display: inline; vertical-align: middle;"></i>
+        إعادة تكليف
+      </button>
+      <button class="tab-btn" onclick="switchTab('new-task', this)">
+        <i data-lucide="plus-circle" style="width: 18px; height: 18px; display: inline; vertical-align: middle;"></i>
+        تكليف جديد
+      </button>
     </div>
 
     <!-- ═══════════════════════════════════════════════════ -->
-    <!-- TAB 2: إعادة تكليف -->
+    <!-- TAB 1: إعادة تكليف -->
     <!-- ═══════════════════════════════════════════════════ -->
-    <div id="tab-reassign" class="tab-content">
+    <div id="tab-reassign" class="tab-content active">
       
-      <!-- Search Bar -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">بحث عن مهمة لإعادة تكليفها</h2>
-        <div class="flex gap-3">
-          <input 
-            type="text" 
-            id="search-task" 
-            placeholder="ابحث برقم القيد أو الموضوع أو اسم الموظف..."
-            class="flex-grow px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none"
-          >
-          <button onclick="searchTasks()" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-bold transition">
-            <i data-lucide="search" class="w-5 h-5"></i>
-          </button>
-        </div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 16px; color: #1e293b;">
+        بحث عن مهمة
+      </h2>
+      
+      <div class="search-box">
+        <input 
+          type="text" 
+          id="search-task" 
+          placeholder="ابحث برقم القيد أو الموضوع أو اسم الموظف..."
+          style="flex-grow: 1;"
+        >
+        <button onclick="searchTasks()" class="btn btn-primary">
+          <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+          بحث
+        </button>
       </div>
 
-      <!-- Tasks List for Reassignment -->
       <div id="reassign-tasks">
-        <p class="text-gray-400 text-center py-8 bg-white rounded-2xl">استخدم البحث للعثور على المهام</p>
+        <div class="empty-state">
+          <div class="empty-state-icon">🔍</div>
+          <p class="empty-state-text">استخدم البحث للعثور على المهام</p>
+        </div>
       </div>
 
     </div>
 
     <!-- ═══════════════════════════════════════════════════ -->
-    <!-- TAB 3: تكليف جديد -->
+    <!-- TAB 2: تكليف جديد -->
     <!-- ═══════════════════════════════════════════════════ -->
     <div id="tab-new-task" class="tab-content">
       
-      <div class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl mx-auto">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">إضافة تكليف يدوي جديد</h2>
+      <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; color: #1e293b;">
+        إضافة تكليف يدوي جديد
+      </h2>
+      
+      <form id="new-task-form" style="max-width: 600px;">
         
-        <form id="new-task-form" class="space-y-4">
-          
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">التاريخ *</label>
-            <input type="date" id="task-date" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
-          </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">التاريخ *</label>
+          <input type="date" id="task-date" required>
+        </div>
 
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">الجهة *</label>
-            <input type="text" id="task-source" required placeholder="مثال: وزارة الصحة" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
-          </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الجهة *</label>
+          <input type="text" id="task-source" required placeholder="مثال: وزارة الصحة">
+        </div>
 
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">الجهة محل التنفيذ *</label>
-            <input type="text" id="task-entity" required placeholder="مثال: مستشفى الفيوم العام" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
-          </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الجهة محل التنفيذ *</label>
+          <input type="text" id="task-entity" required placeholder="مثال: مستشفى الفيوم العام">
+        </div>
 
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">الموضوع *</label>
-            <textarea id="task-subject" required rows="3" placeholder="وصف الموضوع..." class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none"></textarea>
-          </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الموضوع *</label>
+          <textarea id="task-subject" required rows="3" placeholder="وصف الموضوع..."></textarea>
+        </div>
 
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">الموظف المكلف *</label>
-            <select id="task-employee" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
-              <option value="">اختر الموظف...</option>
-            </select>
-          </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الموظف المكلف *</label>
+          <select id="task-employee" required>
+            <option value="">اختر الموظف...</option>
+          </select>
+        </div>
 
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">الموعد النهائي</label>
-            <input type="date" id="task-deadline" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
-          </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الموعد النهائي</label>
+          <input type="date" id="task-deadline">
+        </div>
 
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">رابط المرفقات</label>
-            <input type="url" id="task-attachment" placeholder="https://..." class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg font-semibold focus:border-red-600 focus:outline-none">
-          </div>
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">رابط المرفقات</label>
+          <input type="url" id="task-attachment" placeholder="https://...">
+        </div>
 
-          <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-lg font-bold text-lg transition">
-            <i data-lucide="plus-circle" class="w-6 h-6 inline mr-2"></i>
-            إضافة المهمة
-          </button>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i data-lucide="plus-circle" style="width: 20px; height: 20px;"></i>
+          إضافة المهمة
+        </button>
 
-        </form>
-      </div>
+      </form>
 
     </div>
 
-  </main>
+  </div>
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
-    // ═══════════════════════════════════════════════════
-    // Authentication Check
-    // ═══════════════════════════════════════════════════
+    lucide.createIcons();
+
+    // Check Auth
     const currentUser = auth.checkSession();
     if (!currentUser) {
       alert('يجب تسجيل الدخول أولاً');
       window.location.href = 'index.html';
     }
 
-    // Display admin name
-    if (currentUser) {
-      document.getElementById('admin-name').textContent = `مرحباً ${currentUser.name} 👋`;
-    }
+    document.getElementById('admin-name').textContent = `مرحباً ${currentUser.name} 👋`;
 
-    lucide.createIcons();
-
-    let allTasks = [];
     let allEmployees = [];
+    let allTasks = [];
 
     // ═══════════════════════════════════════════════════
     // Tab System
     // ═══════════════════════════════════════════════════
-    function switchTab(tabName) {
-      // Hide all tabs
+    function switchTab(tabName, button) {
       document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
       });
       
-      // Remove active from all buttons
-      document.querySelectorAll('.tab-button').forEach(btn => {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
       });
       
-      // Show selected tab
       document.getElementById('tab-' + tabName).classList.add('active');
       
-      // Activate button
-      event.target.closest('.tab-button').classList.add('active');
+      if (button) {
+        button.classList.add('active');
+      }
       
       lucide.createIcons();
     }
 
     // ═══════════════════════════════════════════════════
-    // Load Data
+    // Load Initial Data
     // ═══════════════════════════════════════════════════
-    async function loadDashboard() {
-      document.getElementById('loading-overlay').classList.remove('hidden');
-
+    async function loadInitialData() {
       try {
         const result = await auth.apiCall('getAllData', {
           role: 'مدير',
@@ -355,61 +455,28 @@
         if (result && result.success) {
           allTasks = result.tasks || [];
           allEmployees = result.stats.employees || [];
-
-          // Update stats
-          const stats = result.stats.totals;
-          document.getElementById('stat-total').textContent = stats.total || 0;
-          document.getElementById('stat-completed').textContent = stats.completed || 0;
-          document.getElementById('stat-progress').textContent = stats.inProgress || 0;
-          document.getElementById('stat-overdue').textContent = stats.overdue || 0;
-
-          // Render recent tasks
-          renderDashboardTasks(allTasks.slice(0, 10));
-
-          // Populate employee dropdown
           populateEmployeeDropdown();
         }
-
       } catch (error) {
-        console.error('Error loading dashboard:', error);
-        alert('خطأ في تحميل البيانات');
-      } finally {
-        document.getElementById('loading-overlay').classList.add('hidden');
+        console.error('Error loading data:', error);
       }
     }
 
-    function renderDashboardTasks(tasks) {
-      const container = document.getElementById('dashboard-tasks');
+    function populateEmployeeDropdown() {
+      const select = document.getElementById('task-employee');
+      let options = '<option value="">اختر الموظف...</option>';
       
-      if (!tasks || tasks.length === 0) {
-        container.innerHTML = '<p class="text-gray-400 text-center py-8">لا توجد مهام</p>';
-        return;
-      }
-
-      container.innerHTML = tasks.map(task => `
-        <div class="task-card">
-          <div class="flex items-start justify-between mb-2">
-            <div>
-              <h3 class="font-bold text-gray-800 text-lg">${task.id}</h3>
-              <p class="text-gray-600 text-sm">${task.date}</p>
-            </div>
-            <span class="status-pill status-progress">${task.status}</span>
-          </div>
-          <p class="text-gray-700 font-semibold mb-2">${task.subject}</p>
-          <div class="flex items-center gap-4 text-sm text-gray-600">
-            <span><i data-lucide="building" class="w-4 h-4 inline"></i> ${task.entity}</span>
-            <span><i data-lucide="user" class="w-4 h-4 inline"></i> ${task.assignee}</span>
-          </div>
-        </div>
-      `).join('');
-
-      lucide.createIcons();
+      allEmployees.forEach(emp => {
+        options += `<option value="${emp.name}">${emp.name}</option>`;
+      });
+      
+      select.innerHTML = options;
     }
 
     // ═══════════════════════════════════════════════════
-    // Search & Reassign
+    // Search Tasks
     // ═══════════════════════════════════════════════════
-    function searchTasks() {
+    async function searchTasks() {
       const query = document.getElementById('search-task').value.toLowerCase().trim();
       
       if (!query) {
@@ -417,56 +484,97 @@
         return;
       }
 
-      const filtered = allTasks.filter(task => 
-        task.id.toLowerCase().includes(query) ||
-        task.subject.toLowerCase().includes(query) ||
-        task.assignee.toLowerCase().includes(query) ||
-        task.entity.toLowerCase().includes(query)
-      );
+      document.getElementById('loading-overlay').classList.remove('hidden');
 
-      renderReassignTasks(filtered);
+      try {
+        // Reload fresh data
+        const result = await auth.apiCall('getAllData', {
+          role: 'مدير',
+          name: currentUser.name,
+          startDate: '2024-01-01',
+          endDate: '2028-12-31'
+        });
+
+        if (result && result.success) {
+          allTasks = result.tasks || [];
+          allEmployees = result.stats.employees || [];
+
+          const filtered = allTasks.filter(task => 
+            task.id.toLowerCase().includes(query) ||
+            task.subject.toLowerCase().includes(query) ||
+            task.assignee.toLowerCase().includes(query) ||
+            task.entity.toLowerCase().includes(query)
+          );
+
+          renderReassignTasks(filtered);
+        }
+      } catch (error) {
+        console.error('Error searching:', error);
+        alert('خطأ في البحث');
+      } finally {
+        document.getElementById('loading-overlay').classList.add('hidden');
+      }
     }
 
     function renderReassignTasks(tasks) {
       const container = document.getElementById('reassign-tasks');
       
       if (!tasks || tasks.length === 0) {
-        container.innerHTML = '<p class="text-gray-400 text-center py-8 bg-white rounded-2xl">لم يتم العثور على نتائج</p>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">لم يتم العثور على نتائج</p></div>';
         return;
       }
 
-      container.innerHTML = tasks.map(task => `
-        <div class="task-card">
-          <div class="flex items-start justify-between mb-3">
-            <div class="flex-grow">
-              <h3 class="font-bold text-gray-800 text-lg mb-1">${task.id}</h3>
-              <p class="text-gray-700 font-semibold mb-2">${task.subject}</p>
-              <div class="flex items-center gap-4 text-sm text-gray-600">
-                <span><i data-lucide="building" class="w-4 h-4 inline"></i> ${task.entity}</span>
-                <span><i data-lucide="calendar" class="w-4 h-4 inline"></i> ${task.date}</span>
+      container.innerHTML = '<div class="task-grid">' + tasks.map(task => {
+        const statusClass = getStatusClass(task.status);
+        
+        return `
+          <div class="task-card">
+            <div class="task-card-header">
+              <div class="task-id">${task.id}</div>
+              <span class="status-badge ${statusClass}">${task.status}</span>
+            </div>
+            
+            <div class="task-subject">${task.subject}</div>
+            
+            <div class="task-meta">
+              <div class="task-meta-item">
+                <i data-lucide="building" style="width: 14px; height: 14px;"></i>
+                <span>${task.entity}</span>
+              </div>
+              <div class="task-meta-item">
+                <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                <span>${task.date}</span>
+              </div>
+            </div>
+
+            <div class="reassign-section">
+              <div class="reassign-current">
+                الموظف الحالي: <span style="color: #0f766e;">${task.assignee}</span>
+              </div>
+              <div class="reassign-controls">
+                <select id="new-emp-${task.id}">
+                  <option value="">اختر موظف جديد...</option>
+                  ${allEmployees.map(emp => `<option value="${emp.name}">${emp.name}</option>`).join('')}
+                </select>
+                <button onclick="reassignTask('${task.id}')" class="btn btn-primary">
+                  <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
+                  تكليف
+                </button>
               </div>
             </div>
           </div>
-
-          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-3">
-            <p class="text-sm font-bold text-gray-700 mb-2">
-              الموظف الحالي: <span class="text-teal-700">${task.assignee}</span>
-            </p>
-            <div class="flex gap-2">
-              <select id="new-emp-${task.id}" class="flex-grow px-3 py-2 border-2 border-gray-300 rounded-lg text-sm font-semibold">
-                <option value="">اختر موظف جديد...</option>
-                ${allEmployees.map(emp => `<option value="${emp.name}">${emp.name}</option>`).join('')}
-              </select>
-              <button onclick="reassignTask('${task.id}')" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold text-sm transition">
-                <i data-lucide="refresh-cw" class="w-4 h-4 inline"></i>
-                إعادة تكليف
-              </button>
-            </div>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('') + '</div>';
 
       lucide.createIcons();
+    }
+
+    function getStatusClass(status) {
+      if (!status) return 'status-new';
+      if (status.includes('تم الاعتماد') || status.includes('منتهي')) return 'status-done';
+      if (status.includes('متأخر')) return 'status-overdue';
+      if (status.includes('جاري')) return 'status-progress';
+      return 'status-new';
     }
 
     async function reassignTask(taskId) {
@@ -484,19 +592,23 @@
       document.getElementById('loading-overlay').classList.remove('hidden');
 
       try {
+        console.log('📧 إرسال طلب إعادة التكليف:', { taskId, newEmployee });
+        
         const result = await auth.apiCall('reassignTask', {
           taskId: taskId,
           newEmployee: newEmployee
         });
 
+        console.log('📬 نتيجة الطلب:', result);
+
         if (result && result.success) {
-          alert('✅ تم إعادة التكليف بنجاح!');
-          loadDashboard(); // Reload data
-          switchTab('dashboard');
+          alert('✅ تم إعادة التكليف بنجاح!\n\n📧 تم إرسال إيميل للموظف الجديد والمدير');
+          searchTasks(); // Refresh results
         } else {
           alert('❌ فشل إعادة التكليف: ' + (result.error || 'خطأ غير معروف'));
         }
       } catch (error) {
+        console.error('❌ خطأ في إعادة التكليف:', error);
         alert('❌ خطأ: ' + error.message);
       } finally {
         document.getElementById('loading-overlay').classList.add('hidden');
@@ -504,14 +616,8 @@
     }
 
     // ═══════════════════════════════════════════════════
-    // New Task
+    // New Task Form
     // ═══════════════════════════════════════════════════
-    function populateEmployeeDropdown() {
-      const select = document.getElementById('task-employee');
-      select.innerHTML = '<option value="">اختر الموظف...</option>' +
-        allEmployees.map(emp => `<option value="${emp.name}">${emp.name}</option>`).join('');
-    }
-
     document.getElementById('new-task-form').addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -532,15 +638,12 @@
       document.getElementById('loading-overlay').classList.remove('hidden');
 
       try {
-        const result = await auth.apiCall('addTask', {
-          taskData: taskData
-        });
+        const result = await auth.apiCall('addTask', { taskData });
 
         if (result && result.success) {
-          alert('✅ تم إضافة المهمة بنجاح! رقم القيد: ' + result.id);
+          alert('✅ تم إضافة المهمة بنجاح!\n\nرقم القيد: ' + result.id);
           document.getElementById('new-task-form').reset();
-          loadDashboard();
-          switchTab('dashboard');
+          switchTab('reassign', document.querySelector('.tab-btn'));
         } else {
           alert('❌ فشل إضافة المهمة: ' + (result.error || 'خطأ غير معروف'));
         }
@@ -551,8 +654,8 @@
       }
     });
 
-    // Initial load
-    loadDashboard();
+    // Initial Load
+    loadInitialData();
   </script>
 </body>
 </html>
