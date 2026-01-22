@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإشعارات - IAG</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <style>
+    .notif-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: #dc2626;
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 10px;
+      min-width: 20px;
+      text-align: center;
+    }
+    
+    .notif-card {
+      position: relative;
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    
+    .notif-card.unread {
+      background: #fffbeb;
+      border-color: #fbbf24;
+    }
+    
+    .notif-card:hover {
+      border-color: #0f766e;
+      box-shadow: 0 4px 16px rgba(15, 118, 110, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    .notif-new-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #dc2626;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 12px;
+    }
+    
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e9ecef;
+    }
+    
+    .filter-tab {
+      padding: 12px 20px;
+      font-weight: 700;
+      border: none;
+      background: none;
+      color: #6b7280;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .filter-tab:hover {
+      color: #0f766e;
+      background: #f0fdfa;
+    }
+    
+    .filter-tab.active {
+      color: #0f766e;
+      border-bottom-color: #0f766e;
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h2 class="text-xl font-bold mb-2">IAG System</h2>
+      <p id="user-name" class="text-sm opacity-90">مرحباً</p>
+    </div>
+    
+    <nav style="padding: 16px 0;">
+      <a href="index.html" class="sidebar-item">
+        <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+        <span>الرئيسية</span>
+      </a>
+      <a href="distribution.html" class="sidebar-item">
+        <i data-lucide="pie-chart" style="width: 20px; height: 20px;"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="forms.html" class="sidebar-item">
+        <i data-lucide="file-text" style="width: 20px; height: 20px;"></i>
+        <span>النماذج</span>
+      </a>
+      <a href="employee.html" class="sidebar-item">
+        <i data-lucide="briefcase" style="width: 20px; height: 20px;"></i>
+        <span>الخدمات</span>
+      </a>
+      <a href="notifications.html" class="sidebar-item active" style="position: relative;">
+        <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+        <span>الإشعارات</span>
+        <span id="sidebar-badge" class="notif-badge" style="display: none;"></span>
+      </a>
+      <a href="coordinator.html" class="sidebar-item" id="coordinator-link" style="display: none;">
+        <i data-lucide="users" style="width: 20px; height: 20px;"></i>
+        <span>المنسقين</span>
+      </a>
+      <a href="admin.html" class="sidebar-item admin" id="admin-link" style="display: none;">
+        <i data-lucide="settings" style="width: 20px; height: 20px;"></i>
+        <span>الإدارة</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    
+    <div class="card header-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1 style="font-size: 1.75rem; font-weight: 800;">الإشعارات</h1>
+          <p style="opacity: 0.9; margin-top: 4px;">إشعارات التكليفات الجديدة</p>
+        </div>
+        <button onclick="markAllRead()" style="width: auto; padding: 10px 20px; background: rgba(255,255,255,0.2);">
+          <i data-lucide="check-check" style="width: 18px; height: 18px; display: inline; vertical-align: middle; margin-left: 6px;"></i>
+          تعليم الكل كمقروء
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all" onclick="filterNotifications('all', this)">
+          <i data-lucide="inbox" style="width: 16px; height: 16px; display: inline; vertical-align: middle; margin-left: 4px;"></i>
+          الكل (<span id="count-all">0</span>)
+        </button>
+        <button class="filter-tab" data-filter="unread" onclick="filterNotifications('unread', this)">
+          <i data-lucide="bell-dot" style="width: 16px; height: 16px; display: inline; vertical-align: middle; margin-left: 4px;"></i>
+          غير المقروء (<span id="count-unread">0</span>)
+        </button>
+        <button class="filter-tab" data-filter="read" onclick="filterNotifications('read', this)">
+          <i data-lucide="check-circle" style="width: 16px; height: 16px; display: inline; vertical-align: middle; margin-left: 4px;"></i>
+          المقروء (<span id="count-read">0</span>)
+        </button>
+      </div>
+
+      <div id="notifications" style="color: #94a3b8; text-align: center; padding: 40px;">
+        <div style="font-size: 2rem; margin-bottom: 12px;">⏳</div>
+        <p style="font-weight: 600;">جارٍ تحميل الإشعارات...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script>
+    // ═══════════════════════════════════════════════════
+    // 🔒 Authentication
+    // ═══════════════════════════════════════════════════
+    const user = auth.checkSession();
+    if (!user) {
+      alert('يجب تسجيل الدخول أولاً');
+      window.location.href = 'index.html';
+    }
+
+    lucide.createIcons();
+
+    // Show/Hide Links Based on Role
+    if (user.role === 'منسق' || user.role === 'Coordinator') {
+      document.getElementById('coordinator-link').style.display = 'flex';
+    } else if (user.role === 'مدير' || user.role === 'Admin') {
+      document.getElementById('coordinator-link').style.display = 'flex';
+      document.getElementById('admin-link').style.display = 'flex';
+    }
+
+    document.getElementById('user-name').textContent = `${user.name} 👋`;
+
+    let allNotifications = [];
+    let currentFilter = 'all';
+
+    // ═══════════════════════════════════════════════════
+    // Load Notifications
+    // ═══════════════════════════════════════════════════
+    async function loadNotifications() {
+      try {
+        const result = await auth.apiCall('getNotifications', {
+          employeeName: user.name,
+          filterType: currentFilter
+        });
+
+        if (!result || !result.success) {
+          throw new Error('فشل تحميل الإشعارات');
+        }
+
+        allNotifications = result.notifications || [];
+        const unreadCount = result.unreadCount || 0;
+
+        // Update counts
+        document.getElementById('count-all').textContent = allNotifications.length;
+        document.getElementById('count-unread').textContent = unreadCount;
+        document.getElementById('count-read').textContent = allNotifications.length - unreadCount;
+
+        // Update badge
+        updateBadge(unreadCount);
+
+        // Display
+        displayNotifications(allNotifications);
+
+      } catch (err) {
+        document.getElementById('notifications').innerHTML = `
+          <div style="text-align: center; padding: 60px; color: #dc2626;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">❌</div>
+            <h3 style="font-weight: 700; margin-bottom: 8px;">خطأ في التحميل</h3>
+            <p style="color: #64748b;">${err.message}</p>
+            <button onclick="loadNotifications()" style="width: auto; margin: 16px auto 0; padding: 10px 24px;">إعادة المحاولة</button>
+          </div>
+        `;
+        lucide.createIcons();
+      }
+    }
+
+    function updateBadge(count) {
+      const badge = document.getElementById('sidebar-badge');
+      if (count > 0) {
+        badge.textContent = count > 99 ? '99+' : count;
+        badge.style.display = 'block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    // ═══════════════════════════════════════════════════
+    // Display Notifications
+    // ═══════════════════════════════════════════════════
+    function displayNotifications(notifications) {
+      const container = document.getElementById('notifications');
+
+      if (!notifications || notifications.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 60px; color: #94a3b8;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">🔕</div>
+            <p style="font-size: 1.1rem; font-weight: 600;">لا توجد إشعارات</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `<div class="task-grid">${notifications.map(notif => {
+        const task = notif.taskData || {};
+        const isUnread = !notif.read;
+        
+        return `
+          <div class="notif-card ${isUnread ? 'unread' : ''}" onclick="openNotification('${notif.id}', ${isUnread})">
+            ${isUnread ? '<span class="notif-new-badge">جديد</span>' : ''}
+            
+            <div class="task-header">
+              <div class="task-id">${task.id || notif.taskId}</div>
+              <span class="badge badge-pending">${notif.type}</span>
+            </div>
+            
+            <div class="task-subject">${task.subject || 'موضوع غير محدد'}</div>
+            
+            <div class="task-meta">
+              <div><strong>📥 من:</strong> ${task.source || task.entity || 'غير محدد'}</div>
+              <div><strong>📍 التنفيذ:</strong> ${task.entity || 'غير محدد'}</div>
+              <div><strong>📅 التاريخ:</strong> ${task.date || 'غير محدد'}</div>
+              <div><strong>🕐 وقت الإشعار:</strong> ${notif.timestamp}</div>
+              ${task.attachment ? `<div><a href="${task.attachment}" target="_blank" style="color: #0f766e; text-decoration: underline; font-weight: 700;" onclick="event.stopPropagation();">📎 المرفق</a></div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('')}</div>`;
+
+      lucide.createIcons();
+    }
+
+    // ═══════════════════════════════════════════════════
+    // Open Notification (Mark as Read)
+    // ═══════════════════════════════════════════════════
+    async function openNotification(notifId, isUnread) {
+      if (isUnread) {
+        try {
+          await auth.apiCall('markNotificationAsRead', {
+            notificationId: notifId
+          });
+          
+          // Reload
+          await loadNotifications();
+        } catch (err) {
+          console.error('خطأ في تعليم الإشعار كمقروء:', err);
+        }
+      }
+    }
+
+    // ═══════════════════════════════════════════════════
+    // Filter Notifications
+    // ═══════════════════════════════════════════════════
+    function filterNotifications(filter, button) {
+      currentFilter = filter;
+      
+      // Update active tab
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      button.classList.add('active');
+      
+      // Reload with filter
+      loadNotifications();
+    }
+
+    // ═══════════════════════════════════════════════════
+    // Mark All as Read
+    // ═══════════════════════════════════════════════════
+    async function markAllRead() {
+      if (!confirm('هل تريد تعليم كل الإشعارات كمقروءة؟')) return;
+
+      try {
+        const result = await auth.apiCall('markAllNotificationsAsRead', {
+          employeeName: user.name
+        });
+
+        if (result && result.success) {
+          alert(`✅ تم تعليم ${result.markedCount} إشعار كمقروء`);
+          await loadNotifications();
+        }
+      } catch (err) {
+        alert('❌ خطأ: ' + err.message);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════
+    // Auto Refresh every 30 seconds
+    // ═══════════════════════════════════════════════════
+    setInterval(() => {
+      loadNotifications();
+    }, 30000);
+
+    // Initial Load
+    loadNotifications();
+  </script>
+</body>
+</html>
