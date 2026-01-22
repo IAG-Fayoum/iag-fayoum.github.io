@@ -7,7 +7,7 @@
 const CONFIG = {
   // 1. رابط الـ Backend (Google Apps Script Web App URL)
   // ⚠️ هام: استبدل هذا الرابط برابط السكربت الخاص بك بعد النشر
-  API_URL: 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE',
+  API_URL: 'https://script.google.com/macros/s/AKfycbzB0a7A7Dq4j5-l_-4YkBH1c-cOmgi7kIFP6Da8ZjM1CLfz9xZIncim13cJfc2LPyru3A/exec',
 
   // 2. روابط النماذج الإلكترونية (Google Forms)
   // يمكنك تحديث الروابط هنا فقط وسيتغير في الموقع بالكامل
