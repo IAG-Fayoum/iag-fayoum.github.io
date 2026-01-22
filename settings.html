@@ -11,19 +11,52 @@
 
   <style>
     body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
-    #loading-overlay { position: fixed; top: 0; right: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); display: none; align-items: center; justify-content: center; z-index: 9999; }
-    .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
     
-    .input-field { width: 100%; padding: 10px 15px; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 5px; transition: all 0.3s; }
-    .input-field:focus { outline: none; border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
-    label { font-size: 0.9rem; font-weight: 600; color: #475569; }
+    /* Input Styling with Focus States */
+    .input-field { 
+      width: 100%; 
+      padding: 10px 15px; 
+      border: 1px solid #e2e8f0; 
+      border-radius: 8px; 
+      margin-top: 5px; 
+      transition: all 0.3s; 
+      background-color: white;
+    }
+    .input-field:focus { 
+      outline: none; 
+      border-color: #0f766e; 
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); 
+    }
+    
+    /* Error State */
+    .input-error {
+      border-color: #ef4444;
+      background-color: #fef2f2;
+    }
+
+    label { font-size: 0.9rem; font-weight: 600; color: #475569; margin-bottom: 4px; display: block; }
+
+    /* Button Loading State */
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    .btn-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body class="pb-20">
-
-  <div id="loading-overlay"><div class="spinner"></div></div>
-  <div id="message-box" class="hidden"></div>
 
   <header class="bg-gradient-to-r from-slate-800 to-slate-900 text-white py-6 px-6 shadow-xl sticky top-0 z-40">
     <div class="container mx-auto flex justify-between items-center">
@@ -49,9 +82,9 @@
       </div>
       
       <form id="add-task-form" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label>الموضوع / اسم المهمة</label>
-          <input type="text" name="subject" class="input-field" required>
+        <div class="md:col-span-2">
+          <label>الموضوع / اسم المهمة <span class="text-red-500">*</span></label>
+          <input type="text" name="subject" class="input-field" required minlength="3" placeholder="وصف مختصر للمهمة">
         </div>
         
         <div>
@@ -65,23 +98,23 @@
         </div>
 
         <div>
-          <label>الموظف المكلف</label>
+          <label>الموظف المكلف <span class="text-red-500">*</span></label>
           <input type="text" name="employee" class="input-field" required placeholder="الاسم كما في النظام">
         </div>
 
         <div>
-          <label>تاريخ الورود</label>
-          <input type="date" name="date" class="input-field" required>
+          <label>تاريخ الورود <span class="text-red-500">*</span></label>
+          <input type="date" name="date" id="task-date" class="input-field" required>
         </div>
 
         <div>
           <label>الموعد النهائي (اختياري)</label>
-          <input type="date" name="deadline" class="input-field">
+          <input type="date" name="deadline" id="task-deadline" class="input-field">
         </div>
         
-        <div class="md:col-span-2">
-           <button type="submit" class="w-full bg-teal-600 text-white py-3 rounded-lg font-bold hover:bg-teal-700 transition shadow-lg shadow-teal-600/20">
-             إضافة المهمة للنظام
+        <div class="md:col-span-2 mt-2">
+           <button type="submit" class="w-full bg-teal-600 text-white py-3 rounded-lg font-bold hover:bg-teal-700 transition shadow-lg shadow-teal-600/20 flex items-center justify-center">
+             <span>إضافة المهمة للنظام</span>
            </button>
         </div>
       </form>
@@ -95,18 +128,18 @@
       
       <form id="reassign-form" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2">
-          <label>رقم قيد المهمة (ID)</label>
+          <label>رقم قيد المهمة (ID) <span class="text-red-500">*</span></label>
           <input type="text" id="reassign-id" class="input-field" placeholder="مثال: 24-105" required>
         </div>
         
         <div class="md:col-span-2">
-          <label>الموظف الجديد</label>
+          <label>الموظف الجديد <span class="text-red-500">*</span></label>
           <input type="text" id="reassign-new-emp" class="input-field" placeholder="اسم الموظف الجديد" required>
         </div>
 
-        <div class="md:col-span-2">
-           <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-600/20">
-             تحديث المسؤول
+        <div class="md:col-span-2 mt-2">
+           <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-600/20 flex items-center justify-center">
+             <span>تحديث المسؤول</span>
            </button>
         </div>
       </form>
@@ -120,13 +153,14 @@
       
       <form id="status-form" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label>رقم قيد المهمة (ID)</label>
+          <label>رقم قيد المهمة (ID) <span class="text-red-500">*</span></label>
           <input type="text" id="status-id" class="input-field" required>
         </div>
         
         <div>
-          <label>الحالة الجديدة</label>
+          <label>الحالة الجديدة <span class="text-red-500">*</span></label>
           <select id="status-new" class="input-field bg-white" required>
+            <option value="" disabled selected>اختر الحالة...</option>
             <option value="لم يتم البدء">لم يتم البدء</option>
             <option value="قيد المراجعة">قيد المراجعة</option>
             <option value="بانتظار الاعتماد">بانتظار الاعتماد</option>
@@ -138,9 +172,9 @@
           </select>
         </div>
 
-        <div class="md:col-span-2">
-           <button type="submit" class="w-full bg-amber-600 text-white py-3 rounded-lg font-bold hover:bg-amber-700 transition shadow-lg shadow-amber-600/20">
-             تغيير الحالة
+        <div class="md:col-span-2 mt-2">
+           <button type="submit" class="w-full bg-amber-600 text-white py-3 rounded-lg font-bold hover:bg-amber-700 transition shadow-lg shadow-amber-600/20 flex items-center justify-center">
+             <span>تغيير الحالة</span>
            </button>
         </div>
       </form>
@@ -153,61 +187,125 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
+      // Security Check
       const user = auth.checkSession();
-      if (user && user.role !== 'مدير' && user.role !== 'Admin') {
-        alert('غير مصرح لك بدخول هذه الصفحة');
-        window.location.href = 'index.html';
+      if (!user || (user.role !== 'مدير' && user.role !== 'Admin')) {
+        alert('⛔ غير مصرح لك بدخول هذه الصفحة');
+        window.location.replace('index.html');
       }
     });
 
+    // Helper: Sanitize Input (Prevents XSS)
+    function sanitizeInput(str) {
+      if (typeof str !== 'string') return str;
+      return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Helper: Manage Button State
+    function setBtnLoading(btn, isLoading, originalText = '') {
+      const span = btn.querySelector('span');
+      if (isLoading) {
+        btn.disabled = true;
+        btn.dataset.originalText = span.textContent;
+        span.innerHTML = 'جارٍ التنفيذ... <div class="btn-spinner"></div>';
+      } else {
+        btn.disabled = false;
+        span.textContent = btn.dataset.originalText || originalText;
+      }
+    }
+
+    // 1. Handle Add Task
     document.getElementById('add-task-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const formData = new FormData(e.target);
-      const taskData = Object.fromEntries(formData.entries());
-
-      const result = await auth.apiCall('addTask', { taskData: taskData }, { useCache: false });
+      const btn = e.target.querySelector('button');
       
-      if (result.success) {
-        alert(`تمت إضافة المهمة بنجاح برقم: ${result.id}`);
-        e.target.reset();
-      } else {
-        alert('حدث خطأ: ' + (result.error || 'غير معروف'));
+      // Validation: Dates
+      const date = document.getElementById('task-date').value;
+      const deadline = document.getElementById('task-deadline').value;
+      if (deadline && new Date(deadline) < new Date(date)) {
+        alert('⚠️ خطأ: الموعد النهائي لا يمكن أن يكون قبل تاريخ الورود');
+        return;
+      }
+
+      setBtnLoading(btn, true);
+
+      try {
+        const formData = new FormData(e.target);
+        const taskData = {};
+        
+        // Sanitize all entries
+        formData.forEach((value, key) => {
+          taskData[key] = sanitizeInput(value);
+        });
+
+        const result = await auth.apiCall('addTask', { taskData: taskData }, { useCache: false });
+        
+        if (result.success) {
+          alert(`✅ تمت إضافة المهمة بنجاح!\nرقم القيد: ${result.id}`);
+          e.target.reset();
+        } else {
+          alert('❌ فشل الإضافة: ' + (result.error || 'خطأ غير معروف'));
+        }
+      } catch (err) {
+        alert('❌ خطأ في الاتصال: ' + err.message);
+      } finally {
+        setBtnLoading(btn, false);
       }
     });
 
+    // 2. Handle Reassign
     document.getElementById('reassign-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const taskId = document.getElementById('reassign-id').value;
-      const newEmp = document.getElementById('reassign-new-emp').value;
+      const btn = e.target.querySelector('button');
+      const taskId = sanitizeInput(document.getElementById('reassign-id').value);
+      const newEmp = sanitizeInput(document.getElementById('reassign-new-emp').value);
 
-      const result = await auth.apiCall('reassignTask', { 
-        taskId: taskId, 
-        newEmployee: newEmp 
-      }, { useCache: false });
-      
-      if (result.success) {
-        alert('تم نقل المهمة للموظف الجديد بنجاح');
-        e.target.reset();
-      } else {
-        alert('حدث خطأ: ' + (result.error || 'غير معروف'));
+      setBtnLoading(btn, true);
+
+      try {
+        const result = await auth.apiCall('reassignTask', { 
+          taskId: taskId, 
+          newEmployee: newEmp 
+        }, { useCache: false });
+        
+        if (result.success) {
+          alert('✅ تم نقل المهمة للموظف الجديد بنجاح');
+          e.target.reset();
+        } else {
+          alert('❌ حدث خطأ: ' + (result.error || 'تأكد من رقم المهمة'));
+        }
+      } catch (err) {
+        alert('❌ خطأ: ' + err.message);
+      } finally {
+        setBtnLoading(btn, false);
       }
     });
 
+    // 3. Handle Status Update
     document.getElementById('status-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const taskId = document.getElementById('status-id').value;
+      const btn = e.target.querySelector('button');
+      const taskId = sanitizeInput(document.getElementById('status-id').value);
       const newStatus = document.getElementById('status-new').value;
 
-      const result = await auth.apiCall('updateStatus', { 
-        taskId: taskId, 
-        newStatus: newStatus 
-      }, { useCache: false });
-      
-      if (result.success) {
-        alert('تم تحديث حالة المهمة بنجاح');
-        e.target.reset();
-      } else {
-        alert('حدث خطأ: ' + (result.error || 'غير معروف'));
+      setBtnLoading(btn, true);
+
+      try {
+        const result = await auth.apiCall('updateStatus', { 
+          taskId: taskId, 
+          newStatus: newStatus 
+        }, { useCache: false });
+        
+        if (result.success) {
+          alert('✅ تم تحديث حالة المهمة بنجاح');
+          e.target.reset();
+        } else {
+          alert('❌ حدث خطأ: ' + (result.error || 'تأكد من رقم المهمة'));
+        }
+      } catch (err) {
+        alert('❌ خطأ: ' + err.message);
+      } finally {
+        setBtnLoading(btn, false);
       }
     });
   </script>
