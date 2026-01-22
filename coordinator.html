@@ -355,33 +355,36 @@
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-3">فلترة حسب الفترة الزمنية</label>
           <div class="flex flex-wrap gap-2">
-            <button class="filter-btn active" data-period="today" onclick="setTimePeriod('today')">اليوم</button>
-            <button class="filter-btn" data-period="3days" onclick="setTimePeriod('3days')">آخر 3 أيام</button>
-            <button class="filter-btn" data-period="week" onclick="setTimePeriod('week')">أسبوع</button>
-            <button class="filter-btn" data-period="month" onclick="setTimePeriod('month')">شهر</button>
-            <button class="filter-btn" data-period="custom" onclick="setTimePeriod('custom')">مخصص</button>
+            <button class="filter-btn active" data-period="week" onclick="setTimePeriod('week')">آخر أسبوع</button>
+            <button class="filter-btn" data-period="month" onclick="setTimePeriod('month')">آخر شهر</button>
+            <button class="filter-btn" data-period="quarter" onclick="setTimePeriod('quarter')">آخر 3 أشهر</button>
+            <button class="filter-btn" data-period="year" onclick="setTimePeriod('year')">السنة الحالية</button>
+            <button class="filter-btn" data-period="custom" onclick="setTimePeriod('custom')">فترة مخصصة</button>
           </div>
           
           <div id="custom-date-range" style="display: none;" class="mt-4 grid grid-cols-2 gap-3">
-            <input type="date" id="start-date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-semibold">
-            <input type="date" id="end-date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-semibold">
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">من تاريخ</label>
+              <input type="date" id="start-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-semibold">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">إلى تاريخ</label>
+              <input type="date" id="end-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-semibold">
+            </div>
           </div>
+          
+          <p class="text-xs text-gray-500 mt-2" id="period-display">
+            <i data-lucide="calendar" class="w-3 h-3 inline"></i>
+            الفترة: <span class="font-bold" id="period-text">آخر 7 أيام</span>
+          </p>
         </div>
 
         <!-- Employee Filter -->
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-3">فلترة حسب الموظف</label>
           <select id="employee-filter" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg font-semibold focus:border-teal-600 focus:outline-none">
-            <option value="">الكل</option>
-            <optgroup label="المالي والإداري">
-              <option value="نسمة">نسمة</option>
-              <option value="أسماء">أسماء</option>
-              <option value="أ. محمود">أ. محمود</option>
-            </optgroup>
-            <optgroup label="الفنيين">
-              <option value="ريم">ريم</option>
-              <option value="سهى">سهى</option>
-            </optgroup>
+            <option value="">جميع الموظفين</option>
+            <!-- Will be populated dynamically -->
           </select>
           
           <button onclick="applyFilters()" class="w-full mt-3 bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-bold transition">
@@ -424,10 +427,23 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
+    // Check authentication first
+    const currentUser = auth.checkSession();
+    if (!currentUser) {
+      window.location.href = 'index.html';
+    }
+
     lucide.createIcons();
 
-    let currentPeriod = 'today';
+    // Display user name
+    const userNameEl = document.querySelector('.sidebar-logo p');
+    if (userNameEl && currentUser) {
+      userNameEl.textContent = `مرحباً ${currentUser.name}`;
+    }
+
+    let currentPeriod = 'week'; // Default to last week
     let currentEmployee = '';
+    let allEmployees = [];
 
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('active');
@@ -446,6 +462,37 @@
       // Show/hide custom date range
       document.getElementById('custom-date-range').style.display = 
         period === 'custom' ? 'grid' : 'none';
+      
+      // Update period display
+      updatePeriodDisplay();
+    }
+
+    function updatePeriodDisplay() {
+      const periodTextEl = document.getElementById('period-text');
+      const dateRange = getDateRange();
+      
+      let displayText = '';
+      switch(currentPeriod) {
+        case 'week':
+          displayText = 'آخر 7 أيام';
+          break;
+        case 'month':
+          displayText = 'آخر 30 يوم';
+          break;
+        case 'quarter':
+          displayText = 'آخر 3 أشهر';
+          break;
+        case 'year':
+          displayText = 'السنة الحالية (2025)';
+          break;
+        case 'custom':
+          displayText = `من ${dateRange.start} إلى ${dateRange.end}`;
+          break;
+      }
+      
+      if (periodTextEl) {
+        periodTextEl.textContent = displayText;
+      }
     }
 
     function getDateRange() {
@@ -453,15 +500,6 @@
       let startDate, endDate;
 
       switch(currentPeriod) {
-        case 'today':
-          startDate = new Date(today);
-          endDate = new Date(today);
-          break;
-        case '3days':
-          startDate = new Date(today);
-          startDate.setDate(today.getDate() - 3);
-          endDate = new Date(today);
-          break;
         case 'week':
           startDate = new Date(today);
           startDate.setDate(today.getDate() - 7);
@@ -472,6 +510,15 @@
           startDate.setMonth(today.getMonth() - 1);
           endDate = new Date(today);
           break;
+        case 'quarter':
+          startDate = new Date(today);
+          startDate.setMonth(today.getMonth() - 3);
+          endDate = new Date(today);
+          break;
+        case 'year':
+          startDate = new Date(today.getFullYear(), 0, 1); // Jan 1
+          endDate = new Date(today);
+          break;
         case 'custom':
           const startInput = document.getElementById('start-date').value;
           const endInput = document.getElementById('end-date').value;
@@ -480,11 +527,13 @@
             endDate = new Date(endInput);
           } else {
             startDate = new Date(today);
+            startDate.setDate(today.getDate() - 7);
             endDate = new Date(today);
           }
           break;
         default:
           startDate = new Date(today);
+          startDate.setDate(today.getDate() - 7);
           endDate = new Date(today);
       }
 
@@ -492,6 +541,62 @@
         start: startDate.toISOString().split('T')[0],
         end: endDate.toISOString().split('T')[0]
       };
+    }
+
+    async function loadEmployees() {
+      try {
+        const result = await auth.apiCall('getAllData', {
+          role: 'مدير',
+          name: 'System',
+          startDate: '2020-01-01',
+          endDate: '2030-12-31'
+        });
+
+        if (result && result.success && result.stats && result.stats.employees) {
+          allEmployees = result.stats.employees;
+          
+          const selectEl = document.getElementById('employee-filter');
+          const financialAdmins = allEmployees.filter(e => 
+            e.role && (e.role.includes('مالي') || e.role.includes('إداري'))
+          );
+          const technical = allEmployees.filter(e => 
+            e.role && e.role.includes('فني')
+          );
+          const others = allEmployees.filter(e => 
+            !financialAdmins.includes(e) && !technical.includes(e)
+          );
+          
+          let optionsHTML = '<option value="">جميع الموظفين</option>';
+          
+          if (financialAdmins.length > 0) {
+            optionsHTML += '<optgroup label="المالي والإداري">';
+            financialAdmins.forEach(emp => {
+              optionsHTML += `<option value="${emp.name}">${emp.name}</option>`;
+            });
+            optionsHTML += '</optgroup>';
+          }
+          
+          if (technical.length > 0) {
+            optionsHTML += '<optgroup label="الفنيين">';
+            technical.forEach(emp => {
+              optionsHTML += `<option value="${emp.name}">${emp.name}</option>`;
+            });
+            optionsHTML += '</optgroup>';
+          }
+          
+          if (others.length > 0) {
+            optionsHTML += '<optgroup label="آخرون">';
+            others.forEach(emp => {
+              optionsHTML += `<option value="${emp.name}">${emp.name}</option>`;
+            });
+            optionsHTML += '</optgroup>';
+          }
+          
+          selectEl.innerHTML = optionsHTML;
+        }
+      } catch (error) {
+        console.error('Error loading employees:', error);
+      }
     }
 
     async function applyFilters() {
@@ -631,8 +736,10 @@
     }
 
     // Initial load
-    setTimeout(() => {
-      applyFilters();
+    setTimeout(async () => {
+      updatePeriodDisplay();
+      await loadEmployees();
+      await applyFilters();
     }, 500);
   </script>
 </body>
