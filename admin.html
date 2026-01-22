@@ -13,61 +13,106 @@
     body { 
       font-family: 'Cairo', sans-serif; 
       background: #f8f9fa;
-      padding: 20px;
-      padding-bottom: 80px;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 260px;
+      height: 100vh;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.08);
+      z-index: 100;
+      overflow-y: auto;
+    }
+    
+    .sidebar-logo {
+      padding: 24px;
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      color: white;
+    }
+    
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      color: #495057;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+      border-right: 3px solid transparent;
+    }
+    
+    .sidebar-item:hover, .sidebar-item.active {
+      background: #fef2f2;
+      border-right-color: #dc2626;
+      color: #dc2626;
+    }
+    
+    /* Main Content */
+    .main-content {
+      margin-right: 260px;
+      padding: 24px;
     }
     
     .card {
       background: white;
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 24px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       margin-bottom: 24px;
       border: 1px solid #e9ecef;
     }
     
-    /* Tab System */
-    .tab-nav {
-      display: flex;
-      gap: 8px;
-      border-bottom: 2px solid #e9ecef;
-      margin-bottom: 24px;
+    /* Filters */
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
     }
     
-    .tab-btn {
-      padding: 14px 24px;
+    .filter-label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.875rem;
+      margin-bottom: 8px;
+      color: #475569;
+    }
+    
+    select, input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-weight: 600;
+      font-family: 'Cairo', sans-serif;
+    }
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: #dc2626;
+    }
+    
+    button {
+      background: #dc2626;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
       font-weight: 700;
       border: none;
-      background: none;
-      color: #6b7280;
-      border-bottom: 3px solid transparent;
       cursor: pointer;
       transition: all 0.2s;
-      font-size: 0.95rem;
+      width: 100%;
     }
     
-    .tab-btn:hover {
-      color: #dc2626;
-      background: #fef2f2;
-    }
-    
-    .tab-btn.active {
-      color: #dc2626;
-      border-bottom-color: #dc2626;
-    }
-    
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
-      animation: fadeIn 0.3s ease;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    button:hover {
+      background: #b91c1c;
     }
     
     /* Task Grid */
@@ -75,7 +120,6 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 16px;
-      margin-top: 20px;
     }
     
     .task-card {
@@ -84,7 +128,6 @@
       border-radius: 12px;
       padding: 20px;
       transition: all 0.2s;
-      cursor: pointer;
     }
     
     .task-card:hover {
@@ -93,10 +136,9 @@
       transform: translateY(-2px);
     }
     
-    .task-card-header {
+    .task-header {
       display: flex;
       justify-content: space-between;
-      align-items: start;
       margin-bottom: 12px;
     }
     
@@ -106,23 +148,21 @@
       color: #1e293b;
     }
     
-    .status-badge {
+    .badge {
       padding: 4px 10px;
       border-radius: 12px;
       font-size: 0.7rem;
       font-weight: 700;
     }
     
-    .status-new { background: #dbeafe; color: #1e40af; }
-    .status-progress { background: #fef3c7; color: #92400e; }
-    .status-done { background: #dcfce7; color: #166534; }
-    .status-overdue { background: #fee2e2; color: #991b1b; }
+    .badge-done { background: #dcfce7; color: #166534; }
+    .badge-pending { background: #fef3c7; color: #92400e; }
     
     .task-subject {
       color: #475569;
       font-weight: 600;
       margin-bottom: 12px;
-      font-size: 0.95rem;
+      min-height: 45px;
       line-height: 1.5;
     }
     
@@ -132,28 +172,22 @@
       gap: 6px;
       font-size: 0.8rem;
       color: #64748b;
+      margin-bottom: 12px;
     }
     
-    .task-meta-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    
-    /* Reassign Section */
-    .reassign-section {
+    .reassign-box {
       background: #f8fafc;
-      padding: 16px;
+      padding: 12px;
       border-radius: 8px;
-      margin-top: 12px;
       border: 2px dashed #cbd5e1;
+      margin-top: 12px;
     }
     
     .reassign-current {
       font-size: 0.85rem;
       font-weight: 700;
       color: #475569;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     
     .reassign-controls {
@@ -161,76 +195,19 @@
       gap: 8px;
     }
     
-    select {
+    .reassign-controls select {
       flex-grow: 1;
-      padding: 8px 12px;
-      border: 2px solid #e2e8f0;
-      border-radius: 8px;
-      font-weight: 600;
+      padding: 8px;
       font-size: 0.85rem;
     }
     
-    select:focus {
-      outline: none;
-      border-color: #dc2626;
-    }
-    
-    .btn {
+    .reassign-controls button {
       padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
       font-size: 0.85rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      width: auto;
     }
     
-    .btn-primary {
-      background: #dc2626;
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background: #b91c1c;
-    }
-    
-    .btn-block {
-      width: 100%;
-      justify-content: center;
-      padding: 12px;
-      font-size: 1rem;
-    }
-    
-    /* Search Bar */
-    .search-box {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    
-    input[type="text"],
-    input[type="date"],
-    input[type="url"],
-    textarea {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #e2e8f0;
-      border-radius: 8px;
-      font-weight: 600;
-      font-family: 'Cairo', sans-serif;
-    }
-    
-    input:focus,
-    textarea:focus {
-      outline: none;
-      border-color: #dc2626;
-    }
-    
-    /* Loading */
-    .loading-overlay {
+    .loading {
       position: fixed;
       inset: 0;
       background: rgba(255,255,255,0.95);
@@ -240,9 +217,7 @@
       z-index: 999;
     }
     
-    .loading-overlay.hidden {
-      display: none;
-    }
+    .loading.hidden { display: none; }
     
     .spinner {
       width: 50px;
@@ -257,430 +232,314 @@
       to { transform: rotate(360deg); }
     }
     
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #94a3b8;
-    }
-    
-    .empty-state-icon {
-      font-size: 4rem;
-      margin-bottom: 16px;
-    }
-    
-    .empty-state-text {
-      font-size: 1.1rem;
-      font-weight: 600;
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(100%); }
+      .main-content { margin-right: 0; }
     }
   </style>
 </head>
 <body>
 
-  <div class="loading-overlay hidden" id="loading-overlay">
-    <div class="spinner"></div>
-  </div>
+  <div class="loading hidden" id="loading"></div>
 
-  <!-- Header -->
-  <div class="card" style="background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; border: none;">
-    <div style="display: flex; align-items: center; justify-content: space-between;">
-      <div style="display: flex; align-items: center; gap: 16px;">
-        <a href="index.html" style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; display: flex;">
-          <i data-lucide="arrow-right" class="w-6 h-6"></i>
-        </a>
-        <div>
-          <h1 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 4px;">لوحة الإدارة</h1>
-          <p id="admin-name" style="opacity: 0.9;">مرحباً بك</p>
-        </div>
-      </div>
-      <button onclick="auth.logout()" style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; border: none; cursor: pointer;">
-        <i data-lucide="log-out" class="w-6 h-6" style="color: white;"></i>
-      </button>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h2 class="text-xl font-bold mb-1">لوحة الإدارة</h2>
+      <p id="user-name" class="text-sm opacity-90">مرحباً</p>
     </div>
-  </div>
+    
+    <nav class="py-4">
+      <a href="index.html" class="sidebar-item">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span>الرئيسية</span>
+      </a>
+      <a href="distribution.html" class="sidebar-item">
+        <i data-lucide="pie-chart" class="w-5 h-5"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="forms.html" class="sidebar-item">
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+        <span>النماذج</span>
+      </a>
+      <a href="coordinator.html" class="sidebar-item">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span>المنسقين</span>
+      </a>
+      <a href="admin.html" class="sidebar-item active">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span>الإدارة</span>
+      </a>
+    </nav>
+  </aside>
 
-  <!-- Tabs Navigation -->
-  <div class="card">
-    <div class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('reassign', this)">
-        <i data-lucide="refresh-cw" style="width: 18px; height: 18px; display: inline; vertical-align: middle;"></i>
-        إعادة تكليف
-      </button>
-      <button class="tab-btn" onclick="switchTab('new-task', this)">
-        <i data-lucide="plus-circle" style="width: 18px; height: 18px; display: inline; vertical-align: middle;"></i>
-        تكليف جديد
-      </button>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════ -->
-    <!-- TAB 1: إعادة تكليف -->
-    <!-- ═══════════════════════════════════════════════════ -->
-    <div id="tab-reassign" class="tab-content active">
-      
-      <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 16px; color: #1e293b;">
-        بحث عن مهمة
-      </h2>
-      
-      <div class="search-box">
-        <input 
-          type="text" 
-          id="search-task" 
-          placeholder="ابحث برقم القيد أو الموضوع أو اسم الموظف..."
-          style="flex-grow: 1;"
-        >
-        <button onclick="searchTasks()" class="btn btn-primary">
-          <i data-lucide="search" style="width: 18px; height: 18px;"></i>
-          بحث
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Header -->
+    <div class="card" style="background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; border: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="font-size: 1.75rem; font-weight: 800;">إعادة تكليف المهام</h1>
+        <button onclick="auth.logout()" style="width: auto; padding: 10px; background: rgba(255,255,255,0.2);">
+          <i data-lucide="log-out" class="w-6 h-6"></i>
         </button>
       </div>
-
-      <div id="reassign-tasks">
-        <div class="empty-state">
-          <div class="empty-state-icon">🔍</div>
-          <p class="empty-state-text">استخدم البحث للعثور على المهام</p>
-        </div>
-      </div>
-
     </div>
 
-    <!-- ═══════════════════════════════════════════════════ -->
-    <!-- TAB 2: تكليف جديد -->
-    <!-- ═══════════════════════════════════════════════════ -->
-    <div id="tab-new-task" class="tab-content">
+    <!-- Filters -->
+    <div class="card">
+      <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 16px; color: #1e293b;">الفلاتر</h2>
       
-      <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; color: #1e293b;">
-        إضافة تكليف يدوي جديد
-      </h2>
-      
-      <form id="new-task-form" style="max-width: 600px;">
-        
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">التاريخ *</label>
-          <input type="date" id="task-date" required>
-        </div>
-
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الجهة *</label>
-          <input type="text" id="task-source" required placeholder="مثال: وزارة الصحة">
-        </div>
-
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الجهة محل التنفيذ *</label>
-          <input type="text" id="task-entity" required placeholder="مثال: مستشفى الفيوم العام">
-        </div>
-
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الموضوع *</label>
-          <textarea id="task-subject" required rows="3" placeholder="وصف الموضوع..."></textarea>
-        </div>
-
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الموظف المكلف *</label>
-          <select id="task-employee" required>
-            <option value="">اختر الموظف...</option>
+      <div class="filter-grid">
+        <div>
+          <label class="filter-label">الفترة الزمنية</label>
+          <select id="period-filter">
+            <option value="week">آخر أسبوع</option>
+            <option value="month">آخر شهر</option>
+            <option value="3months">آخر 3 أشهر</option>
+            <option value="year">السنة الحالية</option>
+            <option value="all">جميع الفترات</option>
           </select>
         </div>
 
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الموعد النهائي</label>
-          <input type="date" id="task-deadline">
+        <div>
+          <label class="filter-label">الموظف</label>
+          <select id="employee-filter">
+            <option value="">جميع الموظفين</option>
+          </select>
         </div>
 
-        <div style="margin-bottom: 24px;">
-          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">رابط المرفقات</label>
-          <input type="url" id="task-attachment" placeholder="https://...">
+        <div>
+          <label class="filter-label">الجهة</label>
+          <select id="entity-filter">
+            <option value="">جميع الجهات</option>
+          </select>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block">
-          <i data-lucide="plus-circle" style="width: 20px; height: 20px;"></i>
-          إضافة المهمة
-        </button>
+        <div>
+          <label class="filter-label">الحالة</label>
+          <select id="status-filter">
+            <option value="">جميع الحالات</option>
+            <option value="جديد">جديد</option>
+            <option value="جاري">جاري التنفيذ</option>
+            <option value="منتهي">منتهي</option>
+            <option value="متأخر">متأخر</option>
+          </select>
+        </div>
+      </div>
 
-      </form>
-
+      <button onclick="applyFilters()">
+        <i data-lucide="filter" style="width: 18px; height: 18px; display: inline; vertical-align: middle;"></i>
+        تطبيق الفلتر
+      </button>
     </div>
 
-  </div>
+    <!-- Results -->
+    <div id="results">
+      <p style="text-align: center; color: #94a3b8; padding: 60px 20px;">اختر الفلاتر واضغط "تطبيق الفلتر"</p>
+    </div>
+
+  </main>
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
     lucide.createIcons();
 
-    // Check Auth
-    const currentUser = auth.checkSession();
-    if (!currentUser) {
-      alert('يجب تسجيل الدخول أولاً');
+    const user = auth.checkSession();
+    if (!user) {
+      alert('يجب تسجيل الدخول');
       window.location.href = 'index.html';
     }
 
-    document.getElementById('admin-name').textContent = `مرحباً ${currentUser.name} 👋`;
+    document.getElementById('user-name').textContent = `${user.name} 👋`;
 
     let allEmployees = [];
+    let allEntities = [];
     let allTasks = [];
 
-    // ═══════════════════════════════════════════════════
-    // Tab System
-    // ═══════════════════════════════════════════════════
-    function switchTab(tabName, button) {
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
+    // Get Date Range
+    function getDateRange() {
+      const today = new Date();
+      const period = document.getElementById('period-filter').value;
+      let start = new Date(today);
       
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      
-      document.getElementById('tab-' + tabName).classList.add('active');
-      
-      if (button) {
-        button.classList.add('active');
+      switch(period) {
+        case 'week': start.setDate(today.getDate() - 7); break;
+        case 'month': start.setMonth(today.getMonth() - 1); break;
+        case '3months': start.setMonth(today.getMonth() - 3); break;
+        case 'year': start = new Date(today.getFullYear(), 0, 1); break;
+        case 'all': start = new Date('2020-01-01'); break;
       }
       
-      lucide.createIcons();
+      return {
+        start: start.toISOString().split('T')[0],
+        end: today.toISOString().split('T')[0]
+      };
     }
 
-    // ═══════════════════════════════════════════════════
-    // Load Initial Data
-    // ═══════════════════════════════════════════════════
-    async function loadInitialData() {
-      try {
-        const result = await auth.apiCall('getAllData', {
-          role: 'مدير',
-          name: currentUser.name,
-          startDate: '2024-01-01',
-          endDate: '2028-12-31'
-        });
-
-        if (result && result.success) {
-          allTasks = result.tasks || [];
-          allEmployees = result.stats.employees || [];
-          populateEmployeeDropdown();
-        }
-      } catch (error) {
-        console.error('Error loading data:', error);
-      }
-    }
-
-    function populateEmployeeDropdown() {
-      const select = document.getElementById('task-employee');
-      let options = '<option value="">اختر الموظف...</option>';
-      
-      allEmployees.forEach(emp => {
-        options += `<option value="${emp.name}">${emp.name}</option>`;
-      });
-      
-      select.innerHTML = options;
-    }
-
-    // ═══════════════════════════════════════════════════
-    // Search Tasks
-    // ═══════════════════════════════════════════════════
-    async function searchTasks() {
-      const query = document.getElementById('search-task').value.toLowerCase().trim();
-      
-      if (!query) {
-        alert('الرجاء إدخال نص للبحث');
-        return;
-      }
-
-      document.getElementById('loading-overlay').classList.remove('hidden');
+    // Apply Filters
+    async function applyFilters() {
+      document.getElementById('loading').classList.remove('hidden');
 
       try {
-        // Reload fresh data
+        const range = getDateRange();
+        
         const result = await auth.apiCall('getAllData', {
           role: 'مدير',
-          name: currentUser.name,
-          startDate: '2024-01-01',
-          endDate: '2028-12-31'
+          name: user.name,
+          startDate: range.start,
+          endDate: range.end
         });
 
-        if (result && result.success) {
-          allTasks = result.tasks || [];
-          allEmployees = result.stats.employees || [];
-
-          const filtered = allTasks.filter(task => 
-            task.id.toLowerCase().includes(query) ||
-            task.subject.toLowerCase().includes(query) ||
-            task.assignee.toLowerCase().includes(query) ||
-            task.entity.toLowerCase().includes(query)
-          );
-
-          renderReassignTasks(filtered);
+        if (!result || !result.success) {
+          throw new Error('فشل تحميل البيانات');
         }
-      } catch (error) {
-        console.error('Error searching:', error);
-        alert('خطأ في البحث');
+
+        allTasks = result.tasks || [];
+        allEmployees = result.stats.employees || [];
+        
+        // Extract unique entities
+        const entitiesSet = new Set();
+        allTasks.forEach(t => {
+          if (t.entity) entitiesSet.add(t.entity);
+        });
+        allEntities = Array.from(entitiesSet).sort();
+
+        // Populate dropdowns
+        populateDropdowns();
+
+        // Filter tasks
+        let filtered = allTasks;
+
+        const empFilter = document.getElementById('employee-filter').value;
+        if (empFilter) {
+          filtered = filtered.filter(t => t.assignee && t.assignee.includes(empFilter));
+        }
+
+        const entityFilter = document.getElementById('entity-filter').value;
+        if (entityFilter) {
+          filtered = filtered.filter(t => t.entity && t.entity.includes(entityFilter));
+        }
+
+        const statusFilter = document.getElementById('status-filter').value;
+        if (statusFilter) {
+          filtered = filtered.filter(t => t.status && t.status.includes(statusFilter));
+        }
+
+        renderTasks(filtered);
+
+      } catch (err) {
+        document.getElementById('results').innerHTML = `
+          <div style="text-align: center; padding: 60px 20px; color: #dc2626;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">❌</div>
+            <h3 style="font-weight: 700; margin-bottom: 8px;">خطأ في التحميل</h3>
+            <p style="color: #64748b;">${err.message}</p>
+          </div>
+        `;
       } finally {
-        document.getElementById('loading-overlay').classList.add('hidden');
+        document.getElementById('loading').classList.add('hidden');
       }
     }
 
-    function renderReassignTasks(tasks) {
-      const container = document.getElementById('reassign-tasks');
-      
+    function populateDropdowns() {
+      // Employee dropdown
+      const empSelect = document.getElementById('employee-filter');
+      empSelect.innerHTML = '<option value="">جميع الموظفين</option>' +
+        allEmployees.map(e => `<option value="${e.name}">${e.name}</option>`).join('');
+
+      // Entity dropdown
+      const entitySelect = document.getElementById('entity-filter');
+      entitySelect.innerHTML = '<option value="">جميع الجهات</option>' +
+        allEntities.map(e => `<option value="${e}">${e}</option>`).join('');
+    }
+
+    function renderTasks(tasks) {
+      const container = document.getElementById('results');
+
       if (!tasks || tasks.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p class="empty-state-text">لم يتم العثور على نتائج</p></div>';
+        container.innerHTML = `
+          <div style="text-align: center; padding: 60px 20px; color: #94a3b8;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">📭</div>
+            <p style="font-size: 1.1rem; font-weight: 600;">لا توجد مهام مطابقة للفلتر</p>
+          </div>
+        `;
         return;
       }
 
-      container.innerHTML = '<div class="task-grid">' + tasks.map(task => {
-        const statusClass = getStatusClass(task.status);
+      container.innerHTML = `<div class="task-grid">${tasks.map(t => {
+        const isDone = (t.status || '').includes('تم الاعتماد') || (t.status || '').includes('منتهي');
         
         return `
           <div class="task-card">
-            <div class="task-card-header">
-              <div class="task-id">${task.id}</div>
-              <span class="status-badge ${statusClass}">${task.status}</span>
+            <div class="task-header">
+              <div class="task-id">${t.id}</div>
+              <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">${t.status}</span>
             </div>
             
-            <div class="task-subject" style="margin-bottom: 16px; min-height: 50px;">${task.subject}</div>
+            <div class="task-subject">${t.subject}</div>
             
             <div class="task-meta">
-              <div class="task-meta-item">
-                <i data-lucide="inbox" style="width: 14px; height: 14px;"></i>
-                <span><strong>من:</strong> ${task.source || task.entity}</span>
-              </div>
-              
-              <div class="task-meta-item">
-                <i data-lucide="map-pin" style="width: 14px; height: 14px;"></i>
-                <span><strong>التنفيذ:</strong> ${task.executionLocation || task.entity}</span>
-              </div>
-              
-              <div class="task-meta-item">
-                <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
-                <span><strong>التاريخ:</strong> ${task.date}</span>
-              </div>
-              
-              ${task.attachment || task.attachments ? `
-              <div class="task-meta-item">
-                <i data-lucide="paperclip" style="width: 14px; height: 14px;"></i>
-                <a href="${task.attachment || task.attachments}" target="_blank" style="color: #0f766e; text-decoration: underline;">
-                  📎 عرض المرفق
-                </a>
-              </div>
-              ` : ''}
-              
-              ${task.report ? `
-              <div class="task-meta-item">
-                <i data-lucide="file-text" style="width: 14px; height: 14px;"></i>
-                <a href="${task.report}" target="_blank" style="color: #dc2626; text-decoration: underline;">
-                  📄 عرض التقرير
-                </a>
-              </div>
-              ` : ''}
+              <div><strong>📥 من:</strong> ${t.source || t.entity}</div>
+              <div><strong>📍 التنفيذ:</strong> ${t.executionLocation || t.entity}</div>
+              <div><strong>📅 التاريخ:</strong> ${t.date}</div>
+              ${t.attachment ? `<div><a href="${t.attachment}" target="_blank" style="color: #0f766e; text-decoration: underline;">📎 المرفق</a></div>` : ''}
+              ${t.report ? `<div><a href="${t.report}" target="_blank" style="color: #dc2626; text-decoration: underline;">📄 التقرير</a></div>` : ''}
             </div>
 
-            <div class="reassign-section">
+            <div class="reassign-box">
               <div class="reassign-current">
                 <i data-lucide="user" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i>
-                الموظف الحالي: <span style="color: #0f766e;">${task.assignee}</span>
+                ${t.assignee}
               </div>
               <div class="reassign-controls">
-                <select id="new-emp-${task.id}">
+                <select id="new-emp-${t.id}">
                   <option value="">اختر موظف جديد...</option>
-                  ${allEmployees.map(emp => `<option value="${emp.name}">${emp.name}</option>`).join('')}
+                  ${allEmployees.map(e => `<option value="${e.name}">${e.name}</option>`).join('')}
                 </select>
-                <button onclick="reassignTask('${task.id}')" class="btn btn-primary">
-                  <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
+                <button onclick="reassignTask('${t.id}')">
+                  <i data-lucide="refresh-cw" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i>
                   تكليف
                 </button>
               </div>
             </div>
           </div>
         `;
-      }).join('') + '</div>';
+      }).join('')}</div>`;
 
       lucide.createIcons();
     }
 
-    function getStatusClass(status) {
-      if (!status) return 'status-new';
-      if (status.includes('تم الاعتماد') || status.includes('منتهي')) return 'status-done';
-      if (status.includes('متأخر')) return 'status-overdue';
-      if (status.includes('جاري')) return 'status-progress';
-      return 'status-new';
-    }
-
     async function reassignTask(taskId) {
-      const newEmployee = document.getElementById(`new-emp-${taskId}`).value;
+      const newEmp = document.getElementById(`new-emp-${taskId}`).value;
       
-      if (!newEmployee) {
-        alert('الرجاء اختيار موظف جديد');
+      if (!newEmp) {
+        alert('اختر موظف جديد');
         return;
       }
 
-      if (!confirm(`هل أنت متأكد من إعادة تكليف المهمة ${taskId} إلى ${newEmployee}؟`)) {
-        return;
-      }
+      if (!confirm(`إعادة تكليف ${taskId} إلى ${newEmp}؟`)) return;
 
-      document.getElementById('loading-overlay').classList.remove('hidden');
+      document.getElementById('loading').classList.remove('hidden');
 
       try {
-        console.log('📧 إرسال طلب إعادة التكليف:', { taskId, newEmployee });
-        
         const result = await auth.apiCall('reassignTask', {
           taskId: taskId,
-          newEmployee: newEmployee
+          newEmployee: newEmp
         });
 
-        console.log('📬 نتيجة الطلب:', result);
-
         if (result && result.success) {
-          alert('✅ تم إعادة التكليف بنجاح!\n\n📧 تم إرسال إيميل للموظف الجديد والمدير');
-          searchTasks(); // Refresh results
+          alert('✅ تم إعادة التكليف!\n📧 تم إرسال إيميل');
+          applyFilters();
         } else {
-          alert('❌ فشل إعادة التكليف: ' + (result.error || 'خطأ غير معروف'));
+          alert('❌ فشل: ' + (result.error || 'خطأ'));
         }
-      } catch (error) {
-        console.error('❌ خطأ في إعادة التكليف:', error);
-        alert('❌ خطأ: ' + error.message);
+      } catch (err) {
+        alert('❌ خطأ: ' + err.message);
       } finally {
-        document.getElementById('loading-overlay').classList.add('hidden');
+        document.getElementById('loading').classList.add('hidden');
       }
     }
-
-    // ═══════════════════════════════════════════════════
-    // New Task Form
-    // ═══════════════════════════════════════════════════
-    document.getElementById('new-task-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const taskData = {
-        date: document.getElementById('task-date').value,
-        source: document.getElementById('task-source').value,
-        entity: document.getElementById('task-entity').value,
-        subject: document.getElementById('task-subject').value,
-        employee: document.getElementById('task-employee').value,
-        deadline: document.getElementById('task-deadline').value || '',
-        attachment: document.getElementById('task-attachment').value || ''
-      };
-
-      if (!confirm('هل أنت متأكد من إضافة هذه المهمة؟')) {
-        return;
-      }
-
-      document.getElementById('loading-overlay').classList.remove('hidden');
-
-      try {
-        const result = await auth.apiCall('addTask', { taskData });
-
-        if (result && result.success) {
-          alert('✅ تم إضافة المهمة بنجاح!\n\nرقم القيد: ' + result.id);
-          document.getElementById('new-task-form').reset();
-          switchTab('reassign', document.querySelector('.tab-btn'));
-        } else {
-          alert('❌ فشل إضافة المهمة: ' + (result.error || 'خطأ غير معروف'));
-        }
-      } catch (error) {
-        alert('❌ خطأ: ' + error.message);
-      } finally {
-        document.getElementById('loading-overlay').classList.add('hidden');
-      }
-    });
-
-    // Initial Load
-    loadInitialData();
   </script>
 </body>
 </html>
