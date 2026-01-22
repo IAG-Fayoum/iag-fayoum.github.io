@@ -3,798 +3,388 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>صفحة المنسق - IAG</title>
+  <title>المنسق - IAG</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body { 
       font-family: 'Cairo', sans-serif; 
       background: #f8f9fa;
-      padding-bottom: 80px;
+      padding: 20px;
     }
     
-    /* Side Navigation */
-    .sidebar {
-      position: fixed;
-      right: 0;
-      top: 0;
-      width: 260px;
-      height: 100vh;
-      background: white;
-      box-shadow: -2px 0 10px rgba(0,0,0,0.05);
-      z-index: 100;
-      overflow-y: auto;
-      transition: transform 0.3s ease;
-    }
-    
-    .sidebar.hidden { transform: translateX(100%); }
-    
-    .sidebar-logo {
-      padding: 24px;
-      border-bottom: 1px solid #e9ecef;
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      color: white;
-    }
-    
-    .sidebar-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 24px;
-      color: #495057;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.2s ease;
-      border-right: 3px solid transparent;
-    }
-    
-    .sidebar-item:hover {
-      background: #f8f9fa;
-      border-right-color: #0f766e;
-      color: #0f766e;
-    }
-    
-    .sidebar-item.active {
-      background: #e6f7f5;
-      border-right-color: #0f766e;
-      color: #0f766e;
-    }
-    
-    /* Main Content */
-    .main-content {
-      margin-right: 260px;
-      padding: 24px;
-      max-width: 1400px;
-    }
-    
-    /* Task Card */
-    .task-card {
+    .card {
       background: white;
       border-radius: 12px;
       padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      border: 1px solid #e9ecef;
-      transition: all 0.2s ease;
-      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
     }
     
-    .task-card:hover {
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-      transform: translateY(-2px);
+    .task-item {
+      padding: 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      transition: all 0.2s;
     }
     
-    .task-card.received {
-      border-right: 4px solid #10b981;
+    .task-item:hover {
+      border-color: #0f766e;
+      box-shadow: 0 2px 12px rgba(15,118,110,0.1);
+    }
+    
+    .task-done {
       background: #f0fdf4;
+      border-color: #86efac;
     }
     
-    .task-card.pending {
-      border-right: 4px solid #f59e0b;
+    .task-pending {
       background: #fffbeb;
+      border-color: #fde68a;
     }
     
-    /* Status Badge */
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 20px;
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
       font-size: 0.75rem;
       font-weight: 700;
     }
     
-    .status-received {
-      background: #d1fae5;
-      color: #065f46;
-    }
+    .badge-done { background: #dcfce7; color: #166534; }
+    .badge-pending { background: #fef3c7; color: #92400e; }
     
-    .status-pending {
-      background: #fef3c7;
-      color: #92400e;
-    }
-    
-    /* Attachment Preview */
-    .attachment-preview {
-      width: 80px;
-      height: 80px;
+    .filter-box {
+      background: #f1f5f9;
+      padding: 16px;
       border-radius: 8px;
-      object-fit: cover;
-      border: 2px solid #e9ecef;
-      cursor: pointer;
-      transition: transform 0.2s ease;
+      margin-bottom: 20px;
     }
     
-    .attachment-preview:hover {
-      transform: scale(1.05);
-    }
-    
-    /* Filter Panel */
-    .filter-panel {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      border: 1px solid #e9ecef;
-      margin-bottom: 24px;
-    }
-    
-    .filter-btn {
-      padding: 8px 16px;
+    select, input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e2e8f0;
       border-radius: 8px;
-      font-size: 0.875rem;
       font-weight: 600;
-      border: 2px solid #e9ecef;
-      background: white;
-      color: #495057;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      margin-bottom: 10px;
     }
     
-    .filter-btn:hover {
+    select:focus, input:focus {
+      outline: none;
       border-color: #0f766e;
-      color: #0f766e;
     }
     
-    .filter-btn.active {
+    button {
       background: #0f766e;
-      border-color: #0f766e;
       color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
     }
     
-    /* Employee Group */
-    .employee-section {
-      margin-bottom: 32px;
+    button:hover {
+      background: #115e59;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #94a3b8;
+    }
+    
+    .employee-group {
+      margin-bottom: 30px;
     }
     
     .employee-header {
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+      background: linear-gradient(135deg, #0f766e, #115e59);
       color: white;
-      padding: 16px 20px;
-      border-radius: 12px;
-      margin-bottom: 16px;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 12px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-    }
-    
-    /* Bottom Navigation */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      border-top: 1px solid #e9ecef;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-      z-index: 50;
-      display: none;
-    }
-    
-    .bottom-nav-item {
-      display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 4px;
-      padding: 12px;
-      color: #868e96;
-      text-decoration: none;
+    }
+    
+    .stat {
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+    
+    .stat-label {
       font-size: 0.75rem;
-      font-weight: 600;
-      transition: color 0.2s ease;
-    }
-    
-    .bottom-nav-item.active {
-      color: #0f766e;
-    }
-    
-    /* Mobile Responsive */
-    @media (max-width: 1024px) {
-      .sidebar { transform: translateX(100%); }
-      .sidebar.active { transform: translateX(0); }
-      .main-content { margin-right: 0; }
-      .bottom-nav { display: flex; }
-      body { padding-bottom: 70px; }
-      
-      .mobile-header {
-        background: white;
-        padding: 16px;
-        border-bottom: 1px solid #e9ecef;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: sticky;
-        top: 0;
-        z-index: 40;
-      }
-    }
-    
-    @media (min-width: 1025px) {
-      .mobile-header { display: none; }
-    }
-    
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.3);
-      z-index: 90;
-      display: none;
-    }
-    
-    .overlay.active { display: block; }
-    
-    /* Loading */
-    #loading-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(255,255,255,0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-    
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid #e9ecef;
-      border-top-color: #0f766e;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+      opacity: 0.9;
     }
   </style>
 </head>
 <body>
 
-  <div id="loading-overlay" class="hidden">
-    <div class="spinner"></div>
-  </div>
-
-  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-
-  <!-- Mobile Header -->
-  <div class="mobile-header">
-    <button onclick="toggleSidebar()" class="p-2">
-      <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
-    </button>
-    <h1 class="text-lg font-bold text-gray-800">صفحة المنسق</h1>
-    <div class="w-10"></div>
-  </div>
-
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <h2 class="text-xl font-bold mb-1">IAG System</h2>
-      <p class="text-sm opacity-90">إدارة الحوكمة</p>
-    </div>
-    
-    <nav class="py-4">
-      <a href="index.html" class="sidebar-item">
-        <i data-lucide="home" class="w-5 h-5"></i>
-        <span>الرئيسية</span>
+  <!-- Header -->
+  <div class="card" style="background: linear-gradient(135deg, #0f766e, #115e59); color: white;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a href="index.html" style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; display: flex;">
+        <i data-lucide="arrow-right" class="w-6 h-6"></i>
       </a>
-      
-      <a href="distribution.html" class="sidebar-item">
-        <i data-lucide="pie-chart" class="w-5 h-5"></i>
-        <span>Dashboard</span>
-      </a>
-      
-      <a href="forms.html" class="sidebar-item">
-        <i data-lucide="file-text" class="w-5 h-5"></i>
-        <span>النماذج الإلكترونية</span>
-      </a>
-      
-      <a href="employee.html" class="sidebar-item">
-        <i data-lucide="briefcase" class="w-5 h-5"></i>
-        <span>خدمات الموظفين</span>
-      </a>
-      
-      <a href="coordinator.html" class="sidebar-item active">
-        <i data-lucide="users" class="w-5 h-5"></i>
-        <span>المنسقين</span>
-      </a>
-      
-      <a href="admin.html" class="sidebar-item">
-        <i data-lucide="settings" class="w-5 h-5"></i>
-        <span>لوحة الإدارة</span>
-      </a>
-    </nav>
-  </aside>
-
-  <!-- Main Content -->
-  <main class="main-content">
-    
-    <!-- Header Section -->
-    <div style="background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); border-radius: 20px; padding: 40px 32px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(15, 118, 110, 0.15);">
-      <div class="text-white">
-        <div class="flex items-center gap-4 mb-3">
-          <div style="background: rgba(255,255,255,0.15); width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.3);">
-            <i data-lucide="users" class="w-10 h-10"></i>
-          </div>
-          <div>
-            <h1 class="text-3xl font-extrabold mb-1">صفحة المنسق</h1>
-            <p class="text-lg opacity-90">توزيع ومتابعة المهام</p>
-          </div>
-        </div>
+      <div>
+        <h1 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 4px;">صفحة المنسق</h1>
+        <p id="user-name" style="opacity: 0.9;">جارٍ التحميل...</p>
       </div>
     </div>
+  </div>
 
-    <!-- Filter Panel -->
-    <div class="filter-panel">
-      <div class="grid md:grid-cols-2 gap-6">
-        
-        <!-- Time Filter -->
-        <div>
-          <label class="block text-sm font-bold text-gray-700 mb-3">فلترة حسب الفترة الزمنية</label>
-          <div class="flex flex-wrap gap-2">
-            <button class="filter-btn active" data-period="week" onclick="setTimePeriod('week')">آخر أسبوع</button>
-            <button class="filter-btn" data-period="month" onclick="setTimePeriod('month')">آخر شهر</button>
-            <button class="filter-btn" data-period="quarter" onclick="setTimePeriod('quarter')">آخر 3 أشهر</button>
-            <button class="filter-btn" data-period="year" onclick="setTimePeriod('year')">السنة الحالية</button>
-            <button class="filter-btn" data-period="custom" onclick="setTimePeriod('custom')">فترة مخصصة</button>
-          </div>
-          
-          <div id="custom-date-range" style="display: none;" class="mt-4 grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-gray-600 mb-1">من تاريخ</label>
-              <input type="date" id="start-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-semibold">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-gray-600 mb-1">إلى تاريخ</label>
-              <input type="date" id="end-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-semibold">
-            </div>
-          </div>
-          
-          <p class="text-xs text-gray-500 mt-2" id="period-display">
-            <i data-lucide="calendar" class="w-3 h-3 inline"></i>
-            الفترة: <span class="font-bold" id="period-text">آخر 7 أيام</span>
-          </p>
-        </div>
+  <!-- Filters -->
+  <div class="card">
+    <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; color: #1e293b;">الفلاتر</h2>
+    
+    <div class="filter-box">
+      
+      <!-- Employee Filter -->
+      <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الموظف</label>
+      <select id="emp-filter">
+        <option value="">جميع الموظفين</option>
+        <option value="ALL_FINANCIAL">🔹 كل المالي والإداري</option>
+        <option value="ALL_TECHNICAL">🔧 كل الفنيين</option>
+      </select>
 
-        <!-- Employee Filter -->
-        <div>
-          <label class="block text-sm font-bold text-gray-700 mb-3">فلترة حسب الموظف</label>
-          <select id="employee-filter" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg font-semibold focus:border-teal-600 focus:outline-none">
-            <option value="">جميع الموظفين</option>
-            <!-- Will be populated dynamically -->
-          </select>
-          
-          <button onclick="applyFilters()" class="w-full mt-3 bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-bold transition">
-            تطبيق الفلتر
-          </button>
-        </div>
+      <!-- Period Filter -->
+      <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px; color: #475569;">الفترة</label>
+      <select id="period-filter">
+        <option value="week">آخر أسبوع</option>
+        <option value="month">آخر شهر</option>
+        <option value="3months">آخر 3 أشهر</option>
+        <option value="year">السنة الحالية</option>
+        <option value="all">جميع الفترات</option>
+      </select>
 
-      </div>
+      <button onclick="loadData()">
+        <i data-lucide="search" style="width: 18px; height: 18px; display: inline; vertical-align: middle;"></i>
+        تطبيق الفلتر
+      </button>
     </div>
+  </div>
 
-    <!-- Tasks Container -->
-    <div id="tasks-container">
-      <p class="text-center text-gray-400 py-12">جارٍ تحميل المهام...</p>
-    </div>
-
-  </main>
-
-  <!-- Bottom Navigation -->
-  <nav class="bottom-nav">
-    <div style="display: flex; width: 100%; justify-content: space-around;">
-      <a href="distribution.html" class="bottom-nav-item">
-        <i data-lucide="pie-chart" class="w-6 h-6"></i>
-        <span>Dashboard</span>
-      </a>
-      <a href="forms.html" class="bottom-nav-item">
-        <i data-lucide="file-text" class="w-6 h-6"></i>
-        <span>النماذج</span>
-      </a>
-      <a href="employee.html" class="bottom-nav-item">
-        <i data-lucide="briefcase" class="w-6 h-6"></i>
-        <span>الخدمات</span>
-      </a>
-      <a href="admin.html" class="bottom-nav-item">
-        <i data-lucide="settings" class="w-6 h-6"></i>
-        <span>الإدارة</span>
-      </a>
-    </div>
-  </nav>
+  <!-- Results -->
+  <div id="results" class="loading">
+    <div style="font-size: 2rem;">⏳</div>
+    <p>جارٍ تحميل البيانات...</p>
+  </div>
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
-    // ═══════════════════════════════════════════════════
-    // 1. Check Authentication FIRST
-    // ═══════════════════════════════════════════════════
-    const currentUser = auth.checkSession();
-    if (!currentUser) {
-      alert('يجب تسجيل الدخول أولاً');
+    lucide.createIcons();
+
+    // Check Auth
+    const user = auth.checkSession();
+    if (!user) {
+      alert('يجب تسجيل الدخول');
       window.location.href = 'index.html';
     }
 
-    lucide.createIcons();
+    document.getElementById('user-name').textContent = `مرحباً ${user.name} 👋`;
 
-    // ═══════════════════════════════════════════════════
-    // 2. Display User Name in Sidebar
-    // ═══════════════════════════════════════════════════
-    const userNameEl = document.querySelector('.sidebar-logo p');
-    if (userNameEl && currentUser) {
-      userNameEl.textContent = `مرحباً ${currentUser.name} 👋`;
-    }
-
-    // ═══════════════════════════════════════════════════
-    // 3. Variables
-    // ═══════════════════════════════════════════════════
-    let currentPeriod = 'week'; // Default to last week
-    let currentEmployee = '';
-    let currentDepartment = ''; // NEW: for department filter
     let allEmployees = [];
     let allTasks = [];
 
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('active');
-      document.getElementById('overlay').classList.toggle('active');
-    }
-
-    function setTimePeriod(period) {
-      currentPeriod = period;
-      
-      // Update button styles
-      document.querySelectorAll('.filter-btn[data-period]').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      document.querySelector(`[data-period="${period}"]`).classList.add('active');
-      
-      // Show/hide custom date range
-      document.getElementById('custom-date-range').style.display = 
-        period === 'custom' ? 'grid' : 'none';
-      
-      // Update period display
-      updatePeriodDisplay();
-    }
-
-    function updatePeriodDisplay() {
-      const periodTextEl = document.getElementById('period-text');
-      const dateRange = getDateRange();
-      
-      let displayText = '';
-      switch(currentPeriod) {
-        case 'week':
-          displayText = 'آخر 7 أيام';
-          break;
-        case 'month':
-          displayText = 'آخر 30 يوم';
-          break;
-        case 'quarter':
-          displayText = 'آخر 3 أشهر';
-          break;
-        case 'year':
-          displayText = 'السنة الحالية (2025)';
-          break;
-        case 'custom':
-          displayText = `من ${dateRange.start} إلى ${dateRange.end}`;
-          break;
-      }
-      
-      if (periodTextEl) {
-        periodTextEl.textContent = displayText;
-      }
-    }
-
+    // Get Date Range
     function getDateRange() {
       const today = new Date();
-      let startDate, endDate;
-
-      switch(currentPeriod) {
+      const period = document.getElementById('period-filter').value;
+      let start = new Date(today);
+      
+      switch(period) {
         case 'week':
-          startDate = new Date(today);
-          startDate.setDate(today.getDate() - 7);
-          endDate = new Date(today);
+          start.setDate(today.getDate() - 7);
           break;
         case 'month':
-          startDate = new Date(today);
-          startDate.setMonth(today.getMonth() - 1);
-          endDate = new Date(today);
+          start.setMonth(today.getMonth() - 1);
           break;
-        case 'quarter':
-          startDate = new Date(today);
-          startDate.setMonth(today.getMonth() - 3);
-          endDate = new Date(today);
+        case '3months':
+          start.setMonth(today.getMonth() - 3);
           break;
         case 'year':
-          startDate = new Date(today.getFullYear(), 0, 1);
-          endDate = new Date(today);
+          start = new Date(today.getFullYear(), 0, 1);
           break;
-        case 'custom':
-          const startInput = document.getElementById('start-date').value;
-          const endInput = document.getElementById('end-date').value;
-          if (startInput && endInput) {
-            startDate = new Date(startInput);
-            endDate = new Date(endInput);
-          } else {
-            startDate = new Date(today);
-            startDate.setDate(today.getDate() - 7);
-            endDate = new Date(today);
-          }
+        case 'all':
+          start = new Date('2020-01-01');
           break;
-        default:
-          startDate = new Date(today);
-          startDate.setDate(today.getDate() - 7);
-          endDate = new Date(today);
       }
-
+      
       return {
-        start: startDate.toISOString().split('T')[0],
-        end: endDate.toISOString().split('T')[0]
+        start: start.toISOString().split('T')[0],
+        end: today.toISOString().split('T')[0]
       };
     }
 
-    // ═══════════════════════════════════════════════════
-    // 4. Load Employees (Financial/Admin + Technical ONLY)
-    // ═══════════════════════════════════════════════════
-    async function loadEmployees() {
+    // Load Data
+    async function loadData() {
+      document.getElementById('results').innerHTML = '<div class="loading"><div style="font-size: 2rem;">⏳</div><p>جارٍ التحميل...</p></div>';
+
       try {
+        const range = getDateRange();
+        
         const result = await auth.apiCall('getAllData', {
-          role: 'مدير',
-          name: currentUser.name,
-          startDate: '2020-01-01',
-          endDate: '2030-12-31'
+          role: user.role || 'مدير',
+          name: user.name,
+          startDate: range.start,
+          endDate: range.end
         });
 
-        console.log('📊 Employees Result:', result);
-
-        if (result && result.success && result.stats && result.stats.employees) {
-          allEmployees = result.stats.employees;
-          
-          const selectEl = document.getElementById('employee-filter');
-          
-          // Categorize employees
-          const financialAdmins = allEmployees.filter(e => 
-            e.role && (e.role.includes('مالي') || e.role.includes('إداري') || e.role.includes('مراجع'))
-          );
-          const technical = allEmployees.filter(e => 
-            e.role && (e.role.includes('فني') || e.role.includes('تفتيش'))
-          );
-          
-          let optionsHTML = '<option value="">جميع الموظفين</option>';
-          optionsHTML += '<option value="ALL_FINANCIAL">كل المالي والإداري</option>';
-          optionsHTML += '<option value="ALL_TECHNICAL">كل الفنيين</option>';
-          optionsHTML += '<option disabled>───────────────</option>';
-          
-          if (financialAdmins.length > 0) {
-            optionsHTML += '<optgroup label="المالي والإداري">';
-            financialAdmins.forEach(emp => {
-              optionsHTML += `<option value="${emp.name}">${emp.name}</option>`;
-            });
-            optionsHTML += '</optgroup>';
-          }
-          
-          if (technical.length > 0) {
-            optionsHTML += '<optgroup label="الفنيين">';
-            technical.forEach(emp => {
-              optionsHTML += `<option value="${emp.name}">${emp.name}</option>`;
-            });
-            optionsHTML += '</optgroup>';
-          }
-          
-          selectEl.innerHTML = optionsHTML;
+        if (!result || !result.success) {
+          throw new Error('فشل تحميل البيانات');
         }
-      } catch (error) {
-        console.error('❌ Error loading employees:', error);
+
+        allTasks = result.tasks || [];
+        allEmployees = result.stats.employees || [];
+
+        // Populate employee dropdown
+        const empFilter = document.getElementById('emp-filter');
+        let options = '<option value="">جميع الموظفين</option>';
+        options += '<option value="ALL_FINANCIAL">🔹 كل المالي والإداري</option>';
+        options += '<option value="ALL_TECHNICAL">🔧 كل الفنيين</option>';
+        options += '<optgroup label="أفراد">';
+        
+        allEmployees.forEach(emp => {
+          options += `<option value="${emp.name}">${emp.name}</option>`;
+        });
+        
+        options += '</optgroup>';
+        empFilter.innerHTML = options;
+
+        // Filter and Display
+        filterAndDisplay();
+
+      } catch (err) {
+        document.getElementById('results').innerHTML = `
+          <div class="card" style="text-align: center; color: #dc2626;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">❌</div>
+            <h3 style="font-weight: 700; margin-bottom: 8px;">خطأ في التحميل</h3>
+            <p style="color: #64748b;">${err.message}</p>
+            <button onclick="loadData()" style="width: auto; margin: 16px auto 0;">إعادة المحاولة</button>
+          </div>
+        `;
       }
     }
 
-    // ═══════════════════════════════════════════════════
-    // 5. Apply Filters and Load Tasks
-    // ═══════════════════════════════════════════════════
-    async function applyFilters() {
-      const loadingEl = document.getElementById('loading-overlay');
-      loadingEl.classList.remove('hidden');
-      
-      const employeeFilter = document.getElementById('employee-filter').value;
-      const dateRange = getDateRange();
+    // Filter and Display
+    function filterAndDisplay() {
+      const empFilter = document.getElementById('emp-filter').value;
+      let filtered = allTasks;
 
-      console.log('🔍 Applying Filters:', {
-        employee: employeeFilter,
-        period: currentPeriod,
-        dateRange: dateRange
-      });
-
-      try {
-        const result = await auth.apiCall('getAllData', {
-          role: currentUser.role || 'منسق',
-          name: currentUser.name,
-          startDate: dateRange.start,
-          endDate: dateRange.end
-        });
-
-        console.log('📦 Tasks Result:', result);
-
-        if (result && result.success && result.tasks) {
-          allTasks = result.tasks;
-          
-          // Filter tasks based on employee selection
-          let filteredTasks = allTasks;
-          
-          if (employeeFilter === 'ALL_FINANCIAL') {
-            // Get all financial/admin employees
-            const financialNames = allEmployees
-              .filter(e => e.role && (e.role.includes('مالي') || e.role.includes('إداري') || e.role.includes('مراجع')))
-              .map(e => e.name);
-            
-            filteredTasks = allTasks.filter(task => 
-              financialNames.some(name => task.assignee && task.assignee.includes(name))
-            );
-          } else if (employeeFilter === 'ALL_TECHNICAL') {
-            // Get all technical employees
-            const technicalNames = allEmployees
-              .filter(e => e.role && (e.role.includes('فني') || e.role.includes('تفتيش')))
-              .map(e => e.name);
-            
-            filteredTasks = allTasks.filter(task => 
-              technicalNames.some(name => task.assignee && task.assignee.includes(name))
-            );
-          } else if (employeeFilter) {
-            // Specific employee
-            filteredTasks = allTasks.filter(task => 
-              task.assignee && task.assignee.includes(employeeFilter)
-            );
-          }
-          
-          console.log('✅ Filtered Tasks:', filteredTasks.length);
-          renderTasks(filteredTasks);
-        } else {
-          document.getElementById('tasks-container').innerHTML = 
-            '<div class="text-center py-12"><p class="text-gray-500 text-lg font-semibold mb-2">لا توجد بيانات</p><p class="text-gray-400 text-sm">تأكد من وجود معاملات في الفترة المحددة</p></div>';
-        }
-      } catch (error) {
-        console.error('❌ Error loading tasks:', error);
-        document.getElementById('tasks-container').innerHTML = 
-          '<div class="text-center py-12"><p class="text-red-600 text-lg font-semibold mb-2">خطأ في التحميل</p><p class="text-gray-500 text-sm">' + error.message + '</p></div>';
-      } finally {
-        loadingEl.classList.add('hidden');
+      // Filter by employee
+      if (empFilter === 'ALL_FINANCIAL') {
+        const financialNames = allEmployees
+          .filter(e => e.role && (e.role.includes('مالي') || e.role.includes('إداري') || e.role.includes('مراجع')))
+          .map(e => e.name);
+        
+        filtered = allTasks.filter(t => 
+          financialNames.some(name => t.assignee && t.assignee.includes(name))
+        );
+        
+      } else if (empFilter === 'ALL_TECHNICAL') {
+        const techNames = allEmployees
+          .filter(e => e.role && (e.role.includes('فني') || e.role.includes('تفتيش')))
+          .map(e => e.name);
+        
+        filtered = allTasks.filter(t => 
+          techNames.some(name => t.assignee && t.assignee.includes(name))
+        );
+        
+      } else if (empFilter) {
+        filtered = allTasks.filter(t => t.assignee && t.assignee.includes(empFilter));
       }
+
+      displayTasks(filtered);
     }
 
-    function renderTasks(tasks) {
-      console.log('🎨 Rendering Tasks:', tasks);
-      
+    // Display Tasks
+    function displayTasks(tasks) {
+      const container = document.getElementById('results');
+
       if (!tasks || tasks.length === 0) {
-        document.getElementById('tasks-container').innerHTML = 
-          '<p class="text-center text-gray-400 py-12 text-lg">لا توجد مهام في هذه الفترة</p>';
+        container.innerHTML = '<div class="card" style="text-align: center; color: #94a3b8; padding: 60px 20px;"><div style="font-size: 3rem; margin-bottom: 12px;">📭</div><p style="font-size: 1.125rem; font-weight: 600;">لا توجد مهام</p></div>';
         return;
       }
 
       // Group by employee
-      const groupedTasks = {};
-      
-      tasks.forEach(task => {
-        const assignee = task.assignee || 'غير محدد';
-        
-        if (!groupedTasks[assignee]) {
-          groupedTasks[assignee] = [];
-        }
-        groupedTasks[assignee].push(task);
+      const grouped = {};
+      tasks.forEach(t => {
+        const emp = t.assignee || 'غير محدد';
+        if (!grouped[emp]) grouped[emp] = [];
+        grouped[emp].push(t);
       });
 
-      console.log('👥 Grouped Tasks:', groupedTasks);
+      let html = '';
 
-      const container = document.getElementById('tasks-container');
-
-      if (Object.keys(groupedTasks).length === 0) {
-        container.innerHTML = '<p class="text-center text-gray-400 py-12 text-lg">لا توجد مهام لهذا الموظف في هذه الفترة</p>';
-        return;
-      }
-
-      container.innerHTML = Object.entries(groupedTasks).map(([employee, empTasks]) => {
-        // Determine received status from task status
-        const receivedCount = empTasks.filter(t => {
-          const status = t.status || '';
-          return status.includes('تم الاعتماد') || status.includes('منتهي') || status.includes('أرشيف');
+      Object.entries(grouped).forEach(([emp, empTasks]) => {
+        const done = empTasks.filter(t => {
+          const s = t.status || '';
+          return s.includes('تم الاعتماد') || s.includes('منتهي') || s.includes('أرشيف');
         }).length;
-        const pendingCount = empTasks.length - receivedCount;
+        const pending = empTasks.length - done;
 
-        return `
-          <div class="employee-section">
+        html += `
+          <div class="employee-group">
             <div class="employee-header">
               <div>
-                <h2 class="text-xl font-bold">${employee}</h2>
-                <p class="text-sm opacity-90">إجمالي المهام: ${empTasks.length}</p>
+                <div style="font-size: 1.25rem; font-weight: 800;">${emp}</div>
+                <div style="font-size: 0.875rem; opacity: 0.9;">إجمالي: ${empTasks.length} مهمة</div>
               </div>
-              <div class="flex gap-4">
-                <div class="text-center">
-                  <p class="text-2xl font-bold">${receivedCount}</p>
-                  <p class="text-xs opacity-90">تم الإنجاز</p>
+              <div style="display: flex; gap: 20px;">
+                <div class="stat">
+                  <div class="stat-number">${done}</div>
+                  <div class="stat-label">منتهي</div>
                 </div>
-                <div class="text-center">
-                  <p class="text-2xl font-bold">${pendingCount}</p>
-                  <p class="text-xs opacity-90">قيد التنفيذ</p>
+                <div class="stat">
+                  <div class="stat-number">${pending}</div>
+                  <div class="stat-label">جاري</div>
                 </div>
               </div>
             </div>
 
-            ${empTasks.map(task => {
-              const status = task.status || '';
-              const isDone = status.includes('تم الاعتماد') || status.includes('منتهي') || status.includes('أرشيف');
-              const attachment = task.attachments || task.attachment || null;
-
+            ${empTasks.map(t => {
+              const isDone = (t.status || '').includes('تم الاعتماد') || (t.status || '').includes('منتهي') || (t.status || '').includes('أرشيف');
+              
               return `
-                <div class="task-card ${isDone ? 'received' : 'pending'}">
-                  <div class="flex items-start gap-4">
-                    ${attachment ? `
-                      <img src="${attachment}" alt="مرفق" class="attachment-preview" onclick="window.open('${attachment}', '_blank')" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                      <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 8px; display: none; align-items: center; justify-content: center; border: 2px solid #e9ecef;">
-                        <i data-lucide="file-text" class="w-8 h-8 text-gray-400"></i>
-                      </div>
-                    ` : `
-                      <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 2px solid #e9ecef;">
-                        <i data-lucide="file-text" class="w-8 h-8 text-gray-400"></i>
-                      </div>
-                    `}
-                    
-                    <div class="flex-grow">
-                      <div class="flex items-start justify-between mb-2">
-                        <h3 class="font-bold text-gray-800 text-lg">رقم القيد: ${task.id || 'غير محدد'}</h3>
-                        <span class="status-badge ${isDone ? 'status-received' : 'status-pending'}">
-                          <i data-lucide="${isDone ? 'check-circle' : 'clock'}" class="w-4 h-4"></i>
-                          ${isDone ? 'تم الإنجاز' : 'قيد التنفيذ'}
-                        </span>
-                      </div>
-                      
-                      <p class="text-gray-700 font-semibold mb-2">${task.subject || 'موضوع غير محدد'}</p>
-                      
-                      <div class="flex items-center gap-4 text-sm text-gray-600">
-                        <div class="flex items-center gap-1">
-                          <i data-lucide="building" class="w-4 h-4"></i>
-                          <span>${task.entity || 'جهة غير محددة'}</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                          <i data-lucide="calendar" class="w-4 h-4"></i>
-                          <span>${task.date || 'تاريخ غير محدد'}</span>
-                        </div>
-                      </div>
-                    </div>
+                <div class="task-item ${isDone ? 'task-done' : 'task-pending'}">
+                  <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                    <div style="font-weight: 700; color: #1e293b;">${t.id || 'غير محدد'}</div>
+                    <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">
+                      ${isDone ? '✅ منتهي' : '⏳ جاري'}
+                    </span>
+                  </div>
+                  <div style="color: #475569; font-weight: 600; margin-bottom: 8px;">${t.subject || 'موضوع غير محدد'}</div>
+                  <div style="display: flex; gap: 16px; font-size: 0.875rem; color: #64748b;">
+                    <span>📍 ${t.entity || 'غير محدد'}</span>
+                    <span>📅 ${t.date || 'غير محدد'}</span>
                   </div>
                 </div>
               `;
             }).join('')}
           </div>
         `;
-      }).join('');
+      });
 
+      container.innerHTML = html;
       lucide.createIcons();
     }
 
-    // Initial load
-    setTimeout(async () => {
-      updatePeriodDisplay();
-      await loadEmployees();
-      await applyFilters();
-    }, 500);
+    // Initial Load
+    loadData();
   </script>
 </body>
 </html>
