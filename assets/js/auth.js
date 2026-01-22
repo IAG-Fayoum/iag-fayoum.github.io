@@ -134,6 +134,21 @@ class AuthManager {
       
       this.saveSession();
       this.clearCache(); // مسح كاش المستخدم السابق
+      
+      // 🔔 جلب عدد الإشعارات غير المقروءة
+      try {
+        const notifResult = await this.apiCall('getNotifications', {
+          employeeName: result.name,
+          filterType: 'unread'
+        }, { useCache: false, hideLoading: true });
+        
+        if (notifResult.success) {
+          sessionStorage.setItem('unreadNotifications', notifResult.unreadCount || 0);
+        }
+      } catch (e) {
+        console.warn('⚠️ فشل جلب الإشعارات:', e);
+      }
+      
       this.redirectToDashboard();
       return { success: true };
     } else {
@@ -171,6 +186,11 @@ class AuthManager {
       return null;
     }
     return this.currentUser;
+  }
+  
+  // 🔔 جلب عدد الإشعارات غير المقروءة
+  getUnreadNotifications() {
+    return parseInt(sessionStorage.getItem('unreadNotifications') || '0');
   }
 
   // التوجيه (Routing)
