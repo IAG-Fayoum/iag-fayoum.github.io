@@ -240,9 +240,10 @@
 </head>
 <body>
 
-  <div class="loading hidden" id="loading"></div>
+  <div class="loading hidden" id="loading">
+    <div class="spinner"></div>
+  </div>
 
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-logo">
       <h2 class="text-xl font-bold mb-1">لوحة الإدارة</h2>
@@ -273,10 +274,8 @@
     </nav>
   </aside>
 
-  <!-- Main Content -->
   <main class="main-content">
     
-    <!-- Header -->
     <div class="card" style="background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; border: none;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h1 style="font-size: 1.75rem; font-weight: 800;">إعادة تكليف المهام</h1>
@@ -286,7 +285,6 @@
       </div>
     </div>
 
-    <!-- Filters -->
     <div class="card">
       <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 16px; color: #1e293b;">الفلاتر</h2>
       
@@ -334,7 +332,6 @@
       </button>
     </div>
 
-    <!-- Results -->
     <div id="results">
       <p style="text-align: center; color: #94a3b8; padding: 60px 20px;">اختر الفلاتر واضغط "تطبيق الفلتر"</p>
     </div>
@@ -346,10 +343,12 @@
   <script>
     lucide.createIcons();
 
+    // 1. Security: Strict Auth Check
     const user = auth.checkSession();
-    if (!user) {
-      alert('يجب تسجيل الدخول');
-      window.location.href = 'index.html';
+    if (!user || (user.role !== 'مدير' && user.role !== 'Admin')) {
+      alert('⚠️ غير مصرح لك بدخول لوحة الإدارة');
+      // Fix: Use replace instead of href
+      window.location.replace('index.html');
     }
 
     document.getElementById('user-name').textContent = `${user.name} 👋`;
@@ -357,6 +356,17 @@
     let allEmployees = [];
     let allEntities = [];
     let allTasks = [];
+
+    // 2. Helper: Sanitization Function (XSS Protection)
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
     // Get Date Range
     function getDateRange() {
@@ -434,7 +444,7 @@
           <div style="text-align: center; padding: 60px 20px; color: #dc2626;">
             <div style="font-size: 3rem; margin-bottom: 12px;">❌</div>
             <h3 style="font-weight: 700; margin-bottom: 8px;">خطأ في التحميل</h3>
-            <p style="color: #64748b;">${err.message}</p>
+            <p style="color: #64748b;">${escapeHtml(err.message)}</p>
           </div>
         `;
       } finally {
@@ -445,13 +455,18 @@
     function populateDropdowns() {
       // Employee dropdown
       const empSelect = document.getElementById('employee-filter');
-      empSelect.innerHTML = '<option value="">جميع الموظفين</option>' +
-        allEmployees.map(e => `<option value="${e.name}">${e.name}</option>`).join('');
+      // Only populate if empty to preserve state
+      if (empSelect.options.length <= 1) {
+          empSelect.innerHTML = '<option value="">جميع الموظفين</option>' +
+            allEmployees.map(e => `<option value="${escapeHtml(e.name)}">${escapeHtml(e.name)}</option>`).join('');
+      }
 
       // Entity dropdown
       const entitySelect = document.getElementById('entity-filter');
-      entitySelect.innerHTML = '<option value="">جميع الجهات</option>' +
-        allEntities.map(e => `<option value="${e}">${e}</option>`).join('');
+      if (entitySelect.options.length <= 1) {
+          entitySelect.innerHTML = '<option value="">جميع الجهات</option>' +
+            allEntities.map(e => `<option value="${escapeHtml(e)}">${escapeHtml(e)}</option>`).join('');
+      }
     }
 
     function renderTasks(tasks) {
@@ -467,37 +482,38 @@
         return;
       }
 
+      // 3. Security: All dynamic values are now wrapped in escapeHtml()
       container.innerHTML = `<div class="task-grid">${tasks.map(t => {
         const isDone = (t.status || '').includes('تم الاعتماد') || (t.status || '').includes('منتهي');
         
         return `
           <div class="task-card">
             <div class="task-header">
-              <div class="task-id">${t.id}</div>
-              <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">${t.status}</span>
+              <div class="task-id">${escapeHtml(t.id)}</div>
+              <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">${escapeHtml(t.status || 'جديد')}</span>
             </div>
             
-            <div class="task-subject">${t.subject}</div>
+            <div class="task-subject">${escapeHtml(t.subject)}</div>
             
             <div class="task-meta">
-              <div><strong>📥 من:</strong> ${t.source || t.entity}</div>
-              <div><strong>📍 التنفيذ:</strong> ${t.executionLocation || t.entity}</div>
-              <div><strong>📅 التاريخ:</strong> ${t.date}</div>
-              ${t.attachment ? `<div><a href="${t.attachment}" target="_blank" style="color: #0f766e; text-decoration: underline;">📎 المرفق</a></div>` : ''}
-              ${t.report ? `<div><a href="${t.report}" target="_blank" style="color: #dc2626; text-decoration: underline;">📄 التقرير</a></div>` : ''}
+              <div><strong>📥 من:</strong> ${escapeHtml(t.source || t.entity)}</div>
+              <div><strong>📍 التنفيذ:</strong> ${escapeHtml(t.executionLocation || t.entity)}</div>
+              <div><strong>📅 التاريخ:</strong> ${escapeHtml(t.date)}</div>
+              ${t.attachment ? `<div><a href="${t.attachment}" target="_blank" rel="noopener noreferrer" style="color: #0f766e; text-decoration: underline;">📎 المرفق</a></div>` : ''}
+              ${t.report ? `<div><a href="${t.report}" target="_blank" rel="noopener noreferrer" style="color: #dc2626; text-decoration: underline;">📄 التقرير</a></div>` : ''}
             </div>
 
             <div class="reassign-box">
               <div class="reassign-current">
                 <i data-lucide="user" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i>
-                ${t.assignee}
+                ${escapeHtml(t.assignee)}
               </div>
               <div class="reassign-controls">
-                <select id="new-emp-${t.id}">
+                <select id="new-emp-${escapeHtml(t.id)}">
                   <option value="">اختر موظف جديد...</option>
-                  ${allEmployees.map(e => `<option value="${e.name}">${e.name}</option>`).join('')}
+                  ${allEmployees.map(e => `<option value="${escapeHtml(e.name)}">${escapeHtml(e.name)}</option>`).join('')}
                 </select>
-                <button onclick="reassignTask('${t.id}')">
+                <button onclick="reassignTask('${escapeHtml(t.id)}')">
                   <i data-lucide="refresh-cw" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i>
                   تكليف
                 </button>
@@ -514,28 +530,32 @@
       const newEmp = document.getElementById(`new-emp-${taskId}`).value;
       
       if (!newEmp) {
-        alert('اختر موظف جديد');
+        alert('رجاءً اختر موظفاً جديداً من القائمة');
         return;
       }
 
-      if (!confirm(`إعادة تكليف ${taskId} إلى ${newEmp}؟`)) return;
+      // Security: Clean inputs before confirmation
+      const safeId = escapeHtml(taskId);
+      const safeEmp = escapeHtml(newEmp);
+
+      if (!confirm(`هل أنت متأكد من إعادة تكليف المهمة رقم (${safeId}) إلى الموظف (${safeEmp})؟`)) return;
 
       document.getElementById('loading').classList.remove('hidden');
 
       try {
         const result = await auth.apiCall('reassignTask', {
-          taskId: taskId,
+          taskId: taskId, // API needs original ID
           newEmployee: newEmp
         });
 
         if (result && result.success) {
-          alert('✅ تم إعادة التكليف!\n📧 تم إرسال إيميل');
-          applyFilters();
+          alert('✅ تم إعادة التكليف بنجاح!\n📧 تم إرسال إشعار للموظف الجديد');
+          applyFilters(); // Refresh list
         } else {
-          alert('❌ فشل: ' + (result.error || 'خطأ'));
+          alert('❌ فشل: ' + (result.error || 'خطأ غير معروف'));
         }
       } catch (err) {
-        alert('❌ خطأ: ' + err.message);
+        alert('❌ خطأ في الاتصال: ' + err.message);
       } finally {
         document.getElementById('loading').classList.add('hidden');
       }
