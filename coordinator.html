@@ -356,25 +356,59 @@
               </div>
             </div>
 
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;">
             ${empTasks.map(t => {
               const isDone = (t.status || '').includes('تم الاعتماد') || (t.status || '').includes('منتهي') || (t.status || '').includes('أرشيف');
               
               return `
                 <div class="task-item ${isDone ? 'task-done' : 'task-pending'}">
                   <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
-                    <div style="font-weight: 700; color: #1e293b;">${t.id || 'غير محدد'}</div>
+                    <div style="font-weight: 700; color: #1e293b; font-size: 1.1rem;">${t.id || 'غير محدد'}</div>
                     <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">
                       ${isDone ? '✅ منتهي' : '⏳ جاري'}
                     </span>
                   </div>
-                  <div style="color: #475569; font-weight: 600; margin-bottom: 8px;">${t.subject || 'موضوع غير محدد'}</div>
-                  <div style="display: flex; gap: 16px; font-size: 0.875rem; color: #64748b;">
-                    <span>📍 ${t.entity || 'غير محدد'}</span>
-                    <span>📅 ${t.date || 'غير محدد'}</span>
+                  
+                  <div style="color: #475569; font-weight: 600; margin-bottom: 12px; min-height: 45px; line-height: 1.5;">
+                    ${t.subject || 'موضوع غير محدد'}
+                  </div>
+                  
+                  <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.8rem; color: #64748b;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-weight: 700;">📥 من:</span>
+                      <span>${t.source || t.entity || 'غير محدد'}</span>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-weight: 700;">📍 التنفيذ:</span>
+                      <span>${t.executionLocation || t.entity || 'غير محدد'}</span>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-weight: 700;">📅 التاريخ:</span>
+                      <span>${t.date || 'غير محدد'}</span>
+                    </div>
+                    
+                    ${t.attachment || t.attachments ? `
+                    <div style="margin-top: 6px;">
+                      <a href="${t.attachment || t.attachments}" target="_blank" style="color: #0f766e; text-decoration: underline; font-weight: 700;">
+                        📎 عرض المرفق
+                      </a>
+                    </div>
+                    ` : ''}
+                    
+                    ${t.report ? `
+                    <div style="margin-top: 6px;">
+                      <a href="${t.report}" target="_blank" style="color: #dc2626; text-decoration: underline; font-weight: 700;">
+                        📄 عرض التقرير
+                      </a>
+                    </div>
+                    ` : ''}
                   </div>
                 </div>
               `;
             }).join('')}
+            </div>
           </div>
         `;
       });
