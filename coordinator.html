@@ -427,23 +427,33 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
-    // Check authentication first
+    // ═══════════════════════════════════════════════════
+    // 1. Check Authentication FIRST
+    // ═══════════════════════════════════════════════════
     const currentUser = auth.checkSession();
     if (!currentUser) {
+      alert('يجب تسجيل الدخول أولاً');
       window.location.href = 'index.html';
     }
 
     lucide.createIcons();
 
-    // Display user name
+    // ═══════════════════════════════════════════════════
+    // 2. Display User Name in Sidebar
+    // ═══════════════════════════════════════════════════
     const userNameEl = document.querySelector('.sidebar-logo p');
     if (userNameEl && currentUser) {
-      userNameEl.textContent = `مرحباً ${currentUser.name}`;
+      userNameEl.textContent = `مرحباً ${currentUser.name} 👋`;
     }
 
+    // ═══════════════════════════════════════════════════
+    // 3. Variables
+    // ═══════════════════════════════════════════════════
     let currentPeriod = 'week'; // Default to last week
     let currentEmployee = '';
+    let currentDepartment = ''; // NEW: for department filter
     let allEmployees = [];
+    let allTasks = [];
 
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('active');
@@ -516,7 +526,7 @@
           endDate = new Date(today);
           break;
         case 'year':
-          startDate = new Date(today.getFullYear(), 0, 1); // Jan 1
+          startDate = new Date(today.getFullYear(), 0, 1);
           endDate = new Date(today);
           break;
         case 'custom':
@@ -543,30 +553,37 @@
       };
     }
 
+    // ═══════════════════════════════════════════════════
+    // 4. Load Employees (Financial/Admin + Technical ONLY)
+    // ═══════════════════════════════════════════════════
     async function loadEmployees() {
       try {
         const result = await auth.apiCall('getAllData', {
           role: 'مدير',
-          name: 'System',
+          name: currentUser.name,
           startDate: '2020-01-01',
           endDate: '2030-12-31'
         });
+
+        console.log('📊 Employees Result:', result);
 
         if (result && result.success && result.stats && result.stats.employees) {
           allEmployees = result.stats.employees;
           
           const selectEl = document.getElementById('employee-filter');
+          
+          // Categorize employees
           const financialAdmins = allEmployees.filter(e => 
-            e.role && (e.role.includes('مالي') || e.role.includes('إداري'))
+            e.role && (e.role.includes('مالي') || e.role.includes('إداري') || e.role.includes('مراجع'))
           );
           const technical = allEmployees.filter(e => 
-            e.role && e.role.includes('فني')
-          );
-          const others = allEmployees.filter(e => 
-            !financialAdmins.includes(e) && !technical.includes(e)
+            e.role && (e.role.includes('فني') || e.role.includes('تفتيش'))
           );
           
           let optionsHTML = '<option value="">جميع الموظفين</option>';
+          optionsHTML += '<option value="ALL_FINANCIAL">كل المالي والإداري</option>';
+          optionsHTML += '<option value="ALL_TECHNICAL">كل الفنيين</option>';
+          optionsHTML += '<option disabled>───────────────</option>';
           
           if (financialAdmins.length > 0) {
             optionsHTML += '<optgroup label="المالي والإداري">';
@@ -584,44 +601,78 @@
             optionsHTML += '</optgroup>';
           }
           
-          if (others.length > 0) {
-            optionsHTML += '<optgroup label="آخرون">';
-            others.forEach(emp => {
-              optionsHTML += `<option value="${emp.name}">${emp.name}</option>`;
-            });
-            optionsHTML += '</optgroup>';
-          }
-          
           selectEl.innerHTML = optionsHTML;
         }
       } catch (error) {
-        console.error('Error loading employees:', error);
+        console.error('❌ Error loading employees:', error);
       }
     }
 
+    // ═══════════════════════════════════════════════════
+    // 5. Apply Filters and Load Tasks
+    // ═══════════════════════════════════════════════════
     async function applyFilters() {
       const loadingEl = document.getElementById('loading-overlay');
       loadingEl.classList.remove('hidden');
       
-      currentEmployee = document.getElementById('employee-filter').value;
+      const employeeFilter = document.getElementById('employee-filter').value;
       const dateRange = getDateRange();
+
+      console.log('🔍 Applying Filters:', {
+        employee: employeeFilter,
+        period: currentPeriod,
+        dateRange: dateRange
+      });
 
       try {
         const result = await auth.apiCall('getAllData', {
-          role: 'منسق',
-          name: 'Coordinator',
+          role: currentUser.role || 'منسق',
+          name: currentUser.name,
           startDate: dateRange.start,
           endDate: dateRange.end
         });
 
+        console.log('📦 Tasks Result:', result);
+
         if (result && result.success && result.tasks) {
-          renderTasks(result.tasks);
+          allTasks = result.tasks;
+          
+          // Filter tasks based on employee selection
+          let filteredTasks = allTasks;
+          
+          if (employeeFilter === 'ALL_FINANCIAL') {
+            // Get all financial/admin employees
+            const financialNames = allEmployees
+              .filter(e => e.role && (e.role.includes('مالي') || e.role.includes('إداري') || e.role.includes('مراجع')))
+              .map(e => e.name);
+            
+            filteredTasks = allTasks.filter(task => 
+              financialNames.some(name => task.assignee && task.assignee.includes(name))
+            );
+          } else if (employeeFilter === 'ALL_TECHNICAL') {
+            // Get all technical employees
+            const technicalNames = allEmployees
+              .filter(e => e.role && (e.role.includes('فني') || e.role.includes('تفتيش')))
+              .map(e => e.name);
+            
+            filteredTasks = allTasks.filter(task => 
+              technicalNames.some(name => task.assignee && task.assignee.includes(name))
+            );
+          } else if (employeeFilter) {
+            // Specific employee
+            filteredTasks = allTasks.filter(task => 
+              task.assignee && task.assignee.includes(employeeFilter)
+            );
+          }
+          
+          console.log('✅ Filtered Tasks:', filteredTasks.length);
+          renderTasks(filteredTasks);
         } else {
           document.getElementById('tasks-container').innerHTML = 
-            '<div class="text-center py-12"><p class="text-gray-500 text-lg font-semibold mb-2">لا توجد بيانات</p><p class="text-gray-400 text-sm">تأكد من الاتصال بقاعدة البيانات</p></div>';
+            '<div class="text-center py-12"><p class="text-gray-500 text-lg font-semibold mb-2">لا توجد بيانات</p><p class="text-gray-400 text-sm">تأكد من وجود معاملات في الفترة المحددة</p></div>';
         }
       } catch (error) {
-        console.error('Error loading tasks:', error);
+        console.error('❌ Error loading tasks:', error);
         document.getElementById('tasks-container').innerHTML = 
           '<div class="text-center py-12"><p class="text-red-600 text-lg font-semibold mb-2">خطأ في التحميل</p><p class="text-gray-500 text-sm">' + error.message + '</p></div>';
       } finally {
@@ -630,6 +681,8 @@
     }
 
     function renderTasks(tasks) {
+      console.log('🎨 Rendering Tasks:', tasks);
+      
       if (!tasks || tasks.length === 0) {
         document.getElementById('tasks-container').innerHTML = 
           '<p class="text-center text-gray-400 py-12 text-lg">لا توجد مهام في هذه الفترة</p>';
@@ -640,14 +693,15 @@
       const groupedTasks = {};
       
       tasks.forEach(task => {
-        // Filter by selected employee
-        if (currentEmployee && task.assignee !== currentEmployee) return;
-
-        if (!groupedTasks[task.assignee]) {
-          groupedTasks[task.assignee] = [];
+        const assignee = task.assignee || 'غير محدد';
+        
+        if (!groupedTasks[assignee]) {
+          groupedTasks[assignee] = [];
         }
-        groupedTasks[task.assignee].push(task);
+        groupedTasks[assignee].push(task);
       });
+
+      console.log('👥 Grouped Tasks:', groupedTasks);
 
       const container = document.getElementById('tasks-container');
 
@@ -660,7 +714,7 @@
         // Determine received status from task status
         const receivedCount = empTasks.filter(t => {
           const status = t.status || '';
-          return status.includes('تم الاستلام') || status.includes('استلم') || status.includes('received');
+          return status.includes('تم الاعتماد') || status.includes('منتهي') || status.includes('أرشيف');
         }).length;
         const pendingCount = empTasks.length - receivedCount;
 
@@ -674,22 +728,22 @@
               <div class="flex gap-4">
                 <div class="text-center">
                   <p class="text-2xl font-bold">${receivedCount}</p>
-                  <p class="text-xs opacity-90">تم الاستلام</p>
+                  <p class="text-xs opacity-90">تم الإنجاز</p>
                 </div>
                 <div class="text-center">
                   <p class="text-2xl font-bold">${pendingCount}</p>
-                  <p class="text-xs opacity-90">في الانتظار</p>
+                  <p class="text-xs opacity-90">قيد التنفيذ</p>
                 </div>
               </div>
             </div>
 
             ${empTasks.map(task => {
               const status = task.status || '';
-              const isReceived = status.includes('تم الاستلام') || status.includes('استلم') || status.includes('received');
+              const isDone = status.includes('تم الاعتماد') || status.includes('منتهي') || status.includes('أرشيف');
               const attachment = task.attachments || task.attachment || null;
 
               return `
-                <div class="task-card ${isReceived ? 'received' : 'pending'}">
+                <div class="task-card ${isDone ? 'received' : 'pending'}">
                   <div class="flex items-start gap-4">
                     ${attachment ? `
                       <img src="${attachment}" alt="مرفق" class="attachment-preview" onclick="window.open('${attachment}', '_blank')" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -705,9 +759,9 @@
                     <div class="flex-grow">
                       <div class="flex items-start justify-between mb-2">
                         <h3 class="font-bold text-gray-800 text-lg">رقم القيد: ${task.id || 'غير محدد'}</h3>
-                        <span class="status-badge ${isReceived ? 'status-received' : 'status-pending'}">
-                          <i data-lucide="${isReceived ? 'check-circle' : 'clock'}" class="w-4 h-4"></i>
-                          ${isReceived ? 'تم الاستلام' : 'في الانتظار'}
+                        <span class="status-badge ${isDone ? 'status-received' : 'status-pending'}">
+                          <i data-lucide="${isDone ? 'check-circle' : 'clock'}" class="w-4 h-4"></i>
+                          ${isDone ? 'تم الإنجاز' : 'قيد التنفيذ'}
                         </span>
                       </div>
                       
