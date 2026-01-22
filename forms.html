@@ -17,7 +17,7 @@
       padding-bottom: 80px;
     }
     
-    /* Side Navigation */
+    /* Side Navigation Styles */
     .sidebar {
       position: fixed;
       right: 0;
@@ -81,6 +81,7 @@
       text-decoration: none;
       display: block;
       border-right: 4px solid transparent;
+      cursor: pointer;
     }
     
     .form-card:hover {
@@ -188,7 +189,6 @@
 
   <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-  <!-- Mobile Header -->
   <div class="mobile-header">
     <button onclick="toggleSidebar()" class="p-2">
       <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
@@ -197,7 +197,6 @@
     <div class="w-10"></div>
   </div>
 
-  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <h2 class="text-xl font-bold mb-1">IAG System</h2>
@@ -237,10 +236,8 @@
     </nav>
   </aside>
 
-  <!-- Main Content -->
   <main class="main-content">
     
-    <!-- Header Section with Teal Gradient -->
     <div style="background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); border-radius: 20px; padding: 48px 32px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(15, 118, 110, 0.15);">
       <div class="text-center text-white">
         <div style="background: rgba(255,255,255,0.15); width: 100px; height: 100px; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; border: 3px solid rgba(255,255,255,0.3);">
@@ -265,8 +262,7 @@
 
     <div class="grid md:grid-cols-2 gap-6">
       
-      <!-- نموذج 1: الصادر والوارد -->
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSeJhAdpfoQAs6wqMDUD12N_H4YnL0Xv9KITCj2pHGCaKSyhJA/viewform" target="_blank" class="form-card teal">
+      <a id="link-inbox" href="#" target="_blank" rel="noopener noreferrer" class="form-card teal">
         <div class="flex items-start gap-5">
           <div class="form-icon" style="background: #e6f7f5;">
             <i data-lucide="inbox" class="w-9 h-9" style="color: #0f766e;"></i>
@@ -282,8 +278,7 @@
         </div>
       </a>
 
-      <!-- نموذج 2: فحص الشكاوى -->
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSeLbdP8tzEyNFaVI53h0jfHMp3j9uJL-mLors14rIjuUQaGIg/viewform" target="_blank" class="form-card rose">
+      <a id="link-complaints" href="#" target="_blank" rel="noopener noreferrer" class="form-card rose">
         <div class="flex items-start gap-5">
           <div class="form-icon" style="background: #ffe4e6;">
             <i data-lucide="alert-triangle" class="w-9 h-9" style="color: #e11d48;"></i>
@@ -299,8 +294,7 @@
         </div>
       </a>
 
-      <!-- نموذج 3: المرور المالي والإداري -->
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfe94k6Im0Y4IODqw3UCLAczVQYdKivnyZ2s8SiCAU4uTwwpA/viewform" target="_blank" class="form-card amber">
+      <a id="link-financial" href="#" target="_blank" rel="noopener noreferrer" class="form-card amber">
         <div class="flex items-start gap-5">
           <div class="form-icon" style="background: #fef3c7;">
             <i data-lucide="calculator" class="w-9 h-9" style="color: #f59e0b;"></i>
@@ -316,8 +310,7 @@
         </div>
       </a>
 
-      <!-- نموذج 4: نموذج فني وحدات الرعاية الأولية -->
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSePbkn17cO2EFDUm4-7A4Le560ep6Zce9-QlyTdP7MEG_eAew/viewform" target="_blank" class="form-card blue">
+      <a id="link-primary" href="#" target="_blank" rel="noopener noreferrer" class="form-card blue">
         <div class="flex items-start gap-5">
           <div class="form-icon" style="background: #dbeafe;">
             <i data-lucide="stethoscope" class="w-9 h-9" style="color: #3b82f6;"></i>
@@ -333,8 +326,7 @@
         </div>
       </a>
 
-      <!-- نموذج 5: مرور فني مستشفيات -->
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSedsoD3zW51Lwd7VanPQ1hVMB3OTmmaorOATiMieTXjaOBbRw/viewform" target="_blank" class="form-card violet">
+      <a id="link-hospitals" href="#" target="_blank" rel="noopener noreferrer" class="form-card violet">
         <div class="flex items-start gap-5">
           <div class="form-icon" style="background: #ede9fe;">
             <i data-lucide="clipboard-check" class="w-9 h-9" style="color: #8b5cf6;"></i>
@@ -354,7 +346,6 @@
 
   </main>
 
-  <!-- Bottom Navigation -->
   <nav class="bottom-nav">
     <div style="display: flex; width: 100%; justify-content: space-around;">
       <a href="distribution.html" class="bottom-nav-item">
@@ -376,6 +367,7 @@
     </div>
   </nav>
 
+  <script src="assets/js/config.js"></script>
   <script>
     lucide.createIcons();
 
@@ -383,6 +375,32 @@
       document.getElementById('sidebar').classList.toggle('active');
       document.getElementById('overlay').classList.toggle('active');
     }
+
+    // Dynamic Link Injection from CONFIG
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check if CONFIG exists
+      if (typeof CONFIG === 'undefined' || !CONFIG.FORMS) {
+        console.error('Config file is missing or invalid!');
+        return;
+      }
+
+      // Map IDs to Config Keys
+      const links = {
+        'link-inbox': CONFIG.FORMS.INBOX,
+        'link-complaints': CONFIG.FORMS.COMPLAINTS,
+        'link-financial': CONFIG.FORMS.FINANCIAL,
+        'link-primary': CONFIG.FORMS.PRIMARY_CARE,
+        'link-hospitals': CONFIG.FORMS.HOSPITALS
+      };
+
+      // Apply Hrefs
+      for (const [id, url] of Object.entries(links)) {
+        const el = document.getElementById(id);
+        if (el && url) {
+          el.href = url;
+        }
+      }
+    });
   </script>
 </body>
 </html>
