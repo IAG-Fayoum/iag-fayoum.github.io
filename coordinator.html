@@ -248,7 +248,7 @@
     .overlay.active { display: block; }
     
     /* Loading */
-    #loading {
+    #loading-overlay {
       position: fixed;
       inset: 0;
       background: rgba(255,255,255,0.95);
@@ -274,7 +274,7 @@
 </head>
 <body>
 
-  <div id="loading" class="hidden">
+  <div id="loading-overlay" class="hidden">
     <div class="spinner"></div>
   </div>
 
@@ -473,8 +473,15 @@
           endDate = new Date(today);
           break;
         case 'custom':
-          startDate = new Date(document.getElementById('start-date').value);
-          endDate = new Date(document.getElementById('end-date').value);
+          const startInput = document.getElementById('start-date').value;
+          const endInput = document.getElementById('end-date').value;
+          if (startInput && endInput) {
+            startDate = new Date(startInput);
+            endDate = new Date(endInput);
+          } else {
+            startDate = new Date(today);
+            endDate = new Date(today);
+          }
           break;
         default:
           startDate = new Date(today);
@@ -488,26 +495,42 @@
     }
 
     async function applyFilters() {
-      document.getElementById('loading').classList.remove('hidden');
+      const loadingEl = document.getElementById('loading-overlay');
+      loadingEl.classList.remove('hidden');
+      
       currentEmployee = document.getElementById('employee-filter').value;
-
       const dateRange = getDateRange();
 
-      const result = await auth.apiCall('getAllData', {
-        role: 'منسق',
-        name: 'Coordinator',
-        startDate: dateRange.start,
-        endDate: dateRange.end
-      });
+      try {
+        const result = await auth.apiCall('getAllData', {
+          role: 'منسق',
+          name: 'Coordinator',
+          startDate: dateRange.start,
+          endDate: dateRange.end
+        });
 
-      if (result.success) {
-        renderTasks(result.tasks);
+        if (result && result.success && result.tasks) {
+          renderTasks(result.tasks);
+        } else {
+          document.getElementById('tasks-container').innerHTML = 
+            '<div class="text-center py-12"><p class="text-gray-500 text-lg font-semibold mb-2">لا توجد بيانات</p><p class="text-gray-400 text-sm">تأكد من الاتصال بقاعدة البيانات</p></div>';
+        }
+      } catch (error) {
+        console.error('Error loading tasks:', error);
+        document.getElementById('tasks-container').innerHTML = 
+          '<div class="text-center py-12"><p class="text-red-600 text-lg font-semibold mb-2">خطأ في التحميل</p><p class="text-gray-500 text-sm">' + error.message + '</p></div>';
+      } finally {
+        loadingEl.classList.add('hidden');
       }
-
-      document.getElementById('loading').classList.add('hidden');
     }
 
     function renderTasks(tasks) {
+      if (!tasks || tasks.length === 0) {
+        document.getElementById('tasks-container').innerHTML = 
+          '<p class="text-center text-gray-400 py-12 text-lg">لا توجد مهام في هذه الفترة</p>';
+        return;
+      }
+
       // Group by employee
       const groupedTasks = {};
       
@@ -524,12 +547,16 @@
       const container = document.getElementById('tasks-container');
 
       if (Object.keys(groupedTasks).length === 0) {
-        container.innerHTML = '<p class="text-center text-gray-400 py-12">لا توجد مهام في هذه الفترة</p>';
+        container.innerHTML = '<p class="text-center text-gray-400 py-12 text-lg">لا توجد مهام لهذا الموظف في هذه الفترة</p>';
         return;
       }
 
       container.innerHTML = Object.entries(groupedTasks).map(([employee, empTasks]) => {
-        const receivedCount = empTasks.filter(t => t.received).length;
+        // Determine received status from task status
+        const receivedCount = empTasks.filter(t => {
+          const status = t.status || '';
+          return status.includes('تم الاستلام') || status.includes('استلم') || status.includes('received');
+        }).length;
         const pendingCount = empTasks.length - receivedCount;
 
         return `
@@ -551,42 +578,51 @@
               </div>
             </div>
 
-            ${empTasks.map(task => `
-              <div class="task-card ${task.received ? 'received' : 'pending'}">
-                <div class="flex items-start gap-4">
-                  ${task.attachment ? `
-                    <img src="${task.attachment}" alt="مرفق" class="attachment-preview" onclick="window.open('${task.attachment}', '_blank')">
-                  ` : `
-                    <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 2px solid #e9ecef;">
-                      <i data-lucide="file-text" class="w-8 h-8 text-gray-400"></i>
-                    </div>
-                  `}
-                  
-                  <div class="flex-grow">
-                    <div class="flex items-start justify-between mb-2">
-                      <h3 class="font-bold text-gray-800 text-lg">رقم القيد: ${task.id}</h3>
-                      <span class="status-badge ${task.received ? 'status-received' : 'status-pending'}">
-                        <i data-lucide="${task.received ? 'check-circle' : 'clock'}" class="w-4 h-4"></i>
-                        ${task.received ? 'تم الاستلام' : 'في الانتظار'}
-                      </span>
-                    </div>
-                    
-                    <p class="text-gray-700 font-semibold mb-2">${task.subject}</p>
-                    
-                    <div class="flex items-center gap-4 text-sm text-gray-600">
-                      <div class="flex items-center gap-1">
-                        <i data-lucide="building" class="w-4 h-4"></i>
-                        <span>${task.entity}</span>
+            ${empTasks.map(task => {
+              const status = task.status || '';
+              const isReceived = status.includes('تم الاستلام') || status.includes('استلم') || status.includes('received');
+              const attachment = task.attachments || task.attachment || null;
+
+              return `
+                <div class="task-card ${isReceived ? 'received' : 'pending'}">
+                  <div class="flex items-start gap-4">
+                    ${attachment ? `
+                      <img src="${attachment}" alt="مرفق" class="attachment-preview" onclick="window.open('${attachment}', '_blank')" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                      <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 8px; display: none; align-items: center; justify-content: center; border: 2px solid #e9ecef;">
+                        <i data-lucide="file-text" class="w-8 h-8 text-gray-400"></i>
                       </div>
-                      <div class="flex items-center gap-1">
-                        <i data-lucide="calendar" class="w-4 h-4"></i>
-                        <span>${task.date}</span>
+                    ` : `
+                      <div style="width: 80px; height: 80px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 2px solid #e9ecef;">
+                        <i data-lucide="file-text" class="w-8 h-8 text-gray-400"></i>
+                      </div>
+                    `}
+                    
+                    <div class="flex-grow">
+                      <div class="flex items-start justify-between mb-2">
+                        <h3 class="font-bold text-gray-800 text-lg">رقم القيد: ${task.id || 'غير محدد'}</h3>
+                        <span class="status-badge ${isReceived ? 'status-received' : 'status-pending'}">
+                          <i data-lucide="${isReceived ? 'check-circle' : 'clock'}" class="w-4 h-4"></i>
+                          ${isReceived ? 'تم الاستلام' : 'في الانتظار'}
+                        </span>
+                      </div>
+                      
+                      <p class="text-gray-700 font-semibold mb-2">${task.subject || 'موضوع غير محدد'}</p>
+                      
+                      <div class="flex items-center gap-4 text-sm text-gray-600">
+                        <div class="flex items-center gap-1">
+                          <i data-lucide="building" class="w-4 h-4"></i>
+                          <span>${task.entity || 'جهة غير محددة'}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                          <i data-lucide="calendar" class="w-4 h-4"></i>
+                          <span>${task.date || 'تاريخ غير محدد'}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            `).join('')}
+              `;
+            }).join('')}
           </div>
         `;
       }).join('');
@@ -595,7 +631,9 @@
     }
 
     // Initial load
-    applyFilters();
+    setTimeout(() => {
+      applyFilters();
+    }, 500);
   </script>
 </body>
 </html>
