@@ -521,23 +521,28 @@
     }
 
     // 4.5 Filter and Display
-    function filterAndDisplay() {
-      const empFilter = document.getElementById('emp-filter').value;
-      let filtered = allTasks;
+function filterAndDisplay() {
+  const empFilter = document.getElementById('emp-filter').value;
+  let filtered = allTasks;
 
-      if (empFilter === 'ALL_FINANCIAL') {
-        const names = allEmployees.filter(e => e.role && (e.role.includes('مالي') || e.role.includes('إداري'))).map(e => e.name);
-        filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
-      } else if (empFilter === 'ALL_TECHNICAL') {
-        const names = allEmployees.filter(e => e.role && e.role.includes('فني')).map(e => e.name);
-        filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
-      } else if (empFilter) {
-        filtered = allTasks.filter(t => t.assignee && t.assignee.includes(empFilter));
-      }
+  if (empFilter === 'ALL_FINANCIAL') {
+    // البحث في المسمى الوظيفي
+    const names = allEmployees.filter(e => 
+      e.jobTitle && e.jobTitle.includes('مراجع مالي')
+    ).map(e => e.name);
+    filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
+  } else if (empFilter === 'ALL_TECHNICAL') {
+    // البحث في المسمى الوظيفي
+    const names = allEmployees.filter(e => 
+      e.jobTitle && e.jobTitle.includes('مراجع فني')
+    ).map(e => e.name);
+    filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
+  } else if (empFilter) {
+    filtered = allTasks.filter(t => t.assignee && t.assignee.includes(empFilter));
+  }
 
-      displayTasks(filtered);
-    }
-
+  displayTasks(filtered);
+}
     // ═══════════════════════════════════════════════════════════════════
     // 5. DISPLAY TASKS
     // ═══════════════════════════════════════════════════════════════════
