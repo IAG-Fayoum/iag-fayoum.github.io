@@ -144,7 +144,7 @@
     /* 5.1 Grid */
     .filter-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
       margin-bottom: 16px;
     }
@@ -156,6 +156,7 @@
       border: 2px solid #e2e8f0;
       border-radius: 8px;
       font-weight: 600;
+      font-size: 0.875rem;
     }
     
     select:focus {
@@ -286,6 +287,7 @@
     </div>
     
     <nav class="py-4" id="sidebar-nav">
+      <!-- 1.1 صفحات عامة (للجميع) -->
       <a href="index.html" class="sidebar-item" data-page="home">
         <i data-lucide="home" class="w-5 h-5"></i>
         <span>الرئيسية</span>
@@ -301,16 +303,13 @@
         <span>النماذج</span>
       </a>
       
-      <a href="employee.html" class="sidebar-item" data-page="employee" data-role="منسق,مدير">
-        <i data-lucide="briefcase" class="w-5 h-5"></i>
-        <span>الموظفين</span>
-      </a>
-      
+      <!-- 1.2 صفحات خاصة بالمنسقين والمدير فقط -->
       <a href="coordinator.html" class="sidebar-item active" data-page="coordinator" data-role="منسق,مدير">
         <i data-lucide="users" class="w-5 h-5"></i>
         <span>المنسقين</span>
       </a>
       
+      <!-- 1.3 صفحة الإدارة (المدير فقط) -->
       <a href="admin.html" class="sidebar-item" data-page="admin" data-role="مدير">
         <i data-lucide="settings" class="w-5 h-5"></i>
         <span>الإدارة</span>
@@ -343,11 +342,6 @@
         <span>النماذج</span>
       </a>
       
-      <a href="employee.html" class="bottom-nav-item" data-page="employee" data-role="منسق,مدير">
-        <i data-lucide="briefcase" class="w-5 h-5"></i>
-        <span>الموظفين</span>
-      </a>
-      
       <a href="coordinator.html" class="bottom-nav-item active" data-page="coordinator" data-role="منسق,مدير">
         <i data-lucide="users" class="w-5 h-5"></i>
         <span>المنسقين</span>
@@ -376,6 +370,42 @@
       <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;">الفلاتر</h2>
       
       <div class="filter-grid">
+        <!-- 3.2.1 السنة -->
+        <div>
+          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">السنة</label>
+          <select id="year-filter">
+            <option value="">كل السنوات</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+          </select>
+        </div>
+
+        <!-- 3.2.2 الفترة -->
+        <div>
+          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">الفترة</label>
+          <select id="period-filter">
+            <option value="">السنة كاملة</option>
+            <option value="Q1">الربع الأول</option>
+            <option value="Q2">الربع الثاني</option>
+            <option value="Q3">الربع الثالث</option>
+            <option value="Q4">الربع الرابع</option>
+            <option value="1">يناير</option>
+            <option value="2">فبراير</option>
+            <option value="3">مارس</option>
+            <option value="4">أبريل</option>
+            <option value="5">مايو</option>
+            <option value="6">يونيو</option>
+            <option value="7">يوليو</option>
+            <option value="8">أغسطس</option>
+            <option value="9">سبتمبر</option>
+            <option value="10">أكتوبر</option>
+            <option value="11">نوفمبر</option>
+            <option value="12">ديسمبر</option>
+          </select>
+        </div>
+
+        <!-- 3.2.3 الموظف -->
         <div>
           <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">الموظف</label>
           <select id="emp-filter">
@@ -384,20 +414,9 @@
             <option value="ALL_TECHNICAL">🔧 الفنيين</option>
           </select>
         </div>
-
-        <div>
-          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">الفترة</label>
-          <select id="period-filter">
-            <option value="week">آخر أسبوع</option>
-            <option value="month">آخر شهر</option>
-            <option value="3months">آخر 3 أشهر</option>
-            <option value="year">السنة الحالية</option>
-            <option value="all">الكل</option>
-          </select>
-        </div>
       </div>
 
-      <button onclick="loadData()">تطبيق الفلتر</button>
+      <button onclick="loadData()">🔍 تطبيق الفلتر</button>
     </div>
 
     <!-- 3.3 Results -->
@@ -434,7 +453,7 @@
     const allowedRoles = ['منسق', 'Coordinator', 'مدير', 'Admin'];
     if (!allowedRoles.includes(user.role)) {
        alert('غير مصرح لك بدخول هذه الصفحة');
-       window.location.replace('employee.html');
+       window.location.replace('index.html');
     }
 
     // 2.3 Display User Info
@@ -484,22 +503,14 @@
         .replace(/'/g, "&#039;");
     }
 
-    // 4.3 Get Date Range
+    // 4.3 Get Date Range (آخر أسبوع - Default)
     function getDateRange() {
       const today = new Date();
-      const period = document.getElementById('period-filter').value;
-      let start = new Date(today);
-      
-      switch(period) {
-        case 'week': start.setDate(today.getDate() - 7); break;
-        case 'month': start.setMonth(today.getMonth() - 1); break;
-        case '3months': start.setMonth(today.getMonth() - 3); break;
-        case 'year': start = new Date(today.getFullYear(), 0, 1); break;
-        case 'all': start = new Date('2020-01-01'); break;
-      }
+      const lastWeek = new Date(today);
+      lastWeek.setDate(today.getDate() - 7);
       
       return {
-        start: start.toISOString().split('T')[0],
+        start: lastWeek.toISOString().split('T')[0],
         end: today.toISOString().split('T')[0]
       };
     }
@@ -511,19 +522,34 @@
       try {
         const range = getDateRange();
         
-        const result = await auth.apiCall('getAllData', {
-          role: user.role || 'مدير',
-          name: user.name,
-          startDate: range.start,
-          endDate: range.end
+        const result = await auth.apiCall('getDashboardData', {
+          year: document.getElementById('year-filter').value || new Date().getFullYear(),
+          period: document.getElementById('period-filter').value || '',
+          employeeId: ''
         });
 
         if (!result || !result.success) throw new Error('فشل التحميل');
 
-        allTasks = result.tasks || [];
-        allEmployees = result.stats.employees || [];
+        allEmployees = result.employees || [];
+        
+        // 4.4.1 استخراج المهام من الموظفين
+        allTasks = [];
+        allEmployees.forEach(emp => {
+          if (emp.tasks && emp.tasks.length > 0) {
+            emp.tasks.forEach(task => {
+              allTasks.push({
+                ...task,
+                assignee: emp.name,
+                source: task.entity || '',
+                executionLocation: task.entity || '',
+                attachment: null,
+                report: null
+              });
+            });
+          }
+        });
 
-        // 4.4.1 Populate Employee Dropdown
+        // 4.4.2 ملء قائمة الموظفين
         const empFilter = document.getElementById('emp-filter');
         let options = '<option value="">جميع الموظفين</option>';
         options += '<option value="ALL_FINANCIAL">🔹 المالي والإداري</option>';
@@ -541,6 +567,7 @@
         filterAndDisplay();
 
       } catch (err) {
+        console.error('Error:', err);
         document.getElementById('results').innerHTML = `<div style="color: #dc2626; text-align: center; padding: 40px;">❌ ${escapeHtml(err.message)}</div>`;
       }
     }
@@ -551,13 +578,13 @@
       let filtered = allTasks;
 
       if (empFilter === 'ALL_FINANCIAL') {
-        const names = allEmployees.filter(e => e.role && (e.role.includes('مالي') || e.role.includes('إداري'))).map(e => e.name);
-        filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
+        const names = allEmployees.filter(e => e.dept && (e.dept.includes('مالي') || e.dept.includes('إداري'))).map(e => e.name);
+        filtered = allTasks.filter(t => names.includes(t.assignee));
       } else if (empFilter === 'ALL_TECHNICAL') {
-        const names = allEmployees.filter(e => e.role && e.role.includes('فني')).map(e => e.name);
-        filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
+        const names = allEmployees.filter(e => e.dept && e.dept.includes('فني')).map(e => e.name);
+        filtered = allTasks.filter(t => names.includes(t.assignee));
       } else if (empFilter) {
-        filtered = allTasks.filter(t => t.assignee && t.assignee.includes(empFilter));
+        filtered = allTasks.filter(t => t.assignee === empFilter);
       }
 
       displayTasks(filtered);
@@ -572,7 +599,7 @@
       const container = document.getElementById('results');
 
       if (!tasks || tasks.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 60px; color: #94a3b8;"><div style="font-size: 3rem;">🔭</div><p style="font-weight: 600; margin-top: 12px;">لا توجد مهام</p></div>';
+        container.innerHTML = '<div style="text-align: center; padding: 60px; color: #94a3b8;"><div style="font-size: 3rem;">🔭</div><p style="font-weight: 600; margin-top: 12px;">لا توجد مهام في هذه الفترة</p></div>';
         return;
       }
 
@@ -588,10 +615,9 @@
 
       // 5.1.2 Build HTML
       Object.entries(grouped).forEach(([emp, empTasks]) => {
-        const done = empTasks.filter(t => {
-          const s = t.status || '';
-          return s.includes('تم الاعتماد') || s.includes('منتهي') || s.includes('أرشيف');
-        }).length;
+        const done = empTasks.filter(t => t.type === 'completed').length;
+        const pending = empTasks.filter(t => t.type === 'pending').length;
+        const overdue = empTasks.filter(t => t.type === 'overdue').length;
 
         html += `
           <div class="employee-group">
@@ -606,22 +632,27 @@
                   <div style="font-size: 0.75rem; opacity: 0.9;">منتهي</div>
                 </div>
                 <div style="text-align: center;">
-                  <div style="font-size: 1.5rem; font-weight: 800;">${empTasks.length - done}</div>
+                  <div style="font-size: 1.5rem; font-weight: 800;">${pending}</div>
                   <div style="font-size: 0.75rem; opacity: 0.9;">جاري</div>
+                </div>
+                <div style="text-align: center;">
+                  <div style="font-size: 1.5rem; font-weight: 800;">${overdue}</div>
+                  <div style="font-size: 0.75rem; opacity: 0.9;">متأخر</div>
                 </div>
               </div>
             </div>
 
             <div class="task-grid">
             ${empTasks.map(t => {
-              const isDone = (t.status || '').includes('تم الاعتماد') || (t.status || '').includes('منتهي') || (t.status || '').includes('أرشيف');
+              const isDone = t.type === 'completed';
+              const isOverdue = t.type === 'overdue';
               
               return `
-                <div class="task-card ${isDone ? 'task-done' : 'task-pending'}">
+                <div class="task-card ${isDone ? 'task-done' : (isOverdue ? 'task-pending' : 'task-pending')}">
                   <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                     <div style="font-weight: 700; color: #1e293b;">${escapeHtml(t.id)}</div>
                     <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">
-                      ${isDone ? '✅ منتهي' : '⏳ جاري'}
+                      ${isDone ? '✅ منتهي' : (isOverdue ? '⚠️ متأخر' : '⏳ جاري')}
                     </span>
                   </div>
                   
@@ -630,11 +661,9 @@
                   </div>
                   
                   <div style="font-size: 0.8rem; color: #64748b; display: flex; flex-direction: column; gap: 4px;">
-                    <div><strong>📥 من:</strong> ${escapeHtml(t.source || t.entity)}</div>
-                    <div><strong>📍 التنفيذ:</strong> ${escapeHtml(t.executionLocation || t.entity)}</div>
+                    <div><strong>🏢 الجهة:</strong> ${escapeHtml(t.entity)}</div>
                     <div><strong>📅 التاريخ:</strong> ${escapeHtml(t.date)}</div>
-                    ${t.attachment ? `<div><a href="${escapeHtml(t.attachment)}" target="_blank" rel="noopener noreferrer" style="color: #0f766e; text-decoration: underline;">📎 المرفق</a></div>` : ''}
-                    ${t.report ? `<div><a href="${escapeHtml(t.report)}" target="_blank" rel="noopener noreferrer" style="color: #dc2626; text-decoration: underline;">📄 التقرير</a></div>` : ''}
+                    <div><strong>📊 الحالة:</strong> ${escapeHtml(t.status)}</div>
                   </div>
                 </div>
               `;
@@ -649,7 +678,7 @@
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // 6. AUTO-LOAD ON PAGE READY
+    // 6. AUTO-LOAD ON PAGE READY (آخر أسبوع)
     // ═══════════════════════════════════════════════════════════════════
     
     loadData();
