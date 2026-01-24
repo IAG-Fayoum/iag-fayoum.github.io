@@ -343,36 +343,59 @@
     </div>
 
     <!-- 3.2 Filters Card -->
-    <div class="card">
-      <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;">الفلاتر</h2>
-      
-      <div class="filter-grid">
-        <!-- 3.2.1 الفترة الزمنية -->
-        <div>
-          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">الفترة</label>
-          <select id="period-filter">
-            <option value="week" selected>آخر أسبوع</option>
-            <option value="month">آخر شهر</option>
-            <option value="3months">آخر 3 أشهر</option>
-            <option value="year">السنة الحالية</option>
-            <option value="all">الكل</option>
-          </select>
-        </div>
-
-        <!-- 3.2.2 الموظف -->
-        <div>
-          <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">الموظف</label>
-          <select id="emp-filter">
-            <option value="">جميع الموظفين</option>
-            <option value="ALL_FINANCIAL">🔹 المالي والإداري</option>
-            <option value="ALL_TECHNICAL">🔧 الفنيين</option>
-          </select>
-        </div>
-      </div>
-
-      <button onclick="loadData()">🔍 تطبيق الفلتر</button>
+<div class="card">
+  <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;">الفلاتر</h2>
+  
+  <div class="filter-grid">
+    <!-- 3.2.1 السنة -->
+    <div>
+      <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">السنة</label>
+      <select id="year-filter">
+        <option value="">كل السنوات</option>
+        <option value="2024">2024</option>
+        <option value="2025">2025</option>
+        <option value="2026" selected>2026</option>
+        <option value="2027">2027</option>
+      </select>
     </div>
 
+    <!-- 3.2.2 الفترة -->
+    <div>
+      <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">الفترة</label>
+      <select id="period-filter">
+        <option value="">السنة كاملة</option>
+        <option value="Q1">الربع الأول</option>
+        <option value="Q2">الربع الثاني</option>
+        <option value="Q3">الربع الثالث</option>
+        <option value="Q4">الربع الرابع</option>
+        <option value="1">يناير</option>
+        <option value="2">فبراير</option>
+        <option value="3">مارس</option>
+        <option value="4">أبريل</option>
+        <option value="5">مايو</option>
+        <option value="6">يونيو</option>
+        <option value="7">يوليو</option>
+        <option value="8">أغسطس</option>
+        <option value="9">سبتمبر</option>
+        <option value="10">أكتوبر</option>
+        <option value="11">نوفمبر</option>
+        <option value="12">ديسمبر</option>
+      </select>
+    </div>
+
+    <!-- 3.2.3 الموظف -->
+    <div>
+      <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">الموظف</label>
+      <select id="emp-filter">
+        <option value="">جميع الموظفين</option>
+        <option value="ALL_FINANCIAL">🔹 المالي والإداري</option>
+        <option value="ALL_TECHNICAL">🔧 الفنيين</option>
+      </select>
+    </div>
+  </div>
+
+  <button onclick="loadData()">🔍 تطبيق الفلتر</button>
+</div>
     <!-- 3.3 Results -->
     <div id="results" style="color: #94a3b8; text-align: center; padding: 40px;">
       جارٍ التحميل...
@@ -457,69 +480,66 @@
         .replace(/'/g, "&#039;");
     }
 
-    // 4.3 Get Date Range (نفس الـ Admin)
-    function getDateRange() {
-      const today = new Date();
-      const period = document.getElementById('period-filter').value;
-      let start = new Date(today);
+    // 4.3 Get Initial Date Range (Default: آخر أسبوع للسنة الحالية)
+function getInitialDateRange() {
+  const today = new Date();
+  const lastWeek = new Date(today);
+  lastWeek.setDate(today.getDate() - 7);
+  
+  return {
+    start: lastWeek.toISOString().split('T')[0],
+    end: today.toISOString().split('T')[0]
+  };
+}
+    // 4.4 Load Data
+async function loadData() {
+  document.getElementById('results').innerHTML = '<div style="color: #94a3b8; text-align: center; padding: 40px;">⏳ جارٍ التحميل...</div>';
+
+  try {
+    // 4.4.1 تحديد الفلتر: إذا كان أول تحميل (بدون فلتر) → آخر أسبوع
+    const yearFilter = document.getElementById('year-filter').value;
+    const periodFilter = document.getElementById('period-filter').value;
+    
+    let startDate, endDate;
+    
+    if (!yearFilter && !periodFilter) {
+      // Default: آخر أسبوع
+      const range = getInitialDateRange();
+      startDate = range.start;
+      endDate = range.end;
+    } else {
+      // استخدام الفلتر المحدد
+      const year = yearFilter || new Date().getFullYear();
+      const period = periodFilter || '';
       
-      switch(period) {
-        case 'week': start.setDate(today.getDate() - 7); break;
-        case 'month': start.setMonth(today.getMonth() - 1); break;
-        case '3months': start.setMonth(today.getMonth() - 3); break;
-        case 'year': start = new Date(today.getFullYear(), 0, 1); break;
-        case 'all': start = new Date('2020-01-01'); break;
-      }
-      
-      return {
-        start: start.toISOString().split('T')[0],
-        end: today.toISOString().split('T')[0]
-      };
-    }
-
-    // 4.4 Load Data (نفس الـ Admin)
-    async function loadData() {
-      document.getElementById('results').innerHTML = '<div style="color: #94a3b8; text-align: center; padding: 40px;">⏳ جارٍ التحميل...</div>';
-
-      try {
-        const range = getDateRange();
-        
-        // 🔄 استخدام getAllData بدل getDashboardData
-        const result = await auth.apiCall('getAllData', {
-          role: user.role || 'منسق',
-          name: user.name,
-          startDate: range.start,
-          endDate: range.end
-        });
-
-        if (!result || !result.success) throw new Error('فشل التحميل');
-
-        allTasks = result.tasks || [];
-        allEmployees = result.stats.employees || [];
-
-        // 4.4.1 ملء قائمة الموظفين
-        const empFilter = document.getElementById('emp-filter');
-        let options = '<option value="">جميع الموظفين</option>';
-        options += '<option value="ALL_FINANCIAL">🔹 المالي والإداري</option>';
-        options += '<option value="ALL_TECHNICAL">🔧 الفنيين</option>';
-        options += '<optgroup label="أفراد">';
-        allEmployees.forEach(e => {
-          options += `<option value="${escapeHtml(e.name)}">${escapeHtml(e.name)}</option>`;
-        });
-        options += '</optgroup>';
-        
-        if (empFilter.options.length <= 3) {
-            empFilter.innerHTML = options;
+      // حساب الفترة
+      if (period) {
+        const month = parseInt(period);
+        if (!isNaN(month)) {
+          // شهر محدد
+          startDate = new Date(year, month - 1, 1).toISOString().split('T')[0];
+          endDate = new Date(year, month, 0).toISOString().split('T')[0];
+        } else if (period.startsWith('Q')) {
+          // ربع سنوي
+          const quarter = parseInt(period.substring(1));
+          const startMonth = (quarter - 1) * 3;
+          startDate = new Date(year, startMonth, 1).toISOString().split('T')[0];
+          endDate = new Date(year, startMonth + 3, 0).toISOString().split('T')[0];
         }
-
-        filterAndDisplay();
-
-      } catch (err) {
-        console.error('Error:', err);
-        document.getElementById('results').innerHTML = `<div style="color: #dc2626; text-align: center; padding: 40px;">❌ ${escapeHtml(err.message)}</div>`;
+      } else {
+        // السنة كاملة
+        startDate = new Date(year, 0, 1).toISOString().split('T')[0];
+        endDate = new Date(year, 11, 31).toISOString().split('T')[0];
       }
     }
-
+    
+    // 4.4.2 استدعاء API
+    const result = await auth.apiCall('getAllData', {
+      role: user.role || 'منسق',
+      name: user.name,
+      startDate: startDate,
+      endDate: endDate
+    });
     // 4.5 Filter and Display
 function filterAndDisplay() {
   const empFilter = document.getElementById('emp-filter').value;
