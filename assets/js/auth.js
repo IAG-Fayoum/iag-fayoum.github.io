@@ -1,30 +1,36 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * 🔐 IAG System - نظام المصادقة والاتصال (Optimized & Safe)
- * الإصدار النهائي: يدعم الكاش الذكي + حماية الذاكرة + وضع المدير
+ * 🔐 IAG System - نظام المصادقة والاتصال (v2.0 - Mobile + PIN)
+ * الإصدار: يدعم الكاش الذكي + حماية الذاكرة + وضع المدير
  * ═══════════════════════════════════════════════════════════════════════════
  */
 
+// ═══════════════════════════════════════════════════════════════════════════
+// 1. CLASS: AuthManager
+// ═══════════════════════════════════════════════════════════════════════════
+
 class AuthManager {
+  // 1.1 Constructor
   constructor() {
     this.currentUser = null;
     this.loadSession();
-    // مدة الاحتفاظ بالبيانات في الكاش: 5 دقائق (300000 مللي ثانية)
-    this.CACHE_DURATION = 5 * 60 * 1000; 
+    this.CACHE_DURATION = 5 * 60 * 1000; // 5 دقائق
   }
 
-  // 1. دالة الاتصال الرئيسية (API Call)
-  // options: { useCache: true/false } -> للتحكم في استخدام الذاكرة
+  // ═══════════════════════════════════════════════════════════════════════
+  // 2. API CALLS
+  // ═══════════════════════════════════════════════════════════════════════
+
+  // 2.1 دالة الاتصال الرئيسية
   async apiCall(action, payload = {}, options = { useCache: true }) {
     const cacheKey = `api_${action}_${JSON.stringify(payload)}`;
     
-    // 🅰️ محاولة القراءة من الكاش (فقط لطلبات الجلب 'get' وإذا كان الكاش مفعلاً)
+    // 2.1.1 محاولة القراءة من الكاش
     if (options.useCache && action.startsWith('get')) {
       try {
         const cachedItem = sessionStorage.getItem(cacheKey);
         if (cachedItem) {
           const { data, timestamp } = JSON.parse(cachedItem);
-          // إذا كانت البيانات حديثة (لم يمر عليها 5 دقائق)
           if (Date.now() - timestamp < this.CACHE_DURATION) {
             console.log('🚀 Serving from Cache (Fast Mode):', action);
             return data;
@@ -35,7 +41,7 @@ class AuthManager {
       }
     }
 
-    // 🅱️ الاتصال بالسيرفر (Network Request)
+    // 2.1.2 الاتصال بالسيرفر
     try {
       if (!payload.hideLoading) showLoading(true);
       
@@ -45,7 +51,6 @@ class AuthManager {
         ...payload
       };
 
-      // استخدام text/plain لتجنب مشاكل CORS المعقدة في Apps Script
       const response = await fetch(CONFIG.API_URL, {
         method: 'POST',
         body: JSON.stringify(body)
@@ -55,8 +60,7 @@ class AuthManager {
       
       if (!payload.hideLoading) showLoading(false);
 
-      // ©️ حفظ النتيجة في الكاش (مع حماية ضد امتلاء الذاكرة)
-      // نحفظ فقط إذا كانت العملية ناجحة، ومن نوع get، والكاش مفعل
+      // 2.1.3 حفظ النتيجة في الكاش
       if (result.success && action.startsWith('get') && options.useCache) {
         try {
           sessionStorage.setItem(cacheKey, JSON.stringify({
@@ -64,9 +68,7 @@ class AuthManager {
             timestamp: Date.now()
           }));
         } catch (e) {
-          // هنا الحماية: إذا امتلأت الذاكرة، نتجاهل الحفظ ونكمل العمل طبيعي
           console.warn('⚠️ Cache quota exceeded - Data returned live without saving.');
-          // تنظيف جزئي للكاش القديم لمحاولة توفير مساحة للمرة القادمة
           this.clearOldCache();
         }
       }
@@ -78,7 +80,7 @@ class AuthManager {
       console.error('❌ API Error:', error);
       showMessage('خطأ في الاتصال بالسيرفر', 'error');
       
-      // 🆘 محاولة إنقاذ الموقف: استرجاع نسخة قديمة من الكاش حتى لو منتهية الصلاحية
+      // 2.1.4 محاولة الإنقاذ من الكاش
       if (options.useCache && action.startsWith('get')) {
         const cachedItem = sessionStorage.getItem(cacheKey);
         if (cachedItem) {
@@ -91,7 +93,7 @@ class AuthManager {
     }
   }
 
-  // 2. تنظيف الكاش (تستخدم عند الخروج أو تحديث البيانات)
+  // 2.2 تنظيف الكاش
   clearCache() {
     try {
       Object.keys(sessionStorage).forEach(key => {
@@ -103,7 +105,7 @@ class AuthManager {
     } catch (e) { console.error(e); }
   }
 
-  // تنظيف الكاش القديم فقط (لتحرير مساحة)
+  // 2.3 تنظيف الكاش القديم
   clearOldCache() {
     try {
       const now = Date.now();
@@ -118,24 +120,33 @@ class AuthManager {
     } catch (e) { }
   }
 
-  // 3. تسجيل الدخول
-  async login(pin) {
-    // اللوجن دائماً "مباشر" بدون كاش
-    const result = await this.apiCall('login', { pin: pin }, { useCache: false });
+  // ═══════════════════════════════════════════════════════════════════════
+  // 3. AUTHENTICATION
+  // ═══════════════════════════════════════════════════════════════════════
+
+  // 3.1 تسجيل الدخول (Mobile + PIN)
+  async login(mobile, pin) {
+    const result = await this.apiCall('login', { 
+      mobile: mobile, 
+      pin: pin 
+    }, { useCache: false });
 
     if (result.success) {
+      // 3.1.1 حفظ بيانات المستخدم
       this.currentUser = {
         name: result.name,
-        role: result.role,
         email: result.email,
+        jobTitle: result.jobTitle,
+        role: result.role,
+        mobile: result.mobile,
         pin: result.pin,
         loginTime: new Date().toISOString()
       };
       
       this.saveSession();
-      this.clearCache(); // مسح كاش المستخدم السابق
+      this.clearCache();
       
-      // 🔔 جلب عدد الإشعارات غير المقروءة
+      // 3.1.2 جلب الإشعارات
       try {
         const notifResult = await this.apiCall('getNotifications', {
           employeeName: result.name,
@@ -149,6 +160,7 @@ class AuthManager {
         console.warn('⚠️ فشل جلب الإشعارات:', e);
       }
       
+      // 3.1.3 التوجيه للصفحة المناسبة
       this.redirectToDashboard();
       return { success: true };
     } else {
@@ -156,13 +168,18 @@ class AuthManager {
     }
   }
 
-  // إدارة الجلسة (Session Management)
+  // ═══════════════════════════════════════════════════════════════════════
+  // 4. SESSION MANAGEMENT
+  // ═══════════════════════════════════════════════════════════════════════
+
+  // 4.1 حفظ الجلسة
   saveSession() {
     if (this.currentUser) {
       sessionStorage.setItem('iag_user', JSON.stringify(this.currentUser));
     }
   }
 
+  // 4.2 تحميل الجلسة
   loadSession() {
     try {
       const userData = sessionStorage.getItem('iag_user');
@@ -174,12 +191,14 @@ class AuthManager {
     return null;
   }
 
+  // 4.3 تسجيل الخروج
   logout() {
     this.currentUser = null;
-    sessionStorage.clear(); // مسح شامل
+    sessionStorage.clear();
     window.location.href = 'index.html';
   }
 
+  // 4.4 التحقق من الجلسة
   checkSession() {
     if (!this.loadSession()) {
       window.location.href = 'index.html';
@@ -188,14 +207,19 @@ class AuthManager {
     return this.currentUser;
   }
   
-  // 🔔 جلب عدد الإشعارات غير المقروءة
+  // 4.5 جلب عدد الإشعارات غير المقروءة
   getUnreadNotifications() {
     return parseInt(sessionStorage.getItem('unreadNotifications') || '0');
   }
 
-  // التوجيه (Routing)
+  // ═══════════════════════════════════════════════════════════════════════
+  // 5. ROUTING
+  // ═══════════════════════════════════════════════════════════════════════
+
+  // 5.1 التوجيه حسب الصلاحية
   redirectToDashboard() {
     const role = this.currentUser.role;
+    
     if (role === 'مدير' || role === 'Admin') {
       window.location.href = 'admin.html';
     } else if (role === 'منسق') {
@@ -206,23 +230,29 @@ class AuthManager {
   }
 }
 
-// إنشاء الكائن العام
+// ═══════════════════════════════════════════════════════════════════════════
+// 6. GLOBAL INSTANCE
+// ═══════════════════════════════════════════════════════════════════════════
+
 const auth = new AuthManager();
 
-// --- أدوات الواجهة (UI Helpers) ---
+// ═══════════════════════════════════════════════════════════════════════════
+// 7. UI HELPERS
+// ═══════════════════════════════════════════════════════════════════════════
 
+// 7.1 عرض/إخفاء Loading
 function showLoading(show) {
   const loader = document.getElementById('loading-overlay');
   if (loader) loader.style.display = show ? 'flex' : 'none';
 }
 
+// 7.2 عرض رسالة
 function showMessage(message, type = 'error') {
   const msgDiv = document.getElementById('message-box');
   if (msgDiv) {
     msgDiv.textContent = message;
     
-    // تنسيق الألوان حسب نوع الرسالة
-    let bgClass = 'bg-red-500'; // error default
+    let bgClass = 'bg-red-500';
     if (type === 'success') bgClass = 'bg-emerald-500';
     if (type === 'warning') bgClass = 'bg-amber-500';
 
@@ -231,19 +261,23 @@ function showMessage(message, type = 'error') {
     msgDiv.style.display = 'block';
     setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
   } else {
-    // Fallback if UI element missing
     console.log(`[${type}] ${message}`);
   }
 }
 
-// تفعيل زر الدخول في صفحة index.html
+// ═══════════════════════════════════════════════════════════════════════════
+// 8. EVENT LISTENERS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// 8.1 تفعيل زر الدخول
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('login-form');
   if (form) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      const mobile = document.getElementById('mobile-input').value;
       const pin = document.getElementById('pin-input').value;
-      if (pin) auth.login(pin);
+      if (mobile && pin) auth.login(mobile, pin);
     });
   }
 });
