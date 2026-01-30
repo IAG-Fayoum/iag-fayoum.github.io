@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -6,7 +7,7 @@
   <meta name="theme-color" content="#0f766e">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <title>نظام الحوكمة - IAG</title>
-  
+
   <link rel="icon" type="image/png" href="assets/icons/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -80,12 +81,16 @@
       .grid-cards { grid-template-columns: repeat(2, 1fr) !important; }
     }
   </style>
+
 </head>
 <body class="min-h-screen flex flex-col">
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
+
   <!-- 1. LOADING OVERLAY -->
+
   <!-- ═══════════════════════════════════════════════════════════════════ -->
+
   <div id="loading-overlay">
     <div class="text-center">
       <div class="spinner mx-auto mb-6"></div>
@@ -94,188 +99,202 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
+
   <!-- 2. MESSAGE BOX -->
+
   <!-- ═══════════════════════════════════════════════════════════════════ -->
+
   <div id="message-box" class="fixed top-6 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl font-bold z-50 shadow-2xl hidden"></div>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
+
   <!-- 3. MAIN CONTENT -->
+
   <!-- ═══════════════════════════════════════════════════════════════════ -->
+
   <div class="flex-grow flex flex-col">
+
+```
+<!-- 3.1 Header -->
+<header class="theme-gradient text-white py-20 shadow-2xl relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10" style="background: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
+  <div class="container mx-auto px-6 text-center relative z-10">
+    <div class="bg-white/15 p-10 rounded-full inline-block mb-8 backdrop-blur-md border-2 border-white/30 shadow-2xl">
+      <i data-lucide="landmark" class="w-28 h-28 text-teal-50"></i>
+    </div>
+    <h1 class="text-5xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-lg">
+      إدارة المراجعة الداخلية والحوكمة
+    </h1>
+    <p class="text-xl text-teal-100 font-semibold opacity-95">
+      مديرية الشؤون الصحية بالفيوم
+    </p>
+  </div>
+</header>
+
+<!-- 3.2 Main Section -->
+<main class="container mx-auto px-6 -mt-16 mb-12 flex-grow relative z-20">
+  
+  <!-- 3.2.1 Info Card -->
+  <div class="bg-white rounded-3xl shadow-2xl p-10 md:p-14 text-center max-w-5xl mx-auto border-2 border-slate-100 mb-10">
+    <div class="flex items-center justify-center gap-3 mb-5">
+      <i data-lucide="shield-check" class="text-teal-600 w-8 h-8"></i>
+      <h2 class="text-3xl font-bold text-slate-800">البوابة الرقمية الموحدة</h2>
+    </div>
+    <p class="text-slate-600 text-lg leading-relaxed max-w-3xl mx-auto">
+      منصة مركزية لإدارة المراجعة الداخلية والحوكمة بمديرية الشؤون الصحية بالفيوم
+    </p>
+    <div class="mt-8 pt-6 border-t border-slate-200">
+      <p class="text-xs text-slate-400 font-medium">
+        <i data-lucide="lock" class="w-4 h-4 inline mr-1"></i>
+        يقتصر الاستخدام على أعضاء الإدارة المكلفين رسمياً
+      </p>
+    </div>
+  </div>
+
+  <!-- 3.2.2 Cards Grid -->
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-6xl mx-auto grid-cards">
     
-    <!-- 3.1 Header -->
-    <header class="theme-gradient text-white py-20 shadow-2xl relative overflow-hidden">
-      <div class="absolute inset-0 opacity-10" style="background: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
-      <div class="container mx-auto px-6 text-center relative z-10">
-        <div class="bg-white/15 p-10 rounded-full inline-block mb-8 backdrop-blur-md border-2 border-white/30 shadow-2xl">
-          <i data-lucide="landmark" class="w-28 h-28 text-teal-50"></i>
-        </div>
-        <h1 class="text-5xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-lg">
-          إدارة المراجعة الداخلية والحوكمة
-        </h1>
-        <p class="text-xl text-teal-100 font-semibold opacity-95">
-          مديرية الشؤون الصحية بالفيوم
-        </p>
+    <!-- Card 1: Dashboard -->
+    <a href="distribution.html" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-teal-600 cursor-pointer group">
+      <div class="bg-teal-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-teal-100 transition">
+        <i data-lucide="pie-chart" class="w-10 h-10 text-teal-600"></i>
       </div>
-    </header>
-
-    <!-- 3.2 Main Section -->
-    <main class="container mx-auto px-6 -mt-16 mb-12 flex-grow relative z-20">
-      
-      <!-- 3.2.1 Info Card -->
-      <div class="bg-white rounded-3xl shadow-2xl p-10 md:p-14 text-center max-w-5xl mx-auto border-2 border-slate-100 mb-10">
-        <div class="flex items-center justify-center gap-3 mb-5">
-          <i data-lucide="shield-check" class="text-teal-600 w-8 h-8"></i>
-          <h2 class="text-3xl font-bold text-slate-800">البوابة الرقمية الموحدة</h2>
-        </div>
-        <p class="text-slate-600 text-lg leading-relaxed max-w-3xl mx-auto">
-          منصة مركزية لإدارة المراجعة الداخلية والحوكمة بمديرية الشؤون الصحية بالفيوم
-        </p>
-        <div class="mt-8 pt-6 border-t border-slate-200">
-          <p class="text-xs text-slate-400 font-medium">
-            <i data-lucide="lock" class="w-4 h-4 inline mr-1"></i>
-            يقتصر الاستخدام على أعضاء الإدارة المكلفين رسمياً
-          </p>
-        </div>
+      <span class="text-lg font-bold text-slate-700 group-hover:text-teal-700 transition">Dashboard</span>
+    </a>
+    
+    <!-- Card 2: النماذج -->
+    <a href="forms.html" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-indigo-600 cursor-pointer group">
+      <div class="bg-indigo-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-indigo-100 transition">
+        <i data-lucide="file-text" class="w-10 h-10 text-indigo-600"></i>
       </div>
-
-      <!-- 3.2.2 Cards Grid -->
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-6xl mx-auto grid-cards">
-        
-        <!-- Card 1: Dashboard -->
-        <a href="distribution.html" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-teal-600 cursor-pointer group">
-          <div class="bg-teal-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-teal-100 transition">
-            <i data-lucide="pie-chart" class="w-10 h-10 text-teal-600"></i>
-          </div>
-          <span class="text-lg font-bold text-slate-700 group-hover:text-teal-700 transition">Dashboard</span>
-        </a>
-        
-        <!-- Card 2: النماذج -->
-        <a href="forms.html" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-indigo-600 cursor-pointer group">
-          <div class="bg-indigo-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-indigo-100 transition">
-            <i data-lucide="file-text" class="w-10 h-10 text-indigo-600"></i>
-          </div>
-          <span class="text-lg font-bold text-slate-700 group-hover:text-indigo-700 transition">النماذج</span>
-        </a>
-        
-        <!-- Card 3: الموظفين -->
-        <button onclick="showLogin('employee')" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-blue-600 group">
-          <div class="bg-blue-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition">
-            <i data-lucide="briefcase" class="w-10 h-10 text-blue-600"></i>
-          </div>
-          <span class="text-lg font-bold text-slate-700 group-hover:text-blue-700 transition">الموظفين</span>
-        </button>
-        
-        <!-- Card 4: المنسقين -->
-        <button onclick="showLogin('coordinator')" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-emerald-600 group">
-          <div class="bg-emerald-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-emerald-100 transition">
-            <i data-lucide="users" class="w-10 h-10 text-emerald-600"></i>
-          </div>
-          <span class="text-lg font-bold text-slate-700 group-hover:text-emerald-700 transition">المنسقين</span>
-        </button>
-        
-        <!-- Card 5: الإدارة -->
-        <button onclick="showLogin('admin')" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-red-600 group">
-          <div class="bg-red-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-red-100 transition">
-            <i data-lucide="settings" class="w-10 h-10 text-red-600"></i>
-          </div>
-          <span class="text-lg font-bold text-slate-700 group-hover:text-red-700 transition">الإدارة</span>
-        </button>
+      <span class="text-lg font-bold text-slate-700 group-hover:text-indigo-700 transition">النماذج</span>
+    </a>
+    
+    <!-- Card 3: الموظفين -->
+    <button onclick="showLogin('employee')" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-blue-600 group">
+      <div class="bg-blue-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition">
+        <i data-lucide="briefcase" class="w-10 h-10 text-blue-600"></i>
       </div>
-    </main>
-
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- 4. LOGIN MODAL -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="login-modal" class="login-modal">
-      <div class="login-content relative">
-        
-        <!-- 4.1 Close Button -->
-        <button onclick="closeLogin()" class="absolute top-5 left-5 bg-slate-100 hover:bg-slate-200 w-12 h-12 rounded-full flex items-center justify-center transition">
-          <i data-lucide="x" class="w-6 h-6 text-slate-600"></i>
-        </button>
-        
-        <!-- 4.2 Header -->
-        <div class="text-center mb-10">
-          <div class="bg-teal-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-5">
-            <i data-lucide="lock-keyhole" class="w-12 h-12 text-teal-600"></i>
-          </div>
-          <h2 class="text-3xl font-bold text-slate-800 mb-3">تسجيل الدخول</h2>
-          <p class="text-slate-500">الرجاء إدخال رقم الموبايل ورمز الدخول</p>
-        </div>
-
-        <!-- 4.3 Form -->
-        <form id="login-form" onsubmit="handleLogin(event)">
-          
-          <!-- 4.3.1 Mobile Input -->
-          <div class="mb-4">
-            <label class="block text-slate-700 font-bold mb-2 text-right">رقم الموبايل</label>
-            <input 
-              type="tel" 
-              id="mobile-input" 
-              class="mobile-input" 
-              placeholder="01xxxxxxxxx"
-              maxlength="11"
-              inputmode="numeric"
-              pattern="[0-9]{11}"
-              oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-              required
-            />
-          </div>
-
-          <!-- 4.3.2 PIN Input -->
-          <div class="mb-6">
-            <label class="block text-slate-700 font-bold mb-2 text-right">رمز الدخول (PIN)</label>
-            <input 
-              type="password" 
-              id="pin-input" 
-              class="pin-input" 
-              placeholder="••••"
-              maxlength="4"
-              inputmode="numeric"
-              pattern="[0-9]{4}"
-              autocomplete="one-time-code"
-              oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-              required
-            />
-          </div>
-
-          <!-- 4.3.3 Submit Button -->
-          <button type="submit" id="login-btn" class="btn-login">دخول</button>
-        </form>
-
-        <!-- 4.4 Footer -->
-        <div class="mt-8 text-center">
-          <p class="text-xs text-slate-400 flex items-center justify-center gap-2">
-            <i data-lucide="shield-check" class="w-4 h-4"></i>
-            نظام آمن ومحمي
-          </p>
-        </div>
+      <span class="text-lg font-bold text-slate-700 group-hover:text-blue-700 transition">الموظفين</span>
+    </button>
+    
+    <!-- Card 4: المنسقين -->
+    <button onclick="showLogin('coordinator')" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-emerald-600 group">
+      <div class="bg-emerald-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-emerald-100 transition">
+        <i data-lucide="users" class="w-10 h-10 text-emerald-600"></i>
       </div>
+      <span class="text-lg font-bold text-slate-700 group-hover:text-emerald-700 transition">المنسقين</span>
+    </button>
+    
+    <!-- Card 5: الإدارة -->
+    <button onclick="showLogin('admin')" class="card-hover bg-white p-8 rounded-2xl shadow-lg text-center border-b-4 border-red-600 group">
+      <div class="bg-red-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-red-100 transition">
+        <i data-lucide="settings" class="w-10 h-10 text-red-600"></i>
+      </div>
+      <span class="text-lg font-bold text-slate-700 group-hover:text-red-700 transition">الإدارة</span>
+    </button>
+  </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 4. LOGIN MODAL -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="login-modal" class="login-modal">
+  <div class="login-content relative">
+    
+    <!-- 4.1 Close Button -->
+    <button onclick="closeLogin()" class="absolute top-5 left-5 bg-slate-100 hover:bg-slate-200 w-12 h-12 rounded-full flex items-center justify-center transition">
+      <i data-lucide="x" class="w-6 h-6 text-slate-600"></i>
+    </button>
+    
+    <!-- 4.2 Header -->
+    <div class="text-center mb-10">
+      <div class="bg-teal-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-5">
+        <i data-lucide="lock-keyhole" class="w-12 h-12 text-teal-600"></i>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-800 mb-3">تسجيل الدخول</h2>
+      <p class="text-slate-500">الرجاء إدخال رقم الموبايل ورمز الدخول</p>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- 5. FOOTER -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <footer class="bg-slate-900 text-white py-10 text-center border-t-4 border-teal-600 mt-auto">
-      <div class="container mx-auto px-4">
-        <i data-lucide="landmark" class="w-14 h-14 mx-auto mb-4 text-slate-600"></i>
-        <p class="text-base font-bold mb-3 opacity-90">
-          © 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة
-        </p>
-        <div class="text-xs text-slate-500 space-y-1" dir="ltr">
-          <p>MoH Fayoum Governance – Internal Access Page</p>
-          <p>Developed under Governance Supervision – Dr. MAH</p>
-        </div>
+    <!-- 4.3 Form -->
+    <form id="login-form" onsubmit="handleLogin(event)">
+      
+      <!-- 4.3.1 Mobile Input -->
+      <div class="mb-4">
+        <label class="block text-slate-700 font-bold mb-2 text-right">رقم الموبايل</label>
+        <input 
+          type="tel" 
+          id="mobile-input" 
+          class="mobile-input" 
+          placeholder="01xxxxxxxxx"
+          maxlength="11"
+          inputmode="numeric"
+          pattern="[0-9]{11}"
+          oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+          required
+        />
       </div>
-    </footer>
+
+      <!-- 4.3.2 PIN Input -->
+      <div class="mb-6">
+        <label class="block text-slate-700 font-bold mb-2 text-right">رمز الدخول (PIN)</label>
+        <input 
+          type="password" 
+          id="pin-input" 
+          class="pin-input" 
+          placeholder="••••"
+          maxlength="4"
+          inputmode="numeric"
+          pattern="[0-9]{4}"
+          autocomplete="one-time-code"
+          oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+          required
+        />
+      </div>
+
+      <!-- 4.3.3 Submit Button -->
+      <button type="submit" id="login-btn" class="btn-login">دخول</button>
+    </form>
+
+    <!-- 4.4 Footer -->
+    <div class="mt-8 text-center">
+      <p class="text-xs text-slate-400 flex items-center justify-center gap-2">
+        <i data-lucide="shield-check" class="w-4 h-4"></i>
+        نظام آمن ومحمي
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 5. FOOTER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<footer class="bg-slate-900 text-white py-10 text-center border-t-4 border-teal-600 mt-auto">
+  <div class="container mx-auto px-4">
+    <i data-lucide="landmark" class="w-14 h-14 mx-auto mb-4 text-slate-600"></i>
+    <p class="text-base font-bold mb-3 opacity-90">
+      © 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة
+    </p>
+    <div class="text-xs text-slate-500 space-y-1" dir="ltr">
+      <p>MoH Fayoum Governance – Internal Access Page</p>
+      <p>Developed under Governance Supervision – Dr. MAH</p>
+    </div>
+  </div>
+</footer>
+```
+
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
+
   <!-- 6. SCRIPTS -->
+
   <!-- ═══════════════════════════════════════════════════════════════════ -->
+
   <script src="assets/js/config.js"></script>
+
   <script src="assets/js/auth.js"></script>
+
   <script>
     // 6.1 Initialize Icons
     lucide.createIcons();
@@ -351,5 +370,6 @@
       if (e.key === 'Escape') closeLogin();
     });
   </script>
+
 </body>
 </html>
