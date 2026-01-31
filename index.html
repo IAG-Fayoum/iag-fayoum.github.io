@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#0f766e">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <title>نظام الحوكمة - تسجيل الدخول</title>
   
   <link rel="icon" type="image/png" href="assets/icons/favicon.png">
@@ -13,32 +12,45 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    /* إعدادات عامة */
-    * { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    /* منع تحديد النصوص والرعشة */
+    * { -webkit-tap-highlight-color: transparent; }
+    
     body { 
       font-family: 'Cairo', sans-serif; 
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      background: #f8fafc;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      margin: 0;
     }
 
-    /* الهيدر المتدرج */
-    .theme-gradient { 
+    /* 1. الهيدر الرسمي الثابت */
+    .header-official { 
       background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); 
-      position: relative;
-      overflow: hidden;
+      color: white; 
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
 
-    /* كارت الدخول */
+    /* 2. كارت الدخول */
+    .login-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
     .login-card {
       background: white;
       border-radius: 20px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
       width: 100%;
       max-width: 400px;
-      transition: transform 0.3s ease;
-      border: 1px solid #e2e8f0;
+      padding: 2rem;
     }
 
     /* حقول الإدخال */
@@ -49,72 +61,55 @@
       border-radius: 12px;
       font-size: 16px;
       outline: none;
-      transition: all 0.3s;
-      background: #f8fafc;
+      transition: border-color 0.2s;
+      background: #ffffff;
     }
     .custom-input:focus {
       border-color: #0f766e;
-      background: white;
-      box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
     }
 
-    /* زر الدخول */
-    .btn-submit {
-      width: 100%;
-      background: #0f766e;
-      color: white;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 16px;
-      transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2);
-    }
-    .btn-submit:hover {
-      background: #0d5f57;
-      transform: translateY(-1px);
-    }
-    .btn-submit:active {
-      transform: translateY(1px);
-    }
-    .btn-submit:disabled {
-      opacity: 0.7;
-      cursor: wait;
+    /* تأثير الاهتزاز (يعمل مرة واحدة فقط) */
+    .shake-animation { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+    @keyframes shake { 
+      10%, 90% { transform: translate3d(-1px, 0, 0); }
+      20%, 80% { transform: translate3d(2px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
     }
 
-    /* تأثير الاهتزاز عند الخطأ */
-    .shake { animation: shake 0.4s ease-in-out; }
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    /* 3. الفوتر الرسمي */
+    .footer-official { 
+      background: #0f766e; 
+      color: white; 
+      text-align: center; 
+      padding: 15px 0;
+      border-top: 4px solid rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
 
-  <header class="theme-gradient text-white py-12 shadow-lg">
-    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
-    
-    <div class="container mx-auto px-6 text-center relative z-10">
-      <div class="bg-white/10 p-4 rounded-2xl inline-block mb-4 backdrop-blur-sm border border-white/20">
-        <i data-lucide="landmark" class="w-12 h-12 text-teal-50"></i>
+  <header class="header-official py-4">
+    <div class="container mx-auto px-6 flex items-center gap-3">
+      <div class="bg-white/20 p-2 rounded-lg">
+        <i data-lucide="shield-check" class="w-7 h-7 text-white"></i>
       </div>
-      <h1 class="text-2xl md:text-3xl font-extrabold mb-2 tracking-wide">
-        إدارة المراجعة الداخلية والحوكمة
-      </h1>
-      <p class="text-sm text-teal-100 font-medium opacity-90">
-        مديرية الشؤون الصحية بالفيوم
-      </p>
+      <div>
+        <h1 class="text-lg font-bold leading-tight">نظام الحوكمة</h1>
+        <p class="text-xs text-teal-100 opacity-90">مديرية الشؤون الصحية بالفيوم</p>
+      </div>
     </div>
   </header>
 
-  <main class="flex-grow flex items-center justify-center p-6 -mt-8 relative z-20">
-    
-    <div class="login-card p-8" id="login-box">
+  <div class="login-wrapper">
+    <div class="login-card" id="login-box">
       
       <div class="text-center mb-8">
-        <h2 class="text-xl font-bold text-slate-800 flex items-center justify-center gap-2">
-          <i data-lucide="lock-keyhole" class="w-5 h-5 text-teal-600"></i>
-          تسجيل الدخول
-        </h2>
-        <p class="text-slate-500 text-sm mt-1">المنصة الرقمية الموحدة</p>
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-teal-50 text-teal-700 mb-3 border border-teal-100">
+          <i data-lucide="lock" class="w-7 h-7"></i>
+        </div>
+        <h2 class="text-xl font-bold text-slate-800">تسجيل الدخول</h2>
+        <p class="text-slate-500 text-sm mt-1">أدخل بياناتك للمتابعة</p>
       </div>
 
       <form id="login-form" class="space-y-5">
@@ -124,7 +119,7 @@
           <div class="relative">
             <input type="tel" id="mobile-input" maxlength="11" 
                    class="custom-input text-left" 
-                   placeholder="01xxxxxxxxx" dir="ltr" inputmode="numeric">
+                   placeholder="01xxxxxxxxx" dir="ltr">
             <i data-lucide="smartphone" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
           </div>
         </div>
@@ -133,13 +128,13 @@
           <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رمز الدخول (PIN)</label>
           <div class="relative">
             <input type="password" id="pin-input" maxlength="4" 
-                   class="custom-input text-center font-bold text-lg tracking-[5px]" 
-                   placeholder="••••" inputmode="numeric">
+                   class="custom-input text-center font-bold tracking-[4px]" 
+                   placeholder="••••">
             <i data-lucide="key-round" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
           </div>
         </div>
 
-        <button type="submit" id="login-btn" class="btn-submit flex items-center justify-center gap-2 mt-2">
+        <button type="submit" id="login-btn" class="w-full bg-[#0f766e] hover:bg-[#0d5f57] text-white font-bold py-3.5 rounded-xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2 mt-2">
           <span>دخول للنظام</span>
           <i data-lucide="arrow-left" class="w-5 h-5"></i>
         </button>
@@ -152,14 +147,14 @@
       </div>
 
     </div>
-  </main>
+  </div>
 
-  <footer class="bg-slate-900 text-white py-6 text-center border-t-4 border-teal-600">
+  <footer class="footer-official">
     <div class="container mx-auto px-4">
-      <p class="text-sm font-bold mb-2 opacity-90">
+      <p class="text-sm font-bold mb-2 opacity-95">
         © 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة
       </p>
-      <div class="text-[10px] text-slate-400 space-y-1 font-mono" dir="ltr">
+      <div class="text-[10px] text-teal-100 opacity-80 space-y-1 font-mono" dir="ltr">
         <p>MoH Fayoum Governance – Internal Access Page</p>
         <p>Developed under Governance Supervision – Dr. MAH</p>
       </div>
@@ -171,14 +166,9 @@
   <script>
     lucide.createIcons();
     
-    // التركيز التلقائي
+    // التركيز التلقائي عند التحميل
     window.addEventListener('load', () => {
-      // التحقق من الجلسة (اختياري)
-      if (typeof auth !== 'undefined' && auth.checkAuth()) {
-         // window.location.href = 'distribution.html'; 
-      } else {
-         document.getElementById('mobile-input').focus();
-      }
+      document.getElementById('mobile-input').focus();
     });
 
     // معالجة الدخول
@@ -190,24 +180,18 @@
       const btn = document.getElementById('login-btn');
       const errorDiv = document.getElementById('error-msg');
       const errorText = document.getElementById('error-text');
-      const loginBox = document.getElementById('login-box');
+      const box = document.getElementById('login-box');
       
       const mobile = mobileInput.value.trim();
       const pin = pinInput.value.trim();
 
-      // إخفاء الأخطاء السابقة
+      // تنظيف الحالة
       errorDiv.classList.add('hidden');
+      box.classList.remove('shake-animation');
 
-      // التحقق من المدخلات
-      if (mobile.length !== 11) {
-        showError('رقم الموبايل يجب أن يكون 11 رقماً');
-        mobileInput.focus();
-        return;
-      }
-
-      if (pin.length !== 4) {
-        showError('رمز الدخول يجب أن يكون 4 أرقام');
-        pinInput.focus();
+      // التحقق
+      if (mobile.length < 11 || pin.length < 4) {
+        showError('يرجى إدخال البيانات كاملة');
         return;
       }
 
@@ -220,12 +204,10 @@
         const result = await auth.login(mobile, pin);
         
         if (result.success) {
-          btn.classList.replace('bg-[#0f766e]', 'bg-emerald-600'); // تحويل للأخضر الفاتح
+          btn.classList.replace('bg-[#0f766e]', 'bg-emerald-600');
           btn.innerHTML = '<span>تم بنجاح ✓</span>';
           
-          // التوجيه (يتم عادة داخل auth.js، ولكن كاحتياطي)
           setTimeout(() => {
-             // إعادة التوجيه حسب الدور
              if (result.role === 'admin') window.location.href = 'admin.html';
              else if (result.role === 'coordinator') window.location.href = 'coordinator.html';
              else window.location.href = 'employee.html';
@@ -236,8 +218,7 @@
           resetBtn();
         }
       } catch (error) {
-        console.error('Login Error:', error);
-        showError('حدث خطأ في الاتصال، حاول مرة أخرى');
+        showError('خطأ في الاتصال، حاول مرة أخرى');
         resetBtn();
       }
 
@@ -250,9 +231,11 @@
       function showError(msg) {
         errorText.textContent = msg;
         errorDiv.classList.remove('hidden');
-        loginBox.classList.remove('shake'); // reset animation
-        void loginBox.offsetWidth; // trigger reflow
-        loginBox.classList.add('shake');
+        
+        // تفعيل الرعشة مرة واحدة فقط
+        box.classList.remove('shake-animation');
+        void box.offsetWidth; // Trigger reflow
+        box.classList.add('shake-animation');
       }
     });
   </script>
