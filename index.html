@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#0f766e">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <title>نظام الحوكمة - IAG</title>
   
   <link rel="icon" type="image/png" href="assets/icons/favicon.png">
@@ -13,223 +14,344 @@
 
   <style>
     * { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    body { font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+    .theme-gradient { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(15, 118, 110, 0.15); }
     
-    body { 
-      font-family: 'Cairo', sans-serif; 
-      background-color: #f8fafc;
-      display: flex; 
-      flex-direction: column; 
-      min-height: 100vh; 
-    }
+    /* 1. Loading Overlay */
+    #loading-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(8px); }
+    .spinner { width: 50px; height: 50px; border: 4px solid rgba(255, 255, 255, 0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* 1. الهيدر الرسمي */
-    .header-main {
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      color: white;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-    }
-
-    /* 2. الكروت (الأيقونات الثلاثة) */
-    .role-card {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 24px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-    .role-card:active { transform: scale(0.96); background-color: #f0fdfa; }
-    .role-card:hover { border-color: #0f766e; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    /* 2. Login Modal */
+    .login-modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); z-index: 10000; align-items: center; justify-content: center; }
+    .login-modal.show { display: flex; }
+    .login-content { background: white; border-radius: 24px; padding: 48px; max-width: 420px; width: 90%; box-shadow: 0 25px 80px rgba(0,0,0,0.3); animation: slideUp 0.4s ease; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
     
-    .icon-wrapper {
-      width: 64px; height: 64px;
-      margin: 0 auto 16px;
-      border-radius: 50%;
-      display: flex; items-center; justify-center;
-      font-size: 24px;
+    /* 3. Input Styles */
+    .mobile-input, .pin-input { 
+      width: 100%; 
+      padding: 18px 24px; 
+      font-size: 18px; 
+      border: 2px solid #e2e8f0; 
+      border-radius: 14px; 
+      text-align: center; 
+      font-weight: 600; 
+      transition: all 0.3s;
+      direction: ltr;
     }
-
-    /* 3. النافذة المنبثقة (Modal) */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      display: none; align-items: center; justify-center;
-      z-index: 100;
-      opacity: 0; transition: opacity 0.3s;
+    .pin-input {
+      letter-spacing: 6px;
+      font-size: 20px;
+      font-weight: 700;
     }
-    .modal-overlay.show { display: flex; opacity: 1; }
+    .mobile-input:focus, .pin-input:focus { 
+      outline: none; 
+      border-color: #0f766e; 
+      box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1); 
+    }
     
-    .modal-content {
-      background: white;
-      width: 90%; max-width: 360px;
-      padding: 24px;
-      border-radius: 20px;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-      transform: translateY(20px); transition: transform 0.3s;
+    /* 4. Button */
+    .btn-login { 
+      width: 100%; 
+      padding: 18px; 
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); 
+      color: white; 
+      border: none; 
+      border-radius: 14px; 
+      font-size: 18px; 
+      font-weight: 700; 
+      cursor: pointer; 
+      transition: all 0.3s; 
+      box-shadow: 0 8px 24px rgba(15, 118, 110, 0.3); 
     }
-    .modal-overlay.show .modal-content { transform: translateY(0); }
+    .btn-login:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 12px 36px rgba(15, 118, 110, 0.4); 
+    }
+    .btn-login:active { transform: translateY(0); }
+    .btn-login:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
-    /* 4. الفوتر الرسمي */
-    .footer-main {
-      background-color: #0f766e;
-      color: white;
-      text-align: center;
-      padding: 15px 0;
-      margin-top: auto;
-      border-top: 4px solid rgba(0,0,0,0.1);
+    /* 5. Responsive */
+    @media (max-width: 768px) {
+      .login-content { padding: 36px 28px; }
+      .grid-cards { grid-template-columns: repeat(2, 1fr) !important; }
     }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
-  <header class="header-main py-4 sticky top-0 z-50">
-    <div class="container mx-auto px-6 flex items-center gap-3">
-      <div class="bg-white/20 p-2 rounded-lg">
-        <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
-      </div>
-      <div>
-        <h1 class="text-lg font-bold leading-tight">نظام الحوكمة</h1>
-        <p class="text-xs text-teal-100 opacity-90">مديرية الشؤون الصحية بالفيوم</p>
-      </div>
-    </div>
-  </header>
-
-  <main class="flex-1 flex flex-col justify-center p-6 container mx-auto max-w-lg">
-    <div class="text-center mb-8">
-      <h2 class="text-xl font-bold text-slate-800">مرحباً بك 👋</h2>
-      <p class="text-slate-500 mt-1">يرجى اختيار صلاحية الدخول للمتابعة</p>
-    </div>
-
-    <div class="grid grid-cols-1 gap-4">
-      
-      <div class="role-card" onclick="openLogin('employee')">
-        <div class="icon-wrapper bg-blue-50 text-blue-600">
-          <i data-lucide="users" class="w-8 h-8"></i>
-        </div>
-        <h3 class="font-bold text-slate-800">دخول الموظفين</h3>
-        <p class="text-xs text-slate-500 mt-1">عرض المهام والتقارير</p>
-      </div>
-
-      <div class="role-card" onclick="openLogin('coordinator')">
-        <div class="icon-wrapper bg-indigo-50 text-indigo-600">
-          <i data-lucide="file-check-2" class="w-8 h-8"></i>
-        </div>
-        <h3 class="font-bold text-slate-800">دخول المنسقين</h3>
-        <p class="text-xs text-slate-500 mt-1">المتابعة والتكليفات</p>
-      </div>
-
-      <div class="role-card" onclick="openLogin('admin')">
-        <div class="icon-wrapper bg-emerald-50 text-emerald-600">
-          <i data-lucide="settings" class="w-8 h-8"></i>
-        </div>
-        <h3 class="font-bold text-slate-800">دخول الإدارة</h3>
-        <p class="text-xs text-slate-500 mt-1">لوحة التحكم الكاملة</p>
-      </div>
-
-    </div>
-  </main>
-
-  <footer class="footer-main">
-    <div class="container mx-auto px-4">
-      <p class="text-sm font-bold mb-2">© 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة</p>
-      <div class="text-[11px] text-teal-100 opacity-80" dir="ltr" style="font-family: monospace;">
-        <p>MoH Fayoum Governance – Internal Access Page</p>
-        <p>Developed under Governance Supervision – Dr. MAH</p>
-      </div>
-    </div>
-  </footer>
-
-  <div id="login-modal" class="modal-overlay">
-    <div class="modal-content">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="font-bold text-lg text-slate-800">تسجيل الدخول</h3>
-        <button onclick="closeLogin()" class="text-slate-400 hover:text-red-500">
-          <i data-lucide="x" class="w-6 h-6"></i>
-        </button>
-      </div>
-
-      <form id="login-form" class="space-y-4">
-        <div>
-          <label class="text-xs font-bold text-slate-600 block mb-1">رقم الموبايل</label>
-          <input type="tel" id="mobile-input" class="w-full p-3 border rounded-xl text-left font-medium" placeholder="01xxxxxxxxx" dir="ltr">
-        </div>
-        
-        <div>
-          <label class="text-xs font-bold text-slate-600 block mb-1">رمز الدخول (PIN)</label>
-          <input type="password" id="pin-input" class="w-full p-3 border rounded-xl text-center text-lg tracking-widest font-bold" placeholder="••••">
-        </div>
-
-        <button type="submit" id="login-btn" class="w-full bg-[#0f766e] text-white py-3 rounded-xl font-bold shadow-lg mt-2">
-          دخول
-        </button>
-      </form>
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- 1. LOADING OVERLAY -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div id="loading-overlay">
+    <div class="text-center">
+      <div class="spinner mx-auto mb-6"></div>
+      <p class="text-white text-xl font-bold">جارٍ التحميل...</p>
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- 2. MESSAGE BOX -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div id="message-box" class="fixed top-6 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl font-bold z-50 shadow-2xl hidden"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- 3. MAIN CONTENT -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div class="flex-grow flex flex-col">
+    
+    <!-- 3.1 Header -->
+    <header class="theme-gradient text-white py-20 shadow-2xl relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10" style="background: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
+      <div class="container mx-auto px-6 text-center relative z-10">
+        <div class="bg-white/15 p-10 rounded-full inline-block mb-8 backdrop-blur-md border-2 border-white/30 shadow-2xl">
+          <i data-lucide="landmark" class="w-28 h-28 text-teal-50"></i>
+        </div>
+        <h1 class="text-5xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-lg">
+          إدارة المراجعة الداخلية والحوكمة
+        </h1>
+        <p class="text-xl text-teal-100 font-semibold opacity-95">
+          مديرية الشؤون الصحية بالفيوم
+        </p>
+      </div>
+    </header>
+
+    <!-- 3.2 Main Section -->
+    <main class="container mx-auto px-6 -mt-16 mb-12 flex-grow relative z-20">
+      
+      <!-- 3.2.1 Info Card -->
+      <div class="bg-white rounded-3xl shadow-2xl p-10 md:p-14 text-center max-w-5xl mx-auto border-2 border-slate-100 mb-10">
+        <div class="flex items-center justify-center gap-3 mb-5">
+          <i data-lucide="shield-check" class="text-teal-600 w-8 h-8"></i>
+          <h2 class="text-3xl font-bold text-slate-800">البوابة الرقمية الموحدة</h2>
+        </div>
+        <p class="text-slate-600 text-lg leading-relaxed max-w-3xl mx-auto">
+          منصة مركزية لإدارة المراجعة الداخلية والحوكمة بمديرية الشؤون الصحية بالفيوم
+        </p>
+        <div class="mt-8 pt-6 border-t border-slate-200">
+          <p class="text-xs text-slate-400 font-medium">
+            <i data-lucide="lock" class="w-4 h-4 inline mr-1"></i>
+            يقتصر الاستخدام على أعضاء الإدارة المكلفين رسمياً
+          </p>
+        </div>
+      </div>
+
+    <main class="flex-1 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1)] border border-slate-200 w-full max-w-sm p-8 transition-all" id="login-box">
+    
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-teal-50 text-teal-700 mb-3">
+        <i data-lucide="lock-keyhole" class="w-7 h-7"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-800">تسجيل الدخول</h2>
+      <p class="text-slate-500 text-sm mt-1">أدخل بياناتك للمتابعة</p>
+    </div>
+
+    <form id="login-form" class="space-y-4">
+      
+      <div>
+        <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رقم الموبايل</label>
+        <div class="relative">
+          <input type="tel" id="mobile-input" maxlength="11" 
+                 class="w-full pl-3 pr-10 py-3 border-2 border-slate-200 rounded-xl focus:border-[#0f766e] focus:outline-none transition-colors text-left font-medium text-slate-700" 
+                 placeholder="01xxxxxxxxx" dir="ltr">
+          <i data-lucide="smartphone" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رمز الدخول (PIN)</label>
+        <div class="relative">
+          <input type="password" id="pin-input" maxlength="4" 
+                 class="w-full pl-3 pr-10 py-3 border-2 border-slate-200 rounded-xl focus:border-[#0f766e] focus:outline-none transition-colors text-center font-bold text-lg tracking-widest text-slate-700" 
+                 placeholder="••••">
+          <i data-lucide="key-round" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+        </div>
+      </div>
+
+      <button type="submit" id="login-btn" class="w-full bg-[#0f766e] hover:bg-[#0d5f57] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-teal-700/10 flex items-center justify-center gap-2 mt-2 transition-transform active:scale-95">
+        <span>دخول للنظام</span>
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      </button>
+
+    </form>
+
+    <div id="error-msg" class="hidden mt-4 p-3 bg-red-50 text-red-600 text-sm font-bold rounded-lg text-center border border-red-100 flex items-center justify-center gap-2">
+      <i data-lucide="alert-circle" class="w-4 h-4"></i>
+      <span id="error-text">بيانات غير صحيحة</span>
+    </div>
+
+  </div>
+</main>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- 4. LOGIN MODAL -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="login-modal" class="login-modal">
+      <div class="login-content relative">
+        
+        <!-- 4.1 Close Button -->
+        <button onclick="closeLogin()" class="absolute top-5 left-5 bg-slate-100 hover:bg-slate-200 w-12 h-12 rounded-full flex items-center justify-center transition">
+          <i data-lucide="x" class="w-6 h-6 text-slate-600"></i>
+        </button>
+        
+        <!-- 4.2 Header -->
+        <div class="text-center mb-10">
+          <div class="bg-teal-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-5">
+            <i data-lucide="lock-keyhole" class="w-12 h-12 text-teal-600"></i>
+          </div>
+          <h2 class="text-3xl font-bold text-slate-800 mb-3">تسجيل الدخول</h2>
+          <p class="text-slate-500">الرجاء إدخال رقم الموبايل ورمز الدخول</p>
+        </div>
+
+        <!-- 4.3 Form -->
+        <form id="login-form" onsubmit="handleLogin(event)">
+          
+          <!-- 4.3.1 Mobile Input -->
+          <div class="mb-4">
+            <label class="block text-slate-700 font-bold mb-2 text-right">رقم الموبايل</label>
+            <input 
+              type="tel" 
+              id="mobile-input" 
+              class="mobile-input" 
+              placeholder="01xxxxxxxxx"
+              maxlength="11"
+              inputmode="numeric"
+              pattern="[0-9]{11}"
+              oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+              required
+            />
+          </div>
+
+          <!-- 4.3.2 PIN Input -->
+          <div class="mb-6">
+            <label class="block text-slate-700 font-bold mb-2 text-right">رمز الدخول (PIN)</label>
+            <input 
+              type="password" 
+              id="pin-input" 
+              class="pin-input" 
+              placeholder="••••"
+              maxlength="4"
+              inputmode="numeric"
+              pattern="[0-9]{4}"
+              autocomplete="one-time-code"
+              oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+              required
+            />
+          </div>
+
+          <!-- 4.3.3 Submit Button -->
+          <button type="submit" id="login-btn" class="btn-login">دخول</button>
+        </form>
+
+        <!-- 4.4 Footer -->
+        <div class="mt-8 text-center">
+          <p class="text-xs text-slate-400 flex items-center justify-center gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+            نظام آمن ومحمي
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- 5. FOOTER -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <footer class="bg-slate-900 text-white py-10 text-center border-t-4 border-teal-600 mt-auto">
+      <div class="container mx-auto px-4">
+        <i data-lucide="landmark" class="w-14 h-14 mx-auto mb-4 text-slate-600"></i>
+        <p class="text-base font-bold mb-3 opacity-90">
+          © 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة
+        </p>
+        <div class="text-xs text-slate-500 space-y-1" dir="ltr">
+          <p>MoH Fayoum Governance – Internal Access Page</p>
+          <p>Developed under Governance Supervision – Dr. MAH</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- 6. SCRIPTS -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
+    // 6.1 Initialize Icons
     lucide.createIcons();
-    let currentRole = '';
+    
+    // 6.2 Global Variables
+    let targetPage = '';
 
-    // فتح النافذة
-    function openLogin(role) {
-      currentRole = role;
+    // 6.3 Show Login Modal
+    function showLogin(page) {
+      targetPage = page;
       document.getElementById('login-modal').classList.add('show');
       setTimeout(() => document.getElementById('mobile-input').focus(), 100);
     }
 
-    // إغلاق النافذة
+    // 6.4 Close Login Modal
     function closeLogin() {
       document.getElementById('login-modal').classList.remove('show');
+      document.getElementById('mobile-input').value = '';
+      document.getElementById('pin-input').value = '';
+      targetPage = '';
     }
 
-    // إغلاق عند الضغط في الخارج
-    document.getElementById('login-modal').addEventListener('click', (e) => {
-      if (e.target === document.getElementById('login-modal')) closeLogin();
-    });
-
-    // معالجة الدخول
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
+    // 6.5 Handle Login
+    async function handleLogin(e) {
       e.preventDefault();
       
-      const mobile = document.getElementById('mobile-input').value.trim();
-      const pin = document.getElementById('pin-input').value.trim();
-      const btn = document.getElementById('login-btn');
+      const mobileInput = document.getElementById('mobile-input');
+      const pinInput = document.getElementById('pin-input');
+      const loginBtn = document.getElementById('login-btn');
+      
+      const mobile = mobileInput.value.trim();
+      const pin = pinInput.value.trim();
 
-      if (mobile.length < 11 || pin.length < 4) {
-        alert("يرجى إدخال البيانات كاملة");
+      // 6.5.1 Validation
+      if (mobile.length !== 11) {
+        alert('❌ رقم الموبايل يجب أن يكون 11 رقماً');
+        mobileInput.focus();
         return;
       }
 
-      const originalText = btn.innerHTML;
-      btn.innerHTML = 'جاري التحقق...';
-      btn.disabled = true;
+      if (pin.length !== 4) {
+        alert('❌ رمز الدخول يجب أن يكون 4 أرقام');
+        pinInput.focus();
+        return;
+      }
 
+      // 6.5.2 Loading State
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'جارٍ التحقق...';
+      
       try {
         const result = await auth.login(mobile, pin);
         
         if (result.success) {
-          btn.innerHTML = 'تم بنجاح ✓';
-          btn.classList.replace('bg-[#0f766e]', 'bg-emerald-600');
-          
-          setTimeout(() => {
-             // توجيه ذكي حسب الصلاحية المختارة أو الفعلية
-             window.location.href = 'distribution.html'; 
-          }, 500);
+          // سيتم التوجيه تلقائياً من داخل auth.login()
         } else {
-          alert(result.error || "بيانات خطأ");
-          btn.innerHTML = originalText;
-          btn.disabled = false;
+          alert('❌ ' + (result.error || 'رقم الموبايل أو رمز الدخول غير صحيح'));
+          mobileInput.value = '';
+          pinInput.value = '';
+          mobileInput.focus();
         }
-      } catch (err) {
-        alert("خطأ في الاتصال");
-        btn.innerHTML = originalText;
-        btn.disabled = false;
+      } catch (error) {
+        console.error('Login Error:', error);
+        alert('⚠️ حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى');
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'دخول';
       }
+    }
+
+    // 6.6 Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLogin();
     });
   </script>
 </body>
