@@ -7,7 +7,7 @@
 const CONFIG = {
     // ⚠️ هام جداً: استبدل الرابط أدناه برابط النشر الخاص بك (Deployment URL)
     // الذي ينتهي بـ /exec
-    API_URL: "https://script.google.com/macros/s/AKfycbyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/exec",
+    API_URL: "https://script.google.com/macros/s/AKfycbzB0a7A7Dq4j5-l_-4YkBH1c-cOmgi7kIFP6Da8ZjM1CLfz9xZIncim13cJfc2LPyru3A/exec",
 };
 
 const auth = {
