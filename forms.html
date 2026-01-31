@@ -1,480 +1,264 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>النماذج الإلكترونية - IAG</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>النماذج الإلكترونية | نظام الحوكمة</title>
+    
+    <link rel="icon" href="assets/icons/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: 'Cairo', sans-serif; 
-      background: #f8f9fa;
-      padding-bottom: 80px;
-    }
-    
-    /* Side Navigation Styles */
-    .sidebar {
-      position: fixed;
-      right: 0;
-      top: 0;
-      width: 260px;
-      height: 100vh;
-      background: white;
-      box-shadow: -2px 0 10px rgba(0,0,0,0.05);
-      z-index: 100;
-      overflow-y: auto;
-      transition: transform 0.3s ease;
-    }
-    
-    .sidebar.hidden { transform: translateX(100%); }
-    
-    .sidebar-logo {
-      padding: 24px;
-      border-bottom: 1px solid #e9ecef;
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      color: white;
-    }
-    
-    .sidebar-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 24px;
-      color: #495057;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.2s ease;
-      border-right: 3px solid transparent;
-    }
-    
-    .sidebar-item:hover {
-      background: #f8f9fa;
-      border-right-color: #0f766e;
-      color: #0f766e;
-    }
-    
-    .sidebar-item.active {
-      background: #e6f7f5;
-      border-right-color: #0f766e;
-      color: #0f766e;
-    }
-    
-    .sidebar-item.hidden {
-      display: none;
-    }
-    
-    /* Main Content */
-    .main-content {
-      margin-right: 260px;
-      padding: 24px;
-    }
-    
-    /* Form Cards */
-    .form-card {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      transition: all 0.3s ease;
-      border: 1px solid #e9ecef;
-      text-decoration: none;
-      display: block;
-      border-right: 4px solid transparent;
-      cursor: pointer;
-    }
-    
-    .form-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
-    
-    .form-card.teal:hover { border-right-color: #0f766e; }
-    .form-card.rose:hover { border-right-color: #e11d48; }
-    .form-card.amber:hover { border-right-color: #f59e0b; }
-    .form-card.blue:hover { border-right-color: #3b82f6; }
-    .form-card.violet:hover { border-right-color: #8b5cf6; }
-    
-    .form-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    
-    /* Info Box */
-    .info-box {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      border: 1px solid #e9ecef;
-      border-right: 4px solid #3b82f6;
-    }
-    
-    /* Bottom Navigation */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      border-top: 1px solid #e9ecef;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-      z-index: 50;
-      display: none;
-    }
-    
-    .bottom-nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 12px;
-      color: #868e96;
-      text-decoration: none;
-      font-size: 0.75rem;
-      font-weight: 600;
-      transition: color 0.2s ease;
-    }
-    
-    .bottom-nav-item.active {
-      color: #0f766e;
-    }
-    
-    .bottom-nav-item:hover {
-      color: #0f766e;
-    }
-    
-    .bottom-nav-item.hidden {
-      display: none;
-    }
-    
-    /* Mobile Responsive */
-    @media (max-width: 1024px) {
-      .sidebar { transform: translateX(100%); }
-      .sidebar.active { transform: translateX(0); }
-      .main-content { margin-right: 0; }
-      .bottom-nav { display: flex; }
-      body { padding-bottom: 70px; }
-      
-      .mobile-header {
-        background: white;
-        padding: 16px;
-        border-bottom: 1px solid #e9ecef;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: sticky;
-        top: 0;
-        z-index: 40;
-      }
-    }
-    
-    @media (min-width: 1025px) {
-      .mobile-header { display: none; }
-    }
-    
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.3);
-      z-index: 90;
-      display: none;
-    }
-    
-    .overlay.active { display: block; }
-  </style>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; color: #1e293b; padding-bottom: 80px; }
+        
+        /* Sidebar Styling (Desktop) */
+        @media (min-width: 1024px) {
+            body { padding-bottom: 0; padding-right: 260px; }
+            .sidebar { transform: translateX(0) !important; width: 260px; }
+            .bottom-nav { display: none !important; }
+            .mobile-header { display: none !important; }
+        }
+
+        /* Form Card Styling */
+        .form-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-card:hover {
+            transform: translateY(-5px);
+            border-color: #0f766e;
+            box-shadow: 0 10px 20px -5px rgba(15, 118, 110, 0.1);
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: #e2e8f0;
+            transition: background 0.3s;
+        }
+        
+        .form-card:hover::before { background: #0f766e; }
+
+        .icon-box {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: #f0fdfa;
+            color: #0f766e;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 16px;
+            transition: transform 0.3s;
+        }
+        
+        .form-card:hover .icon-box {
+            transform: scale(1.1);
+            background: #0f766e;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar fixed top-0 right-0 h-full bg-white border-l border-slate-200 z-50 transition-transform duration-300 translate-x-full flex flex-col shadow-lg">
+        <div class="p-6 border-b border-slate-100 flex items-center gap-3 bg-[#0f766e] text-white">
+            <div class="bg-white/20 p-2 rounded-lg">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight">نظام الحوكمة</h1>
+                <p class="text-[10px] text-teal-100 opacity-90">النماذج الرقمية</p>
+            </div>
+        </div>
 
-  <div class="mobile-header">
-    <button onclick="toggleSidebar()" class="p-2">
-      <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
-    </button>
-    <h1 class="text-lg font-bold text-gray-800">النماذج الإلكترونية</h1>
-    <div class="w-10"></div>
-  </div>
+        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+            <a href="distribution.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
+                <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                <span>الرئيسية</span>
+            </a>
+            
+            <a href="employee.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
+                <i data-lucide="briefcase" class="w-5 h-5"></i>
+                <span>مهامي</span>
+            </a>
 
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <h2 class="text-xl font-bold mb-1">IAG System</h2>
-      <p class="text-sm opacity-90">إدارة الحوكمة</p>
-    </div>
-    
-    <nav class="py-4">
-      <a href="index.html" class="sidebar-item">
-        <i data-lucide="home" class="w-5 h-5"></i>
-        <span>الرئيسية</span>
-      </a>
-      
-      <a href="distribution.html" class="sidebar-item">
-        <i data-lucide="pie-chart" class="w-5 h-5"></i>
-        <span>Dashboard</span>
-      </a>
-      
-      <a href="forms.html" class="sidebar-item active">
-        <i data-lucide="file-text" class="w-5 h-5"></i>
-        <span>النماذج الإلكترونية</span>
-      </a>
-      
-      <a href="employee.html" class="sidebar-item">
-        <i data-lucide="briefcase" class="w-5 h-5"></i>
-        <span>الخدمات</span>
-      </a>
-      
-      <a href="coordinator.html" class="sidebar-item" id="coordinator-link">
-        <i data-lucide="users" class="w-5 h-5"></i>
-        <span>المنسقين</span>
-      </a>
-      
-      <a href="admin.html" class="sidebar-item" id="admin-link">
-        <i data-lucide="settings" class="w-5 h-5"></i>
-        <span>لوحة الإدارة</span>
-      </a>
+            <a href="forms.html" class="flex items-center gap-3 px-4 py-3 bg-teal-50 text-teal-700 rounded-xl font-bold transition-colors shadow-sm">
+                <i data-lucide="file-text" class="w-5 h-5"></i>
+                <span>النماذج</span>
+            </a>
+
+            <a href="Notifications.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+                <span>الإشعارات</span>
+            </a>
+
+            <div class="only-admin hidden pt-4 mt-2 border-t border-slate-100">
+                <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">الإدارة</p>
+                <a href="admin.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
+                    <i data-lucide="settings-2" class="w-5 h-5"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="p-4 border-t border-slate-100 bg-slate-50">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 overflow-hidden">
+                    <div class="w-9 h-9 rounded-full bg-[#0f766e] text-white flex items-center justify-center font-bold text-sm" id="user-avatar"></div>
+                    <div class="min-w-0">
+                        <p class="text-sm font-bold text-slate-800 truncate" id="user-name">...</p>
+                        <p class="text-xs text-slate-500 truncate" id="user-role">...</p>
+                    </div>
+                </div>
+                <button onclick="auth.logout()" class="text-slate-400 hover:text-red-500 transition-colors p-1"><i data-lucide="log-out" class="w-5 h-5"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <main class="min-h-screen w-full">
+        <div class="mobile-header bg-white p-4 sticky top-0 z-30 border-b border-slate-200 flex items-center justify-between lg:hidden shadow-sm">
+            <h1 class="font-bold text-lg text-teal-800">النماذج</h1>
+            <div class="w-8"></div> </div>
+
+        <div class="p-4 lg:p-10 max-w-7xl mx-auto space-y-8">
+            
+            <div class="text-center max-w-2xl mx-auto mb-8">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">النماذج الإلكترونية الموحدة</h2>
+                <p class="text-slate-500">اختر النموذج المناسب لتقديم طلبك أو تقريرك، سيتم فتح النموذج في نافذة جديدة.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <div onclick="openForm('INBOX')" class="form-card group">
+                    <div class="icon-box">
+                        <i data-lucide="inbox" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-1">سجل الصادر والوارد</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">تسجيل المعاملات والمكاتبات الرسمية اليومية</p>
+                    <div class="mt-4 flex items-center gap-1 text-[#0f766e] text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span>فتح النموذج</span>
+                        <i data-lucide="external-link" class="w-3 h-3"></i>
+                    </div>
+                </div>
+
+                <div onclick="openForm('COMPLAINTS')" class="form-card group">
+                    <div class="icon-box">
+                        <i data-lucide="message-square-warning" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-1">منظومة الشكاوى</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">فحص وتسجيل شكاوى المواطنين والمرضى</p>
+                    <div class="mt-4 flex items-center gap-1 text-[#0f766e] text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span>فتح النموذج</span>
+                        <i data-lucide="external-link" class="w-3 h-3"></i>
+                    </div>
+                </div>
+
+                <div onclick="openForm('FINANCIAL')" class="form-card group">
+                    <div class="icon-box">
+                        <i data-lucide="banknote" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-1">المراجعة المالية</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">تقارير المخزون، الحسابات، والدفاتر المالية</p>
+                    <div class="mt-4 flex items-center gap-1 text-[#0f766e] text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span>فتح النموذج</span>
+                        <i data-lucide="external-link" class="w-3 h-3"></i>
+                    </div>
+                </div>
+
+                <div onclick="openForm('PRIMARY_CARE')" class="form-card group">
+                    <div class="icon-box">
+                        <i data-lucide="activity-square" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-1">الرعاية الأساسية</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">مرور الوحدات الصحية ومراكز طب الأسرة</p>
+                    <div class="mt-4 flex items-center gap-1 text-[#0f766e] text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span>فتح النموذج</span>
+                        <i data-lucide="external-link" class="w-3 h-3"></i>
+                    </div>
+                </div>
+
+                <div onclick="openForm('HOSPITALS')" class="form-card group">
+                    <div class="icon-box">
+                        <i data-lucide="building-2" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-1">المستشفيات</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">تقارير المرور على المستشفيات العامة والمركزية</p>
+                    <div class="mt-4 flex items-center gap-1 text-[#0f766e] text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span>فتح النموذج</span>
+                        <i data-lucide="external-link" class="w-3 h-3"></i>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-12 p-4 bg-yellow-50 rounded-xl border border-yellow-100 flex gap-3 items-start max-w-2xl mx-auto">
+                <i data-lucide="info" class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5"></i>
+                <p class="text-xs text-yellow-800 leading-relaxed">
+                    <strong>تنبيه هام:</strong> يرجى التأكد من اختيار النموذج الصحيح وملء كافة البيانات المطلوبة بدقة. جميع البيانات المسجلة تذهب مباشرة لقاعدة البيانات المركزية.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
+            <i data-lucide="layout-grid" class="w-6 h-6"></i>
+            <span class="text-[10px] font-medium">الرئيسية</span>
+        </a>
+        <a href="employee.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
+            <i data-lucide="briefcase" class="w-6 h-6"></i>
+            <span class="text-[10px] font-medium">مهامي</span>
+        </a>
+        <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-[#0f766e]">
+            <i data-lucide="file-text" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold">النماذج</span>
+        </a>
+        <a href="admin.html" class="only-admin hidden flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
+            <i data-lucide="settings-2" class="w-6 h-6"></i>
+            <span class="text-[10px] font-medium">الإدارة</span>
+        </a>
     </nav>
-  </aside>
 
-  <main class="main-content">
-    
-    <div style="background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); border-radius: 20px; padding: 48px 32px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(15, 118, 110, 0.15);">
-      <div class="text-center text-white">
-        <div style="background: rgba(255,255,255,0.15); width: 100px; height: 100px; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; border: 3px solid rgba(255,255,255,0.3);">
-          <i data-lucide="file-text" class="w-16 h-16"></i>
-        </div>
-        <h1 class="text-3xl md:text-4xl font-extrabold mb-3">النماذج الإلكترونية</h1>
-        <p class="text-lg opacity-90">إدارة المراجعة الداخلية والحوكمة - مديرية الشؤون الصحية بالفيوم</p>
-      </div>
-    </div>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+        lucide.createIcons();
 
-    <div class="info-box mb-8">
-      <div class="flex items-start gap-3">
-        <i data-lucide="info" class="w-6 h-6 text-blue-600 flex-shrink-0 mt-1"></i>
-        <div>
-          <p class="font-bold text-gray-800 mb-1">تعليمات الاستخدام</p>
-          <p class="text-gray-600 text-sm leading-relaxed">
-            الرجاء ملء النماذج أدناه بدقة واكتمال. سيتم إرسال البيانات تلقائياً إلى قاعدة البيانات الرئيسية.
-          </p>
-        </div>
-      </div>
-    </div>
+        // 1. تهيئة المستخدم
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = auth.checkAuth();
+            if(user) {
+                document.getElementById('user-name').textContent = user.name;
+                document.getElementById('user-role').textContent = user.jobTitle || 'موظف';
+                document.getElementById('user-avatar').textContent = user.name.charAt(0);
+                auth.setupUI();
+            }
+        });
 
-    <div class="grid md:grid-cols-2 gap-6">
-      
-      <a id="link-inbox" href="#" target="_blank" rel="noopener noreferrer" class="form-card teal">
-        <div class="flex items-start gap-5">
-          <div class="form-icon" style="background: #e6f7f5;">
-            <i data-lucide="inbox" class="w-9 h-9" style="color: #0f766e;"></i>
-          </div>
-          <div class="flex-grow">
-            <h3 class="font-bold text-gray-800 text-lg mb-2">الصادر والوارد</h3>
-            <p class="text-gray-600 text-sm mb-3">إدخال معاملة جديدة للنظام</p>
-            <div class="flex items-center gap-2 text-teal-700 font-semibold text-sm">
-              <span>فتح النموذج</span>
-              <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            </div>
-          </div>
-        </div>
-      </a>
-
-      <a id="link-complaints" href="#" target="_blank" rel="noopener noreferrer" class="form-card rose">
-        <div class="flex items-start gap-5">
-          <div class="form-icon" style="background: #ffe4e6;">
-            <i data-lucide="alert-triangle" class="w-9 h-9" style="color: #e11d48;"></i>
-          </div>
-          <div class="flex-grow">
-            <h3 class="font-bold text-gray-800 text-lg mb-2">فحص الشكاوى</h3>
-            <p class="text-gray-600 text-sm mb-3">تحقيقات ومتابعة البلاغات</p>
-            <div class="flex items-center gap-2 text-rose-600 font-semibold text-sm">
-              <span>فتح النموذج</span>
-              <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            </div>
-          </div>
-        </div>
-      </a>
-
-      <a id="link-financial" href="#" target="_blank" rel="noopener noreferrer" class="form-card amber">
-        <div class="flex items-start gap-5">
-          <div class="form-icon" style="background: #fef3c7;">
-            <i data-lucide="calculator" class="w-9 h-9" style="color: #f59e0b;"></i>
-          </div>
-          <div class="flex-grow">
-            <h3 class="font-bold text-gray-800 text-lg mb-2">المرور المالي والإداري</h3>
-            <p class="text-gray-600 text-sm mb-3">مراجعة الحسابات والإدارة</p>
-            <div class="flex items-center gap-2 text-amber-600 font-semibold text-sm">
-              <span>فتح النموذج</span>
-              <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            </div>
-          </div>
-        </div>
-      </a>
-
-      <a id="link-primary" href="#" target="_blank" rel="noopener noreferrer" class="form-card blue">
-        <div class="flex items-start gap-5">
-          <div class="form-icon" style="background: #dbeafe;">
-            <i data-lucide="stethoscope" class="w-9 h-9" style="color: #3b82f6;"></i>
-          </div>
-          <div class="flex-grow">
-            <h3 class="font-bold text-gray-800 text-lg mb-2">نموذج فني وحدات الرعاية الأولية</h3>
-            <p class="text-gray-600 text-sm mb-3">تفتيش وحدات الرعاية الصحية</p>
-            <div class="flex items-center gap-2 text-blue-600 font-semibold text-sm">
-              <span>فتح النموذج</span>
-              <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            </div>
-          </div>
-        </div>
-      </a>
-
-      <a id="link-hospitals" href="#" target="_blank" rel="noopener noreferrer" class="form-card violet">
-        <div class="flex items-start gap-5">
-          <div class="form-icon" style="background: #ede9fe;">
-            <i data-lucide="clipboard-check" class="w-9 h-9" style="color: #8b5cf6;"></i>
-          </div>
-          <div class="flex-grow">
-            <h3 class="font-bold text-gray-800 text-lg mb-2">مرور فني مستشفيات</h3>
-            <p class="text-gray-600 text-sm mb-3">تقارير الفحص الفني للمستشفيات</p>
-            <div class="flex items-center gap-2 text-violet-600 font-semibold text-sm">
-              <span>فتح النموذج</span>
-              <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            </div>
-          </div>
-        </div>
-      </a>
-
-    </div>
-
-  </main>
-
-  <nav class="bottom-nav">
-    <div style="display: flex; width: 100%; justify-content: space-around;">
-      
-      <!-- Home -->
-      <a href="index.html" class="bottom-nav-item">
-        <i data-lucide="home" class="w-6 h-6"></i>
-        <span>الرئيسية</span>
-      </a>
-      
-      <!-- Dashboard -->
-      <a href="distribution.html" class="bottom-nav-item">
-        <i data-lucide="pie-chart" class="w-6 h-6"></i>
-        <span>Dashboard</span>
-      </a>
-      
-      <!-- النماذج -->
-      <a href="forms.html" class="bottom-nav-item active">
-        <i data-lucide="file-text" class="w-6 h-6"></i>
-        <span>النماذج</span>
-      </a>
-      
-      <!-- الخدمات -->
-      <a href="employee.html" class="bottom-nav-item">
-        <i data-lucide="briefcase" class="w-6 h-6"></i>
-        <span>الخدمات</span>
-      </a>
-      
-      <!-- الإدارة (مخفي - يظهر للأدمن فقط) -->
-      <a href="admin.html" class="bottom-nav-item hidden" id="admin-nav-link">
-        <i data-lucide="settings" class="w-6 h-6"></i>
-        <span>الإدارة</span>
-      </a>
-    </div>
-  </nav>
-
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/auth.js"></script>
-  <script>
-    // ═══════════════════════════════════════════════════════════════════
-    // 1. INITIALIZATION
-    // ═══════════════════════════════════════════════════════════════════
-    
-    lucide.createIcons();
-
-    // ═══════════════════════════════════════════════════════════════════
-    // 2. ROLE-BASED NAVIGATION (Optional - للصفحات العامة)
-    // ═══════════════════════════════════════════════════════════════════
-    
-    // 2.1 Check if user is logged in (without redirect)
-    auth.loadSession(); // Load session if exists
-    const user = auth.currentUser; // Get user (null if not logged in)
-    
-    if (user) {
-      // 2.2 Show/Hide Navigation Based on Role
-      const isAdmin = user.role === 'مدير' || user.role === 'Admin';
-      const isCoordinator = user.role === 'منسق' || user.role === 'Coordinator' || isAdmin;
-      
-      // Sidebar Links
-      const coordinatorLink = document.getElementById('coordinator-link');
-      const adminLink = document.getElementById('admin-link');
-      const adminNavLink = document.getElementById('admin-nav-link');
-      
-      if (!isCoordinator && coordinatorLink) {
-        coordinatorLink.style.display = 'none';
-      }
-      
-      if (!isAdmin) {
-        if (adminLink) adminLink.style.display = 'none';
-        if (adminNavLink) adminNavLink.classList.add('hidden');
-      } else {
-        // Show admin link in bottom nav for admins
-        if (adminNavLink) adminNavLink.classList.remove('hidden');
-      }
-    } else {
-      // 2.3 Hide protected links if not logged in
-      const coordinatorLink = document.getElementById('coordinator-link');
-      const adminLink = document.getElementById('admin-link');
-      const adminNavLink = document.getElementById('admin-nav-link');
-      
-      if (coordinatorLink) coordinatorLink.style.display = 'none';
-      if (adminLink) adminLink.style.display = 'none';
-      if (adminNavLink) adminNavLink.classList.add('hidden');
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // 3. SIDEBAR TOGGLE
-    // ═══════════════════════════════════════════════════════════════════
-    
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('active');
-      document.getElementById('overlay').classList.toggle('active');
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // 4. DYNAMIC FORM LINKS
-    // ═══════════════════════════════════════════════════════════════════
-    
-    document.addEventListener('DOMContentLoaded', () => {
-      // 4.1 Check if CONFIG exists
-      if (typeof CONFIG === 'undefined' || !CONFIG.FORMS) {
-        console.error('Config file is missing or invalid!');
-        return;
-      }
-
-      // 4.2 Map IDs to Config Keys
-      const links = {
-        'link-inbox': CONFIG.FORMS.INBOX,
-        'link-complaints': CONFIG.FORMS.COMPLAINTS,
-        'link-financial': CONFIG.FORMS.FINANCIAL,
-        'link-primary': CONFIG.FORMS.PRIMARY_CARE,
-        'link-hospitals': CONFIG.FORMS.HOSPITALS
-      };
-
-      // 4.3 Apply Hrefs
-      for (const [id, url] of Object.entries(links)) {
-        const el = document.getElementById(id);
-        if (el && url) {
-          el.href = url;
+        // 2. دالة فتح النماذج
+        function openForm(formKey) {
+            // جلب الرابط من ملف config.js
+            const url = CONFIG.FORMS[formKey];
+            
+            if (url) {
+                window.open(url, '_blank');
+            } else {
+                alert('عذراً، رابط هذا النموذج غير متوفر حالياً.');
+            }
         }
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>
