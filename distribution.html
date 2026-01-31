@@ -64,10 +64,6 @@
       color: #0f766e;
     }
     
-    .sidebar-item.hidden {
-      display: none;
-    }
-    
     /* Main Content */
     .main-content {
       margin-right: 260px;
@@ -194,10 +190,6 @@
       color: #0f766e;
     }
     
-    .bottom-nav-item.hidden {
-      display: none;
-    }
-    
     /* Mobile Responsive */
     @media (max-width: 1024px) {
       .sidebar { transform: translateX(100%); }
@@ -267,6 +259,7 @@
 
   <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
+  <!-- Mobile Header -->
   <div class="mobile-header">
     <button onclick="toggleSidebar()" class="p-2">
       <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
@@ -277,6 +270,7 @@
     </button>
   </div>
 
+  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <h2 class="text-xl font-bold mb-1">IAG System</h2>
@@ -296,26 +290,27 @@
       
       <a href="forms.html" class="sidebar-item">
         <i data-lucide="file-text" class="w-5 h-5"></i>
-        <span>النماذج</span>
+        <span>النماذج الإلكترونية</span>
       </a>
       
       <a href="employee.html" class="sidebar-item">
         <i data-lucide="briefcase" class="w-5 h-5"></i>
-        <span>مهامي</span>
+        <span>خدمات الموظفين</span>
       </a>
       
-      <a href="coordinator.html" class="sidebar-item" id="coordinator-link">
+      <a href="coordinator.html" class="sidebar-item">
         <i data-lucide="users" class="w-5 h-5"></i>
         <span>المنسقين</span>
       </a>
       
-      <a href="admin.html" class="sidebar-item" id="admin-link">
+      <a href="admin.html" class="sidebar-item">
         <i data-lucide="settings" class="w-5 h-5"></i>
         <span>لوحة الإدارة</span>
       </a>
     </nav>
   </aside>
 
+  <!-- Main Content -->
   <main class="main-content">
     
     <div class="mb-6" style="display: none;" id="filter-panel">
@@ -437,35 +432,22 @@
 
   </main>
 
+  <!-- Bottom Navigation -->
   <nav class="bottom-nav">
     <div style="display: flex; width: 100%; justify-content: space-around;">
-      
-      <!-- Home -->
-      <a href="index.html" class="bottom-nav-item">
-        <i data-lucide="home" class="w-6 h-6"></i>
-        <span>الرئيسية</span>
-      </a>
-      
-      <!-- Dashboard -->
       <a href="distribution.html" class="bottom-nav-item active">
         <i data-lucide="pie-chart" class="w-6 h-6"></i>
         <span>Dashboard</span>
       </a>
-      
-      <!-- النماذج -->
       <a href="forms.html" class="bottom-nav-item">
         <i data-lucide="file-text" class="w-6 h-6"></i>
         <span>النماذج</span>
       </a>
-      
-      <!-- مهامي -->
       <a href="employee.html" class="bottom-nav-item">
         <i data-lucide="briefcase" class="w-6 h-6"></i>
-        <span>مهامي</span>
+        <span>الخدمات</span>
       </a>
-      
-      <!-- الإدارة (مخفي - يظهر للأدمن فقط) -->
-      <a href="admin.html" class="bottom-nav-item hidden" id="admin-nav-link">
+      <a href="admin.html" class="bottom-nav-item">
         <i data-lucide="settings" class="w-6 h-6"></i>
         <span>الإدارة</span>
       </a>
@@ -475,49 +457,8 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
-    // ═══════════════════════════════════════════════════════════════════
-    // 1. INITIALIZATION
-    // ═══════════════════════════════════════════════════════════════════
-    
     lucide.createIcons();
 
-    // ═══════════════════════════════════════════════════════════════════
-    // 2. SECURITY & AUTHENTICATION
-    // ═══════════════════════════════════════════════════════════════════
-    
-    const user = auth.checkSession();
-    if (!user) {
-      window.location.replace('index.html');
-    }
-    
-    // ═══════════════════════════════════════════════════════════════════
-    // 3. ROLE-BASED NAVIGATION
-    // ═══════════════════════════════════════════════════════════════════
-    
-    if (user) {
-      const isAdmin = user.role === 'مدير' || user.role === 'Admin';
-      const isCoordinator = user.role === 'منسق' || user.role === 'Coordinator' || isAdmin;
-      
-      const coordinatorLink = document.getElementById('coordinator-link');
-      const adminLink = document.getElementById('admin-link');
-      const adminNavLink = document.getElementById('admin-nav-link');
-      
-      if (!isCoordinator && coordinatorLink) {
-        coordinatorLink.style.display = 'none';
-      }
-      
-      if (!isAdmin) {
-        if (adminLink) adminLink.style.display = 'none';
-        if (adminNavLink) adminNavLink.classList.add('hidden');
-      } else {
-        if (adminNavLink) adminNavLink.classList.remove('hidden');
-      }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // 4. HELPER FUNCTIONS
-    // ═══════════════════════════════════════════════════════════════════
-    
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('active');
       document.getElementById('overlay').classList.toggle('active');
@@ -528,20 +469,9 @@
         document.getElementById('filter-panel').style.display === 'none' ? 'block' : 'none';
     }
 
-    function escapeHtml(text) {
-      if (!text) return '';
-      return text.toString()
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
     function getStatusClass(status) {
-      if (!status) return 'status-new';
       const s = status.trim();
-      if (s.includes('لم يتم البدء') || s.includes('جديد')) return 'status-new';
+      if (s.includes('لم يتم البدء')) return 'status-new';
       else if (s.includes('قيد المراجعة') || s.includes('جاري')) return 'status-progress';
       else if (s.includes('بانتظار الاعتماد')) return 'status-approved';
       else if (s.includes('تم الاعتماد') || s.includes('منتهي')) return 'status-done';
@@ -550,84 +480,58 @@
       return 'status-new';
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // 5. LOAD DASHBOARD DATA
-    // ═══════════════════════════════════════════════════════════════════
-    
     async function loadDashboard() {
       document.getElementById('loading').classList.remove('hidden');
 
       const year = document.getElementById('filter-year').value;
-      
-      // Default: آخر 7 أيام
-      let startDate, endDate;
-      
-      if (!year) {
-        // Calculate last 7 days
-        const today = new Date();
-        const last7Days = new Date(today);
-        last7Days.setDate(today.getDate() - 7);
-        
-        startDate = last7Days.toISOString().split('T')[0];
-        endDate = today.toISOString().split('T')[0];
-      } else {
-        // Use selected year
-        startDate = `${year}-01-01`;
-        endDate = `${year}-12-31`;
-      }
 
-      try {
-        const result = await auth.apiCall('getAllData', {
-          role: user.role || 'مدير',
-          name: user.name || 'Dashboard',
-          startDate: startDate,
-          endDate: endDate
+      const result = await auth.apiCall('getAllData', {
+        role: 'مدير',
+        name: 'Dashboard',
+        startDate: year ? `${year}-01-01` : '2024-01-01',
+        endDate: year ? `${year}-12-31` : '2028-12-31'
+      });
+
+      if (result.success) {
+        let statusCount = { new: 0, progress: 0, approval: 0, done: 0, overdue: 0, followup: 0 };
+
+        result.tasks.forEach(task => {
+          const s = task.status.trim();
+          if (s.includes('لم يتم البدء')) statusCount.new++;
+          else if (s.includes('قيد المراجعة') || s.includes('جاري')) statusCount.progress++;
+          else if (s.includes('بانتظار الاعتماد')) statusCount.approval++;
+          else if (s.includes('تم الاعتماد') || s.includes('منتهي') || s.includes('أرشيف')) statusCount.done++;
+          else if (s.includes('متأخر')) statusCount.overdue++;
+          else if (s.includes('بحاجة إلى متابعة')) statusCount.followup++;
         });
 
-        if (result.success) {
-          let statusCount = { new: 0, progress: 0, approval: 0, done: 0, overdue: 0, followup: 0 };
+        document.getElementById('stat-total').textContent = result.stats.totals.total || 0;
+        document.getElementById('stat-new').textContent = statusCount.new;
+        document.getElementById('stat-progress').textContent = statusCount.progress;
+        document.getElementById('stat-approval').textContent = statusCount.approval;
+        document.getElementById('stat-done').textContent = statusCount.done;
+        document.getElementById('stat-overdue').textContent = statusCount.overdue;
+        document.getElementById('stat-followup').textContent = statusCount.followup;
 
-          result.tasks.forEach(task => {
-            const s = (task.status || '').trim();
-            if (s.includes('لم يتم البدء')) statusCount.new++;
-            else if (s.includes('قيد المراجعة') || s.includes('جاري')) statusCount.progress++;
-            else if (s.includes('بانتظار الاعتماد')) statusCount.approval++;
-            else if (s.includes('تم الاعتماد') || s.includes('منتهي') || s.includes('أرشيف')) statusCount.done++;
-            else if (s.includes('متأخر')) statusCount.overdue++;
-            else if (s.includes('بحاجة إلى متابعة')) statusCount.followup++;
-          });
-
-          document.getElementById('stat-total').textContent = result.stats.totals.total || 0;
-          document.getElementById('stat-new').textContent = statusCount.new;
-          document.getElementById('stat-progress').textContent = statusCount.progress;
-          document.getElementById('stat-approval').textContent = statusCount.approval;
-          document.getElementById('stat-done').textContent = statusCount.done;
-          document.getElementById('stat-overdue').textContent = statusCount.overdue;
-          document.getElementById('stat-followup').textContent = statusCount.followup;
-
-          const tbody = document.getElementById('tasks-tbody');
-          if (result.tasks && result.tasks.length > 0) {
-            tbody.innerHTML = result.tasks.map(task => `
-              <tr>
-                <td><span class="font-bold text-teal-700">${escapeHtml(task.id)}</span></td>
-                <td class="text-gray-600">${escapeHtml(task.date)}</td>
-                <td class="font-semibold">${escapeHtml(task.entity)}</td>
-                <td>${escapeHtml(task.subject)}</td>
-                <td class="text-gray-600">${escapeHtml(task.assignee)}</td>
-                <td><span class="status-pill ${getStatusClass(task.status || '')}">${escapeHtml(task.status || 'جديد')}</span></td>
-              </tr>
-            `).join('');
-          } else {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-400">لا توجد مهام</td></tr>';
-          }
+        const tbody = document.getElementById('tasks-tbody');
+        if (result.tasks && result.tasks.length > 0) {
+          tbody.innerHTML = result.tasks.map(task => `
+            <tr>
+              <td><span class="font-bold text-teal-700">${task.id}</span></td>
+              <td class="text-gray-600">${task.date}</td>
+              <td class="font-semibold">${task.entity}</td>
+              <td>${task.subject}</td>
+              <td class="text-gray-600">${task.assignee}</td>
+              <td><span class="status-pill ${getStatusClass(task.status)}">${task.status}</span></td>
+            </tr>
+          `).join('');
+        } else {
+          tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-400">لا توجد مهام</td></tr>';
         }
-      } catch (err) {
-        console.error("Dashboard Load Error:", err);
-        document.getElementById('tasks-tbody').innerHTML = '<tr><td colspan="6" class="text-center py-8 text-red-400">خطأ في تحميل البيانات</td></tr>';
-      } finally {
-        document.getElementById('loading').classList.add('hidden');
-        lucide.createIcons();
       }
+
+      document.getElementById('loading').classList.add('hidden');
+      lucide.createIcons();
     }
 
     function applyFilters() {
