@@ -64,6 +64,10 @@
       color: #0f766e;
     }
     
+    .sidebar-item.hidden {
+      display: none;
+    }
+    
     /* Main Content */
     .main-content {
       margin-right: 260px;
@@ -190,6 +194,10 @@
       color: #0f766e;
     }
     
+    .bottom-nav-item.hidden {
+      display: none;
+    }
+    
     /* Mobile Responsive */
     @media (max-width: 1024px) {
       .sidebar { transform: translateX(100%); }
@@ -288,20 +296,20 @@
       
       <a href="forms.html" class="sidebar-item">
         <i data-lucide="file-text" class="w-5 h-5"></i>
-        <span>النماذج الإلكترونية</span>
+        <span>النماذج</span>
       </a>
       
       <a href="employee.html" class="sidebar-item">
         <i data-lucide="briefcase" class="w-5 h-5"></i>
-        <span>خدمات الموظفين</span>
+        <span>مهامي</span>
       </a>
       
-      <a href="coordinator.html" class="sidebar-item">
+      <a href="coordinator.html" class="sidebar-item" id="coordinator-link">
         <i data-lucide="users" class="w-5 h-5"></i>
         <span>المنسقين</span>
       </a>
       
-      <a href="admin.html" class="sidebar-item">
+      <a href="admin.html" class="sidebar-item" id="admin-link">
         <i data-lucide="settings" class="w-5 h-5"></i>
         <span>لوحة الإدارة</span>
       </a>
@@ -431,19 +439,33 @@
 
   <nav class="bottom-nav">
     <div style="display: flex; width: 100%; justify-content: space-around;">
+      
+      <!-- Home -->
+      <a href="index.html" class="bottom-nav-item">
+        <i data-lucide="home" class="w-6 h-6"></i>
+        <span>الرئيسية</span>
+      </a>
+      
+      <!-- Dashboard -->
       <a href="distribution.html" class="bottom-nav-item active">
         <i data-lucide="pie-chart" class="w-6 h-6"></i>
         <span>Dashboard</span>
       </a>
+      
+      <!-- النماذج -->
       <a href="forms.html" class="bottom-nav-item">
         <i data-lucide="file-text" class="w-6 h-6"></i>
         <span>النماذج</span>
       </a>
+      
+      <!-- مهامي -->
       <a href="employee.html" class="bottom-nav-item">
         <i data-lucide="briefcase" class="w-6 h-6"></i>
-        <span>الخدمات</span>
+        <span>مهامي</span>
       </a>
-      <a href="admin.html" class="bottom-nav-item">
+      
+      <!-- الإدارة (مخفي - يظهر للأدمن فقط) -->
+      <a href="admin.html" class="bottom-nav-item hidden" id="admin-nav-link">
         <i data-lucide="settings" class="w-6 h-6"></i>
         <span>الإدارة</span>
       </a>
@@ -453,15 +475,49 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
+    // ═══════════════════════════════════════════════════════════════════
+    // 1. INITIALIZATION
+    // ═══════════════════════════════════════════════════════════════════
+    
     lucide.createIcons();
 
-    // 1. Security: Check Session with correct redirect
+    // ═══════════════════════════════════════════════════════════════════
+    // 2. SECURITY & AUTHENTICATION
+    // ═══════════════════════════════════════════════════════════════════
+    
     const user = auth.checkSession();
     if (!user) {
-      // Security Fix: Prevent back button usage
       window.location.replace('index.html');
     }
+    
+    // ═══════════════════════════════════════════════════════════════════
+    // 3. ROLE-BASED NAVIGATION
+    // ═══════════════════════════════════════════════════════════════════
+    
+    if (user) {
+      const isAdmin = user.role === 'مدير' || user.role === 'Admin';
+      const isCoordinator = user.role === 'منسق' || user.role === 'Coordinator' || isAdmin;
+      
+      const coordinatorLink = document.getElementById('coordinator-link');
+      const adminLink = document.getElementById('admin-link');
+      const adminNavLink = document.getElementById('admin-nav-link');
+      
+      if (!isCoordinator && coordinatorLink) {
+        coordinatorLink.style.display = 'none';
+      }
+      
+      if (!isAdmin) {
+        if (adminLink) adminLink.style.display = 'none';
+        if (adminNavLink) adminNavLink.classList.add('hidden');
+      } else {
+        if (adminNavLink) adminNavLink.classList.remove('hidden');
+      }
+    }
 
+    // ═══════════════════════════════════════════════════════════════════
+    // 4. HELPER FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════════
+    
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('active');
       document.getElementById('overlay').classList.toggle('active');
@@ -472,7 +528,6 @@
         document.getElementById('filter-panel').style.display === 'none' ? 'block' : 'none';
     }
 
-    // 2. Helper: Sanitization for Table Data
     function escapeHtml(text) {
       if (!text) return '';
       return text.toString()
@@ -486,7 +541,7 @@
     function getStatusClass(status) {
       if (!status) return 'status-new';
       const s = status.trim();
-      if (s.includes('لم يتم البدء')) return 'status-new';
+      if (s.includes('لم يتم البدء') || s.includes('جديد')) return 'status-new';
       else if (s.includes('قيد المراجعة') || s.includes('جاري')) return 'status-progress';
       else if (s.includes('بانتظار الاعتماد')) return 'status-approved';
       else if (s.includes('تم الاعتماد') || s.includes('منتهي')) return 'status-done';
@@ -495,17 +550,38 @@
       return 'status-new';
     }
 
+    // ═══════════════════════════════════════════════════════════════════
+    // 5. LOAD DASHBOARD DATA
+    // ═══════════════════════════════════════════════════════════════════
+    
     async function loadDashboard() {
       document.getElementById('loading').classList.remove('hidden');
 
       const year = document.getElementById('filter-year').value;
+      
+      // Default: آخر 7 أيام
+      let startDate, endDate;
+      
+      if (!year) {
+        // Calculate last 7 days
+        const today = new Date();
+        const last7Days = new Date(today);
+        last7Days.setDate(today.getDate() - 7);
+        
+        startDate = last7Days.toISOString().split('T')[0];
+        endDate = today.toISOString().split('T')[0];
+      } else {
+        // Use selected year
+        startDate = `${year}-01-01`;
+        endDate = `${year}-12-31`;
+      }
 
       try {
         const result = await auth.apiCall('getAllData', {
-          role: 'مدير',
-          name: 'Dashboard',
-          startDate: year ? `${year}-01-01` : '2024-01-01',
-          endDate: year ? `${year}-12-31` : '2028-12-31'
+          role: user.role || 'مدير',
+          name: user.name || 'Dashboard',
+          startDate: startDate,
+          endDate: endDate
         });
 
         if (result.success) {
