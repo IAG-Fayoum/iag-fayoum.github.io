@@ -2,382 +2,109 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <title>مهامي | نظام الحوكمة</title>
-    
     <link rel="icon" href="assets/icons/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; color: #1e293b; padding-bottom: 80px; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* Sidebar Styling (Desktop) */
-        @media (min-width: 1024px) {
-            body { padding-bottom: 0; padding-right: 260px; }
-            .sidebar { transform: translateX(0) !important; width: 260px; }
-            .bottom-nav { display: none !important; }
-            .mobile-header { display: none !important; }
-        }
-
-        /* Task Card (Mobile) */
-        .task-card {
-            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;
-            margin-bottom: 12px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .task-card:active { transform: scale(0.98); background-color: #f0fdfa; }
-
-        /* Status Colors */
-        .st-new { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
-        .st-progress { background: #fef9c3; color: #ca8a04; border: 1px solid #fde047; }
-        .st-done { background: #dcfce7; color: #16a34a; border: 1px solid #86efac; }
-        .st-late { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-            z-index: 100; display: none; align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: white; width: 90%; max-width: 500px; border-radius: 20px;
-            padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-            transform: translateY(20px); transition: transform 0.3s;
-        }
-        .modal-overlay.show { display: flex; }
-        .modal-overlay.show .modal-content { transform: translateY(0); }
+        :root { --primary: #047857; } body { font-family: 'Cairo', sans-serif; background: #f8fafc; padding-bottom: 80px; }
+        .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+        .modal.open { display: flex; }
+        @media(min-width:1024px){ body{padding-right:260px} .sidebar{transform:translateX(0)!important} .mobile-nav{display:none} }
     </style>
 </head>
 <body>
-
-    <aside class="sidebar fixed top-0 right-0 h-full bg-white border-l border-slate-200 z-50 transition-transform duration-300 translate-x-full flex flex-col shadow-lg">
-        <div class="p-6 border-b border-slate-100 flex items-center gap-3 bg-[#0f766e] text-white">
-            <div class="bg-white/20 p-2 rounded-lg">
-                <i data-lucide="shield-check" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h1 class="font-bold text-lg leading-tight">نظام الحوكمة</h1>
-                <p class="text-[10px] text-teal-100 opacity-90">إدارة المهام</p>
-            </div>
+    <aside class="sidebar fixed top-0 right-0 h-full bg-white w-64 shadow-lg border-l border-gray-100 transition-transform translate-x-full lg:translate-x-0 z-50 flex flex-col">
+        <div class="p-6 border-b flex items-center gap-3">
+            <div class="w-10 h-10 bg-teal-50 rounded flex items-center justify-center text-[#047857]"><i data-lucide="shield-check"></i></div>
+            <div><h1 class="font-bold text-lg">نظام الحوكمة</h1><p class="text-xs text-gray-500">الموظفين</p></div>
         </div>
-
-        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-            <a href="distribution.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                <span>الرئيسية</span>
-            </a>
-            
-            <a href="employee.html" class="flex items-center gap-3 px-4 py-3 bg-teal-50 text-teal-700 rounded-xl font-bold transition-colors shadow-sm">
-                <i data-lucide="briefcase" class="w-5 h-5"></i>
-                <span>مهامي</span>
-            </a>
-
-            <a href="forms.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="file-text" class="w-5 h-5"></i>
-                <span>النماذج</span>
-            </a>
-
-            <a href="Notifications.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="bell" class="w-5 h-5"></i>
-                <span>الإشعارات</span>
-            </a>
-
-            <div class="only-admin hidden pt-4 mt-2 border-t border-slate-100">
-                <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">الإدارة</p>
-                <a href="admin.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                    <i data-lucide="settings-2" class="w-5 h-5"></i>
-                    <span>لوحة التحكم</span>
-                </a>
-            </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="distribution.html" class="flex gap-3 px-4 py-3 text-gray-600 hover:bg-teal-50 rounded font-bold"><i data-lucide="layout-grid"></i> الرئيسية</a>
+            <a href="employee.html" class="flex gap-3 px-4 py-3 bg-[#047857] text-white rounded font-bold shadow"><i data-lucide="briefcase"></i> مهامي</a>
+            <a href="forms.html" class="flex gap-3 px-4 py-3 text-gray-600 hover:bg-teal-50 rounded font-bold"><i data-lucide="file-text"></i> النماذج</a>
         </nav>
-
-        <div class="p-4 border-t border-slate-100 bg-slate-50">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 overflow-hidden">
-                    <div class="w-9 h-9 rounded-full bg-[#0f766e] text-white flex items-center justify-center font-bold text-sm" id="user-avatar"></div>
-                    <div class="min-w-0">
-                        <p class="text-sm font-bold text-slate-800 truncate" id="user-name">...</p>
-                        <p class="text-xs text-slate-500 truncate" id="user-role">...</p>
-                    </div>
-                </div>
-                <button onclick="auth.logout()" class="text-slate-400 hover:text-red-500 transition-colors p-1"><i data-lucide="log-out" class="w-5 h-5"></i></button>
-            </div>
-        </div>
+        <div class="p-4 border-t"><button onclick="auth.logout()" class="flex gap-2 text-red-500 font-bold"><i data-lucide="log-out"></i> خروج</button></div>
     </aside>
 
-    <main class="min-h-screen w-full">
-        <div class="mobile-header bg-white p-4 sticky top-0 z-30 border-b border-slate-200 flex items-center justify-between lg:hidden shadow-sm">
-            <h1 class="font-bold text-lg text-teal-800">مهامي</h1>
-            <button onclick="location.reload()" class="p-2 bg-slate-50 text-slate-500 rounded-lg"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
-        </div>
-
-        <div class="p-4 lg:p-10 max-w-7xl mx-auto space-y-6">
-            
-            <div class="flex flex-col md:flex-row gap-4 justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <div class="relative w-full md:w-96">
-                    <input type="text" id="search-input" placeholder="بحث برقم القيد أو الموضوع..." 
-                           class="w-full pl-4 pr-10 py-2.5 border border-slate-200 rounded-lg focus:border-teal-500 focus:outline-none transition-colors">
-                    <i data-lucide="search" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
-                </div>
-                
-                <div class="flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-                    <button onclick="filterTasks('all')" class="filter-btn active px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-bold whitespace-nowrap">الكل</button>
-                    <button onclick="filterTasks('new')" class="filter-btn px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg text-sm font-medium whitespace-nowrap">جديد</button>
-                    <button onclick="filterTasks('progress')" class="filter-btn px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg text-sm font-medium whitespace-nowrap">جاري</button>
-                    <button onclick="filterTasks('done')" class="filter-btn px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg text-sm font-medium whitespace-nowrap">منتهي</button>
-                </div>
-            </div>
-
-            <div id="tasks-container" class="space-y-4">
-                <div class="animate-pulse space-y-4">
-                    <div class="h-24 bg-slate-200 rounded-xl"></div>
-                    <div class="h-24 bg-slate-200 rounded-xl"></div>
-                    <div class="h-24 bg-slate-200 rounded-xl"></div>
-                </div>
-            </div>
-
-            <div id="empty-state" class="hidden text-center py-20">
-                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="clipboard-list" class="w-10 h-10 text-slate-400"></i>
-                </div>
-                <h3 class="text-lg font-bold text-slate-700">لا توجد مهام</h3>
-                <p class="text-slate-500 text-sm">لم يتم العثور على أي مهام تطابق البحث.</p>
-            </div>
-
+    <main class="p-4 lg:p-8 max-w-4xl mx-auto">
+        <h2 class="text-xl font-bold text-slate-800 mb-4">قائمة مهامي</h2>
+        <div id="my-tasks" class="space-y-4">
+            <div class="text-center py-10 text-gray-400">جاري تحميل مهامك...</div>
         </div>
     </main>
 
-    <div id="task-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-                <h3 class="text-xl font-bold text-slate-800">تحديث الحالة</h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-red-500"><i data-lucide="x" class="w-6 h-6"></i></button>
-            </div>
-
-            <div class="space-y-4" id="modal-body">
-                <div>
-                    <label class="text-xs font-bold text-slate-500">الموضوع</label>
-                    <p class="text-sm font-bold text-slate-800 mt-1" id="m-subject">...</p>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs font-bold text-slate-500">رقم القيد</label>
-                        <p class="text-sm font-mono text-slate-700 mt-1" id="m-id">...</p>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-500">التاريخ</label>
-                        <p class="text-sm font-mono text-slate-700 mt-1" id="m-date">...</p>
-                    </div>
-                </div>
-
-                <div class="pt-4 border-t border-slate-100">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">تغيير الحالة إلى:</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="updateStatus('جاري التنفيذ')" class="p-3 border rounded-xl text-center hover:bg-yellow-50 hover:border-yellow-300 transition text-sm font-bold text-slate-600">
-                            ⏳ جاري التنفيذ
-                        </button>
-                        <button onclick="updateStatus('تم الإنجاز')" class="p-3 border rounded-xl text-center hover:bg-green-50 hover:border-green-300 transition text-sm font-bold text-slate-600">
-                            ✅ تم الإنجاز
-                        </button>
-                        <button onclick="updateStatus('متأخر')" class="p-3 border rounded-xl text-center hover:bg-red-50 hover:border-red-300 transition text-sm font-bold text-slate-600">
-                            ⚠️ متأخر
-                        </button>
-                        <button onclick="updateStatus('تحت المراجعة')" class="p-3 border rounded-xl text-center hover:bg-blue-50 hover:border-blue-300 transition text-sm font-bold text-slate-600">
-                            👀 تحت المراجعة
-                        </button>
-                    </div>
-                </div>
+    <div id="update-modal" class="modal">
+        <div class="bg-white p-6 rounded-xl w-96 max-w-full m-4 shadow-2xl">
+            <h3 class="font-bold text-lg mb-4">تحديث الحالة</h3>
+            <input type="hidden" id="m-id">
+            <div class="space-y-3">
+                <select id="m-status" class="w-full border p-2 rounded"><option>جاري التنفيذ</option><option>تم الإنجاز</option><option>متأخر</option></select>
+                <input type="text" id="m-link" placeholder="رابط الرد / التقرير (اختياري)" class="w-full border p-2 rounded">
+                <button onclick="saveUpdate()" class="w-full bg-[#047857] text-white py-2 rounded font-bold">حفظ</button>
+                <button onclick="closeModal()" class="w-full text-gray-500 py-2">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
-            <i data-lucide="layout-grid" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">الرئيسية</span>
-        </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 p-2 text-[#0f766e]">
-            <i data-lucide="briefcase" class="w-6 h-6"></i>
-            <span class="text-[10px] font-bold">مهامي</span>
-        </a>
-        <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
-            <i data-lucide="file-text" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">النماذج</span>
-        </a>
-        <a href="admin.html" class="only-admin hidden flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
-            <i data-lucide="settings-2" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">الإدارة</span>
-        </a>
+    <nav class="mobile-nav fixed bottom-0 w-full bg-white border-t flex justify-around p-2 z-40 lg:hidden shadow-lg">
+        <a href="distribution.html" class="text-gray-400 flex flex-col items-center text-[10px]"><i data-lucide="layout-grid" class="w-6"></i>الرئيسية</a>
+        <a href="employee.html" class="text-[#047857] flex flex-col items-center text-[10px] font-bold"><i data-lucide="briefcase" class="w-6"></i>مهامي</a>
+        <a href="forms.html" class="text-gray-400 flex flex-col items-center text-[10px]"><i data-lucide="file-text" class="w-6"></i>النماذج</a>
     </nav>
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allTasks = [];
-        let currentTaskId = null;
+        let currentTasks = [];
 
-        // تهيئة الصفحة
         document.addEventListener('DOMContentLoaded', async () => {
             const user = auth.checkAuth();
             if(!user) return;
 
-            // UI Setup
-            document.getElementById('user-name').textContent = user.name;
-            document.getElementById('user-role').textContent = user.jobTitle || 'موظف';
-            document.getElementById('user-avatar').textContent = user.name.charAt(0);
-            auth.setupUI();
-
-            // Fetch Data
-            await fetchTasks(user);
-
-            // Search Listener
-            document.getElementById('search-input').addEventListener('input', (e) => {
-                renderTasks(filterData(e.target.value));
-            });
+            const res = await auth.callAPI('getAllData', { role: 'employee', name: user.name, startDate: `${new Date().getFullYear()}-01-01` });
+            if(res.success) {
+                currentTasks = res.tasks;
+                renderTasks(currentTasks);
+            }
         });
 
-        // 1. جلب البيانات
-        async function fetchTasks(user) {
-            try {
-                const res = await auth.callAPI('getAllData', {
-                    role: user.role, name: user.name, startDate: '2024-01-01'
-                });
-                
-                if(res.success) {
-                    allTasks = res.tasks;
-                    renderTasks(allTasks);
-                }
-            } catch(e) { console.error(e); }
-        }
-
-        // 2. عرض المهام
         function renderTasks(tasks) {
-            const container = document.getElementById('tasks-container');
-            const emptyState = document.getElementById('empty-state');
+            const container = document.getElementById('my-tasks');
+            if(!tasks.length) return container.innerHTML = '<div class="text-center py-10">لا توجد مهام حالياً</div>';
 
-            if(tasks.length === 0) {
-                container.innerHTML = '';
-                emptyState.classList.remove('hidden');
-                return;
-            }
-
-            emptyState.classList.add('hidden');
-            
-            // استخدام تصميم الكروت ليكون متجاوباً
-            container.innerHTML = tasks.map(task => `
-                <div onclick="openModal('${task.id}')" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-teal-500 cursor-pointer transition-all flex justify-between items-start group">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-[10px] font-mono bg-slate-100 px-2 py-0.5 rounded text-slate-500">#${task.id}</span>
-                            <span class="text-[10px] text-slate-400">${task.date}</span>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-sm md:text-base mb-1 line-clamp-2">${task.subject}</h3>
-                        <p class="text-xs text-slate-500 flex items-center gap-1">
-                            <i data-lucide="building-2" class="w-3 h-3"></i> ${task.entity || 'جهة غير محددة'}
-                        </p>
+            container.innerHTML = tasks.map(t => `
+                <div class="task-card border-l-4 ${t.status.includes('تم')?'border-l-green-500':'border-l-blue-500'}">
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-gray-500 text-xs">#${t.id}</span>
+                        <span class="text-xs bg-gray-100 px-2 rounded">${t.status}</span>
                     </div>
-                    <div class="flex flex-col items-end gap-2">
-                        <span class="status-badge px-2 py-1 rounded-full text-[10px] font-bold ${getStatusClass(task.status)}">
-                            ${task.status || 'جديد'}
-                        </span>
-                        <i data-lucide="chevron-left" class="w-4 h-4 text-slate-300 group-hover:text-teal-600 transition-colors"></i>
+                    <h3 class="font-bold text-slate-800 mb-2">${t.subject}</h3>
+                    <div class="text-xs text-gray-500 mb-3 flex gap-3">
+                        <span>📥 ${t.source}</span>
+                        <span>📅 ${t.deadline||t.date}</span>
+                    </div>
+                    <div class="flex justify-end gap-2 border-t pt-2 mt-2">
+                        ${t.attachment ? `<a href="${t.attachment}" target="_blank" class="text-xs bg-gray-50 border px-3 py-1 rounded text-green-700 font-bold">عرض التكليف</a>` : ''}
+                        <button onclick="openModal('${t.id}')" class="text-xs bg-[#047857] text-white px-3 py-1 rounded font-bold">تحديث الحالة</button>
                     </div>
                 </div>
             `).join('');
-            
-            lucide.createIcons();
         }
 
-        // 3. فلترة البيانات
-        function filterData(query) {
-            if(!query) return allTasks;
-            query = query.toLowerCase();
-            return allTasks.filter(t => 
-                String(t.id).includes(query) || 
-                t.subject.toLowerCase().includes(query)
-            );
-        }
-
-        function filterTasks(type) {
-            // تحديث أزرار الفلتر
-            document.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.remove('bg-slate-800', 'text-white');
-                b.classList.add('bg-slate-100', 'text-slate-600');
-            });
-            event.target.classList.remove('bg-slate-100', 'text-slate-600');
-            event.target.classList.add('bg-slate-800', 'text-white');
-
-            if(type === 'all') {
-                renderTasks(allTasks);
-            } else {
-                const map = {
-                    'new': 'جديد',
-                    'progress': 'جاري',
-                    'done': 'تم'
-                };
-                const filtered = allTasks.filter(t => t.status.includes(map[type]));
-                renderTasks(filtered);
-            }
-        }
-
-        // 4. Modal Functions
-        function openModal(taskId) {
-            const task = allTasks.find(t => String(t.id) === String(taskId));
-            if(!task) return;
-
-            currentTaskId = taskId;
-            document.getElementById('m-subject').textContent = task.subject;
-            document.getElementById('m-id').textContent = task.id;
-            document.getElementById('m-date').textContent = task.date;
-            
-            document.getElementById('task-modal').classList.add('show');
-        }
-
-        function closeModal() {
-            document.getElementById('task-modal').classList.remove('show');
-        }
-
-        // 5. تحديث الحالة فعلياً
-        async function updateStatus(newStatus) {
-            const user = auth.currentUser;
-            if(!currentTaskId || !user) return;
-
-            // تغيير الزر لحالة التحميل
-            const oldContent = document.getElementById('modal-body').innerHTML;
-            document.getElementById('modal-body').innerHTML = '<div class="text-center py-8"><span class="animate-pulse font-bold text-teal-600">جاري التحديث...</span></div>';
-
-            try {
-                const res = await auth.callAPI('updateStatus', {
-                    taskId: currentTaskId,
-                    newStatus: newStatus,
-                    user: user.name
-                });
-
-                if(res.success) {
-                    closeModal();
-                    // تحديث القائمة
-                    await fetchTasks(user);
-                    // إعادة المحتوى القديم للمودال (للمرة القادمة)
-                    setTimeout(() => document.getElementById('modal-body').innerHTML = oldContent, 500);
-                } else {
-                    alert('فشل التحديث: ' + res.error);
-                    document.getElementById('modal-body').innerHTML = oldContent;
-                }
-            } catch(e) {
-                alert('خطأ في الاتصال');
-                document.getElementById('modal-body').innerHTML = oldContent;
-            }
-        }
-
-        function getStatusClass(status) {
-            if (!status) return 'bg-slate-100 text-slate-500';
-            if (status.includes('جديد')) return 'st-new';
-            if (status.includes('جاري') || status.includes('قيد')) return 'st-progress';
-            if (status.includes('تم') || status.includes('منتهي')) return 'st-done';
-            if (status.includes('متأخر')) return 'st-late';
-            return 'bg-slate-100 text-slate-500';
+        function openModal(id) { document.getElementById('m-id').value = id; document.getElementById('update-modal').classList.add('open'); }
+        function closeModal() { document.getElementById('update-modal').classList.remove('open'); }
+        
+        async function saveUpdate() {
+            const id = document.getElementById('m-id').value;
+            const sts = document.getElementById('m-status').value;
+            // هنا ممكن نضيف لوجيك حفظ الرابط لو الباك إند بيدعمه
+            const res = await auth.callAPI('updateStatus', { taskId: id, newStatus: sts, user: auth.currentUser.name });
+            if(res.success) alert('تم التحديث'), location.reload();
         }
     </script>
 </body>
