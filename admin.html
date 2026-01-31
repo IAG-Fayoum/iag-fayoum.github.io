@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#dc2626">
   <title>لوحة الإدارة - IAG</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -11,23 +10,14 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    /* ═══════════════════════════════════════════════════════════════════ */
-    /* 1. BASE STYLES */
-    /* ═══════════════════════════════════════════════════════════════════ */
-    
-    /* 1.1 Body */
     body { 
       font-family: 'Cairo', sans-serif; 
       background: #f8f9fa;
       margin: 0;
-      padding-bottom: 70px;
+      padding: 0;
     }
     
-    /* ═══════════════════════════════════════════════════════════════════ */
-    /* 2. SIDEBAR (Desktop) */
-    /* ═══════════════════════════════════════════════════════════════════ */
-    
-    /* 2.1 Container */
+    /* Sidebar */
     .sidebar {
       position: fixed;
       right: 0;
@@ -40,14 +30,12 @@
       overflow-y: auto;
     }
     
-    /* 2.2 Logo Section */
     .sidebar-logo {
       padding: 24px;
       background: linear-gradient(135deg, #dc2626, #b91c1c);
       color: white;
     }
     
-    /* 2.3 Navigation Items */
     .sidebar-item {
       display: flex;
       align-items: center;
@@ -66,69 +54,12 @@
       color: #dc2626;
     }
     
-    .sidebar-item.hidden {
-      display: none;
-    }
-    
-    /* ═══════════════════════════════════════════════════════════════════ */
-    /* 3. BOTTOM NAVIGATION (Mobile) */
-    /* ═══════════════════════════════════════════════════════════════════ */
-    
-    /* 3.1 Container */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-      z-index: 200;
-      display: none;
-    }
-    
-    /* 3.2 Items Grid */
-    .bottom-nav-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-      gap: 0;
-    }
-    
-    /* 3.3 Navigation Item */
-    .bottom-nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 8px;
-      color: #64748b;
-      text-decoration: none;
-      font-size: 0.7rem;
-      font-weight: 600;
-      transition: all 0.2s;
-      border-top: 3px solid transparent;
-    }
-    
-    .bottom-nav-item:hover, .bottom-nav-item.active {
-      background: #fef2f2;
-      border-top-color: #dc2626;
-      color: #dc2626;
-    }
-    
-    .bottom-nav-item.hidden {
-      display: none;
-    }
-    
-    /* ═══════════════════════════════════════════════════════════════════ */
-    /* 4. MAIN CONTENT */
-    /* ═══════════════════════════════════════════════════════════════════ */
-    
-    /* 4.1 Container */
+    /* Main Content */
     .main-content {
       margin-right: 260px;
       padding: 24px;
     }
     
-    /* 4.2 Cards */
     .card {
       background: white;
       border-radius: 12px;
@@ -138,59 +69,7 @@
       border: 1px solid #e9ecef;
     }
     
-    /* ═══════════════════════════════════════════════════════════════════ */
-    /* 5. TABS */
-    /* ═══════════════════════════════════════════════════════════════════ */
-    
-    /* 5.1 Tabs Container */
-    .tabs-container {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      border-bottom: 2px solid #e9ecef;
-      overflow-x: auto;
-    }
-    
-    /* 5.2 Tab Button */
-    .tab-btn {
-      padding: 14px 24px;
-      background: transparent;
-      color: #64748b;
-      border: none;
-      border-bottom: 3px solid transparent;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-      font-size: 0.95rem;
-      width: auto;
-    }
-    
-    .tab-btn:hover {
-      color: #dc2626;
-      background: #fef2f2;
-    }
-    
-    .tab-btn.active {
-      color: #dc2626;
-      border-bottom-color: #dc2626;
-      background: transparent;
-    }
-    
-    /* 5.3 Tab Content */
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
-    
-    /* ═══════════════════════════════════════════════════════════════════ */
-    /* 6. FILTERS */
-    /* ═══════════════════════════════════════════════════════════════════ */
-    
-    /* 6.1 Grid */
+    /* Filters */
     .filter-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -198,7 +77,6 @@
       margin-bottom: 20px;
     }
     
-    /* 6.2 Label */
     .filter-label {
       display: block;
       font-weight: 700;
@@ -207,7 +85,6 @@
       color: #475569;
     }
     
-    /* 6.3 Select & Input */
     select, input {
       width: 100%;
       padding: 10px 12px;
@@ -222,7 +99,6 @@
       border-color: #dc2626;
     }
     
-    /* 6.4 Button */
     button {
       background: #dc2626;
       color: white;
@@ -239,18 +115,13 @@
       background: #b91c1c;
     }
     
-    /* ═══════════════════════════════════════════════════════════════════ */
-    /* 7. TASK GRID */
-    /* ═══════════════════════════════════════════════════════════════════ */
-    
-    /* 7.1 Grid */
+    /* Task Grid */
     .task-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 16px;
     }
     
-    /* 7.2 Card */
     .task-card {
       background: white;
       border: 2px solid #e9ecef;
@@ -265,7 +136,6 @@
       transform: translateY(-2px);
     }
     
-    /* 7.3 Header */
     .task-header {
       display: flex;
       justify-content: space-between;
@@ -278,7 +148,6 @@
       color: #1e293b;
     }
     
-    /* 7.4 Badges */
     .badge {
       padding: 4px 10px;
       border-radius: 12px;
@@ -289,7 +158,6 @@
     .badge-done { background: #dcfce7; color: #166534; }
     .badge-pending { background: #fef3c7; color: #92400e; }
     
-    /* 7.5 Subject */
     .task-subject {
       color: #475569;
       font-weight: 600;
@@ -298,7 +166,6 @@
       line-height: 1.5;
     }
     
-    /* 7.6 Meta */
     .task-meta {
       display: flex;
       flex-direction: column;
@@ -308,11 +175,6 @@
       margin-bottom: 12px;
     }
     
-    /* ═══════════════════════════════════════════════════════════════════ */
-    /* 8. REASSIGN BOX */
-    /* ═══════════════════════════════════════════════════════════════════ */
-    
-    /* 8.1 Container */
     .reassign-box {
       background: #f8fafc;
       padding: 12px;
@@ -321,7 +183,6 @@
       margin-top: 12px;
     }
     
-    /* 8.2 Current */
     .reassign-current {
       font-size: 0.85rem;
       font-weight: 700;
@@ -329,7 +190,6 @@
       margin-bottom: 8px;
     }
     
-    /* 8.3 Controls */
     .reassign-controls {
       display: flex;
       gap: 8px;
@@ -347,31 +207,6 @@
       width: auto;
     }
     
-    /* ═══════════════════════════════════════════════════════════════════ */
-    /* 9. EMPLOYEE GROUPS (for monitoring tab) */
-    /* ═══════════════════════════════════════════════════════════════════ */
-    
-    /* 9.1 Group */
-    .employee-group {
-      margin-bottom: 30px;
-    }
-    
-    /* 9.2 Header */
-    .employee-header {
-      background: linear-gradient(135deg, #dc2626, #b91c1c);
-      color: white;
-      padding: 16px;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-    }
-    
-    /* ═══════════════════════════════════════════════════════════════════ */
-    /* 10. LOADING */
-    /* ═══════════════════════════════════════════════════════════════════ */
-    
-    /* 10.1 Overlay */
     .loading {
       position: fixed;
       inset: 0;
@@ -384,7 +219,6 @@
     
     .loading.hidden { display: none; }
     
-    /* 10.2 Spinner */
     .spinner {
       width: 50px;
       height: 50px;
@@ -398,50 +232,21 @@
       to { transform: rotate(360deg); }
     }
     
-    /* ═══════════════════════════════════════════════════════════════════ */
-    /* 11. RESPONSIVE */
-    /* ═══════════════════════════════════════════════════════════════════ */
-    
-    /* 11.1 Tablet & Mobile */
     @media (max-width: 1024px) {
-      .sidebar { 
-        transform: translateX(100%); 
-      }
-      .main-content { 
-        margin-right: 0; 
-      }
-      .bottom-nav {
-        display: block;
-      }
-    }
-    
-    /* 11.2 Mobile Only */
-    @media (max-width: 640px) {
-      .task-grid {
-        grid-template-columns: 1fr;
-      }
-      .filter-grid {
-        grid-template-columns: 1fr;
-      }
+      .sidebar { transform: translateX(100%); }
+      .main-content { margin-right: 0; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- 1. LOADING OVERLAY -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <div class="loading hidden" id="loading">
-    <div class="spinner"></div>
-  </div>
+  <div class="loading hidden" id="loading"></div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- 2. SIDEBAR (Desktop) -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-logo">
       <h2 class="text-xl font-bold mb-1">لوحة الإدارة</h2>
-      <p id="user-name-sidebar" class="text-sm opacity-90">مرحباً</p>
+      <p id="user-name" class="text-sm opacity-90">مرحباً</p>
     </div>
     
     <nav class="py-4">
@@ -449,27 +254,18 @@
         <i data-lucide="home" class="w-5 h-5"></i>
         <span>الرئيسية</span>
       </a>
-      
       <a href="distribution.html" class="sidebar-item">
         <i data-lucide="pie-chart" class="w-5 h-5"></i>
         <span>Dashboard</span>
       </a>
-      
       <a href="forms.html" class="sidebar-item">
         <i data-lucide="file-text" class="w-5 h-5"></i>
         <span>النماذج</span>
       </a>
-      
-      <a href="employee.html" class="sidebar-item">
-        <i data-lucide="briefcase" class="w-5 h-5"></i>
-        <span>مهامي</span>
-      </a>
-      
-      <a href="coordinator.html" class="sidebar-item" id="coordinator-link">
+      <a href="coordinator.html" class="sidebar-item">
         <i data-lucide="users" class="w-5 h-5"></i>
         <span>المنسقين</span>
       </a>
-      
       <a href="admin.html" class="sidebar-item active">
         <i data-lucide="settings" class="w-5 h-5"></i>
         <span>الإدارة</span>
@@ -477,341 +273,103 @@
     </nav>
   </aside>
 
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- 3. BOTTOM NAVIGATION (Mobile) -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <nav class="bottom-nav">
-    <div class="bottom-nav-grid">
-      
-      <!-- Home -->
-      <a href="index.html" class="bottom-nav-item">
-        <i data-lucide="home" class="w-5 h-5"></i>
-        <span>الرئيسية</span>
-      </a>
-      
-      <!-- Dashboard -->
-      <a href="distribution.html" class="bottom-nav-item">
-        <i data-lucide="pie-chart" class="w-5 h-5"></i>
-        <span>Dashboard</span>
-      </a>
-      
-      <!-- النماذج -->
-      <a href="forms.html" class="bottom-nav-item">
-        <i data-lucide="file-text" class="w-5 h-5"></i>
-        <span>النماذج</span>
-      </a>
-      
-      <!-- مهامي -->
-      <a href="employee.html" class="bottom-nav-item">
-        <i data-lucide="briefcase" class="w-5 h-5"></i>
-        <span>مهامي</span>
-      </a>
-      
-      <!-- الإدارة -->
-      <a href="admin.html" class="bottom-nav-item active">
-        <i data-lucide="settings" class="w-5 h-5"></i>
-        <span>الإدارة</span>
-      </a>
-    </div>
-  </nav>
-
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- 4. MAIN CONTENT -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- Main Content -->
   <main class="main-content">
     
-    <!-- 4.1 Header Card -->
+    <!-- Header -->
     <div class="card" style="background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; border: none;">
-      <h1 style="font-size: 1.75rem; font-weight: 800;">لوحة الإدارة</h1>
-      <p id="user-name-header" class="text-sm opacity-90 mt-2">مرحباً</p>
-    </div>
-
-    <!-- 4.2 Tabs -->
-    <div class="tabs-container">
-      <button class="tab-btn active" onclick="switchTab('reassign')">
-        <i data-lucide="refresh-cw" style="width: 16px; height: 16px; display: inline; vertical-align: middle; margin-left: 4px;"></i>
-        إعادة التكليف
-      </button>
-      <button class="tab-btn" onclick="switchTab('new')">
-        <i data-lucide="plus-circle" style="width: 16px; height: 16px; display: inline; vertical-align: middle; margin-left: 4px;"></i>
-        تكليف جديد
-      </button>
-      <button class="tab-btn" onclick="switchTab('monitor')">
-        <i data-lucide="eye" style="width: 16px; height: 16px; display: inline; vertical-align: middle; margin-left: 4px;"></i>
-        المتابعة
-      </button>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- TAB 1: إعادة التكليف -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="tab-reassign" class="tab-content active">
-      <div class="card">
-        <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 16px; color: #1e293b;">الفلاتر</h2>
-        
-        <div class="filter-grid">
-          <div>
-            <label class="filter-label">الفترة الزمنية</label>
-            <select id="period-filter-reassign">
-              <option value="week">آخر أسبوع</option>
-              <option value="month">آخر شهر</option>
-              <option value="3months">آخر 3 أشهر</option>
-              <option value="year">السنة الحالية</option>
-              <option value="all">جميع الفترات</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="filter-label">الموظف</label>
-            <select id="employee-filter-reassign">
-              <option value="">جميع الموظفين</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="filter-label">الجهة</label>
-            <select id="entity-filter-reassign">
-              <option value="">جميع الجهات</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="filter-label">الحالة</label>
-            <select id="status-filter-reassign">
-              <option value="">جميع الحالات</option>
-              <option value="جديد">جديد</option>
-              <option value="جاري">جاري التنفيذ</option>
-              <option value="منتهي">منتهي</option>
-              <option value="متأخر">متأخر</option>
-            </select>
-          </div>
-        </div>
-
-        <button onclick="applyFiltersReassign()">
-          <i data-lucide="filter" style="width: 18px; height: 18px; display: inline; vertical-align: middle;"></i>
-          تطبيق الفلتر
-        </button>
-      </div>
-
-      <div id="results-reassign">
-        <p style="text-align: center; color: #94a3b8; padding: 60px 20px;">اختر الفلاتر واضغط "تطبيق الفلتر"</p>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- TAB 2: تكليف جديد -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="tab-new" class="tab-content">
-      <div class="card">
-        <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 16px; color: #1e293b;">إضافة مهمة جديدة</h2>
-        
-        <div class="filter-grid">
-          <div>
-            <label class="filter-label">نوع المستند</label>
-            <select id="new-doctype">
-              <option value="صادر">صادر</option>
-              <option value="وارد">وارد</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="filter-label">التاريخ</label>
-            <input type="date" id="new-date" required>
-          </div>
-
-          <div>
-            <label class="filter-label">المصدر</label>
-            <input type="text" id="new-source" placeholder="مثال: الإدارة العامة">
-          </div>
-
-          <div>
-            <label class="filter-label">الجهة</label>
-            <input type="text" id="new-entity" placeholder="مثال: مستشفى الفيوم">
-          </div>
-
-          <div style="grid-column: 1 / -1;">
-            <label class="filter-label">الموضوع</label>
-            <input type="text" id="new-subject" placeholder="موضوع المهمة...">
-          </div>
-
-          <div>
-            <label class="filter-label">الموظف المكلف</label>
-            <select id="new-employee">
-              <option value="">اختر موظف...</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="filter-label">الأولوية</label>
-            <select id="new-priority">
-              <option value="عادي">عادي</option>
-              <option value="مهم">مهم</option>
-              <option value="عاجل">عاجل</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="filter-label">الموعد النهائي</label>
-            <input type="date" id="new-deadline">
-          </div>
-        </div>
-
-        <button onclick="addNewTask()">
-          <i data-lucide="plus" style="width: 18px; height: 18px; display: inline; vertical-align: middle;"></i>
-          إضافة المهمة
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="font-size: 1.75rem; font-weight: 800;">إعادة تكليف المهام</h1>
+        <button onclick="auth.logout()" style="width: auto; padding: 10px; background: rgba(255,255,255,0.2);">
+          <i data-lucide="log-out" class="w-6 h-6"></i>
         </button>
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- TAB 3: المتابعة -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="tab-monitor" class="tab-content">
-      <div class="card">
-        <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;">الفلاتر</h2>
-        
-        <div class="filter-grid">
-          <div>
-            <label class="filter-label">الفترة</label>
-            <select id="period-filter-monitor">
-              <option value="week" selected>آخر أسبوع</option>
-              <option value="month">آخر شهر</option>
-              <option value="3months">آخر 3 أشهر</option>
-              <option value="year">السنة الحالية</option>
-              <option value="all">الكل</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="filter-label">الموظف</label>
-            <select id="emp-filter-monitor">
-              <option value="">جميع الموظفين</option>
-              <option value="ALL_FINANCIAL">🔹 المالي والإداري</option>
-              <option value="ALL_TECHNICAL">🔧 الفنيين</option>
-            </select>
-          </div>
+    <!-- Filters -->
+    <div class="card">
+      <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 16px; color: #1e293b;">الفلاتر</h2>
+      
+      <div class="filter-grid">
+        <div>
+          <label class="filter-label">الفترة الزمنية</label>
+          <select id="period-filter">
+            <option value="week">آخر أسبوع</option>
+            <option value="month">آخر شهر</option>
+            <option value="3months">آخر 3 أشهر</option>
+            <option value="year">السنة الحالية</option>
+            <option value="all">جميع الفترات</option>
+          </select>
         </div>
 
-        <button onclick="loadDataMonitor()">🔍 تطبيق الفلتر</button>
+        <div>
+          <label class="filter-label">الموظف</label>
+          <select id="employee-filter">
+            <option value="">جميع الموظفين</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="filter-label">الجهة</label>
+          <select id="entity-filter">
+            <option value="">جميع الجهات</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="filter-label">الحالة</label>
+          <select id="status-filter">
+            <option value="">جميع الحالات</option>
+            <option value="جديد">جديد</option>
+            <option value="جاري">جاري التنفيذ</option>
+            <option value="منتهي">منتهي</option>
+            <option value="متأخر">متأخر</option>
+          </select>
+        </div>
       </div>
 
-      <div id="results-monitor" style="color: #94a3b8; text-align: center; padding: 40px;">
-        جارٍ التحميل...
-      </div>
+      <button onclick="applyFilters()">
+        <i data-lucide="filter" style="width: 18px; height: 18px; display: inline; vertical-align: middle;"></i>
+        تطبيق الفلتر
+      </button>
+    </div>
+
+    <!-- Results -->
+    <div id="results">
+      <p style="text-align: center; color: #94a3b8; padding: 60px 20px;">اختر الفلاتر واضغط "تطبيق الفلتر"</p>
     </div>
 
   </main>
 
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- 5. SCRIPTS -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
-    // ═══════════════════════════════════════════════════════════════════
-    // 1. INITIALIZATION
-    // ═══════════════════════════════════════════════════════════════════
-    
     lucide.createIcons();
 
-    // ═══════════════════════════════════════════════════════════════════
-    // 2. SECURITY & AUTHENTICATION
-    // ═══════════════════════════════════════════════════════════════════
-    
-    // 2.1 Check Session
     const user = auth.checkSession();
-    if (!user || (user.role !== 'مدير' && user.role !== 'Admin')) {
-      alert('⚠️ غير مصرح لك بدخول لوحة الإدارة');
-      window.location.replace('index.html');
+    if (!user) {
+      alert('يجب تسجيل الدخول');
+      window.location.href = 'index.html';
     }
 
-    // 2.2 Display User Info
-    document.getElementById('user-name-sidebar').textContent = `${user.name} 👋`;
-    document.getElementById('user-name-header').textContent = `مرحباً ${user.name} - ${user.jobTitle || user.role}`;
+    document.getElementById('user-name').textContent = `${user.name} 👋`;
 
-    // ═══════════════════════════════════════════════════════════════════
-    // 3. ROLE-BASED NAVIGATION
-    // ═══════════════════════════════════════════════════════════════════
-    
-    // 3.1 Admin-only page - Redirect if not admin
-    const isAdmin = user.role === 'مدير' || user.role === 'Admin';
-    
-    if (!isAdmin) {
-      alert('غير مصرح لك بالدخول إلى هذه الصفحة');
-      window.location.replace('index.html');
-    }
-    
-    // 3.2 Display user name
-    document.getElementById('user-name-sidebar').textContent = `${user.name} 👋`;
-
-    // ═══════════════════════════════════════════════════════════════════
-    // 4. GLOBAL VARIABLES
-    // ═══════════════════════════════════════════════════════════════════
-    
     let allEmployees = [];
     let allEntities = [];
     let allTasks = [];
 
-    // ═══════════════════════════════════════════════════════════════════
-    // 5. TABS MANAGEMENT
-    // ═══════════════════════════════════════════════════════════════════
-    
-    // 5.1 Switch Tab
-    function switchTab(tabName) {
-      // Hide all tabs
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      
-      // Remove active class from all buttons
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      
-      // Show selected tab
-      document.getElementById(`tab-${tabName}`).classList.add('active');
-      
-      // Highlight selected button
-      event.target.closest('.tab-btn').classList.add('active');
-      
-      // Reinit icons
-      lucide.createIcons();
-      
-      // Load data if monitoring tab
-      if (tabName === 'monitor') {
-        loadDataMonitor();
-      }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // 6. HELPER FUNCTIONS
-    // ═══════════════════════════════════════════════════════════════════
-    
-    // 6.1 Sanitization
-    function escapeHtml(text) {
-      if (!text) return '';
-      return text.toString()
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    // 6.2 Get Date Range
-    function getDateRange(periodId) {
+    // Get Date Range
+    function getDateRange() {
       const today = new Date();
-      const periodElement = document.getElementById(periodId);
-      const period = periodElement ? periodElement.value : 'week';
+      const period = document.getElementById('period-filter').value;
       let start = new Date(today);
       
       switch(period) {
-        case 'week': start.setDate(today.getDate() - 7); break; // Default: آخر 7 أيام
+        case 'week': start.setDate(today.getDate() - 7); break;
         case 'month': start.setMonth(today.getMonth() - 1); break;
         case '3months': start.setMonth(today.getMonth() - 3); break;
         case 'year': start = new Date(today.getFullYear(), 0, 1); break;
         case 'all': start = new Date('2020-01-01'); break;
-        default: start.setDate(today.getDate() - 7); break; // Default fallback
       }
       
       return {
@@ -820,16 +378,12 @@
       };
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // 7. TAB 1: إعادة التكليف
-    // ═══════════════════════════════════════════════════════════════════
-    
-    // 7.1 Apply Filters
-    async function applyFiltersReassign() {
+    // Apply Filters
+    async function applyFilters() {
       document.getElementById('loading').classList.remove('hidden');
 
       try {
-        const range = getDateRange('period-filter-reassign');
+        const range = getDateRange();
         
         const result = await auth.apiCall('getAllData', {
           role: 'مدير',
@@ -853,34 +407,34 @@
         allEntities = Array.from(entitiesSet).sort();
 
         // Populate dropdowns
-        populateDropdownsReassign();
+        populateDropdowns();
 
         // Filter tasks
         let filtered = allTasks;
 
-        const empFilter = document.getElementById('employee-filter-reassign').value;
+        const empFilter = document.getElementById('employee-filter').value;
         if (empFilter) {
           filtered = filtered.filter(t => t.assignee && t.assignee.includes(empFilter));
         }
 
-        const entityFilter = document.getElementById('entity-filter-reassign').value;
+        const entityFilter = document.getElementById('entity-filter').value;
         if (entityFilter) {
           filtered = filtered.filter(t => t.entity && t.entity.includes(entityFilter));
         }
 
-        const statusFilter = document.getElementById('status-filter-reassign').value;
+        const statusFilter = document.getElementById('status-filter').value;
         if (statusFilter) {
           filtered = filtered.filter(t => t.status && t.status.includes(statusFilter));
         }
 
-        renderTasksReassign(filtered);
+        renderTasks(filtered);
 
       } catch (err) {
-        document.getElementById('results-reassign').innerHTML = `
+        document.getElementById('results').innerHTML = `
           <div style="text-align: center; padding: 60px 20px; color: #dc2626;">
             <div style="font-size: 3rem; margin-bottom: 12px;">❌</div>
             <h3 style="font-weight: 700; margin-bottom: 8px;">خطأ في التحميل</h3>
-            <p style="color: #64748b;">${escapeHtml(err.message)}</p>
+            <p style="color: #64748b;">${err.message}</p>
           </div>
         `;
       } finally {
@@ -888,24 +442,20 @@
       }
     }
 
-    // 7.2 Populate Dropdowns
-    function populateDropdownsReassign() {
-      const empSelect = document.getElementById('employee-filter-reassign');
-      if (empSelect.options.length <= 1) {
-          empSelect.innerHTML = '<option value="">جميع الموظفين</option>' +
-            allEmployees.map(e => `<option value="${escapeHtml(e.name)}">${escapeHtml(e.name)}</option>`).join('');
-      }
+    function populateDropdowns() {
+      // Employee dropdown
+      const empSelect = document.getElementById('employee-filter');
+      empSelect.innerHTML = '<option value="">جميع الموظفين</option>' +
+        allEmployees.map(e => `<option value="${e.name}">${e.name}</option>`).join('');
 
-      const entitySelect = document.getElementById('entity-filter-reassign');
-      if (entitySelect.options.length <= 1) {
-          entitySelect.innerHTML = '<option value="">جميع الجهات</option>' +
-            allEntities.map(e => `<option value="${escapeHtml(e)}">${escapeHtml(e)}</option>`).join('');
-      }
+      // Entity dropdown
+      const entitySelect = document.getElementById('entity-filter');
+      entitySelect.innerHTML = '<option value="">جميع الجهات</option>' +
+        allEntities.map(e => `<option value="${e}">${e}</option>`).join('');
     }
 
-    // 7.3 Render Tasks
-    function renderTasksReassign(tasks) {
-      const container = document.getElementById('results-reassign');
+    function renderTasks(tasks) {
+      const container = document.getElementById('results');
 
       if (!tasks || tasks.length === 0) {
         container.innerHTML = `
@@ -923,31 +473,31 @@
         return `
           <div class="task-card">
             <div class="task-header">
-              <div class="task-id">${escapeHtml(t.id)}</div>
-              <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">${escapeHtml(t.status || 'جديد')}</span>
+              <div class="task-id">${t.id}</div>
+              <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">${t.status}</span>
             </div>
             
-            <div class="task-subject">${escapeHtml(t.subject)}</div>
+            <div class="task-subject">${t.subject}</div>
             
             <div class="task-meta">
-              <div><strong>📥 من:</strong> ${escapeHtml(t.source || t.entity)}</div>
-              <div><strong>📍 التنفيذ:</strong> ${escapeHtml(t.executionLocation || t.entity)}</div>
-              <div><strong>📅 التاريخ:</strong> ${escapeHtml(t.date)}</div>
-              ${t.attachment ? `<div><a href="${t.attachment}" target="_blank" rel="noopener noreferrer" style="color: #0f766e; text-decoration: underline;">📎 المرفق</a></div>` : ''}
-              ${t.report ? `<div><a href="${t.report}" target="_blank" rel="noopener noreferrer" style="color: #dc2626; text-decoration: underline;">📄 التقرير</a></div>` : ''}
+              <div><strong>📥 من:</strong> ${t.source || t.entity}</div>
+              <div><strong>📍 التنفيذ:</strong> ${t.executionLocation || t.entity}</div>
+              <div><strong>📅 التاريخ:</strong> ${t.date}</div>
+              ${t.attachment ? `<div><a href="${t.attachment}" target="_blank" style="color: #0f766e; text-decoration: underline;">📎 المرفق</a></div>` : ''}
+              ${t.report ? `<div><a href="${t.report}" target="_blank" style="color: #dc2626; text-decoration: underline;">📄 التقرير</a></div>` : ''}
             </div>
 
             <div class="reassign-box">
               <div class="reassign-current">
                 <i data-lucide="user" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i>
-                ${escapeHtml(t.assignee)}
+                ${t.assignee}
               </div>
               <div class="reassign-controls">
-                <select id="new-emp-${escapeHtml(t.id)}">
+                <select id="new-emp-${t.id}">
                   <option value="">اختر موظف جديد...</option>
-                  ${allEmployees.map(e => `<option value="${escapeHtml(e.name)}">${escapeHtml(e.name)}</option>`).join('')}
+                  ${allEmployees.map(e => `<option value="${e.name}">${e.name}</option>`).join('')}
                 </select>
-                <button onclick="reassignTask('${escapeHtml(t.id)}')">
+                <button onclick="reassignTask('${t.id}')">
                   <i data-lucide="refresh-cw" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i>
                   تكليف
                 </button>
@@ -960,19 +510,15 @@
       lucide.createIcons();
     }
 
-    // 7.4 Reassign Task
     async function reassignTask(taskId) {
       const newEmp = document.getElementById(`new-emp-${taskId}`).value;
       
       if (!newEmp) {
-        alert('رجاءً اختر موظفاً جديداً من القائمة');
+        alert('اختر موظف جديد');
         return;
       }
 
-      const safeId = escapeHtml(taskId);
-      const safeEmp = escapeHtml(newEmp);
-
-      if (!confirm(`هل أنت متأكد من إعادة تكليف المهمة رقم (${safeId}) إلى الموظف (${safeEmp})؟`)) return;
+      if (!confirm(`إعادة تكليف ${taskId} إلى ${newEmp}؟`)) return;
 
       document.getElementById('loading').classList.remove('hidden');
 
@@ -983,247 +529,17 @@
         });
 
         if (result && result.success) {
-          alert('✅ تم إعادة التكليف بنجاح!\n📧 تم إرسال إشعار للموظف الجديد');
-          applyFiltersReassign();
+          alert('✅ تم إعادة التكليف!\n📧 تم إرسال إيميل');
+          applyFilters();
         } else {
-          alert('❌ فشل: ' + (result.error || 'خطأ غير معروف'));
+          alert('❌ فشل: ' + (result.error || 'خطأ'));
         }
       } catch (err) {
-        alert('❌ خطأ في الاتصال: ' + err.message);
+        alert('❌ خطأ: ' + err.message);
       } finally {
         document.getElementById('loading').classList.add('hidden');
       }
     }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // 8. TAB 2: تكليف جديد
-    // ═══════════════════════════════════════════════════════════════════
-    
-    // 8.1 Populate Employee Dropdown for New Task
-    async function populateNewTaskEmployees() {
-      if (allEmployees.length === 0) {
-        // Load employees if not loaded
-        try {
-          const result = await auth.apiCall('getAllData', {
-            role: 'مدير',
-            name: user.name,
-            startDate: '2020-01-01',
-            endDate: new Date().toISOString().split('T')[0]
-          });
-          
-          if (result && result.success) {
-            allEmployees = result.stats.employees || [];
-          }
-        } catch (e) {
-          console.error('Error loading employees:', e);
-        }
-      }
-      
-      const select = document.getElementById('new-employee');
-      select.innerHTML = '<option value="">اختر موظف...</option>' +
-        allEmployees.map(e => `<option value="${escapeHtml(e.name)}">${escapeHtml(e.name)}</option>`).join('');
-    }
-
-    // 8.2 Add New Task
-    async function addNewTask() {
-      const taskData = {
-        docType: document.getElementById('new-doctype').value,
-        date: document.getElementById('new-date').value,
-        source: document.getElementById('new-source').value,
-        entity: document.getElementById('new-entity').value,
-        subject: document.getElementById('new-subject').value,
-        employee: document.getElementById('new-employee').value,
-        priority: document.getElementById('new-priority').value,
-        deadline: document.getElementById('new-deadline').value
-      };
-
-      // Validation
-      if (!taskData.date || !taskData.subject || !taskData.employee) {
-        alert('⚠️ يرجى ملء الحقول المطلوبة: التاريخ، الموضوع، الموظف');
-        return;
-      }
-
-      if (!confirm('هل أنت متأكد من إضافة هذه المهمة؟')) return;
-
-      document.getElementById('loading').classList.remove('hidden');
-
-      try {
-        const result = await auth.apiCall('addTask', { taskData });
-
-        if (result && result.success) {
-          alert('✅ تم إضافة المهمة بنجاح!\nرقم القيد: ' + result.id);
-          
-          // Clear form
-          document.getElementById('new-date').value = '';
-          document.getElementById('new-source').value = '';
-          document.getElementById('new-entity').value = '';
-          document.getElementById('new-subject').value = '';
-          document.getElementById('new-employee').value = '';
-          document.getElementById('new-deadline').value = '';
-        } else {
-          alert('❌ فشل: ' + (result.error || 'خطأ غير معروف'));
-        }
-      } catch (err) {
-        alert('❌ خطأ في الاتصال: ' + err.message);
-      } finally {
-        document.getElementById('loading').classList.add('hidden');
-      }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // 9. TAB 3: المتابعة
-    // ═══════════════════════════════════════════════════════════════════
-    
-    // 9.1 Load Data for Monitoring
-    async function loadDataMonitor() {
-      document.getElementById('results-monitor').innerHTML = '<div style="color: #94a3b8; text-align: center; padding: 40px;">⏳ جارٍ التحميل...</div>';
-
-      try {
-        const range = getDateRange('period-filter-monitor');
-        
-        const result = await auth.apiCall('getAllData', {
-          role: 'مدير',
-          name: user.name,
-          startDate: range.start,
-          endDate: range.end
-        });
-
-        if (!result || !result.success) throw new Error('فشل التحميل');
-
-        allTasks = result.tasks || [];
-        allEmployees = result.stats.employees || [];
-
-        // Populate employee dropdown with actual names
-        const empFilter = document.getElementById('emp-filter-monitor');
-        let options = '<option value="">جميع الموظفين</option>';
-        
-        // Get unique employee names from tasks
-        const employeeSet = new Set();
-        allTasks.forEach(t => {
-          if (t.assignee) employeeSet.add(t.assignee);
-        });
-        
-        // Add each employee
-        Array.from(employeeSet).sort().forEach(emp => {
-          options += `<option value="${escapeHtml(emp)}">${escapeHtml(emp)}</option>`;
-        });
-        
-        if (empFilter.options.length <= 1) {
-          empFilter.innerHTML = options;
-        }
-
-        filterAndDisplayMonitor();
-
-      } catch (err) {
-        console.error('Error:', err);
-        document.getElementById('results-monitor').innerHTML = `<div style="color: #dc2626; text-align: center; padding: 40px;">❌ ${escapeHtml(err.message)}</div>`;
-      }
-    }
-
-    // 9.2 Filter and Display
-    function filterAndDisplayMonitor() {
-      const empFilter = document.getElementById('emp-filter-monitor').value;
-      let filtered = allTasks;
-
-      if (empFilter) {
-        filtered = allTasks.filter(t => t.assignee && t.assignee.includes(empFilter));
-      }
-
-      displayTasksMonitor(filtered);
-    }
-
-      displayTasksMonitor(filtered);
-    }
-
-    // 9.3 Display Tasks (Grouped by Employee)
-    function displayTasksMonitor(tasks) {
-      const container = document.getElementById('results-monitor');
-
-      if (!tasks || tasks.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 60px; color: #94a3b8;"><div style="font-size: 3rem;">🔭</div><p style="font-weight: 600; margin-top: 12px;">لا توجد مهام في هذه الفترة</p></div>';
-        return;
-      }
-
-      // Group by Employee
-      const grouped = {};
-      tasks.forEach(t => {
-        const emp = t.assignee || 'غير محدد';
-        if (!grouped[emp]) grouped[emp] = [];
-        grouped[emp].push(t);
-      });
-
-      let html = '';
-
-      Object.entries(grouped).forEach(([emp, empTasks]) => {
-        const done = empTasks.filter(t => {
-          const s = t.status || '';
-          return s.includes('تم الاعتماد') || s.includes('منتهي') || s.includes('أرشيف');
-        }).length;
-
-        html += `
-          <div class="employee-group">
-            <div class="employee-header">
-              <div>
-                <div style="font-size: 1.25rem; font-weight: 800;">${escapeHtml(emp)}</div>
-                <div style="font-size: 0.875rem; opacity: 0.9;">إجمالي: ${empTasks.length}</div>
-              </div>
-              <div style="display: flex; gap: 20px;">
-                <div style="text-align: center;">
-                  <div style="font-size: 1.5rem; font-weight: 800;">${done}</div>
-                  <div style="font-size: 0.75rem; opacity: 0.9;">منتهي</div>
-                </div>
-                <div style="text-align: center;">
-                  <div style="font-size: 1.5rem; font-weight: 800;">${empTasks.length - done}</div>
-                  <div style="font-size: 0.75rem; opacity: 0.9;">جاري</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="task-grid">
-            ${empTasks.map(t => {
-              const isDone = (t.status || '').includes('تم الاعتماد') || (t.status || '').includes('منتهي') || (t.status || '').includes('أرشيف');
-              
-              return `
-                <div class="task-card">
-                  <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                    <div style="font-weight: 700; color: #1e293b;">${escapeHtml(t.id)}</div>
-                    <span class="badge ${isDone ? 'badge-done' : 'badge-pending'}">
-                      ${isDone ? '✅ منتهي' : '⏳ جاري'}
-                    </span>
-                  </div>
-                  
-                  <div style="color: #475569; font-weight: 600; margin-bottom: 12px; min-height: 40px;">
-                    ${escapeHtml(t.subject)}
-                  </div>
-                  
-                  <div style="font-size: 0.8rem; color: #64748b; display: flex; flex-direction: column; gap: 4px;">
-                    <div><strong>📥 من:</strong> ${escapeHtml(t.source || t.entity)}</div>
-                    <div><strong>📍 التنفيذ:</strong> ${escapeHtml(t.executionLocation || t.entity)}</div>
-                    <div><strong>📅 التاريخ:</strong> ${escapeHtml(t.date)}</div>
-                    ${t.attachment ? `<div><a href="${escapeHtml(t.attachment)}" target="_blank" rel="noopener noreferrer" style="color: #0f766e; text-decoration: underline;">📎 المرفق</a></div>` : ''}
-                    ${t.report ? `<div><a href="${escapeHtml(t.report)}" target="_blank" rel="noopener noreferrer" style="color: #dc2626; text-decoration: underline;">📄 التقرير</a></div>` : ''}
-                  </div>
-                </div>
-              `;
-            }).join('')}
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-      lucide.createIcons();
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // 10. INITIALIZATION ON PAGE LOAD
-    // ═══════════════════════════════════════════════════════════════════
-    
-    // Load employees for new task form
-    populateNewTaskEmployees();
-    
-    // Load monitoring data by default
-    loadDataMonitor();
   </script>
 </body>
 </html>
