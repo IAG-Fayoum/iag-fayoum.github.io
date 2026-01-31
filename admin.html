@@ -445,34 +445,34 @@
     </div>
     
     <nav class="py-4">
-      <a href="index.html" class="sidebar-item" data-page="home">
+      <a href="index.html" class="sidebar-item">
         <i data-lucide="home" class="w-5 h-5"></i>
         <span>الرئيسية</span>
       </a>
       
-      <a href="distribution.html" class="sidebar-item" data-page="dashboard">
+      <a href="distribution.html" class="sidebar-item">
         <i data-lucide="pie-chart" class="w-5 h-5"></i>
         <span>Dashboard</span>
       </a>
       
-      <a href="forms.html" class="sidebar-item" data-page="forms">
+      <a href="forms.html" class="sidebar-item">
         <i data-lucide="file-text" class="w-5 h-5"></i>
         <span>النماذج</span>
       </a>
       
-      <a href="coordinator.html" class="sidebar-item" data-page="coordinator" data-role="منسق,مدير">
+      <a href="employee.html" class="sidebar-item">
+        <i data-lucide="briefcase" class="w-5 h-5"></i>
+        <span>مهامي</span>
+      </a>
+      
+      <a href="coordinator.html" class="sidebar-item" id="coordinator-link">
         <i data-lucide="users" class="w-5 h-5"></i>
         <span>المنسقين</span>
       </a>
       
-      <a href="admin.html" class="sidebar-item active" data-page="admin" data-role="مدير">
+      <a href="admin.html" class="sidebar-item active">
         <i data-lucide="settings" class="w-5 h-5"></i>
         <span>الإدارة</span>
-      </a>
-      
-      <a href="#" onclick="auth.logout(); return false;" class="sidebar-item" data-page="logout">
-        <i data-lucide="log-out" class="w-5 h-5"></i>
-        <span>تسجيل الخروج</span>
       </a>
     </nav>
   </aside>
@@ -482,27 +482,33 @@
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <nav class="bottom-nav">
     <div class="bottom-nav-grid">
-      <a href="index.html" class="bottom-nav-item" data-page="home">
+      
+      <!-- Home -->
+      <a href="index.html" class="bottom-nav-item">
         <i data-lucide="home" class="w-5 h-5"></i>
         <span>الرئيسية</span>
       </a>
       
-      <a href="distribution.html" class="bottom-nav-item" data-page="dashboard">
+      <!-- Dashboard -->
+      <a href="distribution.html" class="bottom-nav-item">
         <i data-lucide="pie-chart" class="w-5 h-5"></i>
         <span>Dashboard</span>
       </a>
       
-      <a href="forms.html" class="bottom-nav-item" data-page="forms">
+      <!-- النماذج -->
+      <a href="forms.html" class="bottom-nav-item">
         <i data-lucide="file-text" class="w-5 h-5"></i>
         <span>النماذج</span>
       </a>
       
-      <a href="coordinator.html" class="bottom-nav-item" data-page="coordinator" data-role="منسق,مدير">
-        <i data-lucide="users" class="w-5 h-5"></i>
-        <span>المنسقين</span>
+      <!-- مهامي -->
+      <a href="employee.html" class="bottom-nav-item">
+        <i data-lucide="briefcase" class="w-5 h-5"></i>
+        <span>مهامي</span>
       </a>
       
-      <a href="admin.html" class="bottom-nav-item active" data-page="admin" data-role="مدير">
+      <!-- الإدارة -->
+      <a href="admin.html" class="bottom-nav-item active">
         <i data-lucide="settings" class="w-5 h-5"></i>
         <span>الإدارة</span>
       </a>
@@ -727,25 +733,16 @@
     // 3. ROLE-BASED NAVIGATION
     // ═══════════════════════════════════════════════════════════════════
     
-    // 3.1 Hide/Show Menu Items (للمدير فقط - يشوف كل حاجة)
-    function setupNavigation() {
-      const userRole = user.role;
-      
-      const allNavItems = [
-        ...document.querySelectorAll('.sidebar-item[data-role]'),
-        ...document.querySelectorAll('.bottom-nav-item[data-role]')
-      ];
-      
-      allNavItems.forEach(item => {
-        const requiredRoles = item.getAttribute('data-role').split(',');
-        
-        if (!requiredRoles.some(role => userRole.includes(role))) {
-          item.classList.add('hidden');
-        }
-      });
+    // 3.1 Admin-only page - Redirect if not admin
+    const isAdmin = user.role === 'مدير' || user.role === 'Admin';
+    
+    if (!isAdmin) {
+      alert('غير مصرح لك بالدخول إلى هذه الصفحة');
+      window.location.replace('index.html');
     }
     
-    setupNavigation();
+    // 3.2 Display user name
+    document.getElementById('user-name-sidebar').textContent = `${user.name} 👋`;
 
     // ═══════════════════════════════════════════════════════════════════
     // 4. GLOBAL VARIABLES
@@ -804,15 +801,17 @@
     // 6.2 Get Date Range
     function getDateRange(periodId) {
       const today = new Date();
-      const period = document.getElementById(periodId).value;
+      const periodElement = document.getElementById(periodId);
+      const period = periodElement ? periodElement.value : 'week';
       let start = new Date(today);
       
       switch(period) {
-        case 'week': start.setDate(today.getDate() - 7); break;
+        case 'week': start.setDate(today.getDate() - 7); break; // Default: آخر 7 أيام
         case 'month': start.setMonth(today.getMonth() - 1); break;
         case '3months': start.setMonth(today.getMonth() - 3); break;
         case 'year': start = new Date(today.getFullYear(), 0, 1); break;
         case 'all': start = new Date('2020-01-01'); break;
+        default: start.setDate(today.getDate() - 7); break; // Default fallback
       }
       
       return {
@@ -1094,19 +1093,23 @@
         allTasks = result.tasks || [];
         allEmployees = result.stats.employees || [];
 
-        // Populate employee dropdown
+        // Populate employee dropdown with actual names
         const empFilter = document.getElementById('emp-filter-monitor');
         let options = '<option value="">جميع الموظفين</option>';
-        options += '<option value="ALL_FINANCIAL">🔹 المالي والإداري</option>';
-        options += '<option value="ALL_TECHNICAL">🔧 الفنيين</option>';
-        options += '<optgroup label="أفراد">';
-        allEmployees.forEach(e => {
-          options += `<option value="${escapeHtml(e.name)}">${escapeHtml(e.name)}</option>`;
-        });
-        options += '</optgroup>';
         
-        if (empFilter.options.length <= 3) {
-            empFilter.innerHTML = options;
+        // Get unique employee names from tasks
+        const employeeSet = new Set();
+        allTasks.forEach(t => {
+          if (t.assignee) employeeSet.add(t.assignee);
+        });
+        
+        // Add each employee
+        Array.from(employeeSet).sort().forEach(emp => {
+          options += `<option value="${escapeHtml(emp)}">${escapeHtml(emp)}</option>`;
+        });
+        
+        if (empFilter.options.length <= 1) {
+          empFilter.innerHTML = options;
         }
 
         filterAndDisplayMonitor();
@@ -1122,15 +1125,12 @@
       const empFilter = document.getElementById('emp-filter-monitor').value;
       let filtered = allTasks;
 
-      if (empFilter === 'ALL_FINANCIAL') {
-        const names = allEmployees.filter(e => e.role && (e.role.includes('مالي') || e.role.includes('إداري'))).map(e => e.name);
-        filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
-      } else if (empFilter === 'ALL_TECHNICAL') {
-        const names = allEmployees.filter(e => e.role && e.role.includes('فني')).map(e => e.name);
-        filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
-      } else if (empFilter) {
+      if (empFilter) {
         filtered = allTasks.filter(t => t.assignee && t.assignee.includes(empFilter));
       }
+
+      displayTasksMonitor(filtered);
+    }
 
       displayTasksMonitor(filtered);
     }
@@ -1227,31 +1227,3 @@
   </script>
 </body>
 </html>
-```
-
----
-
-## ✅ **التحديثات المنفذة:**
-
-### 1️⃣ **نظام الـ Tabs (3 تبويبات):**
-- **Tab 1:** إعادة التكليف (reassign)
-- **Tab 2:** تكليف جديد (new assignment)
-- **Tab 3:** المتابعة (monitoring) - نفس المنسق
-
-### 2️⃣ **Navigation موحد:**
-- ✅ السايد بار + Bottom Nav
-- ✅ نفس العناصر بالضبط
-- ✅ `data-role` للتحكم بالصلاحيات
-
-### 3️⃣ **الترقيم الهرمي:**
-```
-1. INITIALIZATION
-2. SECURITY & AUTHENTICATION
-3. ROLE-BASED NAVIGATION
-4. GLOBAL VARIABLES
-5. TABS MANAGEMENT
-6. HELPER FUNCTIONS
-7. TAB 1: إعادة التكليف
-8. TAB 2: تكليف جديد
-9. TAB 3: المتابعة
-10. INITIALIZATION ON PAGE LOAD
