@@ -3,519 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>لوحة التحكم | نظام الحوكمة</title>
-    
+    <title>الإدارة العليا | نظام الحوكمة</title>
     <link rel="icon" href="assets/icons/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; color: #1e293b; padding-bottom: 80px; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* Sidebar Styling (Desktop) */
-        @media (min-width: 1024px) {
-            body { padding-bottom: 0; padding-right: 260px; }
-            .sidebar { transform: translateX(0) !important; width: 260px; }
-            .bottom-nav { display: none !important; }
-            .mobile-header { display: none !important; }
-        }
-
-        /* Tabs Styling */
-        .tab-btn {
-            padding: 12px 20px;
-            border-bottom: 3px solid transparent;
-            font-weight: 700;
-            color: #64748b;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        .tab-btn.active {
-            color: #0f766e;
-            border-bottom-color: #0f766e;
-            background-color: #f0fdfa;
-        }
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Admin Action Cards */
-        .task-card {
-            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;
-            transition: all 0.2s; position: relative;
-        }
-        .task-card:hover { border-color: #0f766e; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-
+        :root { --primary: #047857; --bg-main: #f8fafc; }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg-main); padding-bottom: 80px; }
+        /* Sidebar */
+        @media(min-width:1024px){ body{padding-right:260px} .sidebar{transform:translateX(0)!important} .mobile-nav{display:none} }
+        /* Tabs */
+        .tab-btn { padding: 12px 20px; color: #64748b; font-weight: 700; border-bottom: 3px solid transparent; transition: 0.3s; }
+        .tab-btn.active { color: var(--primary); border-color: var(--primary); background: #f0fdfa; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
         /* Inputs */
-        .input-field {
-            width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px;
-            outline: none; transition: 0.2s; font-size: 0.9rem;
-        }
-        .input-field:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
-
-        /* Status Badges */
-        .st-new { background: #e0f2fe; color: #0284c7; }
-        .st-progress { background: #fef9c3; color: #ca8a04; }
-        .st-done { background: #dcfce7; color: #16a34a; }
-        .st-late { background: #fee2e2; color: #dc2626; }
+        .input-box { width: 100%; padding: 10px; border: 1px solid #cbd5e1; rounded: 8px; outline: none; }
+        .input-box:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.1); }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar fixed top-0 right-0 h-full bg-white border-l border-slate-200 z-50 transition-transform duration-300 translate-x-full flex flex-col shadow-lg">
-        <div class="p-6 border-b border-slate-100 flex items-center gap-3 bg-[#0f766e] text-white">
-            <div class="bg-white/20 p-2 rounded-lg">
-                <i data-lucide="shield-check" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h1 class="font-bold text-lg leading-tight">نظام الحوكمة</h1>
-                <p class="text-[10px] text-teal-100 opacity-90">الإدارة العليا</p>
-            </div>
+    <aside class="sidebar fixed top-0 right-0 h-full bg-white w-64 shadow-lg border-l border-gray-100 transition-transform translate-x-full lg:translate-x-0 z-50 flex flex-col">
+        <div class="p-6 border-b flex items-center gap-3">
+            <div class="bg-teal-50 p-2 rounded text-[#047857]"><i data-lucide="shield-check" class="w-6 h-6"></i></div>
+            <div><h1 class="font-bold text-lg">نظام الحوكمة</h1><p class="text-xs text-gray-500">الإدارة العليا</p></div>
         </div>
-
-        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-            <a href="distribution.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                <span>الرئيسية</span>
-            </a>
-            
-            <a href="employee.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="briefcase" class="w-5 h-5"></i>
-                <span>مهامي</span>
-            </a>
-
-            <a href="forms.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="file-text" class="w-5 h-5"></i>
-                <span>النماذج</span>
-            </a>
-
-            <div class="pt-4 mt-2 border-t border-slate-100">
-                <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">الإدارة</p>
-                <a href="admin.html" class="flex items-center gap-3 px-4 py-3 bg-teal-50 text-teal-700 rounded-xl font-bold transition-colors shadow-sm">
-                    <i data-lucide="settings-2" class="w-5 h-5"></i>
-                    <span>لوحة التحكم</span>
-                </a>
-                <a href="coordinator.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                    <i data-lucide="users" class="w-5 h-5"></i>
-                    <span>المتابعة والتكليف</span>
-                </a>
-            </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="distribution.html" class="flex gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded font-bold"><i data-lucide="layout-grid"></i> الرئيسية</a>
+            <a href="admin.html" class="flex gap-3 px-4 py-3 bg-[#047857] text-white rounded font-bold shadow"><i data-lucide="settings-2"></i> لوحة التحكم</a>
+            <a href="coordinator.html" class="flex gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded font-bold"><i data-lucide="users"></i> التنسيق</a>
         </nav>
-
-        <div class="p-4 border-t border-slate-100 bg-slate-50">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 overflow-hidden">
-                    <div class="w-9 h-9 rounded-full bg-[#0f766e] text-white flex items-center justify-center font-bold text-sm" id="user-avatar"></div>
-                    <div class="min-w-0">
-                        <p class="text-sm font-bold text-slate-800 truncate" id="user-name">...</p>
-                        <p class="text-xs text-slate-500 truncate" id="user-role">...</p>
-                    </div>
-                </div>
-                <button onclick="auth.logout()" class="text-slate-400 hover:text-red-500 transition-colors p-1"><i data-lucide="log-out" class="w-5 h-5"></i></button>
-            </div>
-        </div>
+        <div class="p-4 border-t"><button onclick="auth.logout()" class="flex gap-2 text-red-500 font-bold"><i data-lucide="log-out"></i> خروج</button></div>
     </aside>
 
-    <main class="min-h-screen w-full">
-        <div class="mobile-header bg-white p-4 sticky top-0 z-30 border-b border-slate-200 flex items-center justify-between lg:hidden shadow-sm">
-            <h1 class="font-bold text-lg text-teal-800">لوحة الإدارة</h1>
-            <div class="w-8"></div>
+    <main class="p-4 lg:p-8 max-w-7xl mx-auto">
+        <h2 class="text-2xl font-bold text-slate-800 mb-6">إدارة النظام والمهام</h2>
+
+        <div class="flex bg-white rounded-xl shadow border border-slate-200 mb-6 overflow-hidden">
+            <button onclick="switchTab('reassign')" class="flex-1 tab-btn active" id="btn-reassign"><i data-lucide="refresh-cw" class="inline w-4"></i> إدارة التكليفات</button>
+            <button onclick="switchTab('add')" class="flex-1 tab-btn" id="btn-add"><i data-lucide="plus-circle" class="inline w-4"></i> إضافة مهمة</button>
+            <button onclick="switchTab('monitor')" class="flex-1 tab-btn" id="btn-monitor"><i data-lucide="bar-chart-3" class="inline w-4"></i> المتابعة</button>
         </div>
 
-        <div class="p-4 lg:p-8 max-w-7xl mx-auto space-y-6">
-            
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex overflow-x-auto hide-scrollbar">
-                <button onclick="switchTab('reassign')" class="tab-btn active flex-1 whitespace-nowrap flex items-center justify-center gap-2">
-                    <i data-lucide="refresh-cw" class="w-4 h-4"></i> إدارة وإعادة التكليف
-                </button>
-                <button onclick="switchTab('new-task')" class="tab-btn flex-1 whitespace-nowrap flex items-center justify-center gap-2">
-                    <i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة مهمة
-                </button>
-                <button onclick="switchTab('monitor')" class="tab-btn flex-1 whitespace-nowrap flex items-center justify-center gap-2">
-                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i> المتابعة الشاملة
-                </button>
+        <div id="tab-reassign" class="tab-content active">
+            <div class="bg-white p-4 rounded-xl border shadow-sm mb-4 flex gap-4">
+                <select id="filter-emp" class="input-box" onchange="renderReassign()"><option value="all">كل الموظفين</option></select>
+                <select id="filter-status" class="input-box" onchange="renderReassign()">
+                    <option value="all">كل الحالات</option>
+                    <option value="جديد">جديد</option>
+                    <option value="متأخر">متأخر</option>
+                </select>
             </div>
+            <div id="reassign-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
 
-            <div id="tab-reassign" class="tab-content active space-y-6">
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4">
-                    <div class="flex-1">
-                        <label class="text-xs font-bold text-slate-500 mb-1 block">فلتر الموظف</label>
-                        <select id="filter-emp-reassign" onchange="applyReassignFilter()" class="input-field">
-                            <option value="">جميع الموظفين</option>
-                        </select>
+        <div id="tab-add" class="tab-content">
+            <div class="bg-white p-6 rounded-xl border shadow-sm max-w-3xl mx-auto">
+                <form onsubmit="handleAddTask(event)" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-xs font-bold text-slate-500">نوع القيد</label><select id="n-type" class="input-box"><option>وارد</option><option>صادر</option></select></div>
+                        <div><label class="text-xs font-bold text-slate-500">التاريخ</label><input type="date" id="n-date" class="input-box" required></div>
                     </div>
-                    <div class="flex-1">
-                        <label class="text-xs font-bold text-slate-500 mb-1 block">حالة المهمة</label>
-                        <select id="filter-status-reassign" onchange="applyReassignFilter()" class="input-field">
-                            <option value="">الكل</option>
-                            <option value="جديد">جديد</option>
-                            <option value="جاري">جاري التنفيذ</option>
-                            <option value="متأخر">متأخر</option>
-                        </select>
+                    <div><label class="text-xs font-bold text-slate-500">الموضوع</label><input type="text" id="n-subject" class="input-box" required></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-xs font-bold text-slate-500">الجهة / المصدر</label><input type="text" id="n-source" class="input-box"></div>
+                        <div><label class="text-xs font-bold text-slate-500">محل التنفيذ</label><input type="text" id="n-entity" class="input-box"></div>
                     </div>
-                </div>
-
-                <div id="reassign-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="col-span-full text-center py-10 text-slate-400">
-                        <span class="animate-pulse">جاري تحميل البيانات...</span>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-xs font-bold text-slate-500">المكلف</label><select id="n-emp" class="input-box" required><option value="">اختر...</option></select></div>
+                        <div><label class="text-xs font-bold text-slate-500">الأهمية</label><select id="n-prio" class="input-box"><option>عادي</option><option>عاجل</option><option>هام جداً</option></select></div>
                     </div>
-                </div>
+                    <div><label class="text-xs font-bold text-slate-500">ملاحظات / رقم قضية</label><input type="text" id="n-notes" class="input-box"></div>
+                    <button type="submit" class="w-full bg-[#047857] text-white py-3 rounded-xl font-bold shadow hover:bg-emerald-800 transition">حفظ وإرسال التكليف</button>
+                </form>
             </div>
+        </div>
 
-            <div id="tab-new-task" class="tab-content">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-3xl mx-auto">
-                    <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2 border-b border-slate-100 pb-4">
-                        <i data-lucide="file-plus" class="w-5 h-5 text-teal-600"></i>
-                        بيانات المهمة الجديدة
-                    </h3>
-                    
-                    <form id="new-task-form" onsubmit="handleAddTask(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-1">نوع المستند</label>
-                                <select id="nt-type" class="input-field bg-slate-50">
-                                    <option value="صادر">📤 صادر</option>
-                                    <option value="وارد">📥 وارد</option>
-                                    <option value="داخلي">🔄 داخلي</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-1">تاريخ التسجيل</label>
-                                <input type="date" id="nt-date" class="input-field" required>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-1">الموضوع</label>
-                            <input type="text" id="nt-subject" placeholder="اكتب موضوع المهمة باختصار..." class="input-field" required>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-1">الجهة / المصدر</label>
-                                <input type="text" id="nt-entity" placeholder="مثال: الوزارة، المديرية..." class="input-field" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-1">الموظف المكلف</label>
-                                <select id="nt-assignee" class="input-field" required>
-                                    <option value="">اختر موظف...</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-1">الأولوية</label>
-                                <select id="nt-priority" class="input-field">
-                                    <option value="عادي">🔵 عادي</option>
-                                    <option value="مهم">🟡 مهم</option>
-                                    <option value="عاجل">🔴 عاجل</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-1">ملاحظات إضافية</label>
-                                <input type="text" id="nt-notes" class="input-field" placeholder="اختياري...">
-                            </div>
-                        </div>
-
-                        <div class="pt-4 flex justify-end">
-                            <button type="submit" id="btn-add-task" class="bg-[#0f766e] hover:bg-[#0d5f57] text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-transform active:scale-95 flex items-center gap-2">
-                                <i data-lucide="save" class="w-5 h-5"></i>
-                                حفظ وتكليف
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div id="tab-monitor" class="tab-content">
-                <div id="monitor-container" class="space-y-6">
-                    </div>
-            </div>
-
+        <div id="tab-monitor" class="tab-content">
+            <div id="monitor-list" class="space-y-6"></div>
         </div>
     </main>
-
-    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
-            <i data-lucide="layout-grid" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">الرئيسية</span>
-        </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
-            <i data-lucide="briefcase" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">مهامي</span>
-        </a>
-        <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
-            <i data-lucide="file-text" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">النماذج</span>
-        </a>
-        <a href="admin.html" class="flex flex-col items-center gap-1 p-2 text-[#0f766e]">
-            <i data-lucide="settings-2" class="w-6 h-6"></i>
-            <span class="text-[10px] font-bold">الإدارة</span>
-        </a>
-    </nav>
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        
-        let allTasks = [];
-        let employeesList = [];
+        let allTasks = [], employees = [];
 
-        // 1. التهيئة والتحقق
         document.addEventListener('DOMContentLoaded', async () => {
             const user = auth.checkAuth();
-            if(!user) return;
+            if(!user || user.role === 'employee') return;
             
-            // حماية الصفحة
-            if (user.role === 'employee') {
-                alert('⛔ عذراً، هذه الصفحة للمدراء فقط');
-                window.location.href = 'distribution.html';
-                return;
+            // تحميل البيانات
+            const res = await auth.callAPI('getAllData', { role: 'admin', name: user.name, startDate: `${new Date().getFullYear()}-01-01` });
+            if(res.success) {
+                allTasks = res.tasks;
+                employees = [...new Set(allTasks.map(t => t.assignee).filter(Boolean))];
+                
+                // ملء القوائم
+                const empOpt = employees.map(e => `<option>${e}</option>`).join('');
+                document.getElementById('filter-emp').innerHTML += empOpt;
+                document.getElementById('n-emp').innerHTML += empOpt;
+                
+                renderReassign();
             }
-
-            // UI Init
-            document.getElementById('user-name').textContent = user.name;
-            document.getElementById('user-role').textContent = user.jobTitle || 'مدير النظام';
-            document.getElementById('user-avatar').textContent = user.name.charAt(0);
-            document.getElementById('nt-date').valueAsDate = new Date();
-
-            // جلب البيانات
-            await loadAdminData(user);
         });
 
-        // 2. جلب البيانات
-        async function loadAdminData(user) {
-            try {
-                const res = await auth.callAPI('getAllData', {
-                    role: 'admin',
-                    name: user.name,
-                    startDate: '2024-01-01'
-                });
-
-                if(res.success) {
-                    allTasks = res.tasks;
-                    // استخراج قائمة الموظفين
-                    const empSet = new Set();
-                    allTasks.forEach(t => t.assignee ? empSet.add(t.assignee) : null);
-                    employeesList = Array.from(empSet).sort();
-
-                    // ملء القوائم المنسدلة
-                    populateSelects();
-
-                    // عرض التبويب الافتراضي (إعادة التكليف)
-                    applyReassignFilter();
-                }
-            } catch(e) {
-                console.error(e);
-                alert('حدث خطأ أثناء تحميل البيانات');
-            }
-        }
-
-        function populateSelects() {
-            const options = '<option value="">اختر موظف...</option>' + 
-                            employeesList.map(e => `<option value="${e}">${e}</option>`).join('');
-            
-            // فلتر إعادة التكليف
-            document.getElementById('filter-emp-reassign').innerHTML = '<option value="">الكل</option>' + 
-                            employeesList.map(e => `<option value="${e}">${e}</option>`).join('');
-            
-            // قائمة الموظف في "إضافة مهمة"
-            document.getElementById('nt-assignee').innerHTML = options;
-        }
-
-        // 3. التحكم في التبويبات
-        function switchTab(tabId) {
-            // UI Update
+        function switchTab(id) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            event.currentTarget.classList.add('active');
-            document.getElementById('tab-' + tabId).classList.add('active');
-
-            if(tabId === 'monitor') renderMonitorTab();
+            document.getElementById('btn-'+id).classList.add('active');
+            document.getElementById('tab-'+id).classList.add('active');
+            if(id === 'monitor') renderMonitor();
         }
 
-        // 4. منطق: إدارة وإعادة التكليف
-        function applyReassignFilter() {
-            const emp = document.getElementById('filter-emp-reassign').value;
-            const status = document.getElementById('filter-status-reassign').value;
-
-            let filtered = allTasks;
-            if(emp) filtered = filtered.filter(t => t.assignee === emp);
-            if(status) filtered = filtered.filter(t => t.status.includes(status));
-
-            renderReassignCards(filtered);
-        }
-
-        function renderReassignCards(tasks) {
-            const container = document.getElementById('reassign-container');
+        function renderReassign() {
+            const emp = document.getElementById('filter-emp').value;
+            const sts = document.getElementById('filter-status').value;
+            const filtered = allTasks.filter(t => (emp === 'all' || t.assignee === emp) && (sts === 'all' || t.status.includes(sts)));
             
-            if(tasks.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-10 text-slate-400">لا توجد مهام</div>`;
-                return;
-            }
-
-            container.innerHTML = tasks.map(t => `
-                <div class="task-card group">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="font-mono text-xs font-bold bg-slate-100 px-2 py-1 rounded text-slate-600">#${t.id}</span>
-                        <span class="text-[10px] px-2 py-1 rounded-full font-bold ${getStatusClass(t.status)}">${t.status}</span>
-                    </div>
-                    <h4 class="font-bold text-slate-800 text-sm mb-2 line-clamp-2">${t.subject}</h4>
-                    <div class="text-xs text-slate-500 space-y-1 mb-4">
-                        <p>👤 <strong>المكلف:</strong> ${t.assignee}</p>
-                        <p>📅 <strong>التاريخ:</strong> ${t.date}</p>
-                        <p>🏢 <strong>الجهة:</strong> ${t.entity}</p>
-                    </div>
-                    
-                    <div class="pt-3 border-t border-slate-100 bg-slate-50 p-2 rounded-lg mt-auto">
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">إعادة تكليف إلى:</label>
-                        <div class="flex gap-2">
-                            <select id="reassign-sel-${t.id}" class="flex-1 text-xs border border-slate-200 rounded-lg p-1 bg-white focus:border-teal-500 outline-none">
-                                <option value="">اختر...</option>
-                                ${employeesList.map(e => `<option value="${e}">${e}</option>`).join('')}
-                            </select>
-                            <button onclick="submitReassign('${t.id}')" class="bg-slate-800 hover:bg-slate-900 text-white p-1.5 rounded-lg transition-colors" title="حفظ">
-                                <i data-lucide="check" class="w-4 h-4"></i>
-                            </button>
-                        </div>
+            document.getElementById('reassign-list').innerHTML = filtered.map(t => `
+                <div class="bg-white p-4 rounded-xl border shadow-sm hover:border-green-600 transition">
+                    <div class="flex justify-between mb-2"><span class="font-mono font-bold text-gray-500">#${t.id}</span><span class="text-xs font-bold bg-gray-100 px-2 rounded">${t.status}</span></div>
+                    <h4 class="font-bold text-sm mb-3 line-clamp-2">${t.subject}</h4>
+                    <div class="flex gap-2 mb-3">
+                        <select id="new-assign-${t.id}" class="text-xs border p-1 rounded bg-white flex-1"><option value="">نقل إلى...</option>${employees.map(e=>`<option>${e}</option>`)}</select>
+                        <button onclick="reassign('${t.id}')" class="bg-slate-800 text-white p-1 rounded"><i data-lucide="check" class="w-4"></i></button>
                     </div>
                 </div>
             `).join('');
             lucide.createIcons();
         }
 
-        async function submitReassign(taskId) {
-            const newEmp = document.getElementById(`reassign-sel-${taskId}`).value;
-            if(!newEmp) return alert('يرجى اختيار موظف');
-
-            if(!confirm(`هل أنت متأكد من نقل المهمة #${taskId} إلى ${newEmp}؟`)) return;
-
-            // Call API (Placeholder logic - needs backend support)
-            try {
-                // ملاحظة: تأكد من وجود دالة reassignTask في الباك إند أو استخدم updateStatus كبديل مؤقت
-                // هنا سنفترض وجود دالة reassignTask في Backend.gs
-                /* لو لم تكن موجودة، يجب إضافتها في Backend.gs:
-                   function apiReassignTask(taskId, newEmployee) { ... }
-                */
-                const res = await auth.callAPI('reassignTask', { taskId, newEmployee: newEmp }); 
-                
-                // في حال لم نقم بإضافة الدالة في الباك إند بعد، يمكن عرض رسالة نجاح وهمية للتجربة
-                // const res = { success: true }; 
-
-                if(res.success) {
-                    alert('✅ تم إعادة التكليف بنجاح');
-                    await loadAdminData(auth.currentUser); // Refresh
-                } else {
-                    alert('خطأ: ' + (res.error || 'الدالة غير مدعومة حالياً'));
-                }
-            } catch(e) {
-                alert('خطأ في الاتصال');
+        async function reassign(id) {
+            const newEmp = document.getElementById('new-assign-'+id).value;
+            if(!newEmp) return alert('اختر الموظف');
+            if(confirm('تأكيد النقل؟')) {
+                const res = await auth.callAPI('reassignTask', { taskId: id, newEmployee: newEmp });
+                if(res.success) alert('تم النقل بنجاح'), location.reload();
             }
         }
 
-        // 5. منطق: إضافة مهمة
         async function handleAddTask(e) {
             e.preventDefault();
-            const btn = document.getElementById('btn-add-task');
-            
-            const taskData = {
-                docType: document.getElementById('nt-type').value,
-                date: document.getElementById('nt-date').value,
-                subject: document.getElementById('nt-subject').value,
-                entity: document.getElementById('nt-entity').value,
-                assignee: document.getElementById('nt-assignee').value,
-                priority: document.getElementById('nt-priority').value,
-                notes: document.getElementById('nt-notes').value
+            const data = {
+                docType: document.getElementById('n-type').value,
+                date: document.getElementById('n-date').value,
+                subject: document.getElementById('n-subject').value,
+                source: document.getElementById('n-source').value,
+                entity: document.getElementById('n-entity').value,
+                employee: document.getElementById('n-emp').value,
+                priority: document.getElementById('n-prio').value,
+                notes: document.getElementById('n-notes').value
             };
-
-            if(!taskData.assignee) return alert('اختر الموظف المكلف');
-
-            btn.disabled = true;
-            btn.innerHTML = 'جاري الحفظ...';
-
-            try {
-                // نستخدم دالة addTask في الباك إند (يجب أن تكون موجودة)
-                // في الكود السابق لم نضفها صراحة، لذا قد تحتاج لإضافتها في Backend.gs
-                /*
-                   function apiAddTask(data) {
-                      var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("الصادر_والوارد");
-                      // Logic to append row...
-                      return { success: true, id: newId };
-                   }
-                */
-               
-                // للتجربة الآن، سنظهر رسالة
-                alert('⚠️ تنبيه: يتطلب هذا الزر تفعيل دالة apiAddTask في ملف Backend.gs أولاً.');
-                console.log('Task Data:', taskData);
-                
-                // إعادة تعيين النموذج
-                document.getElementById('new-task-form').reset();
-            } catch(e) {
-                console.error(e);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="save" class="w-5 h-5"></i> حفظ وتكليف';
-                lucide.createIcons();
+            
+            if(confirm('تأكيد إضافة المهمة؟')) {
+                const res = await auth.callAPI('addTask', { taskData: data });
+                if(res.success) alert('تمت الإضافة برقم: ' + res.id), e.target.reset();
             }
         }
 
-        // 6. منطق: المتابعة (Monitoring)
-        function renderMonitorTab() {
-            const container = document.getElementById('monitor-container');
-            
+        function renderMonitor() {
             // تجميع المهام حسب الموظف
             const grouped = {};
-            employeesList.forEach(emp => grouped[emp] = []);
-            allTasks.forEach(t => {
-                if(grouped[t.assignee]) grouped[t.assignee].push(t);
-            });
+            employees.forEach(e => grouped[e] = []);
+            allTasks.forEach(t => grouped[t.assignee] ? grouped[t.assignee].push(t) : null);
 
-            container.innerHTML = Object.entries(grouped).map(([emp, tasks]) => {
-                if(tasks.length === 0) return '';
-                const doneCount = tasks.filter(t => t.status.includes('تم') || t.status.includes('منتهي')).length;
-                const lateCount = tasks.filter(t => t.status.includes('متأخر')).length;
-
+            document.getElementById('monitor-list').innerHTML = Object.entries(grouped).map(([name, tasks]) => {
+                const done = tasks.filter(t => t.status.includes('تم')).length;
+                const late = tasks.filter(t => t.status.includes('متأخر')).length;
                 return `
-                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden mb-4">
-                    <div class="bg-slate-50 p-4 border-b border-slate-100 flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center font-bold text-slate-600">
-                                ${emp.charAt(0)}
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-slate-800">${emp}</h4>
-                                <p class="text-[10px] text-slate-500">إجمالي: ${tasks.length} مهمة</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 text-xs font-bold">
-                            <span class="text-green-600 bg-green-50 px-2 py-1 rounded">✅ ${doneCount}</span>
-                            <span class="text-red-600 bg-red-50 px-2 py-1 rounded">⚠️ ${lateCount}</span>
-                        </div>
+                <div class="bg-white rounded-xl border overflow-hidden">
+                    <div class="bg-gray-50 p-3 border-b flex justify-between">
+                        <div class="font-bold text-slate-700 flex items-center gap-2"><div class="w-8 h-8 bg-white border rounded-full flex items-center justify-center">${name[0]}</div> ${name}</div>
+                        <div class="text-xs flex gap-2"><span class="text-green-600 font-bold">✅ ${done}</span> <span class="text-red-600 font-bold">🔥 ${late}</span></div>
                     </div>
-                    <div class="p-4 grid gap-2">
-                        ${tasks.map(t => `
-                            <div class="flex justify-between items-center text-sm border-b border-slate-50 last:border-0 pb-2 last:pb-0">
-                                <span class="truncate max-w-[200px] text-slate-600">${t.subject}</span>
-                                <span class="badge text-[10px] ${getStatusClass(t.status)} px-2 rounded-full">${t.status}</span>
-                            </div>
-                        `).join('')}
+                    <div class="p-3 grid gap-2">
+                        ${tasks.map(t => `<div class="flex justify-between text-xs border-b last:border-0 pb-1"><span class="truncate w-2/3">${t.subject}</span><span class="${t.status.includes('متأخر')?'text-red-500':'text-gray-500'}">${t.status}</span></div>`).join('')}
                     </div>
-                </div>
-                `;
+                </div>`;
             }).join('');
-        }
-
-        function getStatusClass(status) {
-            if (!status) return 'bg-slate-100 text-slate-500';
-            if (status.includes('جديد')) return 'st-new';
-            if (status.includes('جاري') || status.includes('قيد')) return 'st-progress';
-            if (status.includes('تم') || status.includes('منتهي')) return 'st-done';
-            if (status.includes('متأخر')) return 'st-late';
-            return 'bg-slate-100 text-slate-500';
         }
     </script>
 </body>
