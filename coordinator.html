@@ -15,62 +15,18 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
     <style>
-        :root {
-            --primary: #047857;       
-            --bg-main: #f8fafc;      /* رجعنا للخلفية الرسمية الفاتحة */
-            --surface: #ffffff;
-            --border: #e2e8f0;
-        }
-
-        body { 
-            font-family: 'Cairo', sans-serif; 
-            background-color: var(--bg-main); 
-            color: #1e293b;
-            padding-bottom: 80px; 
-        }
-
+        :root { --primary: #047857; --bg-main: #f8fafc; --surface: #ffffff; --border: #e2e8f0; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-main); color: #1e293b; padding-bottom: 80px; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
-
-        /* تنسيق الكروت */
-        .super-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: transform 0.2s;
-            margin-bottom: 16px;
-            position: relative;
-        }
-        .super-card:hover { border-color: var(--primary); }
-
-        /* الشريط الجانبي للكارت */
+        .super-card { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px -1px rgba(0,0,0,0.06); transition: transform 0.2s; margin-bottom: 16px; position: relative; }
         .status-strip { width: 5px; height: 100%; position: absolute; right: 0; top: 0; }
-        .st-new { border-right: 5px solid #3b82f6; }
-        .st-pending { border-right: 5px solid #f59e0b; }
-        .st-done { border-right: 5px solid #10b981; }
-        .st-late { border-right: 5px solid #ef4444; }
-
-        /* حقول الفلتر */
-        .filter-select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background-color: white;
-            font-size: 0.85rem;
-            outline: none;
-            transition: border 0.2s;
-        }
-        .filter-select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.1); }
+        .st-new { border-right: 5px solid #3b82f6; } .st-pending { border-right: 5px solid #f59e0b; }
+        .st-done { border-right: 5px solid #10b981; } .st-late { border-right: 5px solid #ef4444; }
+        .filter-select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; background-color: white; font-size: 0.85rem; outline: none; }
         .filter-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
-
-        /* القائمة الجانبية */
-        @media (min-width: 1024px) {
-            body { padding-bottom: 0; padding-right: 260px; }
-            .sidebar { width: 260px; transform: translateX(0) !important; }
-            .mobile-header, .bottom-nav { display: none !important; }
-        }
+        @media (min-width: 1024px) { body { padding-bottom: 0; padding-right: 260px; } .sidebar { width: 260px; transform: translateX(0) !important; } .mobile-header, .bottom-nav { display: none !important; } }
+        /* Badge Styles */
+        .badge { padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
     </style>
 </head>
 <body>
@@ -82,7 +38,7 @@
             </div>
             <div>
                 <h1 class="font-bold text-lg text-slate-800 leading-tight">نظام الحوكمة</h1>
-                <p class="text-xs text-slate-500">مكتب التنسيق والمتابعة</p>
+                <p class="text-xs text-slate-500">مكتب التنسيق</p>
             </div>
         </div>
 
@@ -93,13 +49,16 @@
             <a href="coordinator.html" class="flex items-center gap-3 px-4 py-3 bg-[#047857] text-white rounded-xl font-bold shadow-md">
                 <i data-lucide="users" class="w-5 h-5"></i><span>المتابعة والتكليف</span>
             </a>
-            <a href="employee.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#047857] rounded-xl font-medium transition-colors">
-                <i data-lucide="briefcase" class="w-5 h-5"></i><span>مهامي</span>
-            </a>
             <a href="forms.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#047857] rounded-xl font-medium transition-colors">
                 <i data-lucide="file-text" class="w-5 h-5"></i><span>النماذج</span>
             </a>
-            </nav>
+            <div class="only-admin hidden pt-4 mt-2 border-t border-slate-100">
+                <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">مدير النظام</p>
+                <a href="admin.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-[#047857] rounded-xl font-medium transition-colors">
+                    <i data-lucide="settings-2" class="w-5 h-5"></i><span>لوحة التحكم</span>
+                </a>
+            </div>
+        </nav>
 
         <div class="p-4 border-t border-slate-100 bg-slate-50">
             <div class="flex items-center justify-between">
@@ -131,80 +90,56 @@
         <div class="p-4 lg:p-8 max-w-7xl mx-auto space-y-6">
             
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
-                    <i data-lucide="filter" class="w-4 h-4 text-[#047857]"></i>
-                    <h3 class="font-bold text-sm text-slate-800">تصفية البيانات والبحث</h3>
-                </div>
-
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    
                     <div>
                         <label class="filter-label">الموظف / المجموعة</label>
                         <select id="filter-employee" class="filter-select">
                             <option value="all">الكل</option>
-                            <optgroup label="المجموعات">
-                                <option value="group_admin">المالي والإداري</option>
-                                <option value="group_tech">الفني</option>
-                            </optgroup>
-                            <optgroup label="الموظفين" id="emp-options">
-                                </optgroup>
+                            <optgroup label="الموظفين" id="emp-options"></optgroup>
                         </select>
                     </div>
-
                     <div>
                         <label class="filter-label">الجهة الوارد منها</label>
-                        <select id="filter-source" class="filter-select">
-                            <option value="all">الكل</option>
-                            </select>
+                        <select id="filter-source" class="filter-select"><option value="all">الكل</option></select>
                     </div>
-
-                    <div>
-                        <label class="filter-label">جهة محل التنفيذ</label>
-                        <select id="filter-location" class="filter-select">
-                            <option value="all">الكل</option>
-                            </select>
-                    </div>
-
                     <div>
                         <label class="filter-label">حالة المهمة</label>
                         <select id="filter-status" class="filter-select">
-                            <option value="all">كل الحالات</option>
+                            <option value="all">الكل</option>
                             <option value="late">⚠️ متأخر</option>
-                            <option value="pending">⏳ جاري / قيد العمل</option>
-                            <option value="done">✅ منتهي / تم الاعتماد</option>
+                            <option value="pending">⏳ قيد العمل</option>
+                            <option value="done">✅ منتهي</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="mt-4 flex justify-end">
-                    <button onclick="applyAdvancedFilter()" class="bg-[#047857] text-white px-6 py-2 rounded-lg text-sm font-bold shadow hover:bg-[#065f46] flex items-center gap-2 transition">
-                        <i data-lucide="search" class="w-4 h-4"></i> تطبيق البحث
-                    </button>
+                    <div class="flex items-end">
+                        <button onclick="applyAdvancedFilter()" class="w-full bg-[#047857] text-white py-2.5 rounded-lg text-sm font-bold shadow hover:bg-[#065f46] flex justify-center items-center gap-2">
+                            <i data-lucide="search" class="w-4 h-4"></i> عرض النتائج
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <div id="tasks-container" class="space-y-4">
                 <div class="text-center py-12">
                     <span class="inline-block animate-spin text-[#047857]"><i data-lucide="loader-2" class="w-8 h-8"></i></span>
-                    <p class="text-slate-400 text-sm mt-2">جاري تحميل البيانات...</p>
+                    <p class="text-slate-400 text-sm mt-2">جاري الاتصال بالسيرفر...</p>
                 </div>
             </div>
-
         </div>
     </main>
 
-    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-40 lg:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-40 lg:hidden shadow-lg">
         <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#047857]">
             <i data-lucide="layout-grid" class="w-6 h-6"></i><span class="text-[10px]">الرئيسية</span>
         </a>
         <a href="coordinator.html" class="flex flex-col items-center gap-1 p-2 text-[#047857]">
             <i data-lucide="users" class="w-6 h-6"></i><span class="text-[10px] font-bold">التنسيق</span>
         </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#047857]">
-            <i data-lucide="briefcase" class="w-6 h-6"></i><span class="text-[10px]">مهامي</span>
-        </a>
         <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#047857]">
             <i data-lucide="file-text" class="w-6 h-6"></i><span class="text-[10px]">النماذج</span>
+        </a>
+        <a href="admin.html" class="only-admin hidden flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#047857]">
+            <i data-lucide="settings-2" class="w-6 h-6"></i><span class="text-[10px]">الإدارة</span>
         </a>
     </nav>
 
@@ -218,100 +153,69 @@
             const user = auth.checkAuth(); 
             if (!user) return; 
 
-            // الحماية: لو موظف عادي يحاول يدخل، يرجع
-            if (user.role === 'employee') {
-                window.location.href = 'distribution.html';
-                return;
-            }
-
+            // إعدادات الواجهة
             document.getElementById('user-name').textContent = user.name;
             document.getElementById('user-avatar').textContent = user.name.charAt(0);
+            auth.setupUI(); // لإظهار/إخفاء عناصر الأدمن
 
+            // ⚡ تسريع التحميل: طلب بيانات آخر سنة فقط بدلاً من الكل
             await loadData(user);
         });
 
         async function loadData(user) {
             try {
-                // نطلب البيانات بصلاحية "coordinator" عشان يجيب كل حاجة
+                // تاريخ بداية البحث: 1 يناير من العام الحالي (لتقليل حجم البيانات)
+                const currentYear = new Date().getFullYear();
+                const startDate = `${currentYear}-01-01`;
+
                 const res = await auth.callAPI('getAllData', {
-                    role: 'coordinator',
+                    role: 'coordinator', // طلب بصلاحية منسق
                     name: user.name,
-                    startDate: '2020-01-01'
+                    startDate: startDate 
                 });
 
                 if (res.success) {
                     allTasks = res.tasks;
-                    populateFilterDropdowns(allTasks); // ملء القوائم المنسدلة
+                    populateFilterDropdowns(allTasks);
                     renderCards(allTasks);
                 } else {
-                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500">فشل التحميل</div>`;
+                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500">❌ لم يتم العثور على بيانات (تأكد من نشر السكريبت)</div>`;
                 }
             } catch (e) {
                 console.error(e);
+                document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500">⚠️ خطأ في الاتصال</div>`;
             }
         }
 
-        // --- دالة ملء القوائم المنسدلة الذكية ---
         function populateFilterDropdowns(tasks) {
             const employees = new Set();
             const sources = new Set();
-            const locations = new Set();
 
             tasks.forEach(t => {
                 if(t.assignee) employees.add(t.assignee);
                 if(t.source) sources.add(t.source);
-                if(t.entity) locations.add(t.entity);
             });
 
-            // ملء قائمة الموظفين
-            const empSelect = document.getElementById('emp-options');
-            empSelect.innerHTML = Array.from(employees).sort().map(e => `<option value="${e}">${e}</option>`).join('');
-
-            // ملء قائمة الجهة الواردة
-            const srcSelect = document.getElementById('filter-source');
-            srcSelect.innerHTML = '<option value="all">الكل</option>' + Array.from(sources).sort().map(s => `<option value="${s}">${s}</option>`).join('');
-
-            // ملء قائمة محل التنفيذ
-            const locSelect = document.getElementById('filter-location');
-            locSelect.innerHTML = '<option value="all">الكل</option>' + Array.from(locations).sort().map(l => `<option value="${l}">${l}</option>`).join('');
+            document.getElementById('emp-options').innerHTML = Array.from(employees).sort().map(e => `<option value="${e}">${e}</option>`).join('');
+            document.getElementById('filter-source').innerHTML = '<option value="all">الكل</option>' + Array.from(sources).sort().map(s => `<option value="${s}">${s}</option>`).join('');
         }
 
-        // --- دالة الفلتر المتقدم ---
         function applyAdvancedFilter() {
             const empVal = document.getElementById('filter-employee').value;
             const srcVal = document.getElementById('filter-source').value;
-            const locVal = document.getElementById('filter-location').value;
             const statusVal = document.getElementById('filter-status').value;
 
             const filtered = allTasks.filter(t => {
-                // 1. فلتر الموظف
-                let empMatch = true;
-                if (empVal !== 'all') {
-                    if (empVal === 'group_admin') {
-                        // منطق افتراضي: ابحث عن الأسماء اللي فيها "إداري" أو "مالي" (ممكن تعدلها لاحقاً)
-                        // حالياً هنخليها "كل الموظفين" لأن معندناش تصنيف في الداتا لسه
-                        empMatch = true; 
-                    } else if (empVal === 'group_tech') {
-                        empMatch = true; 
-                    } else {
-                        empMatch = t.assignee === empVal;
-                    }
-                }
-
-                // 2. فلتر الجهة الواردة
+                const empMatch = empVal === 'all' || t.assignee === empVal;
                 const srcMatch = srcVal === 'all' || t.source === srcVal;
-
-                // 3. فلتر محل التنفيذ
-                const locMatch = locVal === 'all' || t.entity === locVal;
-
-                // 4. فلتر الحالة
+                
                 let statusMatch = true;
                 const s = (t.status || '').toLowerCase();
                 if (statusVal === 'late') statusMatch = s.includes('متأخر');
-                else if (statusVal === 'pending') statusMatch = s.includes('جاري') || s.includes('جديد') || s.includes('مراجعة');
+                else if (statusVal === 'pending') statusMatch = s.includes('جاري') || s.includes('جديد');
                 else if (statusVal === 'done') statusMatch = s.includes('تم') || s.includes('منتهي');
 
-                return empMatch && srcMatch && locMatch && statusMatch;
+                return empMatch && srcMatch && statusMatch;
             });
 
             renderCards(filtered);
@@ -321,7 +225,7 @@
             const container = document.getElementById('tasks-container');
             
             if (tasks.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 bg-white rounded-xl border border-dashed border-slate-300 text-slate-400">لا توجد نتائج</div>`;
+                container.innerHTML = `<div class="text-center py-12 text-slate-400">لا توجد نتائج</div>`;
                 return;
             }
 
@@ -332,34 +236,21 @@
                 return `
                 <div class="super-card">
                     <div class="status-strip ${statusInfo.class}"></div>
-                    
                     <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                         <div class="flex items-center gap-2">
-                            <span class="bg-white border border-slate-200 px-2 py-0.5 rounded text-[10px] font-bold text-slate-600">
-                                ${t.docType || 'وارد'}
-                            </span>
+                            <span class="bg-white border border-slate-200 px-2 py-0.5 rounded text-[10px] font-bold text-slate-600">${t.docType || 'وارد'}</span>
                             <span class="font-mono text-sm font-bold text-slate-700">#${t.id}</span>
                         </div>
-                        <span class="px-2 py-1 rounded text-[10px] font-bold" style="background:${statusInfo.bg}; color:${statusInfo.text}">
-                            ${statusInfo.label}
-                        </span>
+                        <span class="px-2 py-1 rounded text-[10px] font-bold" style="background:${statusInfo.bg}; color:${statusInfo.text}">${statusInfo.label}</span>
                     </div>
-
                     <div class="p-4">
                         <h3 class="text-sm font-bold text-slate-800 leading-relaxed mb-3">${t.subject}</h3>
-
-                        ${isLegal ? `
-                        <div class="flex gap-4 mb-3 bg-orange-50 border border-orange-100 p-2 rounded-lg">
-                            <div class="flex flex-col"><span class="text-[9px] text-orange-400">رقم القضية</span><span class="text-xs font-bold text-orange-700 font-mono">${t.caseNumber}</span></div>
-                            <div class="flex flex-col"><span class="text-[9px] text-orange-400">السنة</span><span class="text-xs font-bold text-orange-700 font-mono">${t.caseYear || '-'}</span></div>
-                        </div>` : ''}
-
+                        ${isLegal ? `<div class="flex gap-4 mb-3 bg-orange-50 border border-orange-100 p-2 rounded-lg"><div class="flex flex-col"><span class="text-[9px] text-orange-400">قضية</span><span class="text-xs font-bold text-orange-700">${t.caseNumber}</span></div></div>` : ''}
                         <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-                            ${t.source ? `<span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📥 من: ${t.source}</span>` : ''}
-                            ${t.entity ? `<span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📍 التنفيذ: ${t.entity}</span>` : ''}
+                            ${t.source ? `<span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📥 ${t.source}</span>` : ''}
+                            <span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📅 ${t.date}</span>
                         </div>
                     </div>
-
                     <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
                         <div class="flex gap-2">
                             ${t.attachment ? `<a href="${t.attachment}" target="_blank" class="px-3 py-1.5 bg-white border border-slate-200 rounded text-xs font-bold text-[#047857] hover:bg-emerald-50">📎 التكليف</a>` : ''}
@@ -367,11 +258,10 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-bold text-slate-700">${t.assignee}</span>
-                            <div class="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500">${t.assignee.charAt(0)}</div>
+                            <div class="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500">${t.assignee ? t.assignee.charAt(0) : '?'}</div>
                         </div>
                     </div>
-                </div>
-                `;
+                </div>`;
             }).join('');
             lucide.createIcons();
         }
