@@ -399,11 +399,12 @@
     lucide.createIcons();
 
     // ═══════════════════════════════════════════════════════════════════
-    // 2. ROLE-BASED NAVIGATION
+    // 2. ROLE-BASED NAVIGATION (Optional - للصفحات العامة)
     // ═══════════════════════════════════════════════════════════════════
     
-    // 2.1 Check if user is logged in
-    const user = auth.checkSession();
+    // 2.1 Check if user is logged in (without redirect)
+    auth.loadSession(); // Load session if exists
+    const user = auth.currentUser; // Get user (null if not logged in)
     
     if (user) {
       // 2.2 Show/Hide Navigation Based on Role
@@ -426,6 +427,15 @@
         // Show admin link in bottom nav for admins
         if (adminNavLink) adminNavLink.classList.remove('hidden');
       }
+    } else {
+      // 2.3 Hide protected links if not logged in
+      const coordinatorLink = document.getElementById('coordinator-link');
+      const adminLink = document.getElementById('admin-link');
+      const adminNavLink = document.getElementById('admin-nav-link');
+      
+      if (coordinatorLink) coordinatorLink.style.display = 'none';
+      if (adminLink) adminLink.style.display = 'none';
+      if (adminNavLink) adminNavLink.classList.add('hidden');
     }
 
     // ═══════════════════════════════════════════════════════════════════
