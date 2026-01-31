@@ -1,139 +1,158 @@
 /**
- * 🔐 Auth Manager (v2.0)
- * مسؤول عن: تسجيل الدخول، الحماية، وتوجيه المستخدمين حسب الصلاحية
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 🔐 IAG System - Authentication & Core Logic (v3.0)
+ * ═══════════════════════════════════════════════════════════════════════════
  */
 
-class AuthManager {
-  constructor() {
-    this.currentUser = this.loadUser();
-  }
+const CONFIG = {
+    // ⚠️ هام جداً: استبدل الرابط أدناه برابط النشر الخاص بك (Deployment URL)
+    // الذي ينتهي بـ /exec
+    API_URL: "https://script.google.com/macros/s/AKfycbyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/exec",
+};
 
-  // 1. تحميل المستخدم من الذاكرة
-  loadUser() {
-    const userStr = sessionStorage.getItem('iag_user');
-    return userStr ? JSON.parse(userStr) : null;
-  }
-
-  // 2. عملية تسجيل الدخول
-  async login(mobile, pin) {
-    try {
-      // إظهار التحميل (إذا وجد عنصر loading)
-      this.toggleLoading(true);
-
-      const response = await fetch(CONFIG.API_URL, {
-        method: 'POST',
-        mode: 'no-cors', // هام جداً لتجنب مشاكل CORS مع Google
-        cache: 'no-cache',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'login', mobile, pin })
-      });
-
-      // ملاحظة: مع no-cors لا يمكننا قراءة الرد مباشرة في بعض المتصفحات
-      // لذلك نستخدم تقنية text/plain في Apps Script والآن نستخدم fetch عادي
-      // لكن للتوافق الأفضل سنستخدم الطريقة التي نجحت معك سابقاً (POST مع redirect) 
-      // أو الطريقة الحالية إذا كان الـ Backend يدعم CORS.
-      
-      // *تعديل هام:* بما أننا استخدمنا ContentService في Apps Script، 
-      // سنستخدم fetch مع redirect: 'follow' للحصول على النتيجة.
-      
-      const result = await this.callAPI('login', { mobile, pin });
-
-      if (result.success) {
-        this.saveSession(result);
-        return { success: true, role: result.role };
-      } else {
-        return { success: false, error: result.error };
-      }
-
-    } catch (error) {
-      console.error('Login Error:', error);
-      return { success: false, error: 'فشل الاتصال بالخادم' };
-    } finally {
-      this.toggleLoading(false);
-    }
-  }
-
-  // 3. دالة الاتصال الموحدة (Core API Call)
-  async callAPI(action, data = {}) {
-    const payload = { action, ...data };
+const auth = {
     
-    // إرسال الطلب
-    const response = await fetch(CONFIG.API_URL, {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
-    
-    return await response.json();
-  }
+    // 1. حالة المستخدم الحالية
+    currentUser: null,
 
-  // 4. حفظ الجلسة وتوجيه المستخدم
-  saveSession(userData) {
-    const sessionData = {
-      name: userData.name,
-      role: userData.role, // 'admin', 'coordinator', 'employee'
-      jobTitle: userData.jobTitle,
-      mobile: userData.mobile,
-      loginTime: new Date().getTime()
-    };
-    
-    sessionStorage.setItem('iag_user', JSON.stringify(sessionData));
-    this.currentUser = sessionData;
-    
-    // التوجيه التلقائي
-    this.redirectBasedOnRole();
-  }
-
-  // 5. التوجيه حسب الصلاحية
-  redirectBasedOnRole() {
-    if (!this.currentUser) return;
-
-    // الكل يذهب للداشبورد (الرئيسية) كبداية، وهي تختلف حسب الدور
-    window.location.href = 'distribution.html';
-  }
-
-  // 6. التحقق من الصلاحية (يوضع في بداية كل صفحة)
-  checkAuth() {
-    if (!this.currentUser) {
-      window.location.href = 'index.html';
-      return null;
-    }
-    return this.currentUser;
-  }
-
-  // 7. تسجيل الخروج
-  logout() {
-    sessionStorage.removeItem('iag_user');
-    window.location.href = 'index.html';
-  }
-
-  // 8. إعداد الواجهة (إخفاء زر الإدارة للموظفين)
-  setupUI() {
-    const user = this.currentUser;
-    if (!user) return;
-
-    // التعامل مع عناصر القائمة "للإدارة فقط"
-    const adminElements = document.querySelectorAll('.only-admin');
-    
-    if (user.role === 'employee') {
-      // إخفاء عناصر الإدارة للموظف العادي
-      adminElements.forEach(el => el.style.display = 'none');
-    } else {
-      // إظهارها للمدير والمنسق
-      adminElements.forEach(el => {
-        if (el.tagName === 'LI' || el.tagName === 'DIV') {
-            el.style.display = 'flex'; // أو block حسب التصميم
-        } else {
-            el.style.display = 'block';
+    // 2. دالة الاتصال بالسيرفر (API Call)
+    async callAPI(action, data = {}) {
+        if (!CONFIG.API_URL || CONFIG.API_URL.includes("XXX")) {
+            alert("⚠️ تنبيه: يرجى وضع رابط السكريبت (Deployment URL) في ملف auth.js");
+            return { success: false, error: "Configuration Error" };
         }
-      });
+
+        const payload = {
+            action: action,
+            ...data
+        };
+
+        try {
+            const response = await fetch(CONFIG.API_URL, {
+                method: "POST",
+                mode: "cors", // مهم جداً للتعامل مع جوجل
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8", // text/plain لتجنب مشاكل CORS Preflight
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+            return result;
+
+        } catch (error) {
+            console.error("API Error:", error);
+            return { success: false, error: "فشل الاتصال بالسيرفر. تأكد من الإنترنت." };
+        }
+    },
+
+    // 3. تسجيل الدخول (مع التوجيه الذكي)
+    async login(mobile, pin) {
+        // تنظيف المدخلات
+        mobile = mobile.trim();
+        pin = pin.trim();
+
+        const result = await this.callAPI("login", { mobile, pin });
+
+        if (result.success) {
+            // حفظ بيانات المستخدم في المتصفح
+            this.currentUser = {
+                name: result.name,
+                role: result.role,
+                jobTitle: result.jobTitle,
+                mobile: result.mobile,
+                loginTime: new Date().getTime()
+            };
+            localStorage.setItem("user", JSON.stringify(this.currentUser));
+
+            // 🚀 التوجيه الذكي (Routing Logic)
+            this.redirectUser(result.role);
+        }
+
+        return result;
+    },
+
+    // 4. دالة التوجيه بناءً على الصلاحية
+    redirectUser(role) {
+        // توحيد المسميات (عربي/إنجليزي)
+        const r = role.toLowerCase();
+
+        if (r === 'admin' || r === 'مدير' || r.includes('إدارة')) {
+            window.location.href = 'admin.html';
+        } 
+        else if (r === 'coordinator' || r === 'منسق') {
+            window.location.href = 'coordinator.html';
+        } 
+        else {
+            // الموظف العادي
+            window.location.href = 'employee.html';
+        }
+    },
+
+    // 5. التحقق من الجلسة (يعمل عند تحميل أي صفحة)
+    checkAuth() {
+        const storedUser = localStorage.getItem("user");
+        
+        if (!storedUser) {
+            // لو مش مسجل دخول وهو مش في صفحة الدخول، ارجعه للدخول
+            if (!window.location.pathname.endsWith("index.html") && !window.location.pathname.endsWith("/")) {
+                window.location.href = "index.html";
+            }
+            return null;
+        }
+
+        this.currentUser = JSON.parse(storedUser);
+        
+        // (اختياري) التحقق من انتهاء صلاحية الجلسة (مثلاً 24 ساعة)
+        const now = new Date().getTime();
+        if (now - this.currentUser.loginTime > 24 * 60 * 60 * 1000) {
+            this.logout();
+            return null;
+        }
+
+        return this.currentUser;
+    },
+
+    // 6. تسجيل الخروج
+    logout() {
+        localStorage.removeItem("user");
+        this.currentUser = null;
+        window.location.href = "index.html";
+    },
+
+    // 7. تهيئة الواجهة (إخفاء عناصر الإدارة عن الموظفين)
+    setupUI() {
+        if (!this.currentUser) return;
+
+        const role = this.currentUser.role.toLowerCase();
+        const isAdmin = role === 'admin' || role === 'مدير';
+        const isCoord = role === 'coordinator' || role === 'منسق';
+
+        // عناصر تظهر للمدير فقط
+        const adminElements = document.querySelectorAll('.only-admin');
+        adminElements.forEach(el => {
+            if (!isAdmin) {
+                el.classList.add('hidden'); // إخفاء تام
+                el.style.display = 'none';  // زيادة تأكيد
+            } else {
+                el.classList.remove('hidden');
+                el.style.display = ''; 
+            }
+        });
+
+        // تحديث اسم المستخدم والصورة
+        const nameEl = document.getElementById('user-name');
+        const roleEl = document.getElementById('user-role');
+        const avatarEl = document.getElementById('user-avatar');
+
+        if (nameEl) nameEl.textContent = this.currentUser.name;
+        if (roleEl) roleEl.textContent = this.currentUser.jobTitle || role;
+        if (avatarEl) avatarEl.textContent = this.currentUser.name.charAt(0);
     }
-  }
+};
 
-  toggleLoading(show) {
-    const loader = document.getElementById('loading-overlay');
-    if (loader) loader.style.display = show ? 'flex' : 'none';
-  }
+// تشغيل التحقق تلقائياً عند تحميل الملف
+// (إلا إذا كنا في صفحة الدخول، ننتظر المستخدم يضغط زر الدخول)
+if (!window.location.pathname.endsWith("index.html") && !window.location.pathname.endsWith("/")) {
+    auth.checkAuth();
 }
-
-// تهيئة الكائن ليكون متاحاً في كل الصفحات
-const auth = new AuthManager();
