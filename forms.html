@@ -64,6 +64,10 @@
       color: #0f766e;
     }
     
+    .sidebar-item.hidden {
+      display: none;
+    }
+    
     /* Main Content */
     .main-content {
       margin-right: 260px;
@@ -149,6 +153,10 @@
       color: #0f766e;
     }
     
+    .bottom-nav-item.hidden {
+      display: none;
+    }
+    
     /* Mobile Responsive */
     @media (max-width: 1024px) {
       .sidebar { transform: translateX(100%); }
@@ -221,15 +229,15 @@
       
       <a href="employee.html" class="sidebar-item">
         <i data-lucide="briefcase" class="w-5 h-5"></i>
-        <span>خدمات الموظفين</span>
+        <span>الخدمات</span>
       </a>
       
-      <a href="coordinator.html" class="sidebar-item">
+      <a href="coordinator.html" class="sidebar-item" id="coordinator-link">
         <i data-lucide="users" class="w-5 h-5"></i>
         <span>المنسقين</span>
       </a>
       
-      <a href="admin.html" class="sidebar-item">
+      <a href="admin.html" class="sidebar-item" id="admin-link">
         <i data-lucide="settings" class="w-5 h-5"></i>
         <span>لوحة الإدارة</span>
       </a>
@@ -348,19 +356,33 @@
 
   <nav class="bottom-nav">
     <div style="display: flex; width: 100%; justify-content: space-around;">
+      
+      <!-- Home -->
+      <a href="index.html" class="bottom-nav-item">
+        <i data-lucide="home" class="w-6 h-6"></i>
+        <span>الرئيسية</span>
+      </a>
+      
+      <!-- Dashboard -->
       <a href="distribution.html" class="bottom-nav-item">
         <i data-lucide="pie-chart" class="w-6 h-6"></i>
         <span>Dashboard</span>
       </a>
+      
+      <!-- النماذج -->
       <a href="forms.html" class="bottom-nav-item active">
         <i data-lucide="file-text" class="w-6 h-6"></i>
         <span>النماذج</span>
       </a>
+      
+      <!-- الخدمات -->
       <a href="employee.html" class="bottom-nav-item">
         <i data-lucide="briefcase" class="w-6 h-6"></i>
         <span>الخدمات</span>
       </a>
-      <a href="admin.html" class="bottom-nav-item">
+      
+      <!-- الإدارة (مخفي - يظهر للأدمن فقط) -->
+      <a href="admin.html" class="bottom-nav-item hidden" id="admin-nav-link">
         <i data-lucide="settings" class="w-6 h-6"></i>
         <span>الإدارة</span>
       </a>
@@ -368,23 +390,65 @@
   </nav>
 
   <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
   <script>
+    // ═══════════════════════════════════════════════════════════════════
+    // 1. INITIALIZATION
+    // ═══════════════════════════════════════════════════════════════════
+    
     lucide.createIcons();
 
+    // ═══════════════════════════════════════════════════════════════════
+    // 2. ROLE-BASED NAVIGATION
+    // ═══════════════════════════════════════════════════════════════════
+    
+    // 2.1 Check if user is logged in
+    const user = auth.checkSession();
+    
+    if (user) {
+      // 2.2 Show/Hide Navigation Based on Role
+      const isAdmin = user.role === 'مدير' || user.role === 'Admin';
+      const isCoordinator = user.role === 'منسق' || user.role === 'Coordinator' || isAdmin;
+      
+      // Sidebar Links
+      const coordinatorLink = document.getElementById('coordinator-link');
+      const adminLink = document.getElementById('admin-link');
+      const adminNavLink = document.getElementById('admin-nav-link');
+      
+      if (!isCoordinator && coordinatorLink) {
+        coordinatorLink.style.display = 'none';
+      }
+      
+      if (!isAdmin) {
+        if (adminLink) adminLink.style.display = 'none';
+        if (adminNavLink) adminNavLink.classList.add('hidden');
+      } else {
+        // Show admin link in bottom nav for admins
+        if (adminNavLink) adminNavLink.classList.remove('hidden');
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 3. SIDEBAR TOGGLE
+    // ═══════════════════════════════════════════════════════════════════
+    
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('active');
       document.getElementById('overlay').classList.toggle('active');
     }
 
-    // Dynamic Link Injection from CONFIG
+    // ═══════════════════════════════════════════════════════════════════
+    // 4. DYNAMIC FORM LINKS
+    // ═══════════════════════════════════════════════════════════════════
+    
     document.addEventListener('DOMContentLoaded', () => {
-      // Check if CONFIG exists
+      // 4.1 Check if CONFIG exists
       if (typeof CONFIG === 'undefined' || !CONFIG.FORMS) {
         console.error('Config file is missing or invalid!');
         return;
       }
 
-      // Map IDs to Config Keys
+      // 4.2 Map IDs to Config Keys
       const links = {
         'link-inbox': CONFIG.FORMS.INBOX,
         'link-complaints': CONFIG.FORMS.COMPLAINTS,
@@ -393,7 +457,7 @@
         'link-hospitals': CONFIG.FORMS.HOSPITALS
       };
 
-      // Apply Hrefs
+      // 4.3 Apply Hrefs
       for (const [id, url] of Object.entries(links)) {
         const el = document.getElementById(id);
         if (el && url) {
