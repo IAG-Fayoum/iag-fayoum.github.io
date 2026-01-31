@@ -277,62 +277,30 @@
         <span>Dashboard</span>
       </a>
       
-      <a href="forms.html" class="sidebar-item" data-page="forms">
+      <a href="forms.html" class="sidebar-item">
         <i data-lucide="file-text" class="w-5 h-5"></i>
         <span>النماذج</span>
       </a>
       
-      <a href="coordinator.html" class="sidebar-item active" data-page="coordinator" data-role="منسق,مدير">
+      <a href="employee.html" class="sidebar-item">
+        <i data-lucide="briefcase" class="w-5 h-5"></i>
+        <span>مهامي</span>
+      </a>
+      
+      <a href="coordinator.html" class="sidebar-item active" id="coordinator-link">
         <i data-lucide="users" class="w-5 h-5"></i>
         <span>المنسقين</span>
       </a>
       
-      <a href="admin.html" class="sidebar-item" data-page="admin" data-role="مدير">
+      <a href="admin.html" class="sidebar-item" id="admin-link">
         <i data-lucide="settings" class="w-5 h-5"></i>
         <span>الإدارة</span>
-      </a>
-      
-      <a href="#" onclick="auth.logout(); return false;" class="sidebar-item" data-page="logout">
-        <i data-lucide="log-out" class="w-5 h-5"></i>
-        <span>تسجيل الخروج</span>
       </a>
     </nav>
   </aside>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- 2. BOTTOM NAVIGATION (Mobile) -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <nav class="bottom-nav">
-    <div class="bottom-nav-grid" id="bottom-nav-grid">
-      <a href="index.html" class="bottom-nav-item" data-page="home">
-        <i data-lucide="home" class="w-5 h-5"></i>
-        <span>الرئيسية</span>
-      </a>
-      
-      <a href="distribution.html" class="bottom-nav-item" data-page="dashboard">
-        <i data-lucide="pie-chart" class="w-5 h-5"></i>
-        <span>Dashboard</span>
-      </a>
-      
-      <a href="forms.html" class="bottom-nav-item" data-page="forms">
-        <i data-lucide="file-text" class="w-5 h-5"></i>
-        <span>النماذج</span>
-      </a>
-      
-      <a href="coordinator.html" class="bottom-nav-item active" data-page="coordinator" data-role="منسق,مدير">
-        <i data-lucide="users" class="w-5 h-5"></i>
-        <span>المنسقين</span>
-      </a>
-      
-      <a href="admin.html" class="bottom-nav-item" data-page="admin" data-role="مدير">
-        <i data-lucide="settings" class="w-5 h-5"></i>
-        <span>الإدارة</span>
-      </a>
-    </div>
-  </nav>
-
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- 3. MAIN CONTENT -->
+  <!-- 2. MAIN CONTENT -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <main class="main-content">
     
@@ -388,8 +356,7 @@
       <label style="display: block; font-weight: 700; font-size: 0.875rem; margin-bottom: 8px;">الموظف</label>
       <select id="emp-filter">
         <option value="">جميع الموظفين</option>
-        <option value="ALL_FINANCIAL">🔹 المالي والإداري</option>
-        <option value="ALL_TECHNICAL">🔧 الفنيين</option>
+        <!-- Will be populated dynamically -->
       </select>
     </div>
   </div>
@@ -404,7 +371,51 @@
   </main>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- 4. SCRIPTS -->
+  <!-- 4. BOTTOM NAVIGATION -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-grid">
+      
+      <!-- Home -->
+      <a href="index.html" class="bottom-nav-item">
+        <i data-lucide="home" style="width: 24px; height: 24px;"></i>
+        <span>الرئيسية</span>
+      </a>
+      
+      <!-- Dashboard -->
+      <a href="distribution.html" class="bottom-nav-item">
+        <i data-lucide="pie-chart" style="width: 24px; height: 24px;"></i>
+        <span>Dashboard</span>
+      </a>
+      
+      <!-- النماذج -->
+      <a href="forms.html" class="bottom-nav-item">
+        <i data-lucide="file-text" style="width: 24px; height: 24px;"></i>
+        <span>النماذج</span>
+      </a>
+      
+      <!-- مهامي -->
+      <a href="employee.html" class="bottom-nav-item">
+        <i data-lucide="briefcase" style="width: 24px; height: 24px;"></i>
+        <span>مهامي</span>
+      </a>
+      
+      <!-- المنسقين -->
+      <a href="coordinator.html" class="bottom-nav-item active">
+        <i data-lucide="users" style="width: 24px; height: 24px;"></i>
+        <span>المنسقين</span>
+      </a>
+      
+      <!-- الإدارة (مخفي - يظهر للأدمن فقط) -->
+      <a href="admin.html" class="bottom-nav-item hidden" id="admin-nav-link">
+        <i data-lucide="settings" style="width: 24px; height: 24px;"></i>
+        <span>الإدارة</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- 5. SCRIPTS -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
@@ -435,31 +446,30 @@
 
     // 2.3 Display User Info
     document.getElementById('user-name-sidebar').textContent = `${user.name} 👋`;
-    document.getElementById('user-name-header').textContent = `مرحباً ${user.name} - ${user.jobTitle || user.role}`;
+    document.getElementById('user-name-header').textContent = `مرحباً ${user.name}`;
 
     // ═══════════════════════════════════════════════════════════════════
     // 3. ROLE-BASED NAVIGATION
     // ═══════════════════════════════════════════════════════════════════
     
-    // 3.1 Hide/Show Menu Items Based on Role
-    function setupNavigation() {
-      const userRole = user.role;
-      
-      const allNavItems = [
-        ...document.querySelectorAll('.sidebar-item[data-role]'),
-        ...document.querySelectorAll('.bottom-nav-item[data-role]')
-      ];
-      
-      allNavItems.forEach(item => {
-        const requiredRoles = item.getAttribute('data-role').split(',');
-        
-        if (!requiredRoles.some(role => userRole.includes(role))) {
-          item.classList.add('hidden');
-        }
-      });
+    const isAdmin = user.role === 'مدير' || user.role === 'Admin';
+    const isCoordinator = user.role === 'منسق' || user.role === 'Coordinator' || isAdmin;
+    
+    if (!isCoordinator) {
+      alert('غير مصرح لك بالدخول إلى هذه الصفحة');
+      window.location.replace('index.html');
     }
     
-    setupNavigation();
+    const coordinatorLink = document.getElementById('coordinator-link');
+    const adminLink = document.getElementById('admin-link');
+    const adminNavLink = document.getElementById('admin-nav-link');
+    
+    if (!isAdmin) {
+      if (adminLink) adminLink.style.display = 'none';
+      if (adminNavLink) adminNavLink.classList.add('hidden');
+    } else {
+      if (adminNavLink) adminNavLink.classList.remove('hidden');
+    }
 
     // ═══════════════════════════════════════════════════════════════════
     // 4. DATA MANAGEMENT
@@ -540,29 +550,71 @@ async function loadData() {
       startDate: startDate,
       endDate: endDate
     });
+    
+    if (result && result.success && result.tasks) {
+      allTasks = result.tasks;
+      allEmployees = result.employees || [];
+      
+      // Populate employee dropdown
+      populateEmployeeFilter(allTasks);
+      
+      // Display all tasks initially
+      filterAndDisplay();
+    } else {
+      throw new Error(result?.error || 'فشل في تحميل البيانات');
+    }
+  } catch (err) {
+    console.error('Load error:', err);
+    document.getElementById('results').innerHTML = `
+      <div style="text-align: center; padding: 60px; color: #dc2626;">
+        <div style="font-size: 3rem; margin-bottom: 12px;">❌</div>
+        <p style="font-weight: 700;">خطأ في تحميل البيانات</p>
+        <p style="font-size: 0.9rem; opacity: 0.8;">${escapeHtml(err.message)}</p>
+        <button onclick="loadData()" style="margin-top:16px; padding:8px 16px; cursor:pointer; background: #0f766e; color: white; border: none; border-radius: 8px; font-weight: 600;">إعادة المحاولة</button>
+      </div>
+    `;
+  }
+}
+
     // 4.5 Filter and Display
 function filterAndDisplay() {
   const empFilter = document.getElementById('emp-filter').value;
   let filtered = allTasks;
 
-  if (empFilter === 'ALL_FINANCIAL') {
-    // البحث في المسمى الوظيفي
-    const names = allEmployees.filter(e => 
-      e.jobTitle && e.jobTitle.includes('مراجع مالي')
-    ).map(e => e.name);
-    filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
-  } else if (empFilter === 'ALL_TECHNICAL') {
-    // البحث في المسمى الوظيفي
-    const names = allEmployees.filter(e => 
-      e.jobTitle && e.jobTitle.includes('مراجع فني')
-    ).map(e => e.name);
-    filtered = allTasks.filter(t => names.some(n => t.assignee && t.assignee.includes(n)));
-  } else if (empFilter) {
+  if (empFilter) {
     filtered = allTasks.filter(t => t.assignee && t.assignee.includes(empFilter));
   }
 
   displayTasks(filtered);
 }
+
+    // 4.6 Populate Employee Filter
+    function populateEmployeeFilter(tasks) {
+      const employeeSet = new Set();
+      tasks.forEach(t => {
+        if (t.assignee) employeeSet.add(t.assignee);
+      });
+      
+      const empFilter = document.getElementById('emp-filter');
+      const currentValue = empFilter.value;
+      
+      // Keep "جميع الموظفين"
+      empFilter.innerHTML = '<option value="">جميع الموظفين</option>';
+      
+      // Add each employee
+      Array.from(employeeSet).sort().forEach(emp => {
+        const option = document.createElement('option');
+        option.value = emp;
+        option.textContent = emp;
+        empFilter.appendChild(option);
+      });
+      
+      // Restore previous selection if it exists
+      if (currentValue && employeeSet.has(currentValue)) {
+        empFilter.value = currentValue;
+      }
+    }
+    
     // ═══════════════════════════════════════════════════════════════════
     // 5. DISPLAY TASKS
     // ═══════════════════════════════════════════════════════════════════
