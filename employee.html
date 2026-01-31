@@ -10,18 +10,79 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   
   <style>
-    /* Basic Reset & Styles ensuring consistency */
-    body { font-family: 'Cairo', sans-serif; background: #f8f9fa; margin: 0; }
+    /* ═══════════════════════════════════════════════════════════════════ */
+    /* 1. BASE STYLES */
+    /* ═══════════════════════════════════════════════════════════════════ */
     
-    .sidebar { position: fixed; right: 0; top: 0; width: 260px; height: 100vh; background: white; box-shadow: -2px 0 10px rgba(0,0,0,0.08); z-index: 100; overflow-y: auto; }
-    .sidebar-logo { padding: 24px; background: linear-gradient(135deg, #0f766e, #115e59); color: white; }
-    .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 14px 24px; color: #495057; text-decoration: none; font-weight: 600; transition: all 0.2s; border-right: 3px solid transparent; }
-    .sidebar-item:hover, .sidebar-item.active { background: #e6f7f5; border-right-color: #0f766e; color: #0f766e; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Cairo', sans-serif; background: #f8f9fa; padding-bottom: 80px; }
+    
+    /* ═══════════════════════════════════════════════════════════════════ */
+    /* 2. SIDEBAR (Desktop) */
+    /* ═══════════════════════════════════════════════════════════════════ */
+    
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 260px;
+      height: 100vh;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+      z-index: 100;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar.hidden { transform: translateX(100%); }
+    
+    .sidebar-logo {
+      padding: 24px;
+      border-bottom: 1px solid #e9ecef;
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+      color: white;
+    }
+    
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      color: #495057;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border-right: 3px solid transparent;
+    }
+    
+    .sidebar-item:hover {
+      background: #f8f9fa;
+      border-right-color: #0f766e;
+      color: #0f766e;
+    }
+    
+    .sidebar-item.active {
+      background: #e6f7f5;
+      border-right-color: #0f766e;
+      color: #0f766e;
+    }
+    
+    .sidebar-item.hidden {
+      display: none;
+    }
+    
+    /* ═══════════════════════════════════════════════════════════════════ */
+    /* 3. MAIN CONTENT */
+    /* ═══════════════════════════════════════════════════════════════════ */
     
     .main-content { margin-right: 260px; padding: 24px; }
     
     .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; }
-    .header-card { background: linear-gradient(135deg, #2563eb, #1e40af); color: white; }
+    .header-card { background: linear-gradient(135deg, #0f766e, #115e59); color: white; }
+    
+    /* ═══════════════════════════════════════════════════════════════════ */
+    /* 4. TASK CARDS */
+    /* ═══════════════════════════════════════════════════════════════════ */
     
     .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
     .task-card { background: white; border: 2px solid #e9ecef; border-radius: 12px; padding: 20px; transition: all 0.2s; }
@@ -36,38 +97,135 @@
     .task-subject { font-weight: 600; color: #334155; margin-bottom: 12px; line-height: 1.5; }
     .task-meta { font-size: 0.85rem; color: #64748b; display: flex; flex-direction: column; gap: 6px; }
 
-    @media (max-width: 1024px) {
-      .sidebar { display: none; } /* Simplified for mobile example */
-      .main-content { margin-right: 0; }
+    /* ═══════════════════════════════════════════════════════════════════ */
+    /* 5. BOTTOM NAVIGATION (Mobile) */
+    /* ═══════════════════════════════════════════════════════════════════ */
+    
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #e9ecef;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      z-index: 50;
+      display: none;
     }
+    
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px;
+      color: #868e96;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+    
+    .bottom-nav-item.active { color: #0f766e; }
+    .bottom-nav-item:hover { color: #0f766e; }
+    .bottom-nav-item.hidden { display: none; }
+    
+    /* ═══════════════════════════════════════════════════════════════════ */
+    /* 6. MOBILE RESPONSIVE */
+    /* ═══════════════════════════════════════════════════════════════════ */
+    
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(100%); }
+      .sidebar.active { transform: translateX(0); }
+      .main-content { margin-right: 0; }
+      .bottom-nav { display: flex; }
+      body { padding-bottom: 70px; }
+      
+      .mobile-header {
+        background: white;
+        padding: 16px;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 40;
+      }
+    }
+    
+    @media (min-width: 1025px) {
+      .mobile-header { display: none; }
+    }
+    
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 90;
+      display: none;
+    }
+    
+    .overlay.active { display: block; }
   </style>
 </head>
 
 <body>
-  <aside class="sidebar">
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- 1. OVERLAY -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- 2. MOBILE HEADER -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div class="mobile-header">
+    <button onclick="toggleSidebar()" style="background: none; border: none; padding: 8px; cursor: pointer;">
+      <i data-lucide="menu" style="width: 24px; height: 24px; color: #1f2937;"></i>
+    </button>
+    <h1 style="font-size: 1.125rem; font-weight: 700; color: #1f2937;">مهامي</h1>
+    <div style="width: 40px;"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- 3. SIDEBAR -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <h2 class="text-xl font-bold mb-2">IAG System</h2>
-      <p id="user-name" class="text-sm opacity-90">مرحباً</p>
+      <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">IAG System</h2>
+      <p id="user-name" style="font-size: 0.875rem; opacity: 0.9;">مرحباً</p>
     </div>
     
     <nav style="padding: 16px 0;">
       <a href="index.html" class="sidebar-item">
-        <i data-lucide="home" class="w-5 h-5"></i><span>الرئيسية</span>
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span>الرئيسية</span>
       </a>
+      
       <a href="distribution.html" class="sidebar-item">
-        <i data-lucide="pie-chart" class="w-5 h-5"></i><span>Dashboard</span>
+        <i data-lucide="pie-chart" class="w-5 h-5"></i>
+        <span>Dashboard</span>
       </a>
+      
       <a href="forms.html" class="sidebar-item">
-        <i data-lucide="file-text" class="w-5 h-5"></i><span>النماذج</span>
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+        <span>النماذج</span>
       </a>
-      <a href="employee.html" class="sidebar-item active" id="employee-link">
-        <i data-lucide="briefcase" class="w-5 h-5"></i><span>صفحتي</span>
+      
+      <a href="employee.html" class="sidebar-item active">
+        <i data-lucide="briefcase" class="w-5 h-5"></i>
+        <span>مهامي</span>
       </a>
-      <a href="coordinator.html" class="sidebar-item" id="coordinator-link" style="display: none;">
-        <i data-lucide="users" class="w-5 h-5"></i><span>المنسقين</span>
+      
+      <a href="coordinator.html" class="sidebar-item" id="coordinator-link">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span>المنسقين</span>
       </a>
-      <a href="admin.html" class="sidebar-item" id="admin-link" style="display: none;">
-        <i data-lucide="settings" class="w-5 h-5"></i><span>الإدارة</span>
+      
+      <a href="admin.html" class="sidebar-item" id="admin-link">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span>لوحة الإدارة</span>
       </a>
     </nav>
   </aside>
@@ -86,33 +244,105 @@
     </div>
   </main>
 
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- 4. BOTTOM NAVIGATION -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <nav class="bottom-nav">
+    <div style="display: flex; width: 100%; justify-content: space-around;">
+      
+      <!-- Home -->
+      <a href="index.html" class="bottom-nav-item">
+        <i data-lucide="home" class="w-6 h-6"></i>
+        <span>الرئيسية</span>
+      </a>
+      
+      <!-- Dashboard -->
+      <a href="distribution.html" class="bottom-nav-item">
+        <i data-lucide="pie-chart" class="w-6 h-6"></i>
+        <span>Dashboard</span>
+      </a>
+      
+      <!-- النماذج -->
+      <a href="forms.html" class="bottom-nav-item">
+        <i data-lucide="file-text" class="w-6 h-6"></i>
+        <span>النماذج</span>
+      </a>
+      
+      <!-- مهامي -->
+      <a href="employee.html" class="bottom-nav-item active">
+        <i data-lucide="briefcase" class="w-6 h-6"></i>
+        <span>مهامي</span>
+      </a>
+      
+      <!-- الإدارة (مخفي - يظهر للأدمن فقط) -->
+      <a href="admin.html" class="bottom-nav-item hidden" id="admin-nav-link">
+        <i data-lucide="settings" class="w-6 h-6"></i>
+        <span>الإدارة</span>
+      </a>
+    </div>
+  </nav>
+
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
-    // 1. Security & Auth Check
+    // ═══════════════════════════════════════════════════════════════════
+    // 1. INITIALIZATION
+    // ═══════════════════════════════════════════════════════════════════
+    
+    lucide.createIcons();
+    
+    // ═══════════════════════════════════════════════════════════════════
+    // 2. SECURITY & AUTH CHECK
+    // ═══════════════════════════════════════════════════════════════════
+    
     const user = auth.checkSession();
     if (!user) {
       window.location.replace('index.html');
     }
     
-    // 2. Role Based Display
-    if (['موظف', 'Employee', 'مدير', 'Admin', 'منسق', 'Coordinator'].includes(user.role)) {
+    // ═══════════════════════════════════════════════════════════════════
+    // 3. ROLE-BASED DISPLAY
+    // ═══════════════════════════════════════════════════════════════════
+    
+    if (user) {
+      // 3.1 Display User Name
       document.getElementById('user-name').textContent = user.name + ' 👋';
       
-      // Toggle Links
-      if (user.role === 'منسق' || user.role === 'Coordinator') document.getElementById('coordinator-link').style.display = 'flex';
-      if (user.role === 'مدير' || user.role === 'Admin') {
-        document.getElementById('coordinator-link').style.display = 'flex';
-        document.getElementById('admin-link').style.display = 'flex';
+      // 3.2 Show/Hide Navigation Based on Role
+      const isAdmin = user.role === 'مدير' || user.role === 'Admin';
+      const isCoordinator = user.role === 'منسق' || user.role === 'Coordinator' || isAdmin;
+      
+      // Sidebar Links
+      const coordinatorLink = document.getElementById('coordinator-link');
+      const adminLink = document.getElementById('admin-link');
+      const adminNavLink = document.getElementById('admin-nav-link');
+      
+      if (!isCoordinator && coordinatorLink) {
+        coordinatorLink.style.display = 'none';
       }
-    } else {
-      alert('غير مصرح لك بالدخول');
-      window.location.replace('index.html');
+      
+      if (!isAdmin) {
+        if (adminLink) adminLink.style.display = 'none';
+        if (adminNavLink) adminNavLink.classList.add('hidden');
+      } else {
+        // Show admin link in bottom nav for admins
+        if (adminNavLink) adminNavLink.classList.remove('hidden');
+      }
     }
 
-    lucide.createIcons();
+    // ═══════════════════════════════════════════════════════════════════
+    // 4. SIDEBAR TOGGLE
+    // ═══════════════════════════════════════════════════════════════════
+    
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('overlay').classList.toggle('active');
+    }
 
-    // 3. Helper: Sanitize Output (XSS Protection)
+    // ═══════════════════════════════════════════════════════════════════
+    // 5. HELPER: SANITIZE OUTPUT (XSS Protection)
+    // ═══════════════════════════════════════════════════════════════════
+    
     function escapeHtml(text) {
       if (!text) return '';
       return text
@@ -124,12 +354,15 @@
         .replace(/'/g, "&#039;");
     }
 
-    // 4. Load Data
+    // ═══════════════════════════════════════════════════════════════════
+    // 6. LOAD TASKS
+    // ═══════════════════════════════════════════════════════════════════
+    
     loadTasks();
 
     async function loadTasks() {
       try {
-        // Use 'Employee' role specifically to get assigned tasks
+        // Use 'getEmployeeData' to get assigned tasks
         const result = await auth.apiCall('getEmployeeData', { name: user.name });
         
         if (result.success) {
@@ -143,7 +376,7 @@
             <div style="font-size: 3rem; margin-bottom: 12px;">❌</div>
             <p style="font-weight: 700;">خطأ في تحميل المهام</p>
             <p style="font-size: 0.9rem; opacity: 0.8;">${escapeHtml(err.message)}</p>
-            <button onclick="loadTasks()" style="margin-top:16px; padding:8px 16px; cursor:pointer;">إعادة المحاولة</button>
+            <button onclick="loadTasks()" style="margin-top:16px; padding:8px 16px; cursor:pointer; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600;">إعادة المحاولة</button>
           </div>
         `;
       }
@@ -180,13 +413,15 @@
                 <div class="task-meta">
                   <div><strong>📥 الجهة:</strong> ${escapeHtml(t.entity || t.source || '-')}</div>
                   <div><strong>📅 التاريخ:</strong> ${escapeHtml(t.date || '-')}</div>
-                  ${t.attachment ? `<div style="margin-top:4px;"><a href="${t.attachment}" target="_blank" rel="noopener noreferrer" style="color:#2563eb; text-decoration:underline; font-weight:700;">📎 عرض المرفق</a></div>` : ''}
+                  ${t.attachment ? `<div style="margin-top:4px;"><a href="${escapeHtml(t.attachment)}" target="_blank" rel="noopener noreferrer" style="color:#2563eb; text-decoration:underline; font-weight:700;">📎 عرض المرفق</a></div>` : ''}
                 </div>
               </div>
             `}).join('')}
           </div>
         </div>
       `;
+      
+      lucide.createIcons();
     }
   </script>
 </body>
