@@ -12,179 +12,202 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
+    * { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     body { font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; min-height: 100vh; background-color: #f8fafc; }
     
-    /* الهيدر والفوتر الأصلي */
-    .header-main { background-color: #0f766e; color: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    .footer-main { background-color: #0f766e; color: white; border-top: 4px solid rgba(0,0,0,0.1); }
+    /* 1. الهيدر والفوتر (بنفس الستايل القديم) */
+    .header-main { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); color: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .footer-main { background: #0f766e; color: white; border-top: 4px solid rgba(0,0,0,0.05); }
     
-    /* كارت الدخول */
-    .login-box {
+    /* 2. كارت الدخول في المنتصف */
+    .login-card {
       background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
       border: 1px solid #e2e8f0;
+      width: 100%;
+      max-width: 420px;
       transition: transform 0.3s ease;
     }
     
-    /* تحسين الحقول */
+    /* 3. حقول الإدخال */
     .input-custom {
       width: 100%;
-      padding: 12px 16px 12px 45px;
+      padding: 14px 16px 14px 45px;
       border: 2px solid #e2e8f0;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 16px;
       outline: none;
       transition: all 0.2s;
+      background-color: #f8fafc;
     }
     .input-custom:focus {
       border-color: #0f766e;
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+      background-color: white;
+      box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
     }
     
-    /* الأنيميشن */
+    /* تأثير الاهتزاز عند الخطأ */
     .shake { animation: shake 0.4s ease-in-out; }
     @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
   </style>
 </head>
 <body>
 
-  <header class="header-main py-4 sticky top-0 z-50">
-    <div class="container mx-auto px-4 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <div class="bg-white/10 p-2 rounded-lg backdrop-blur-sm">
-          <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+  <header class="header-main py-5 sticky top-0 z-50">
+    <div class="container mx-auto px-6 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <div class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm shadow-inner">
+          <i data-lucide="shield-check" class="w-7 h-7 text-white"></i>
         </div>
         <div>
-          <h1 class="text-lg font-bold leading-tight">نظام الحوكمة</h1>
-          <p class="text-xs text-teal-100 opacity-90">مديرية الشؤون الصحية بالفيوم</p>
+          <h1 class="text-xl font-bold leading-tight tracking-wide">نظام الحوكمة</h1>
+          <p class="text-xs text-teal-100 opacity-90 font-medium">مديرية الشؤون الصحية بالفيوم</p>
         </div>
       </div>
     </div>
   </header>
 
   <main class="flex-1 flex items-center justify-center p-4">
-    <div class="w-full max-w-md login-box p-8" id="login-card">
+    
+    <div class="login-card p-8 sm:p-10" id="login-box">
       
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 text-teal-700 mb-4">
-          <i data-lucide="user-check" class="w-8 h-8"></i>
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 text-teal-700 mb-4 shadow-sm border border-teal-100">
+          <i data-lucide="lock-keyhole" class="w-8 h-8"></i>
         </div>
         <h2 class="text-2xl font-bold text-slate-800">تسجيل الدخول</h2>
-        <p class="text-slate-500 text-sm mt-1">أدخل بياناتك للمتابعة</p>
+        <p class="text-slate-500 text-sm mt-2 font-medium">أدخل بياناتك للوصول إلى النظام</p>
       </div>
 
       <form id="login-form" class="space-y-6">
         
         <div class="space-y-2">
-          <label class="text-sm font-bold text-slate-700">رقم الموبايل</label>
-          <div class="relative">
-            <input type="tel" id="mobile" maxlength="11" class="input-custom" placeholder="01xxxxxxxxx">
-            <i data-lucide="smartphone" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+          <label class="text-sm font-bold text-slate-700 mr-1">رقم الموبايل</label>
+          <div class="relative group">
+            <input type="tel" id="mobile-input" maxlength="11" class="input-custom text-left dir-ltr" placeholder="01xxxxxxxxx" autocomplete="username">
+            <i data-lucide="smartphone" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors w-5 h-5"></i>
           </div>
         </div>
 
         <div class="space-y-2">
-          <label class="text-sm font-bold text-slate-700">رمز الدخول (PIN)</label>
-          <div class="relative">
-            <input type="password" id="pin" maxlength="4" class="input-custom tracking-widest font-bold" placeholder="••••">
-            <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+          <label class="text-sm font-bold text-slate-700 mr-1">رمز الدخول (PIN)</label>
+          <div class="relative group">
+            <input type="password" id="pin-input" maxlength="4" class="input-custom text-center tracking-[0.5em] font-bold text-lg" placeholder="••••" autocomplete="current-password">
+            <i data-lucide="key-round" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors w-5 h-5"></i>
           </div>
         </div>
 
-        <button type="submit" id="login-btn" class="w-full bg-[#0f766e] hover:bg-[#115e59] text-white font-bold py-3.5 rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
-          <span>دخول</span>
+        <button type="submit" id="login-btn" class="w-full bg-[#0f766e] hover:bg-[#115e59] text-white font-bold py-4 rounded-xl shadow-lg shadow-teal-700/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 mt-2">
+          <span>تسجيل الدخول</span>
           <i data-lucide="arrow-left" class="w-5 h-5"></i>
         </button>
 
       </form>
 
-      <div id="error-msg" class="hidden mt-6 p-3 bg-red-50 border border-red-100 text-red-600 rounded-lg text-sm font-bold text-center flex items-center justify-center gap-2">
-        <i data-lucide="alert-circle" class="w-4 h-4"></i>
+      <div id="error-msg" class="hidden mt-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm font-bold text-center flex items-center justify-center gap-2 animate-pulse">
+        <i data-lucide="alert-triangle" class="w-5 h-5"></i>
         <span id="error-text">بيانات غير صحيحة</span>
       </div>
 
     </div>
   </main>
 
-  <footer class="footer-main py-4 mt-auto">
+  <footer class="footer-main py-6 mt-auto">
     <div class="container mx-auto px-4 text-center">
-      <p class="font-bold text-sm mb-1">© 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة</p>
-      <div class="text-[11px] text-teal-100 opacity-80 font-mono space-y-0.5" dir="ltr">
+      <p class="font-bold text-sm mb-2 opacity-95">© 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة</p>
+      <div class="text-[11px] text-teal-100 opacity-80 font-mono space-y-1 tracking-wide" dir="ltr">
         <p>MoH Fayoum Governance – Internal Access Page</p>
         <p>Developed under Governance Supervision – Dr. MAH</p>
       </div>
     </div>
   </footer>
 
-  <div id="loading-overlay" class="fixed inset-0 z-50 hidden bg-white/90 backdrop-blur-sm flex items-center justify-center flex-col">
-    <div class="w-12 h-12 border-4 border-slate-200 border-t-[#0f766e] rounded-full animate-spin"></div>
-    <p class="mt-4 text-[#0f766e] font-bold">جاري التحقق...</p>
-  </div>
-
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
+  
   <script>
+    // تهيئة الأيقونات
     lucide.createIcons();
     
-    // Auto-focus logic
+    // التركيز التلقائي والتحقق من الجلسة
     window.addEventListener('load', () => {
-      if (auth.checkAuth()) {
-        window.location.href = 'distribution.html';
+      // إذا كان المستخدم مسجلاً بالفعل، حوله فوراً
+      if (typeof auth !== 'undefined' && auth.currentUser) {
+         window.location.href = 'distribution.html'; // أو الصفحة المناسبة حسب الدور
       } else {
-        document.getElementById('mobile').focus();
+         document.getElementById('mobile-input').focus();
       }
     });
 
-    // Login logic
+    // منطق تسجيل الدخول
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      const mobile = document.getElementById('mobile').value.trim();
-      const pin = document.getElementById('pin').value.trim();
+      const mobileInput = document.getElementById('mobile-input');
+      const pinInput = document.getElementById('pin-input');
       const btn = document.getElementById('login-btn');
       const errorDiv = document.getElementById('error-msg');
+      const loginBox = document.getElementById('login-box');
       
+      const mobile = mobileInput.value.trim();
+      const pin = pinInput.value.trim();
+      
+      // إخفاء الخطأ السابق
       errorDiv.classList.add('hidden');
 
+      // تحقق بسيط
       if(mobile.length < 11 || pin.length < 4) {
-        showError("البيانات غير مكتملة");
+        showError("يرجى إدخال رقم الموبايل ورمز PIN بشكل صحيح");
         return;
       }
 
-      // Loading state
-      const originalText = btn.innerHTML;
+      // حالة التحميل UI
+      const originalBtnContent = btn.innerHTML;
       btn.disabled = true;
-      btn.innerHTML = '<span>جاري الاتصال...</span>';
+      btn.innerHTML = '<span class="animate-pulse">جاري الاتصال...</span>';
       
       try {
+        // استدعاء دالة الدخول من auth.js
         const result = await auth.login(mobile, pin);
+        
         if (result.success) {
+           // نجاح: تغيير الزر للأخضر
            btn.classList.replace('bg-[#0f766e]', 'bg-emerald-600');
            btn.innerHTML = '<span>تم بنجاح ✓</span>';
-           setTimeout(() => window.location.href = 'distribution.html', 500);
+           
+           // التوجيه يتم عادة داخل auth.js، ولكن للتأكيد:
+           setTimeout(() => {
+             // إعادة التوجيه حسب الدور (في حال لم يقم auth.js بذلك)
+             if (result.role === 'admin') window.location.href = 'admin.html';
+             else if (result.role === 'coordinator') window.location.href = 'coordinator.html';
+             else window.location.href = 'employee.html';
+           }, 800);
+           
         } else {
-           showError(result.error || "بيانات غير صحيحة");
-           btn.disabled = false;
-           btn.innerHTML = originalText;
-           lucide.createIcons();
+           // فشل
+           showError(result.error || "بيانات الدخول غير صحيحة");
+           resetBtn();
         }
       } catch (err) {
-        showError("خطأ في السيرفر");
+        console.error(err);
+        showError("حدث خطأ في الاتصال بالسيرفر");
+        resetBtn();
+      }
+
+      function resetBtn() {
         btn.disabled = false;
-        btn.innerHTML = originalText;
+        btn.innerHTML = originalBtnContent;
+        lucide.createIcons();
+      }
+
+      function showError(msg) {
+        document.getElementById('error-text').textContent = msg;
+        errorDiv.classList.remove('hidden');
+        loginBox.classList.add('shake');
+        setTimeout(() => loginBox.classList.remove('shake'), 400);
       }
     });
-
-    function showError(msg) {
-      document.getElementById('error-text').textContent = msg;
-      const box = document.getElementById('login-card');
-      const errorDiv = document.getElementById('error-msg');
-      
-      errorDiv.classList.remove('hidden');
-      box.classList.add('shake');
-      setTimeout(() => box.classList.remove('shake'), 400);
-    }
   </script>
 </body>
 </html>
