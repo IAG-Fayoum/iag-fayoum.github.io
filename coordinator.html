@@ -3,219 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>المتابعة والتكليف | نظام الحوكمة</title>
+    <title>مكتب التنسيق | نظام الحوكمة</title>
     
     <link rel="icon" href="assets/icons/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; color: #1e293b; padding-bottom: 80px; }
+        /* 1. إعدادات الثيم الجديد (Green & Beige) */
+        :root {
+            --primary: #047857;       /* أخضر غني */
+            --primary-dark: #065f46;  /* أخضر أغمق */
+            --accent: #d97706;        /* ذهبي/أصفر للأرقام */
+            --bg-cream: #fdfbf7;      /* بيج فاتح جداً للخلفية */
+            --surface: #ffffff;       /* أبيض للكروت */
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+        }
+
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--bg-cream); 
+            color: var(--text-main);
+            padding-bottom: 80px; 
+        }
+
+        /* إخفاء السكرول */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* 2. تصميم الكارت الشامل (Super Card) */
+        .super-card {
+            background: var(--surface);
+            border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 16px;
+            padding: 0; /* Padding handled inside sections */
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px -2px rgba(4, 120, 87, 0.08); /* ظل أخضر خفيف */
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
         
-        /* Desktop Sidebar */
+        .super-card:active { transform: scale(0.99); }
+
+        /* شريط جانبي ملون للكارت حسب الحالة */
+        .card-status-strip {
+            position: absolute; right: 0; top: 0; bottom: 0; width: 4px;
+            background: #e5e7eb;
+        }
+        .status-late .card-status-strip { background: #ef4444; }
+        .status-progress .card-status-strip { background: #f59e0b; }
+        .status-done .card-status-strip { background: #10b981; }
+
+        /* أقسام الكارت */
+        .card-header { padding: 12px 16px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center; }
+        .card-body { padding: 16px; }
+        .card-footer { padding: 12px 16px; background: #fafafa; border-top: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center; }
+
+        /* بادجات البيانات */
+        .data-badge {
+            background: #f3f4f6; padding: 4px 8px; rounded: 6px; 
+            font-size: 0.7rem; font-weight: 700; color: #374151;
+            display: inline-flex; align-items: center; gap: 4px;
+            border-radius: 6px;
+        }
+        .data-badge.legal { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
+
+        /* 3. الهيدر الجديد */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 15px -3px rgba(4, 120, 87, 0.2);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        /* 4. Sidebar & Responsive */
         @media (min-width: 1024px) {
-            body { padding-bottom: 0; padding-right: 260px; }
-            .sidebar { transform: translateX(0) !important; width: 260px; }
-            .bottom-nav { display: none !important; }
+            body { padding-bottom: 0; padding-right: 270px; }
+            .sidebar { width: 270px; transform: translateX(0) !important; border-left: 1px solid rgba(0,0,0,0.05); }
             .mobile-header { display: none !important; }
+            .bottom-nav { display: none !important; }
+            .app-header { border-radius: 0; }
         }
-
-        /* Stat Cards */
-        .coord-card {
-            background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s;
-        }
-        .coord-card:hover { transform: translateY(-2px); border-color: #0f766e; }
-
-        /* Table */
-        .table-row { border-bottom: 1px solid #f1f5f9; transition: background 0.2s; }
-        .table-row:hover { background-color: #f0fdfa; }
-        
-        /* Status Indicators */
-        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 6px; }
-        .dot-red { background-color: #ef4444; box-shadow: 0 0 0 2px #fee2e2; }
-        .dot-green { background-color: #10b981; box-shadow: 0 0 0 2px #d1fae5; }
-        .dot-yellow { background-color: #f59e0b; box-shadow: 0 0 0 2px #fef3c7; }
-
-        /* Urgency Badge */
-        .badge-urgent { background: #fee2e2; color: #b91c1c; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar fixed top-0 right-0 h-full bg-white border-l border-slate-200 z-50 transition-transform duration-300 translate-x-full flex flex-col shadow-lg">
-        <div class="p-6 border-b border-slate-100 flex items-center gap-3 bg-[#0f766e] text-white">
-            <div class="bg-white/20 p-2 rounded-lg">
-                <i data-lucide="shield-check" class="w-6 h-6"></i>
+    <aside class="sidebar fixed top-0 right-0 h-full bg-white z-50 transition-transform duration-300 translate-x-full flex flex-col shadow-xl lg:shadow-none">
+        <div class="p-6 flex flex-col items-center justify-center border-b border-gray-100 bg-[#fdfbf7]">
+            <div class="w-24 h-24 mb-3 relative">
+                <img src="assets/icons/logo_eagle.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3063/3063176.png'" alt="Ministry Logo" class="w-full h-full object-contain drop-shadow-md">
             </div>
-            <div>
-                <h1 class="font-bold text-lg leading-tight">نظام الحوكمة</h1>
-                <p class="text-[10px] text-teal-100 opacity-90">مكتب التنسيق</p>
-            </div>
+            <h1 class="font-bold text-lg text-[#047857]">إدارة الحوكمة</h1>
+            <p class="text-xs text-gray-500">مديرية الشؤون الصحية بالفيوم</p>
         </div>
 
-        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-            <a href="distribution.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                <span>الرئيسية</span>
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <a href="distribution.html" class="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-[#f0fdfa] hover:text-[#047857] rounded-xl font-medium transition-colors">
+                <i data-lucide="layout-grid" class="w-5 h-5"></i><span>الرئيسية</span>
             </a>
-            
-            <a href="employee.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="briefcase" class="w-5 h-5"></i>
-                <span>مهامي</span>
+            <a href="coordinator.html" class="flex items-center gap-3 px-4 py-3 bg-[#047857] text-white rounded-xl font-bold shadow-lg shadow-green-900/20">
+                <i data-lucide="users" class="w-5 h-5"></i><span>المتابعة والتكليف</span>
             </a>
-
-            <a href="forms.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="file-text" class="w-5 h-5"></i>
-                <span>النماذج</span>
+            <a href="employee.html" class="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-[#f0fdfa] hover:text-[#047857] rounded-xl font-medium transition-colors">
+                <i data-lucide="briefcase" class="w-5 h-5"></i><span>مهامي</span>
             </a>
-
-            <a href="Notifications.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="bell" class="w-5 h-5"></i>
-                <span>الإشعارات</span>
+            <a href="admin.html" class="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-[#f0fdfa] hover:text-[#047857] rounded-xl font-medium transition-colors">
+                <i data-lucide="settings-2" class="w-5 h-5"></i><span>لوحة التحكم</span>
             </a>
-
-            <div class="pt-4 mt-2 border-t border-slate-100">
-                <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">الإدارة</p>
-                <a href="admin.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                    <i data-lucide="settings-2" class="w-5 h-5"></i>
-                    <span>لوحة التحكم</span>
-                </a>
-                <a href="coordinator.html" class="flex items-center gap-3 px-4 py-3 bg-teal-50 text-teal-700 rounded-xl font-bold transition-colors shadow-sm">
-                    <i data-lucide="users" class="w-5 h-5"></i>
-                    <span>المتابعة والتكليف</span>
-                </a>
-            </div>
         </nav>
-
-        <div class="p-4 border-t border-slate-100 bg-slate-50">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 overflow-hidden">
-                    <div class="w-9 h-9 rounded-full bg-[#0f766e] text-white flex items-center justify-center font-bold text-sm" id="user-avatar"></div>
-                    <div class="min-w-0">
-                        <p class="text-sm font-bold text-slate-800 truncate" id="user-name">...</p>
-                        <p class="text-xs text-slate-500 truncate" id="user-role">...</p>
-                    </div>
-                </div>
-                <button onclick="auth.logout()" class="text-slate-400 hover:text-red-500 transition-colors p-1"><i data-lucide="log-out" class="w-5 h-5"></i></button>
-            </div>
-        </div>
     </aside>
 
     <main class="min-h-screen w-full">
-        <div class="mobile-header bg-white p-4 sticky top-0 z-30 border-b border-slate-200 flex items-center justify-between lg:hidden shadow-sm">
-            <h1 class="font-bold text-lg text-teal-800">مكتب التنسيق</h1>
-            <div class="w-8"></div>
+        
+        <div class="mobile-header app-header p-4 sticky top-0 z-30 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20">
+                    <img src="assets/icons/logo_eagle.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3063/3063176.png'" class="w-6 h-6 object-contain brightness-200 grayscale"> 
+                </div>
+                <div>
+                    <h1 class="font-bold text-base leading-tight">مكتب التنسيق</h1>
+                    <p class="text-[10px] text-green-100 opacity-80">المتابعة الميدانية</p>
+                </div>
+            </div>
+            <button class="p-2 bg-white/10 rounded-lg text-white hover:bg-white/20">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+            </button>
         </div>
 
-        <div class="p-4 lg:p-10 max-w-7xl mx-auto space-y-8">
+        <div class="p-4 lg:p-8 max-w-7xl mx-auto space-y-6">
             
-            <div class="flex justify-between items-end">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-800">غرفة عمليات المتابعة 🔭</h2>
-                    <p class="text-slate-500 mt-1 text-sm">متابعة سير العمل وحالة المهام اليومية</p>
-                </div>
-                <div class="hidden md:flex gap-2">
-                    <button onclick="location.reload()" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-50 transition">
-                        <i data-lucide="refresh-cw" class="w-4 h-4"></i> تحديث
+            <div class="flex flex-col gap-4">
+                <div class="flex justify-between items-end px-1">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">غرفة العمليات</h2>
+                        <p class="text-sm text-gray-500">متابعة حالة التكليفات الجارية</p>
+                    </div>
+                    <button class="text-xs bg-white border px-3 py-1.5 rounded-lg text-gray-600 shadow-sm font-bold flex items-center gap-1">
+                        <i data-lucide="filter" class="w-3 h-3"></i> فلترة
                     </button>
                 </div>
-            </div>
 
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="coord-card border-l-4 border-l-blue-500">
-                    <div>
-                        <p class="text-xs font-bold text-slate-400 mb-1">إجمالي المهام</p>
-                        <h3 class="text-2xl font-extrabold text-slate-800" id="stat-total">0</h3>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="bg-[#2c3e50] text-white p-4 rounded-2xl shadow-lg relative overflow-hidden">
+                        <div class="absolute -left-2 -bottom-4 opacity-10"><i data-lucide="layers" class="w-16 h-16"></i></div>
+                        <p class="text-[10px] opacity-70">إجمالي التكليفات</p>
+                        <h3 class="text-2xl font-bold">142</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><i data-lucide="layers" class="w-5 h-5"></i></div>
-                </div>
-                <div class="coord-card border-l-4 border-l-amber-500">
-                    <div>
-                        <p class="text-xs font-bold text-slate-400 mb-1">قيد التنفيذ</p>
-                        <h3 class="text-2xl font-extrabold text-slate-800" id="stat-progress">0</h3>
+                    <div class="bg-[#d97706] text-white p-4 rounded-2xl shadow-lg relative overflow-hidden">
+                        <div class="absolute -left-2 -bottom-4 opacity-10"><i data-lucide="loader" class="w-16 h-16"></i></div>
+                        <p class="text-[10px] opacity-80">جاري التنفيذ</p>
+                        <h3 class="text-2xl font-bold">28</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center"><i data-lucide="loader" class="w-5 h-5"></i></div>
-                </div>
-                <div class="coord-card border-l-4 border-l-red-500">
-                    <div>
-                        <p class="text-xs font-bold text-slate-400 mb-1">متأخرات</p>
-                        <h3 class="text-2xl font-extrabold text-red-600" id="stat-overdue">0</h3>
+                    <div class="bg-[#dc2626] text-white p-4 rounded-2xl shadow-lg relative overflow-hidden">
+                        <div class="absolute -left-2 -bottom-4 opacity-10"><i data-lucide="alert-circle" class="w-16 h-16"></i></div>
+                        <p class="text-[10px] opacity-80">متأخرات</p>
+                        <h3 class="text-2xl font-bold">5</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center animate-pulse"><i data-lucide="alert-circle" class="w-5 h-5"></i></div>
-                </div>
-                <div class="coord-card border-l-4 border-l-emerald-500">
-                    <div>
-                        <p class="text-xs font-bold text-slate-400 mb-1">تم الإنجاز</p>
-                        <h3 class="text-2xl font-extrabold text-emerald-600" id="stat-done">0</h3>
-                    </div>
-                    <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center"><i data-lucide="check-circle-2" class="w-5 h-5"></i></div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-4 border-b border-slate-100 flex flex-col md:flex-row gap-4 justify-between items-center bg-slate-50/50">
-                    <div class="relative w-full md:w-80">
-                        <input type="text" id="search-monitor" placeholder="بحث باسم الموظف، الموضوع..." 
-                               class="w-full pl-4 pr-10 py-2 border border-slate-200 rounded-lg text-sm focus:border-teal-500 outline-none">
-                        <i data-lucide="search" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4"></i>
+            <div id="tasks-list" class="space-y-4">
+                
+                <div class="super-card status-progress">
+                    <div class="card-status-strip"></div>
+                    
+                    <div class="card-header">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-md text-[10px] font-bold border border-blue-100">📥 وارد</span>
+                            <span class="font-mono text-sm font-bold text-gray-700">#2026-89</span>
+                        </div>
+                        <span class="bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 border border-amber-100">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> جاري التنفيذ
+                        </span>
                     </div>
-                    <div class="flex gap-2 w-full md:w-auto">
-                        <select id="filter-status" onchange="applyFilters()" class="px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:border-teal-500 outline-none w-full md:w-auto">
-                            <option value="all">كل الحالات</option>
-                            <option value="late">⚠️ متأخر فقط</option>
-                            <option value="progress">⏳ جاري التنفيذ</option>
-                            <option value="done">✅ منتهي</option>
-                        </select>
+
+                    <div class="card-body">
+                        <h3 class="text-sm font-bold text-gray-900 leading-relaxed mb-3">
+                            بخصوص الشكوى المقدمة من المواطن/ أحمد محمد علي بشأن نقص المستلزمات الطبية
+                        </h3>
+                        
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <div class="data-badge">
+                                <i data-lucide="building-2" class="w-3 h-3 text-gray-400"></i>
+                                <span>وارد من: الوزارة</span>
+                            </div>
+                            <div class="data-badge">
+                                <i data-lucide="map-pin" class="w-3 h-3 text-gray-400"></i>
+                                <span>محل التنفيذ: مستشفى الفيوم العام</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="flex items-center gap-2">
+                            <button class="p-2 bg-white border border-gray-200 rounded-lg text-gray-500 hover:text-[#047857] hover:border-[#047857] transition shadow-sm" title="مرفق التكليف">
+                                <i data-lucide="file-input" class="w-4 h-4"></i>
+                            </button>
+                            <button class="p-2 bg-white border border-gray-200 rounded-lg text-gray-300 cursor-not-allowed shadow-sm" title="لا يوجد رد بعد" disabled>
+                                <i data-lucide="file-output" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="text-right">
+                                <p class="text-[10px] text-gray-400">المكلف بالمتابعة</p>
+                                <p class="text-xs font-bold text-gray-700">د. محمد حسين</p>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 border border-gray-200">MH</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-right">
-                        <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
-                            <tr>
-                                <th class="p-4 whitespace-nowrap">الحالة</th>
-                                <th class="p-4">الموضوع</th>
-                                <th class="p-4">المكلف</th>
-                                <th class="p-4">تاريخ التكليف</th>
-                                <th class="p-4 text-center">إجراء</th>
-                            </tr>
-                        </thead>
-                        <tbody id="monitor-table-body">
-                            <tr>
-                                <td colspan="5" class="p-8 text-center text-slate-400">
-                                    <div class="flex justify-center items-center gap-2">
-                                        <span class="animate-pulse">جاري تحميل سجلات المتابعة...</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="super-card status-late">
+                    <div class="card-status-strip"></div>
+                    
+                    <div class="card-header bg-red-50/30">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-purple-50 text-purple-700 px-2 py-1 rounded-md text-[10px] font-bold border border-purple-100">⚖️ نيابة</span>
+                            <span class="font-mono text-sm font-bold text-gray-700">#2026-45</span>
+                        </div>
+                        <span class="bg-red-50 text-red-700 px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 border border-red-100">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> متأخر (3 أيام)
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+                        <h3 class="text-sm font-bold text-gray-900 leading-relaxed mb-3">
+                            التحقيق في واقعة تغيب أطباء الوحدة الصحية بقرية سنهور
+                        </h3>
+                        
+                        <div class="grid grid-cols-2 gap-2 mb-3 bg-[#fff7ed] p-2 rounded-lg border border-[#ffedd5]">
+                            <div class="text-xs text-[#c2410c] flex flex-col">
+                                <span class="opacity-70 text-[10px]">رقم القضية</span>
+                                <span class="font-mono font-bold">5541 / إداري</span>
+                            </div>
+                            <div class="text-xs text-[#c2410c] flex flex-col">
+                                <span class="opacity-70 text-[10px]">السنة</span>
+                                <span class="font-mono font-bold">2025</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2">
+                            <div class="data-badge">
+                                <i data-lucide="building-2" class="w-3 h-3 text-gray-400"></i>
+                                <span>وارد من: النيابة الإدارية - القسم الأول</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="flex items-center gap-2">
+                            <button class="p-2 bg-white border border-gray-200 rounded-lg text-[#047857] hover:bg-green-50 shadow-sm" title="عرض المرفق">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                            <button class="flex items-center gap-1 px-3 py-2 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-bold hover:bg-red-100 shadow-sm">
+                                <i data-lucide="zap" class="w-3 h-3"></i> استعجال
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="text-right">
+                                <p class="text-[10px] text-gray-400">المكلف بالمتابعة</p>
+                                <p class="text-xs font-bold text-gray-700">أ. سمير علي</p>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 border border-gray-200">SA</div>
+                        </div>
+                    </div>
                 </div>
+
             </div>
-
         </div>
     </main>
 
-    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
+    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around p-2 pb-safe z-40 lg:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-[#047857]">
             <i data-lucide="layout-grid" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">الرئيسية</span>
+            <span class="text-[10px]">الرئيسية</span>
         </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
+        <a href="coordinator.html" class="flex flex-col items-center gap-1 p-2 text-[#047857]">
+            <i data-lucide="users" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold">التنسيق</span>
+        </a>
+        <a href="employee.html" class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-[#047857]">
             <i data-lucide="briefcase" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">مهامي</span>
+            <span class="text-[10px]">مهامي</span>
         </a>
-        <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
-            <i data-lucide="file-text" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">النماذج</span>
-        </a>
-        <a href="admin.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
+        <a href="admin.html" class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-[#047857]">
             <i data-lucide="settings-2" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">الإدارة</span>
+            <span class="text-[10px]">الإدارة</span>
         </a>
     </nav>
 
@@ -223,144 +299,10 @@
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allTasks = [];
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            const user = auth.checkAuth();
-            if (!user) return;
-
-            // حماية بسيطة: لو موظف عادي يحوله للداشبورد
-            if (user.role === 'employee') {
-                alert('عذراً، هذه الصفحة للمنسقين والمدراء فقط');
-                window.location.href = 'distribution.html';
-                return;
-            }
-
-            // UI Init
-            document.getElementById('user-name').textContent = user.name;
-            document.getElementById('user-role').textContent = user.jobTitle || 'منسق';
-            document.getElementById('user-avatar').textContent = user.name.charAt(0);
-
-            await loadCoordinatorData(user);
-
-            // Search Listener
-            document.getElementById('search-monitor').addEventListener('input', (e) => {
-                const val = e.target.value.toLowerCase();
-                const filtered = allTasks.filter(t => 
-                    t.subject.toLowerCase().includes(val) || 
-                    t.assignee.toLowerCase().includes(val)
-                );
-                renderTable(filtered);
-            });
-        });
-
-        async function loadCoordinatorData(user) {
-            try {
-                // نطلب البيانات بصلاحية "coordinator" أو "admin"
-                const res = await auth.callAPI('getAllData', {
-                    role: user.role === 'admin' ? 'admin' : 'coordinator',
-                    name: user.name,
-                    startDate: '2024-01-01'
-                });
-
-                if (res.success) {
-                    allTasks = res.tasks;
-                    updateStats(res.stats.totals);
-                    renderTable(allTasks);
-                }
-            } catch(e) {
-                console.error(e);
-            }
-        }
-
-        function updateStats(stats) {
-            document.getElementById('stat-total').textContent = stats.total;
-            document.getElementById('stat-progress').textContent = stats.inProgress;
-            document.getElementById('stat-overdue').textContent = stats.overdue;
-            document.getElementById('stat-done').textContent = stats.completed;
-        }
-
-        function renderTable(tasks) {
-            const tbody = document.getElementById('monitor-table-body');
-            
-            if (tasks.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400">لا توجد بيانات</td></tr>`;
-                return;
-            }
-
-            // ترتيب: المتأخر أولاً، ثم الجاري
-            tasks.sort((a, b) => {
-                if (a.status.includes('متأخر') && !b.status.includes('متأخر')) return -1;
-                return 0;
-            });
-
-            tbody.innerHTML = tasks.map(t => {
-                const isLate = t.status.includes('متأخر');
-                const isDone = t.status.includes('تم') || t.status.includes('منتهي');
-                
-                // تحديد لون النقطة
-                let dotClass = 'dot-yellow';
-                if (isLate) dotClass = 'dot-red';
-                if (isDone) dotClass = 'dot-green';
-
-                return `
-                <tr class="table-row ${isLate ? 'bg-red-50 hover:bg-red-100' : ''}">
-                    <td class="p-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <span class="dot ${dotClass}"></span>
-                            <span class="mr-2 text-xs font-bold ${isLate ? 'text-red-600' : 'text-slate-600'}">
-                                ${t.status}
-                            </span>
-                        </div>
-                    </td>
-                    <td class="p-4">
-                        <div class="font-bold text-slate-800 text-sm max-w-[250px] truncate" title="${t.subject}">
-                            ${t.subject}
-                        </div>
-                        <div class="text-[10px] text-slate-400">#${t.id}</div>
-                    </td>
-                    <td class="p-4">
-                        <div class="flex items-center gap-1.5">
-                            <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">
-                                ${t.assignee.charAt(0)}
-                            </div>
-                            <span class="text-xs font-medium text-slate-700">${t.assignee}</span>
-                        </div>
-                    </td>
-                    <td class="p-4 text-xs font-mono text-slate-500">${t.date}</td>
-                    <td class="p-4 text-center">
-                        ${!isDone ? `
-                            <button onclick="nudgeEmployee('${t.assignee}', '${t.id}')" class="p-2 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 text-slate-400 hover:text-amber-500 transition" title="إرسال استعجال">
-                                <i data-lucide="zap" class="w-4 h-4"></i>
-                            </button>
-                        ` : `
-                            <span class="text-emerald-500"><i data-lucide="check" class="w-4 h-4 inline"></i></span>
-                        `}
-                    </td>
-                </tr>
-                `;
-            }).join('');
-            
-            lucide.createIcons();
-        }
-
-        function applyFilters() {
-            const status = document.getElementById('filter-status').value;
-            let filtered = allTasks;
-
-            if (status === 'late') filtered = allTasks.filter(t => t.status.includes('متأخر'));
-            else if (status === 'progress') filtered = allTasks.filter(t => t.status.includes('جاري'));
-            else if (status === 'done') filtered = allTasks.filter(t => t.status.includes('منتهي') || t.status.includes('تم'));
-
-            renderTable(filtered);
-        }
-
-        function nudgeEmployee(name, taskId) {
-            if(confirm(`هل تريد إرسال تنبيه استعجال للموظف (${name}) بخصوص المهمة #${taskId}؟`)) {
-                // هنا يمكن ربطها بـ API الإشعارات لاحقاً
-                alert(`✅ تم إرسال تنبيه للموظف: ${name}`);
-            }
-        }
+        
+        // هنا هنربط بالبيانات الحقيقية بعدين
+        // دي مجرد داتا وهمية عشان تشوف شكل الكروت الجديدة
+        console.log("Coordinator Page Loaded with Green/Beige Theme");
     </script>
 </body>
 </html>
