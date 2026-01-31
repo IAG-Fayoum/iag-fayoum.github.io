@@ -4,60 +4,87 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#0f766e">
-  <title>نظام الحوكمة - تسجيل الدخول</title>
-
+  <title>نظام الحوكمة - IAG</title>
+  
   <link rel="icon" type="image/png" href="assets/icons/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    body { font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; min-height: 100vh; background-color: #f8fafc; }
+    * { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     
-    /* الهيدر الأخضر الرسمي */
-    .header-official { background-color: #0f766e; color: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    
-    /* الفوتر الأخضر الرسمي */
-    .footer-official { background-color: #0f766e; color: white; border-top: 4px solid rgba(0,0,0,0.1); }
-    
-    /* تنسيق كارت الدخول */
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background-color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* 1. الهيدر (نفس التصميم الذي أعجبك) */
+    .header-main {
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    /* 2. الفوتر (نفس التصميم والنصوص) */
+    .footer-main {
+      background-color: #0f766e;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: auto; /* يثبت الفوتر في الأسفل */
+      border-top: 4px solid rgba(0,0,0,0.1);
+    }
+
+    /* 3. كارت الدخول (في المنتصف بدلاً من الأيقونات) */
     .login-container {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      border: 1px solid #e2e8f0;
       width: 100%;
       max-width: 400px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      padding: 2rem;
+      margin: 2rem auto;
+      animation: fadeIn 0.5s ease-out;
     }
-    
+
     /* حقول الإدخال */
-    .custom-input {
+    .input-field {
       width: 100%;
-      padding: 12px 15px;
-      border: 2px solid #cbd5e1;
-      border-radius: 8px;
+      padding: 12px 16px 12px 45px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.2s;
       outline: none;
-      transition: 0.3s;
     }
-    .custom-input:focus {
+    .input-field:focus {
       border-color: #0f766e;
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+      box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
     }
-    
-    .shake { animation: shake 0.4s ease-in-out; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .shake { animation: shake 0.4s ease-in-out; }
   </style>
 </head>
 <body>
 
-  <header class="header-official py-4">
-    <div class="container mx-auto px-4 flex items-center justify-between">
+  <header class="header-main py-4">
+    <div class="container mx-auto px-6 flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <div class="bg-white/20 p-2 rounded-lg">
-          <i data-lucide="shield-check" class="w-8 h-8 text-white"></i>
+        <div class="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
+          <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
         </div>
         <div>
-          <h1 class="font-bold text-lg leading-tight">نظام الحوكمة</h1>
+          <h1 class="text-lg font-bold leading-tight">نظام الحوكمة</h1>
           <p class="text-xs text-teal-100 opacity-90">مديرية الشؤون الصحية بالفيوم</p>
         </div>
       </div>
@@ -66,44 +93,56 @@
 
   <main class="flex-1 flex items-center justify-center p-4">
     
-    <div class="login-container p-8" id="login-box">
+    <div class="login-container" id="login-box">
       
       <div class="text-center mb-6">
-        <h2 class="text-2xl font-bold text-slate-800">تسجيل الدخول</h2>
-        <p class="text-slate-500 text-sm mt-1">مرحباً بك في نظام الإدارة</p>
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-teal-50 text-teal-700 mb-3">
+          <i data-lucide="user" class="w-7 h-7"></i>
+        </div>
+        <h2 class="text-xl font-bold text-slate-800">تسجيل الدخول</h2>
+        <p class="text-slate-500 text-sm mt-1">أدخل بياناتك للمتابعة</p>
       </div>
 
       <form id="login-form" class="space-y-4">
         
         <div>
           <label class="block text-sm font-bold text-slate-700 mb-1">رقم الموبايل</label>
-          <input type="tel" id="mobile" maxlength="11" class="custom-input text-left" placeholder="01xxxxxxxxx" dir="ltr">
+          <div class="relative">
+            <input type="tel" id="mobile" maxlength="11" class="input-field" placeholder="01xxxxxxxxx" dir="ltr">
+            <i data-lucide="smartphone" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+          </div>
         </div>
 
         <div>
           <label class="block text-sm font-bold text-slate-700 mb-1">رمز الدخول (PIN)</label>
-          <input type="password" id="pin" maxlength="4" class="custom-input text-center font-bold tracking-widest" placeholder="••••">
+          <div class="relative">
+            <input type="password" id="pin" maxlength="4" class="input-field tracking-widest font-bold text-center" placeholder="••••">
+            <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+          </div>
         </div>
 
-        <button type="submit" id="login-btn" class="w-full bg-[#0f766e] hover:bg-[#0d5f57] text-white font-bold py-3 rounded-lg shadow transition-transform active:scale-95 flex justify-center items-center gap-2 mt-4">
-          <span>دخول</span>
+        <button type="submit" id="login-btn" class="w-full bg-[#0f766e] hover:bg-[#0d5f57] text-white font-bold py-3.5 rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 mt-4">
+          <span>دخول للنظام</span>
           <i data-lucide="arrow-left" class="w-5 h-5"></i>
         </button>
 
       </form>
 
-      <div id="error-msg" class="hidden mt-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm font-bold text-center border border-red-100">
-        بيانات الدخول غير صحيحة
+      <div id="error-msg" class="hidden mt-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm font-bold text-center border border-red-100 flex items-center justify-center gap-2">
+        <i data-lucide="alert-circle" class="w-4 h-4"></i>
+        <span id="error-text">بيانات غير صحيحة</span>
       </div>
 
     </div>
+
   </main>
 
-  <footer class="footer-official py-4 text-center">
+  <footer class="footer-main">
     <div class="container mx-auto px-4">
-      <p class="font-bold text-sm mb-2">© 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة</p>
-      
-      <div class="text-[11px] text-teal-100 opacity-90 space-y-1" dir="ltr" style="font-family: monospace;">
+      <p class="text-sm font-bold mb-2 opacity-95">
+        © 2025 جميع الحقوق محفوظة - إدارة المراجعة الداخلية والحوكمة
+      </p>
+      <div class="text-[11px] text-teal-100 opacity-80 space-y-1" dir="ltr" style="font-family: monospace;">
         <p>MoH Fayoum Governance – Internal Access Page</p>
         <p>Developed under Governance Supervision – Dr. MAH</p>
       </div>
@@ -112,16 +151,17 @@
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
-
   <script>
     lucide.createIcons();
 
     // Auto Focus
     window.addEventListener('load', () => {
+      // لو مسجل دخول يروح علطول
       if (typeof auth !== 'undefined' && auth.checkAuth()) {
-        window.location.href = 'distribution.html';
+         // التوجيه يتم داخل auth.js أو هنا
+         // window.location.href = 'distribution.html'; 
       } else {
-        document.getElementById('mobile').focus();
+         document.getElementById('mobile').focus();
       }
     });
 
@@ -133,45 +173,52 @@
       const pin = document.getElementById('pin').value.trim();
       const btn = document.getElementById('login-btn');
       const errorDiv = document.getElementById('error-msg');
-      const loginBox = document.getElementById('login-box');
+      const box = document.getElementById('login-box');
 
       errorDiv.classList.add('hidden');
 
       if (mobile.length < 11 || pin.length < 4) {
-        errorDiv.textContent = "يرجى إدخال البيانات كاملة";
-        errorDiv.classList.remove('hidden');
+        showError("يرجى إدخال البيانات كاملة");
         return;
       }
 
-      // Loading
+      // UI Loading
       const originalText = btn.innerHTML;
       btn.disabled = true;
-      btn.innerHTML = 'جاري التحقق...';
-
+      btn.innerHTML = '<span class="animate-pulse">جاري الاتصال...</span>';
+      
       try {
         const result = await auth.login(mobile, pin);
         
         if (result.success) {
           btn.classList.replace('bg-[#0f766e]', 'bg-emerald-600');
-          btn.innerHTML = 'تم بنجاح ✓';
+          btn.innerHTML = '<span>تم بنجاح ✓</span>';
+          
+          // التوجيه (Backup redirect)
           setTimeout(() => {
-             // إعادة التوجيه تتم هنا للتأكيد
-             window.location.href = 'distribution.html';
+             if (result.role === 'admin') window.location.href = 'admin.html';
+             else if (result.role === 'coordinator') window.location.href = 'coordinator.html';
+             else window.location.href = 'employee.html';
           }, 500);
+
         } else {
-          errorDiv.textContent = result.error || "بيانات الدخول غير صحيحة";
-          errorDiv.classList.remove('hidden');
-          loginBox.classList.add('shake');
-          setTimeout(() => loginBox.classList.remove('shake'), 400);
+          showError(result.error || "بيانات الدخول غير صحيحة");
           btn.disabled = false;
           btn.innerHTML = originalText;
           lucide.createIcons();
         }
       } catch (err) {
-        errorDiv.textContent = "خطأ في الاتصال بالسيرفر";
-        errorDiv.classList.remove('hidden');
+        console.error(err);
+        showError("خطأ في الاتصال بالسيرفر");
         btn.disabled = false;
         btn.innerHTML = originalText;
+      }
+
+      function showError(msg) {
+        document.getElementById('error-text').textContent = msg;
+        errorDiv.classList.remove('hidden');
+        box.classList.add('shake');
+        setTimeout(() => box.classList.remove('shake'), 400);
       }
     });
   </script>
