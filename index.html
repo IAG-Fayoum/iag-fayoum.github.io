@@ -12,78 +12,77 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   <style>
-    /* منع تحديد النصوص والرعشة */
-    * { -webkit-tap-highlight-color: transparent; }
+    /* تثبيت الصفحة ومنع الرعشة */
+    html, body { height: 100%; margin: 0; padding: 0; overflow-x: hidden; }
     
     body { 
       font-family: 'Cairo', sans-serif; 
-      background: #f8fafc;
-      min-height: 100vh;
+      background-color: #f8fafc;
       display: flex;
       flex-direction: column;
-      margin: 0;
     }
 
-    /* 1. الهيدر الرسمي الثابت */
+    /* 1. الهيدر الأخضر الرسمي */
     .header-official { 
       background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); 
       color: white; 
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      flex-shrink: 0; /* يمنع التقلص */
     }
 
-    /* 2. كارت الدخول */
-    .login-wrapper {
-      flex: 1;
+    /* 2. منطقة المنتصف (كارت الدخول) */
+    .main-content {
+      flex: 1; /* يأخذ المساحة المتبقية */
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 1rem;
     }
 
     .login-card {
       background: white;
       border-radius: 20px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
       border: 1px solid #e2e8f0;
       width: 100%;
       max-width: 400px;
       padding: 2rem;
+      /* تحسين الأداء */
+      transform: translateZ(0); 
     }
 
     /* حقول الإدخال */
     .custom-input {
       width: 100%;
-      padding: 14px 16px;
+      padding: 12px 16px;
       border: 2px solid #e2e8f0;
       border-radius: 12px;
       font-size: 16px;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s ease;
       background: #ffffff;
     }
     .custom-input:focus {
       border-color: #0f766e;
     }
 
-    /* تأثير الاهتزاز (يعمل مرة واحدة فقط) */
-    .shake-animation { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-    @keyframes shake { 
-      10%, 90% { transform: translate3d(-1px, 0, 0); }
-      20%, 80% { transform: translate3d(2px, 0, 0); }
-      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-      40%, 60% { transform: translate3d(4px, 0, 0); }
-    }
-
-    /* 3. الفوتر الرسمي */
+    /* 3. الفوتر الأخضر الرسمي */
     .footer-official { 
       background: #0f766e; 
       color: white; 
       text-align: center; 
       padding: 15px 0;
       border-top: 4px solid rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
+    /* أنيميشن الاهتزاز (يعمل فقط عند الخطأ) */
+    .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+    @keyframes shake { 
+      10%, 90% { transform: translate3d(-1px, 0, 0); } 
+      20%, 80% { transform: translate3d(2px, 0, 0); } 
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 
+      40%, 60% { transform: translate3d(4px, 0, 0); } 
     }
   </style>
 </head>
@@ -92,7 +91,7 @@
   <header class="header-official py-4">
     <div class="container mx-auto px-6 flex items-center gap-3">
       <div class="bg-white/20 p-2 rounded-lg">
-        <i data-lucide="shield-check" class="w-7 h-7 text-white"></i>
+        <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
       </div>
       <div>
         <h1 class="text-lg font-bold leading-tight">نظام الحوكمة</h1>
@@ -101,7 +100,7 @@
     </div>
   </header>
 
-  <div class="login-wrapper">
+  <main class="main-content">
     <div class="login-card" id="login-box">
       
       <div class="text-center mb-8">
@@ -147,7 +146,7 @@
       </div>
 
     </div>
-  </div>
+  </main>
 
   <footer class="footer-official">
     <div class="container mx-auto px-4">
@@ -166,12 +165,13 @@
   <script>
     lucide.createIcons();
     
-    // التركيز التلقائي عند التحميل
+    // تركيز واحد فقط عند التحميل لمنع قفز الشاشة
     window.addEventListener('load', () => {
-      document.getElementById('mobile-input').focus();
+      // التأكد أن العنصر موجود قبل التركيز
+      const mobileInput = document.getElementById('mobile-input');
+      if (mobileInput) setTimeout(() => mobileInput.focus(), 100);
     });
 
-    // معالجة الدخول
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -185,17 +185,15 @@
       const mobile = mobileInput.value.trim();
       const pin = pinInput.value.trim();
 
-      // تنظيف الحالة
+      // تنظيف
       errorDiv.classList.add('hidden');
-      box.classList.remove('shake-animation');
+      box.classList.remove('shake');
 
-      // التحقق
       if (mobile.length < 11 || pin.length < 4) {
         showError('يرجى إدخال البيانات كاملة');
         return;
       }
 
-      // حالة التحميل
       const originalText = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = '<span class="animate-pulse">جاري التحقق...</span>';
@@ -215,27 +213,22 @@
 
         } else {
           showError(result.error || 'بيانات غير صحيحة');
-          resetBtn();
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+          lucide.createIcons();
         }
       } catch (error) {
-        showError('خطأ في الاتصال، حاول مرة أخرى');
-        resetBtn();
-      }
-
-      function resetBtn() {
+        showError('خطأ في الاتصال بالسيرفر');
         btn.disabled = false;
         btn.innerHTML = originalText;
-        lucide.createIcons();
       }
 
       function showError(msg) {
         errorText.textContent = msg;
         errorDiv.classList.remove('hidden');
-        
-        // تفعيل الرعشة مرة واحدة فقط
-        box.classList.remove('shake-animation');
-        void box.offsetWidth; // Trigger reflow
-        box.classList.add('shake-animation');
+        // تفعيل الاهتزاز مرة واحدة
+        void box.offsetWidth; 
+        box.classList.add('shake');
       }
     });
   </script>
