@@ -3,190 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>الإدارة العليا | نظام الحوكمة</title>
+    <title>لوحة الإدارة | نظام الحوكمة</title>
+    
     <link rel="icon" href="assets/icons/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" href="assets/icons/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
     <style>
-        :root { --primary: #047857; --bg-main: #f8fafc; }
-        body { font-family: 'Cairo', sans-serif; background: var(--bg-main); padding-bottom: 80px; }
-        /* Sidebar */
-        @media(min-width:1024px){ body{padding-right:260px} .sidebar{transform:translateX(0)!important} .mobile-nav{display:none} }
-        /* Tabs */
-        .tab-btn { padding: 12px 20px; color: #64748b; font-weight: 700; border-bottom: 3px solid transparent; transition: 0.3s; }
-        .tab-btn.active { color: var(--primary); border-color: var(--primary); background: #f0fdfa; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+        :root { --primary: #047857; --bg-main: #f8fafc; --border: #e2e8f0; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-main); padding-bottom: 80px; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* Tabs Style */
+        .tab-btn { padding: 12px; font-weight: 700; color: #64748b; border-bottom: 3px solid transparent; transition: 0.2s; width: 100%; text-align: center; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0fdfa; }
+        .tab-content { display: none; } .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Super Card (Admin Version) */
+        .admin-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px; padding: 16px; position: relative; transition: 0.2s; }
+        .admin-card:hover { border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        
         /* Inputs */
-        .input-box { width: 100%; padding: 10px; border: 1px solid #cbd5e1; rounded: 8px; outline: none; }
-        .input-box:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.1); }
+        .input-field { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 0.9rem; }
+        .input-field:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.1); }
+
+        @media (min-width: 1024px) { body { padding-right: 260px; } .sidebar { width: 260px; transform: translateX(0) !important; } .mobile-header, .bottom-nav { display: none !important; } }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar fixed top-0 right-0 h-full bg-white w-64 shadow-lg border-l border-gray-100 transition-transform translate-x-full lg:translate-x-0 z-50 flex flex-col">
-        <div class="p-6 border-b flex items-center gap-3">
-            <div class="bg-teal-50 p-2 rounded text-[#047857]"><i data-lucide="shield-check" class="w-6 h-6"></i></div>
-            <div><h1 class="font-bold text-lg">نظام الحوكمة</h1><p class="text-xs text-gray-500">الإدارة العليا</p></div>
+    <aside class="sidebar fixed top-0 right-0 h-full bg-white shadow-lg border-l border-gray-100 transition-transform duration-300 translate-x-full z-50 flex flex-col">
+        <div class="p-6 border-b border-gray-100 flex items-center gap-3">
+            <div class="bg-teal-50 p-2.5 rounded-lg text-[#047857]"><i data-lucide="shield-check" class="w-7 h-7"></i></div>
+            <div><h1 class="font-bold text-lg text-slate-800">نظام الحوكمة</h1><p class="text-xs text-slate-500">الإدارة العليا</p></div>
         </div>
         <nav class="flex-1 p-4 space-y-2">
-            <a href="distribution.html" class="flex gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded font-bold"><i data-lucide="layout-grid"></i> الرئيسية</a>
-            <a href="admin.html" class="flex gap-3 px-4 py-3 bg-[#047857] text-white rounded font-bold shadow"><i data-lucide="settings-2"></i> لوحة التحكم</a>
-            <a href="coordinator.html" class="flex gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded font-bold"><i data-lucide="users"></i> التنسيق</a>
+            <a href="distribution.html" class="flex gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#047857] rounded-xl font-medium"><i data-lucide="layout-grid"></i> الرئيسية</a>
+            <a href="admin.html" class="flex gap-3 px-4 py-3 bg-[#047857] text-white rounded-xl font-bold shadow-md"><i data-lucide="settings-2"></i> لوحة التحكم</a>
+            <a href="coordinator.html" class="flex gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#047857] rounded-xl font-medium"><i data-lucide="users"></i> التنسيق</a>
+            <a href="forms.html" class="flex gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#047857] rounded-xl font-medium"><i data-lucide="file-text"></i> النماذج</a>
         </nav>
-        <div class="p-4 border-t"><button onclick="auth.logout()" class="flex gap-2 text-red-500 font-bold"><i data-lucide="log-out"></i> خروج</button></div>
+        <div class="p-4 border-t"><button onclick="auth.logout()" class="flex items-center gap-2 text-red-500 font-bold text-sm hover:bg-red-50 p-2 rounded w-full"><i data-lucide="log-out" class="w-4"></i> خروج آمن</button></div>
     </aside>
 
-    <main class="p-4 lg:p-8 max-w-7xl mx-auto">
-        <h2 class="text-2xl font-bold text-slate-800 mb-6">إدارة النظام والمهام</h2>
-
-        <div class="flex bg-white rounded-xl shadow border border-slate-200 mb-6 overflow-hidden">
-            <button onclick="switchTab('reassign')" class="flex-1 tab-btn active" id="btn-reassign"><i data-lucide="refresh-cw" class="inline w-4"></i> إدارة التكليفات</button>
-            <button onclick="switchTab('add')" class="flex-1 tab-btn" id="btn-add"><i data-lucide="plus-circle" class="inline w-4"></i> إضافة مهمة</button>
-            <button onclick="switchTab('monitor')" class="flex-1 tab-btn" id="btn-monitor"><i data-lucide="bar-chart-3" class="inline w-4"></i> المتابعة</button>
+    <main class="w-full min-h-screen">
+        <div class="mobile-header bg-white p-4 sticky top-0 z-30 shadow-sm flex justify-between items-center lg:hidden">
+            <h1 class="font-bold text-[#047857]">لوحة الإدارة</h1>
+            <button onclick="location.reload()" class="p-2 bg-slate-50 rounded"><i data-lucide="refresh-cw" class="w-5 text-gray-500"></i></button>
         </div>
 
-        <div id="tab-reassign" class="tab-content active">
-            <div class="bg-white p-4 rounded-xl border shadow-sm mb-4 flex gap-4">
-                <select id="filter-emp" class="input-box" onchange="renderReassign()"><option value="all">كل الموظفين</option></select>
-                <select id="filter-status" class="input-box" onchange="renderReassign()">
-                    <option value="all">كل الحالات</option>
-                    <option value="جديد">جديد</option>
-                    <option value="متأخر">متأخر</option>
-                </select>
+        <div class="p-4 lg:p-8 max-w-6xl mx-auto space-y-6">
+            
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex overflow-hidden">
+                <button onclick="switchTab('reassign')" class="tab-btn active" id="btn-reassign">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 inline ml-1"></i> إعادة التكليف
+                </button>
+                <button onclick="switchTab('add')" class="tab-btn" id="btn-add">
+                    <i data-lucide="plus-circle" class="w-4 h-4 inline ml-1"></i> تكليف جديد
+                </button>
+                <button onclick="switchTab('monitor')" class="tab-btn" id="btn-monitor">
+                    <i data-lucide="activity" class="w-4 h-4 inline ml-1"></i> المتابعة
+                </button>
             </div>
-            <div id="reassign-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        </div>
 
-        <div id="tab-add" class="tab-content">
-            <div class="bg-white p-6 rounded-xl border shadow-sm max-w-3xl mx-auto">
-                <form onsubmit="handleAddTask(event)" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="text-xs font-bold text-slate-500">نوع القيد</label><select id="n-type" class="input-box"><option>وارد</option><option>صادر</option></select></div>
-                        <div><label class="text-xs font-bold text-slate-500">التاريخ</label><input type="date" id="n-date" class="input-box" required></div>
-                    </div>
-                    <div><label class="text-xs font-bold text-slate-500">الموضوع</label><input type="text" id="n-subject" class="input-box" required></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="text-xs font-bold text-slate-500">الجهة / المصدر</label><input type="text" id="n-source" class="input-box"></div>
-                        <div><label class="text-xs font-bold text-slate-500">محل التنفيذ</label><input type="text" id="n-entity" class="input-box"></div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="text-xs font-bold text-slate-500">المكلف</label><select id="n-emp" class="input-box" required><option value="">اختر...</option></select></div>
-                        <div><label class="text-xs font-bold text-slate-500">الأهمية</label><select id="n-prio" class="input-box"><option>عادي</option><option>عاجل</option><option>هام جداً</option></select></div>
-                    </div>
-                    <div><label class="text-xs font-bold text-slate-500">ملاحظات / رقم قضية</label><input type="text" id="n-notes" class="input-box"></div>
-                    <button type="submit" class="w-full bg-[#047857] text-white py-3 rounded-xl font-bold shadow hover:bg-emerald-800 transition">حفظ وإرسال التكليف</button>
-                </form>
+            <div id="tab-reassign" class="tab-content active space-y-4">
+                <div class="bg-white p-4 rounded-xl border shadow-sm">
+                    <label class="text-xs font-bold text-gray-500 mb-2 block">اختر الموظف الحالي لعرض مهامه:</label>
+                    <select id="reassign-emp-filter" class="input-field" onchange="filterReassignTasks()">
+                        <option value="">-- اختر موظف --</option>
+                    </select>
+                </div>
+                <div id="reassign-container" class="space-y-3">
+                    <div class="text-center py-10 text-gray-400">اختر موظفاً للبدء</div>
+                </div>
             </div>
-        </div>
 
-        <div id="tab-monitor" class="tab-content">
-            <div id="monitor-list" class="space-y-6"></div>
+            <div id="tab-add" class="tab-content">
+                <div class="bg-white p-6 rounded-xl border shadow-sm max-w-3xl mx-auto">
+                    <h3 class="font-bold text-lg mb-6 border-b pb-2 text-[#047857]">تسجيل صادر/وارد جديد</h3>
+                    <form onsubmit="handleAddTask(event)" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">نوع المستند</label>
+                                <select id="new-type" class="input-field" onchange="toggleLegalFields()">
+                                    <option>وارد</option><option>صادر</option><option>نيابة / شؤون قانونية</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">التاريخ</label>
+                                <input type="date" id="new-date" class="input-field" required>
+                            </div>
+                        </div>
+
+                        <div id="legal-fields" class="grid grid-cols-2 gap-4 hidden bg-orange-50 p-3 rounded-lg border border-orange-100">
+                            <div><label class="text-[10px] font-bold text-orange-600">رقم القضية</label><input type="text" id="new-case-num" class="input-field bg-white"></div>
+                            <div><label class="text-[10px] font-bold text-orange-600">السنة</label><input type="text" id="new-case-year" class="input-field bg-white" placeholder="2025"></div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">الموضوع</label>
+                            <input type="text" id="new-subject" class="input-field" placeholder="موضوع التكليف..." required>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label class="text-xs font-bold text-gray-500">الجهة / المصدر</label><input type="text" id="new-source" class="input-field" required></div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">الموظف المكلف</label>
+                                <select id="new-assignee" class="input-field" required><option value="">-- اختر --</option></select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">الأهمية</label>
+                                <select id="new-importance" class="input-field">
+                                    <option value="عادي">عادي (14 يوم)</option>
+                                    <option value="مهم">مهم (7 أيام)</option>
+                                    <option value="عاجل">عاجل (3 أيام)</option>
+                                </select>
+                            </div>
+                            <div><label class="text-xs font-bold text-gray-500">رابط المرفق (اختياري)</label><input type="url" id="new-link" class="input-field" placeholder="https://..."></div>
+                        </div>
+
+                        <div class="pt-4 text-left">
+                            <button type="submit" id="btn-submit-task" class="bg-[#047857] text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-[#065f46] transition flex items-center gap-2 w-full justify-center md:w-auto">
+                                <i data-lucide="send" class="w-4 h-4"></i> حفظ وتكليف
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="tab-monitor" class="tab-content">
+                <div class="bg-white rounded-xl border shadow-sm overflow-hidden">
+                    <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-700">سجل المعاملات الكامل</h3>
+                        <input type="text" id="monitor-search" placeholder="بحث سريع..." class="bg-white border px-3 py-1 rounded text-sm w-40 md:w-64">
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-right">
+                            <thead class="bg-gray-100 text-gray-600 font-bold">
+                                <tr>
+                                    <th class="p-3">#</th><th class="p-3">الموضوع</th><th class="p-3">المكلف</th><th class="p-3">الحالة</th><th class="p-3 text-center">تحكم</th>
+                                </tr>
+                            </thead>
+                            <tbody id="monitor-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
+
+    <nav class="bottom-nav fixed bottom-0 w-full bg-white border-t flex justify-around p-2 z-40 lg:hidden shadow-lg">
+        <a href="distribution.html" class="text-gray-400 flex flex-col items-center text-[10px]"><i data-lucide="layout-grid" class="w-6"></i>الرئيسية</a>
+        <a href="admin.html" class="text-[#047857] flex flex-col items-center text-[10px] font-bold"><i data-lucide="settings-2" class="w-6"></i>الإدارة</a>
+        <a href="employee.html" class="text-gray-400 flex flex-col items-center text-[10px]"><i data-lucide="briefcase" class="w-6"></i>مهامي</a>
+    </nav>
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allTasks = [], employees = [];
+        let allData = [];
+        let employees = [];
 
+        // 1. تشغيل الصفحة
         document.addEventListener('DOMContentLoaded', async () => {
             const user = auth.checkAuth();
-            if(!user || user.role === 'employee') return;
+            if (!user) return;
+            if (user.role === 'employee') window.location.href = 'employee.html';
+
+            // Turbo Load (السنة الحالية)
+            const startDate = `${new Date().getFullYear()}-01-01`;
             
-            // تحميل البيانات
-            const res = await auth.callAPI('getAllData', { role: 'admin', name: user.name, startDate: `${new Date().getFullYear()}-01-01` });
-            if(res.success) {
-                allTasks = res.tasks;
-                employees = [...new Set(allTasks.map(t => t.assignee).filter(Boolean))];
-                
-                // ملء القوائم
-                const empOpt = employees.map(e => `<option>${e}</option>`).join('');
-                document.getElementById('filter-emp').innerHTML += empOpt;
-                document.getElementById('n-emp').innerHTML += empOpt;
-                
-                renderReassign();
-            }
+            try {
+                // نطلب البيانات بصلاحية أدمن
+                const res = await auth.callAPI('getAllData', { role: 'admin', name: user.name, startDate });
+                if (res.success) {
+                    allData = res.tasks;
+                    // استخراج الموظفين
+                    const empSet = new Set();
+                    allData.forEach(t => t.assignee ? empSet.add(t.assignee) : null);
+                    employees = Array.from(empSet).sort();
+                    
+                    populateDropdowns();
+                    renderMonitorTable(allData); // البدء بجدول المتابعة
+                }
+            } catch(e) { console.error(e); }
         });
 
-        function switchTab(id) {
+        // 2. إدارة التبويبات
+        function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById('btn-'+id).classList.add('active');
-            document.getElementById('tab-'+id).classList.add('active');
-            if(id === 'monitor') renderMonitor();
+            
+            document.getElementById('btn-' + tabId).classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
         }
 
-        function renderReassign() {
-            const emp = document.getElementById('filter-emp').value;
-            const sts = document.getElementById('filter-status').value;
-            const filtered = allTasks.filter(t => (emp === 'all' || t.assignee === emp) && (sts === 'all' || t.status.includes(sts)));
+        // 3. ملء القوائم
+        function populateDropdowns() {
+            const opts = employees.map(e => `<option value="${e}">${e}</option>`).join('');
+            document.getElementById('reassign-emp-filter').innerHTML += opts;
+            document.getElementById('new-assignee').innerHTML += opts;
+        }
+
+        // 4. منطق (إعادة التكليف)
+        function filterReassignTasks() {
+            const emp = document.getElementById('reassign-emp-filter').value;
+            const container = document.getElementById('reassign-container');
             
-            document.getElementById('reassign-list').innerHTML = filtered.map(t => `
-                <div class="bg-white p-4 rounded-xl border shadow-sm hover:border-green-600 transition">
-                    <div class="flex justify-between mb-2"><span class="font-mono font-bold text-gray-500">#${t.id}</span><span class="text-xs font-bold bg-gray-100 px-2 rounded">${t.status}</span></div>
-                    <h4 class="font-bold text-sm mb-3 line-clamp-2">${t.subject}</h4>
-                    <div class="flex gap-2 mb-3">
-                        <select id="new-assign-${t.id}" class="text-xs border p-1 rounded bg-white flex-1"><option value="">نقل إلى...</option>${employees.map(e=>`<option>${e}</option>`)}</select>
-                        <button onclick="reassign('${t.id}')" class="bg-slate-800 text-white p-1 rounded"><i data-lucide="check" class="w-4"></i></button>
+            if (!emp) return container.innerHTML = '<div class="text-center py-10 text-gray-400">اختر موظفاً</div>';
+
+            const tasks = allData.filter(t => t.assignee === emp && !t.status.includes('تم'));
+            
+            if (!tasks.length) return container.innerHTML = '<div class="text-center py-10 text-green-600">هذا الموظف ليس لديه مهام معلقة</div>';
+
+            container.innerHTML = tasks.map(t => `
+                <div class="admin-card flex justify-between items-center gap-3">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-[10px] bg-gray-100 px-2 rounded border border-gray-200">#${t.id}</span>
+                            <h4 class="font-bold text-sm text-gray-800 line-clamp-1">${t.subject}</h4>
+                        </div>
+                        <p class="text-xs text-gray-500">📅 ${t.date} | 🏛️ ${t.entity}</p>
                     </div>
+                    <button onclick="promptReassign('${t.id}')" class="bg-slate-800 text-white px-3 py-1.5 rounded text-xs hover:bg-black transition">
+                        نقل <i data-lucide="arrow-left-right" class="w-3 h-3 inline"></i>
+                    </button>
                 </div>
             `).join('');
             lucide.createIcons();
         }
 
-        async function reassign(id) {
-            const newEmp = document.getElementById('new-assign-'+id).value;
-            if(!newEmp) return alert('اختر الموظف');
-            if(confirm('تأكيد النقل؟')) {
-                const res = await auth.callAPI('reassignTask', { taskId: id, newEmployee: newEmp });
-                if(res.success) alert('تم النقل بنجاح'), location.reload();
+        async function promptReassign(taskId) {
+            const newEmp = prompt("أدخل اسم الموظف الجديد:"); // للسرعة (يمكن استبداله بمودال)
+            if (!newEmp) return;
+            
+            // هنا نرسل الطلب للباك إند
+            if(confirm(`تأكيد نقل المهمة #${taskId} إلى ${newEmp}؟`)) {
+                await auth.callAPI('reassignTask', { taskId, newEmployee: newEmp });
+                alert("✅ تم النقل بنجاح");
+                location.reload(); // تحديث سريع
             }
+        }
+
+        // 5. منطق (إضافة مهمة)
+        function toggleLegalFields() {
+            const type = document.getElementById('new-type').value;
+            const legalDiv = document.getElementById('legal-fields');
+            if (type.includes('نيابة') || type.includes('قانونية')) legalDiv.classList.remove('hidden');
+            else legalDiv.classList.add('hidden');
         }
 
         async function handleAddTask(e) {
             e.preventDefault();
-            const data = {
-                docType: document.getElementById('n-type').value,
-                date: document.getElementById('n-date').value,
-                subject: document.getElementById('n-subject').value,
-                source: document.getElementById('n-source').value,
-                entity: document.getElementById('n-entity').value,
-                employee: document.getElementById('n-emp').value,
-                priority: document.getElementById('n-prio').value,
-                notes: document.getElementById('n-notes').value
+            const btn = document.getElementById('btn-submit-task');
+            btn.innerHTML = 'جاري الحفظ...'; btn.disabled = true;
+
+            const taskData = {
+                docType: document.getElementById('new-type').value,
+                date: document.getElementById('new-date').value,
+                subject: document.getElementById('new-subject').value,
+                caseNumber: document.getElementById('new-case-num').value,
+                caseYear: document.getElementById('new-case-year').value,
+                source: document.getElementById('new-source').value,
+                employee: document.getElementById('new-assignee').value,
+                importance: document.getElementById('new-importance').value,
+                attachment: document.getElementById('new-link').value
             };
-            
-            if(confirm('تأكيد إضافة المهمة؟')) {
-                const res = await auth.callAPI('addTask', { taskData: data });
-                if(res.success) alert('تمت الإضافة برقم: ' + res.id), e.target.reset();
+
+            const res = await auth.callAPI('addTask', { taskData });
+            if (res.success) {
+                alert(`✅ تم التكليف بنجاح (رقم القيد: ${res.id})`);
+                e.target.reset();
+            } else {
+                alert("❌ خطأ: " + res.error);
+            }
+            btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> حفظ وتكليف'; btn.disabled = false; lucide.createIcons();
+        }
+
+        // 6. منطق (المتابعة)
+        function renderMonitorTable(tasks) {
+            const tbody = document.getElementById('monitor-table');
+            tbody.innerHTML = tasks.slice(0, 50).map(t => `
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-3 font-mono text-xs text-[#047857] font-bold">#${t.id}</td>
+                    <td class="p-3 font-bold text-gray-700 truncate max-w-[150px]">${t.subject}</td>
+                    <td class="p-3 text-xs">${t.assignee}</td>
+                    <td class="p-3"><span class="text-[10px] px-2 py-1 rounded bg-gray-100 border">${t.status}</span></td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteTask('${t.id}')" class="text-red-500 hover:bg-red-50 p-1 rounded"><i data-lucide="trash-2" class="w-4"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        async function deleteTask(taskId) {
+            if(confirm("⚠️ هل أنت متأكد من حذف هذه المهمة نهائياً؟")) {
+                await auth.callAPI('deleteTask', { taskId });
+                document.location.reload();
             }
         }
 
-        function renderMonitor() {
-            // تجميع المهام حسب الموظف
-            const grouped = {};
-            employees.forEach(e => grouped[e] = []);
-            allTasks.forEach(t => grouped[t.assignee] ? grouped[t.assignee].push(t) : null);
-
-            document.getElementById('monitor-list').innerHTML = Object.entries(grouped).map(([name, tasks]) => {
-                const done = tasks.filter(t => t.status.includes('تم')).length;
-                const late = tasks.filter(t => t.status.includes('متأخر')).length;
-                return `
-                <div class="bg-white rounded-xl border overflow-hidden">
-                    <div class="bg-gray-50 p-3 border-b flex justify-between">
-                        <div class="font-bold text-slate-700 flex items-center gap-2"><div class="w-8 h-8 bg-white border rounded-full flex items-center justify-center">${name[0]}</div> ${name}</div>
-                        <div class="text-xs flex gap-2"><span class="text-green-600 font-bold">✅ ${done}</span> <span class="text-red-600 font-bold">🔥 ${late}</span></div>
-                    </div>
-                    <div class="p-3 grid gap-2">
-                        ${tasks.map(t => `<div class="flex justify-between text-xs border-b last:border-0 pb-1"><span class="truncate w-2/3">${t.subject}</span><span class="${t.status.includes('متأخر')?'text-red-500':'text-gray-500'}">${t.status}</span></div>`).join('')}
-                    </div>
-                </div>`;
-            }).join('');
-        }
+        // بحث المتابعة
+        document.getElementById('monitor-search').addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const filtered = allData.filter(t => t.subject.toLowerCase().includes(val) || t.assignee.toLowerCase().includes(val));
+            renderMonitorTable(filtered);
+        });
     </script>
 </body>
 </html>
