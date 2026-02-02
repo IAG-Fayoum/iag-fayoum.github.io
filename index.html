@@ -135,8 +135,8 @@
     <div class="max-w-4xl mx-auto px-4 md:px-6 pt-12 md:pt-16 text-center relative z-10">
       
       <div class="flex justify-center mb-8">
-        <div class="bg-white/15 backdrop-blur-md p-4 rounded-3xl border-2 border-white/30 shadow-2xl group hover:bg-white/20 hover:scale-105 transition-all duration-500">
-          <img src="assets/icons/favicon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/9311/9311895.png'" class="w-20 h-20 md:w-24 md:h-24 object-contain drop-shadow-2xl brightness-200 grayscale contrast-200" alt="Ministry Logo">
+        <div class="bg-white/15 backdrop-blur-md p-6 rounded-full border-4 border-white/20 shadow-2xl group hover:bg-white/20 hover:scale-105 transition-all duration-500">
+          <img src="assets/icons/favicon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/9311/9311895.png'" class="w-28 h-28 md:w-36 md:h-36 object-contain drop-shadow-2xl brightness-200 grayscale contrast-200" alt="Ministry Logo">
         </div>
       </div>
       
@@ -229,9 +229,9 @@
     
     <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
       
-      <div class="flex justify-center mb-5">
-        <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-sm border border-white/5 shadow-lg">
-           <img src="assets/icons/favicon.png" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')" class="w-12 h-12 object-contain brightness-0 invert" alt="Logo">
+      <div class="flex justify-center mb-6">
+        <div class="w-24 h-24 bg-white/10 p-4 rounded-full backdrop-blur-sm border-2 border-white/10 shadow-xl flex items-center justify-center">
+           <img src="assets/icons/favicon.png" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')" class="w-full h-full object-contain brightness-0 invert" alt="Logo">
            <i data-lucide="landmark" class="text-white/90 w-12 h-12 hidden"></i>
         </div>
       </div>
@@ -272,7 +272,6 @@
         return;
       }
       
-      // التوجيه (باستخدام الدالة الصحيحة redirectUser)
       const user = localStorage.getItem('user');
       if (user) {
         try {
@@ -324,7 +323,6 @@
           if (!result.success) {
             throw new Error(result.error || 'بيانات الدخول غير صحيحة');
           }
-          // الدالة auth.login هتعمل redirectUser لوحدها
           
         } catch (error) {
           showError(error.message || 'خطأ في الاتصال بالخادم');
