@@ -21,25 +21,25 @@
             flex-direction: column;
         }
 
-        /* الهيدر المصغر */
+        /* تصميم الهيدر (نفس روح صفحة الدخول بس أصغر) */
         .header-mini {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            padding: 1.5rem 1rem 3rem; /* مساحة من تحت عشان الكروت تركب */
+            padding: 2rem 1rem 4rem; /* مساحة سفلية عشان الكروت تركب */
             color: white;
             text-align: center;
-            border-bottom-left-radius: 25px;
-            border-bottom-right-radius: 25px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
             box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
             position: relative;
         }
 
-        /* حاوية الكروت */
+        /* حاوية الكروت (Floating Grid) */
         .cards-container {
-            max-width: 800px;
-            margin: -2rem auto 2rem; /* يركب فوق الهيدر */
+            max-width: 600px;
+            margin: -3rem auto 2rem; /* يركب فوق الهيدر */
             padding: 0 1rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: 1fr; /* عمود واحد للموبايل */
             gap: 1rem;
             position: relative;
             z-index: 10;
@@ -50,26 +50,26 @@
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: 16px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
+            padding: 1.25rem;
+            transition: all 0.2s ease;
             cursor: pointer;
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
             gap: 1rem;
+            text-decoration: none;
         }
 
         .form-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(15, 118, 110, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(15, 118, 110, 0.15);
             border-color: #0f766e;
         }
 
         .icon-box {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: #f0fdfa;
             color: #0f766e;
             border-radius: 12px;
@@ -81,7 +81,7 @@
         }
 
         .arrow-icon {
-            margin-right: auto; /* يزق السهم أقصى اليسار */
+            margin-right: auto; 
             color: #cbd5e1;
             transition: 0.2s;
         }
@@ -91,45 +91,44 @@
             transform: translateX(-5px);
         }
 
-        /* زر الرجوع العائم */
-        .back-btn-container {
+        /* زر العودة */
+        .back-container {
             text-align: center;
             margin-top: auto;
             padding: 2rem;
         }
-
         .btn-back {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 10px 24px;
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 50px;
             color: #64748b;
             font-weight: 700;
             font-size: 0.9rem;
-            transition: all 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 10px 20px;
+            background: white;
+            border-radius: 50px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            transition: 0.2s;
         }
-
         .btn-back:hover {
-            border-color: #0f766e;
             color: #0f766e;
-            background: #f0fdfa;
+            border-color: #0f766e;
         }
     </style>
 </head>
 <body>
 
     <header class="header-mini">
-        <div class="flex items-center justify-center gap-3 mb-2">
-            <div class="w-10 h-10 bg-white/20 p-1.5 rounded-full border border-white/30 backdrop-blur-sm">
-                <img src="assets/icons/favicon.png" class="w-full h-full object-contain brightness-200 contrast-200 grayscale" alt="">
+        <div class="flex flex-col items-center justify-center gap-3">
+            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-white/20 overflow-hidden p-2">
+                <img src="assets/icons/favicon.png" class="w-full h-full object-contain" alt="">
             </div>
-            <h1 class="text-xl font-bold">نماذج العمل</h1>
+            <div>
+                <h1 class="text-xl font-bold">النماذج والخدمات</h1>
+                <p class="text-teal-100 text-xs opacity-90 mt-1">اختر الخدمة المطلوبة لفتح النموذج</p>
+            </div>
         </div>
-        <p class="text-teal-100 text-sm opacity-90">اختر النموذج المطلوب لفتحه في نافذة جديدة</p>
     </header>
 
     <main class="cards-container">
@@ -137,8 +136,8 @@
         <div class="form-card" onclick="openForm('INBOX')">
             <div class="icon-box"><i data-lucide="inbox" class="w-6 h-6"></i></div>
             <div>
-                <h3 class="font-bold text-slate-800">سجل الصادر والوارد</h3>
-                <p class="text-xs text-slate-500 mt-1">تسجيل المعاملات والمكاتبات</p>
+                <h3 class="font-bold text-slate-800 text-sm">سجل الصادر والوارد</h3>
+                <p class="text-[10px] text-slate-500 mt-0.5">تسجيل المكاتبات اليومية</p>
             </div>
             <i data-lucide="chevron-left" class="arrow-icon w-5 h-5"></i>
         </div>
@@ -146,8 +145,8 @@
         <div class="form-card" onclick="openForm('COMPLAINTS')">
             <div class="icon-box"><i data-lucide="message-square-warning" class="w-6 h-6"></i></div>
             <div>
-                <h3 class="font-bold text-slate-800">فحص الشكاوى</h3>
-                <p class="text-xs text-slate-500 mt-1">تسجيل وفحص شكاوى المواطنين</p>
+                <h3 class="font-bold text-slate-800 text-sm">فحص الشكاوى</h3>
+                <p class="text-[10px] text-slate-500 mt-0.5">منظومة الشكاوى الموحدة</p>
             </div>
             <i data-lucide="chevron-left" class="arrow-icon w-5 h-5"></i>
         </div>
@@ -155,8 +154,8 @@
         <div class="form-card" onclick="openForm('FINANCIAL')">
             <div class="icon-box"><i data-lucide="banknote" class="w-6 h-6"></i></div>
             <div>
-                <h3 class="font-bold text-slate-800">المرور المالي والإداري</h3>
-                <p class="text-xs text-slate-500 mt-1">تقارير المخزون والحسابات</p>
+                <h3 class="font-bold text-slate-800 text-sm">المرور المالي والإداري</h3>
+                <p class="text-[10px] text-slate-500 mt-0.5">تقارير المخزون والحسابات</p>
             </div>
             <i data-lucide="chevron-left" class="arrow-icon w-5 h-5"></i>
         </div>
@@ -164,8 +163,8 @@
         <div class="form-card" onclick="openForm('PRIMARY_CARE')">
             <div class="icon-box"><i data-lucide="stethoscope" class="w-6 h-6"></i></div>
             <div>
-                <h3 class="font-bold text-slate-800">فني وحدات الرعاية</h3>
-                <p class="text-xs text-slate-500 mt-1">مرور فني على الوحدات الصحية</p>
+                <h3 class="font-bold text-slate-800 text-sm">فني وحدات الرعاية</h3>
+                <p class="text-[10px] text-slate-500 mt-0.5">مرور فني على الوحدات الصحية</p>
             </div>
             <i data-lucide="chevron-left" class="arrow-icon w-5 h-5"></i>
         </div>
@@ -173,18 +172,18 @@
         <div class="form-card" onclick="openForm('HOSPITALS')">
             <div class="icon-box"><i data-lucide="building-2" class="w-6 h-6"></i></div>
             <div>
-                <h3 class="font-bold text-slate-800">مرور المستشفيات</h3>
-                <p class="text-xs text-slate-500 mt-1">المرور الفني على المستشفيات</p>
+                <h3 class="font-bold text-slate-800 text-sm">مرور المستشفيات</h3>
+                <p class="text-[10px] text-slate-500 mt-0.5">المرور الفني على المستشفيات</p>
             </div>
             <i data-lucide="chevron-left" class="arrow-icon w-5 h-5"></i>
         </div>
 
     </main>
 
-    <div class="back-btn-container">
+    <div class="back-container">
         <a href="index.html" class="btn-back">
             <i data-lucide="home" class="w-4 h-4"></i>
-            <span>العودة للرئيسية</span>
+            <span>العودة لتسجيل الدخول</span>
         </a>
     </div>
 
@@ -193,19 +192,15 @@
         lucide.createIcons();
 
         function openForm(key) {
-            // التأكد من وجود config
             if (typeof CONFIG === 'undefined' || !CONFIG.FORMS) {
-                alert("خطأ: لم يتم تحميل روابط النماذج");
+                alert("جاري تحميل الروابط...");
                 return;
             }
-
             const url = CONFIG.FORMS[key];
-            
-            // التأكد إن الرابط حقيقي (مش #)
-            if(url && url !== '#' && url !== '') {
+            if(url && url !== '#') {
                 window.open(url, '_blank');
             } else {
-                alert("عفواً، هذا النموذج غير متاح حالياً أو لم يتم ربطه.");
+                alert("الرابط غير متاح حالياً");
             }
         }
     </script>
