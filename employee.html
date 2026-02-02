@@ -7,127 +7,60 @@
     
     <link rel="icon" href="assets/icons/favicon.png">
     <link rel="apple-touch-icon" href="assets/icons/favicon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#047857">
-
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
     <style>
-        :root { --primary: #047857; --bg-main: #f8fafc; --surface: #ffffff; --border: #e2e8f0; }
-        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-main); color: #1e293b; padding-bottom: 80px; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-
-        /* Super Card Style */
-        .super-card { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px -1px rgba(0,0,0,0.06); margin-bottom: 16px; position: relative; transition: transform 0.2s; }
-        .super-card:hover { transform: translateY(-2px); border-color: var(--primary); }
-        .status-strip { width: 5px; height: 100%; position: absolute; right: 0; top: 0; }
-        
-        /* Status Colors */
-        .st-new { border-right: 5px solid #3b82f6; } 
-        .st-pending { border-right: 5px solid #f59e0b; }
-        .st-done { border-right: 5px solid #10b981; } 
-        .st-late { border-right: 5px solid #ef4444; }
-
-        /* Stats Card */
-        .stat-box { background: white; border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-
-        @media (min-width: 1024px) { body { padding-bottom: 0; padding-right: 260px; } .sidebar { width: 260px; transform: translateX(0) !important; } .mobile-header, .bottom-nav { display: none !important; } }
+        :root { --primary: #0f766e; --bg: #f8fafc; }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); padding-bottom: 80px; }
+        .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 16px; position: relative; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .status-line { width: 5px; height: 100%; position: absolute; right: 0; top: 0; }
+        .st-new { border-right: 5px solid #0ea5e9; } .st-done { border-right: 5px solid #10b981; } .st-late { border-right: 5px solid #ef4444; }
+        @media(min-width:1024px){ body{padding-right:260px} .mobile-nav{display:none} .sidebar{transform:translateX(0)!important} }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar fixed top-0 right-0 h-full bg-white z-50 transition-transform duration-300 translate-x-full flex flex-col shadow-lg border-l border-gray-100">
-        <div class="p-6 border-b border-gray-100 flex items-center gap-3">
-            <div class="bg-teal-50 p-2.5 rounded-lg text-[#047857]">
-                <i data-lucide="shield-check" class="w-7 h-7"></i>
-            </div>
-            <div>
-                <h1 class="font-bold text-lg text-slate-800">نظام الحوكمة</h1>
-                <p class="text-xs text-slate-500">مكتب الموظف</p>
-            </div>
+    <aside class="sidebar fixed top-0 right-0 h-full bg-white w-64 shadow-lg border-l transition-transform translate-x-full lg:translate-x-0 z-50 flex flex-col">
+        <div class="p-6 border-b flex items-center gap-3">
+            <div class="bg-teal-50 p-2 rounded text-[#0f766e]"><i data-lucide="shield-check"></i></div>
+            <div><h1 class="font-bold text-lg">نظام الحوكمة</h1><p class="text-xs text-gray-500">مكتب الموظف</p></div>
         </div>
-
         <nav class="flex-1 p-4 space-y-2">
-            <a href="distribution.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#047857] rounded-xl font-medium transition-colors">
-                <i data-lucide="layout-grid" class="w-5 h-5"></i><span>الرئيسية</span>
-            </a>
-            <a href="employee.html" class="flex items-center gap-3 px-4 py-3 bg-[#047857] text-white rounded-xl font-bold shadow-md">
-                <i data-lucide="briefcase" class="w-5 h-5"></i><span>مهامي</span>
-            </a>
-            <a href="forms.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#047857] rounded-xl font-medium transition-colors">
-                <i data-lucide="file-text" class="w-5 h-5"></i><span>النماذج</span>
-            </a>
+            <a href="distribution.html" class="flex gap-3 px-4 py-3 text-gray-600 hover:bg-teal-50 rounded-xl"><i data-lucide="layout-grid"></i> الرئيسية</a>
+            <a href="employee.html" class="flex gap-3 px-4 py-3 bg-[#0f766e] text-white rounded-xl font-bold shadow"><i data-lucide="briefcase"></i> مهامي</a>
+            <a href="forms.html" class="flex gap-3 px-4 py-3 text-gray-600 hover:bg-teal-50 rounded-xl"><i data-lucide="file-text"></i> النماذج</a>
         </nav>
-
-        <div class="p-4 border-t border-slate-100 bg-slate-50">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-[#047857] text-white flex items-center justify-center font-bold text-xs" id="user-avatar"></div>
-                    <div>
-                        <p class="text-xs font-bold text-slate-800" id="user-name">...</p>
-                        <p class="text-[10px] text-slate-500">موظف</p>
-                    </div>
-                </div>
-                <button onclick="auth.logout()" class="text-slate-400 hover:text-red-500"><i data-lucide="log-out" class="w-4 h-4"></i></button>
-            </div>
-        </div>
+        <div class="p-4 border-t"><button onclick="auth.logout()" class="flex items-center gap-2 text-red-500 font-bold text-sm"><i data-lucide="log-out" class="w-4"></i> خروج</button></div>
     </aside>
 
-    <main class="min-h-screen w-full">
-        <div class="mobile-header bg-white p-4 sticky top-0 z-30 border-b border-slate-200 flex items-center justify-between shadow-sm">
-            <h1 class="font-bold text-lg text-[#047857]">مهامي</h1>
-            <button onclick="location.reload()" class="p-2 bg-slate-50 rounded-lg"><i data-lucide="refresh-cw" class="w-5 h-5 text-slate-500"></i></button>
+    <main class="p-4 lg:p-8 max-w-5xl mx-auto">
+        <div class="flex justify-between items-center mb-6 lg:hidden">
+            <h1 class="font-bold text-lg text-[#0f766e]">مهامي</h1>
+            <button onclick="location.reload()" class="p-2 bg-white rounded shadow-sm"><i data-lucide="refresh-cw" class="w-5"></i></button>
         </div>
 
-        <div class="p-4 lg:p-8 max-w-5xl mx-auto space-y-6">
-            
-            <div class="flex flex-col gap-4">
-                <h2 class="text-xl font-bold text-slate-800">أهلاً بك، <span id="welcome-name" class="text-[#047857]">...</span> 👋</h2>
-                
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="stat-box border-l-4 border-l-blue-500">
-                        <p class="text-[10px] text-slate-400 font-bold">قيد العمل</p>
-                        <h3 class="text-xl font-bold text-slate-800" id="count-pending">0</h3>
-                    </div>
-                    <div class="stat-box border-l-4 border-l-red-500">
-                        <p class="text-[10px] text-slate-400 font-bold">متأخر</p>
-                        <h3 class="text-xl font-bold text-red-600" id="count-late">0</h3>
-                    </div>
-                    <div class="stat-box border-l-4 border-l-emerald-500">
-                        <p class="text-[10px] text-slate-400 font-bold">تم الإنجاز</p>
-                        <h3 class="text-xl font-bold text-emerald-600" id="count-done">0</h3>
-                    </div>
-                </div>
-            </div>
+        <div class="mb-6">
+            <h2 class="text-xl font-bold">أهلاً بك، <span id="user-name" class="text-[#0f766e]">...</span> 👋</h2>
+            <p class="text-sm text-gray-500">إليك المهام المكلف بها حالياً</p>
+        </div>
 
-            <div class="flex gap-2 overflow-x-auto pb-1">
-                <button onclick="filterTasks('all')" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold shadow filter-btn active">الكل</button>
-                <button onclick="filterTasks('new')" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-xs font-bold shadow-sm filter-btn">جديد/جاري</button>
-                <button onclick="filterTasks('late')" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-xs font-bold shadow-sm filter-btn">متأخر</button>
-            </div>
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-4">
+            <button onclick="filter('all')" class="px-4 py-2 bg-[#0f766e] text-white rounded-lg text-xs font-bold whitespace-nowrap">الكل</button>
+            <button onclick="filter('new')" class="px-4 py-2 bg-white border text-gray-600 rounded-lg text-xs font-bold whitespace-nowrap">قيد العمل</button>
+            <button onclick="filter('late')" class="px-4 py-2 bg-white border text-red-600 rounded-lg text-xs font-bold whitespace-nowrap">متأخر</button>
+        </div>
 
-            <div id="tasks-container" class="space-y-4">
-                <div class="text-center py-12">
-                    <span class="inline-block animate-spin text-[#047857]"><i data-lucide="loader-2" class="w-8 h-8"></i></span>
-                    <p class="text-slate-400 text-sm mt-2">جاري تحميل مهامك...</p>
-                </div>
-            </div>
-
+        <div id="tasks-list" class="space-y-4">
+            <div class="text-center py-12"><i data-lucide="loader-2" class="w-8 h-8 animate-spin text-[#0f766e] mx-auto"></i></div>
         </div>
     </main>
 
-    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-40 lg:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#047857]">
-            <i data-lucide="layout-grid" class="w-6 h-6"></i><span class="text-[10px]">الرئيسية</span>
-        </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 p-2 text-[#047857]">
-            <i data-lucide="briefcase" class="w-6 h-6"></i><span class="text-[10px] font-bold">مهامي</span>
-        </a>
-        <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#047857]">
-            <i data-lucide="file-text" class="w-6 h-6"></i><span class="text-[10px]">النماذج</span>
-        </a>
+    <nav class="mobile-nav fixed bottom-0 w-full bg-white border-t flex justify-around p-3 z-40 shadow-lg">
+        <a href="distribution.html" class="flex flex-col items-center text-gray-400 text-[10px]"><i data-lucide="layout-grid" class="w-6"></i>الرئيسية</a>
+        <a href="employee.html" class="flex flex-col items-center text-[#0f766e] font-bold text-[10px]"><i data-lucide="briefcase" class="w-6"></i>مهامي</a>
+        <a href="forms.html" class="flex flex-col items-center text-gray-400 text-[10px]"><i data-lucide="file-text" class="w-6"></i>النماذج</a>
     </nav>
 
     <script src="assets/js/config.js"></script>
@@ -138,136 +71,57 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             const user = auth.checkAuth();
-            if (!user) return;
-
+            if(!user) return;
             document.getElementById('user-name').textContent = user.name;
-            document.getElementById('welcome-name').textContent = user.name.split(' ')[0];
-            document.getElementById('user-avatar').textContent = user.name.charAt(0);
 
-            // Turbo Load: بيانات السنة الحالية
-            const startDate = `${new Date().getFullYear()}-01-01`;
-
+            const startDate = `${new Date().getFullYear()}-01-01`; // Turbo Mode
             try {
-                // نطلب البيانات كـ "موظف" ليتم الفلترة في الباك إند أو الفرونت إند
-                const res = await auth.callAPI('getAllData', {
-                    role: 'employee',
-                    name: user.name,
-                    startDate: startDate
-                });
-
-                if (res.success) {
-                    // تصفية المهام الخاصة بالموظف فقط (زيادة تأكيد)
-                    myTasks = res.tasks.filter(t => t.assignee && t.assignee.includes(user.name));
-                    updateStats(myTasks);
+                const res = await auth.callAPI('getAllData', { role: 'employee', name: user.name, startDate });
+                if(res.success) {
+                    myTasks = res.tasks.filter(t => t.assignee.includes(user.name));
                     renderTasks(myTasks);
-                } else {
-                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500">فشل تحميل المهام</div>`;
                 }
-            } catch (e) {
-                console.error(e);
-            }
+            } catch(e) { console.error(e); }
         });
 
-        function updateStats(tasks) {
-            const done = tasks.filter(t => t.status.includes('تم') || t.status.includes('منتهي')).length;
-            const late = tasks.filter(t => t.status.includes('متأخر')).length;
-            const pending = tasks.length - done;
-
-            document.getElementById('count-done').textContent = done;
-            document.getElementById('count-late').textContent = late;
-            document.getElementById('count-pending').textContent = pending;
-        }
-
-        function filterTasks(type) {
-            // UI Toggle
-            document.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.remove('bg-slate-800', 'text-white');
-                b.classList.add('bg-white', 'text-slate-600', 'border');
-            });
-            event.target.classList.remove('bg-white', 'text-slate-600', 'border');
-            event.target.classList.add('bg-slate-800', 'text-white');
-
-            // Logic
+        function filter(type) {
             let filtered = myTasks;
-            if (type === 'new') filtered = myTasks.filter(t => !t.status.includes('تم') && !t.status.includes('متأخر') && !t.status.includes('منتهي'));
-            if (type === 'late') filtered = myTasks.filter(t => t.status.includes('متأخر'));
-            
+            if(type === 'new') filtered = myTasks.filter(t => !t.status.includes('تم') && !t.status.includes('منتهي'));
+            if(type === 'late') filtered = myTasks.filter(t => t.status.includes('متأخر'));
             renderTasks(filtered);
         }
 
         function renderTasks(tasks) {
-            const container = document.getElementById('tasks-container');
-            
-            if (tasks.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12 bg-white rounded-xl border border-dashed border-slate-300">
-                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i data-lucide="check-circle" class="w-8 h-8 text-slate-300"></i>
-                        </div>
-                        <p class="text-slate-500 font-bold">لا توجد مهام حالياً</p>
-                    </div>`;
-                return;
-            }
+            const container = document.getElementById('tasks-list');
+            if(!tasks.length) return container.innerHTML = '<div class="text-center py-10 text-gray-400">لا توجد مهام</div>';
 
             container.innerHTML = tasks.map(t => {
-                const statusInfo = getStatusInfo(t.status);
-                const isLegal = t.caseNumber && t.caseNumber !== '';
-
+                const isLate = t.status.includes('متأخر');
+                const isDone = t.status.includes('تم') || t.status.includes('منتهي');
+                const statusClass = isLate ? 'st-late' : (isDone ? 'st-done' : 'st-new');
+                
                 return `
-                <div class="super-card">
-                    <div class="status-strip ${statusInfo.class}"></div>
-                    
-                    <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                        <div class="flex items-center gap-2">
-                            <span class="bg-white border border-slate-200 px-2 py-0.5 rounded text-[10px] font-bold text-slate-600">${t.docType || 'وارد'}</span>
-                            <span class="font-mono text-sm font-bold text-slate-700">#${t.id}</span>
-                        </div>
-                        <span class="px-2 py-1 rounded text-[10px] font-bold" style="background:${statusInfo.bg}; color:${statusInfo.text}">${statusInfo.label}</span>
-                    </div>
-
+                <div class="task-card">
+                    <div class="status-line ${statusClass}"></div>
                     <div class="p-4">
-                        <h3 class="text-sm font-bold text-slate-800 leading-relaxed mb-3">${t.subject}</h3>
-                        
-                        ${isLegal ? `<div class="flex gap-4 mb-3 bg-orange-50 border border-orange-100 p-2 rounded-lg">
-                            <div class="flex flex-col"><span class="text-[9px] text-orange-400">رقم القضية</span><span class="text-xs font-bold text-orange-700">${t.caseNumber}</span></div>
-                            <div class="flex flex-col border-r border-orange-200 pr-3"><span class="text-[9px] text-orange-400">السنة</span><span class="text-xs font-bold text-orange-700">${t.caseYear || '-'}</span></div>
-                        </div>` : ''}
-
-                        <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-                            ${t.source ? `<span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📥 ${t.source}</span>` : ''}
-                            <span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📅 ${t.date}</span>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] bg-gray-100 px-2 py-1 rounded text-gray-600 font-bold">#${t.id}</span>
+                            <span class="text-[10px] font-bold ${isLate ? 'text-red-600' : 'text-gray-500'}">${t.status}</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-3 text-sm">${t.subject}</h3>
+                        ${t.caseNumber ? `<div class="text-xs bg-orange-50 text-orange-800 p-2 rounded mb-2 font-bold">⚖️ قضية: ${t.caseNumber}</div>` : ''}
+                        <div class="flex gap-3 text-xs text-gray-500">
+                            <span>📥 ${t.source}</span>
+                            <span>📅 ${t.deadline || t.date}</span>
                         </div>
                     </div>
-
-                    <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
-                        <div class="flex gap-2 w-full">
-                            ${t.attachment ? `<a href="${t.attachment}" target="_blank" class="flex-1 flex justify-center items-center gap-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-[#047857] hover:bg-emerald-50">
-                                <i data-lucide="eye" class="w-3 h-3"></i> معاينة
-                            </a>` : ''}
-                            
-                            <button onclick="openReplyForm('${t.id}')" class="flex-1 flex justify-center items-center gap-1 px-3 py-2 bg-[#047857] text-white rounded-lg text-xs font-bold hover:bg-[#065f46] shadow-sm">
-                                <i data-lucide="send" class="w-3 h-3"></i> تسجيل رد
-                            </button>
-                        </div>
+                    <div class="p-3 border-t bg-gray-50 flex gap-2">
+                        ${t.attachment ? `<a href="${t.attachment}" target="_blank" class="flex-1 text-center py-2 bg-white border rounded text-xs font-bold text-[#0f766e]">معاينة</a>` : ''}
+                        <button onclick="window.open('${CONFIG.FORMS.INBOX}', '_blank')" class="flex-1 text-center py-2 bg-[#0f766e] text-white rounded text-xs font-bold shadow">تسجيل رد</button>
                     </div>
                 </div>`;
             }).join('');
-            
             lucide.createIcons();
-        }
-
-        function getStatusInfo(s) {
-            s = (s || '').toLowerCase();
-            if (s.includes('تم') || s.includes('منتهي')) return { label: '✅ منتهي', class: 'st-done', bg: '#dcfce7', text: '#166534' };
-            if (s.includes('متأخر')) return { label: '🔥 متأخر', class: 'st-late', bg: '#fee2e2', text: '#991b1b' };
-            return { label: '⏳ قيد العمل', class: 'st-pending', bg: '#dbeafe', text: '#1e40af' };
-        }
-
-        function openReplyForm(taskId) {
-            // هنا ممكن نفتح رابط جوجل فورم جاهز
-            // أو نفتح Modal بسيط يرفع ملف
-            alert(`سيتم فتح نموذج الرد للمهمة #${taskId}`);
-            // window.open('LINK_TO_GOOGLE_FORM', '_blank');
         }
     </script>
 </body>
