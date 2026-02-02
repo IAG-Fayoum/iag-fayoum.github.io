@@ -13,142 +13,134 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
     * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    .en-font { font-family: system-ui, -apple-system, sans-serif; letter-spacing: 0.5px; }
     
     body {
-      min-height: 100vh;
-      background: #f0fdfa; /* خلفية فاتحة موحدة ونظيفة */
+      /* جعل الصفحة بارتفاع الشاشة بالظبط لمنع السكرول الزائد */
+      height: 100vh;
+      height: 100dvh; /* للموبايل */
+      background: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 50%, #f8fafc 100%);
       display: flex;
       flex-direction: column;
+      overflow-y: auto; /* سكرول فقط عند الضرورة القصوى */
     }
     
-    /* تصميم الهيدر الجديد */
+    /* خلفية الهيدر */
     .header-bg {
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+      background: linear-gradient(to left, #1a9b8e, #17a896);
       position: relative;
-      box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
-      padding-bottom: 3rem; /* مساحة عشان الكارت يدخل فيها */
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
-    /* كارت الدخول */
     .login-card {
       background: white;
-      border-radius: 1.5rem;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); /* ظل ناعم */
-      border: 1px solid #e2e8f0;
-      padding: 2.5rem 2rem;
+      border-radius: 1.2rem;
+      box-shadow: 0 15px 40px rgba(26, 155, 142, 0.1);
+      border: 1px solid rgba(26, 155, 142, 0.1);
+      padding: 1.5rem 2rem; /* تقليل الحشو الداخلي */
       width: 100%;
-      max-width: 420px; /* عرض مناسب للموبايل والكمبيوتر */
+      max-width: 400px; /* تصغير عرض الكارت */
       position: relative;
-      margin-top: -3rem; /* يركب فوق الهيدر شوية */
     }
     
-    /* الدائرة البيضاء للوجو (نفس الستايل في كل مكان) */
-    .logo-circle {
-      background: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      overflow: hidden; /* عشان الصورة متخرجش بره */
-    }
-
     .form-input {
       width: 100%;
-      padding: 12px 16px;
+      padding: 10px 14px; /* تصغير الحقل */
       border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      font-size: 15px;
+      border-radius: 10px;
+      font-size: 14px;
       font-weight: 600;
       transition: all 0.2s;
       outline: none;
     }
     
     .form-input:focus {
-      border-color: #0f766e;
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
-      background: #fff;
+      border-color: #1a9b8e;
+      box-shadow: 0 0 0 3px rgba(26, 155, 142, 0.08);
+      background: #fafafa;
     }
     
     .btn-login {
       width: 100%;
-      background: #0f766e;
+      background: linear-gradient(135deg, #1a9b8e 0%, #17a896 100%);
       color: white;
-      padding: 14px;
+      padding: 12px;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2);
+      box-shadow: 0 4px 10px rgba(26, 155, 142, 0.2);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
     }
     
-    .btn-login:hover { background: #115e59; transform: translateY(-2px); }
+    .btn-login:hover { transform: translateY(-2px); }
     .btn-login:active { transform: translateY(0); }
-    .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
     
     .error-box {
       margin-top: 1rem;
-      padding: 10px;
+      padding: 8px 12px;
       background: #fef2f2;
       border: 1px solid #fecaca;
       border-radius: 8px;
-      color: #b91c1c;
-      font-size: 0.85rem;
+      color: #dc2626;
       font-weight: 700;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
+      gap: 8px;
+      font-size: 0.8rem;
     }
 
-    .footer-bg {
-      background: #1e293b; /* لون غامق للفوتر */
-      color: white;
-      padding: 2rem 0;
+    /* الفوتر المضغوط */
+    .compact-footer {
+      background: #0f2830;
+      border-top: 3px solid #1a9b8e;
+      padding: 1rem 0;
       margin-top: auto;
-      text-align: center;
-      border-top: 4px solid #0f766e;
     }
   </style>
 </head>
 <body>
 
-  <header class="header-bg pt-8 pb-16 px-4 text-center">
-    <div class="mx-auto mb-4 logo-circle w-28 h-28 border-4 border-white/20">
-      <img src="assets/icons/favicon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/9311/9311895.png'" class="w-20 h-20 object-contain" alt="Logo">
-    </div>
+  <header class="header-bg py-6 md:py-8">
+    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
     
-    <h1 class="text-2xl md:text-3xl font-bold text-white mb-1 drop-shadow-md">
-      إدارة المراجعة الداخلية والحوكمة
-    </h1>
-    <p class="text-teal-100 text-sm md:text-base font-medium opacity-90">
-      مديرية الشؤون الصحية بالفيوم
-    </p>
+    <div class="max-w-4xl mx-auto px-4 text-center relative z-10 flex flex-col items-center">
+      <div class="bg-white/15 backdrop-blur-md p-3 rounded-full border-2 border-white/20 shadow-xl mb-3">
+        <img src="assets/icons/favicon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/9311/9311895.png'" class="w-20 h-20 object-contain drop-shadow-lg brightness-200 grayscale contrast-200" alt="Logo">
+      </div>
+      
+      <h1 class="text-xl md:text-2xl font-bold text-white leading-tight">
+        إدارة المراجعة الداخلية والحوكمة
+      </h1>
+      <p class="text-sm text-teal-50 opacity-90 mt-1">مديرية الشؤون الصحية بالفيوم</p>
+    </div>
   </header>
 
-  <div class="flex-grow flex items-start justify-center px-4 mb-8">
+  <div class="flex-grow flex items-center justify-center p-4">
     <div class="login-card">
       
       <div class="text-center mb-6">
-        <div class="mx-auto mb-3 logo-circle w-20 h-20 border border-gray-100">
-          <img src="assets/icons/favicon.png" onerror="this.style.display='none'" class="w-14 h-14 object-contain" alt="Logo">
+        <div class="w-16 h-16 mx-auto mb-3 bg-white rounded-full flex items-center justify-center border-2 border-teal-50 shadow p-2">
+          <img src="assets/icons/favicon.png" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')" class="w-full h-full object-contain" alt="Logo">
+          <i data-lucide="lock" class="w-8 h-8 text-teal-700 hidden"></i>
         </div>
-        <h2 class="text-xl font-bold text-slate-800">تسجيل الدخول</h2>
-        <p class="text-xs text-slate-500 mt-1 font-bold">المنصة الرقمية الموحدة</p>
+        <h2 class="text-lg font-bold text-slate-800">تسجيل الدخول</h2>
+        <p class="text-xs text-slate-500 mt-1">المنصة الرقمية الموحدة</p>
       </div>
       
       <form id="login-form" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رقم الموبايل</label>
           <div class="relative">
-            <input type="tel" id="mobile-input" class="form-input text-left pl-10" placeholder="01xxxxxxxxx" maxlength="11" dir="ltr" autocomplete="tel" required>
-            <i data-lucide="smartphone" class="w-4 h-4 text-gray-400 absolute left-3 top-3.5"></i>
+            <input type="tel" id="mobile-input" class="form-input text-left pl-8" placeholder="01xxxxxxxxx" maxlength="11" dir="ltr" autocomplete="tel" required>
+            <i data-lucide="smartphone" class="w-4 h-4 text-gray-400 absolute left-2.5 top-3"></i>
           </div>
         </div>
         
@@ -156,38 +148,32 @@
           <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رمز الدخول (PIN)</label>
           <div class="relative">
             <input type="password" id="pin-input" class="form-input text-center tracking-[4px]" placeholder="••••" maxlength="4" autocomplete="current-password" required>
-            <i data-lucide="key-round" class="w-4 h-4 text-gray-400 absolute left-3 top-3.5"></i>
+            <i data-lucide="key-round" class="w-4 h-4 text-gray-400 absolute left-2.5 top-3"></i>
           </div>
         </div>
         
         <button type="submit" id="login-btn" class="btn-login mt-2">
-          <span>دخول للنظام</span>
+          <span>دخول</span>
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
         </button>
       </form>
       
       <div id="error-msg" class="error-box hidden">
-        <i data-lucide="alert-circle" class="w-4 h-4"></i>
+        <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i>
         <span id="error-text">بيانات غير صحيحة</span>
-      </div>
-
-      <div class="mt-6 text-center">
-        <p class="text-[10px] text-gray-400 font-bold flex items-center justify-center gap-1">
-            <i data-lucide="shield-check" class="w-3 h-3"></i> اتصال آمن ومشفر
-        </p>
       </div>
     </div>
   </div>
 
-  <footer class="footer-bg">
-    <div class="container mx-auto px-4 flex flex-col items-center justify-center gap-3">
-      <div class="logo-circle w-16 h-16 bg-white p-2">
-         <img src="assets/icons/favicon.png" onerror="this.style.display='none'" class="w-full h-full object-contain" alt="Logo">
+  <footer class="compact-footer text-center text-white">
+    <div class="container mx-auto px-4 flex flex-col items-center justify-center gap-2">
+      <div class="w-12 h-12 bg-white/10 p-2 rounded-full border border-white/10 flex items-center justify-center">
+         <img src="assets/icons/favicon.png" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')" class="w-full h-full object-contain brightness-0 invert" alt="Logo">
+         <i data-lucide="shield" class="text-white w-6 h-6 hidden"></i>
       </div>
-      
-      <div class="text-sm opacity-80 font-light">
-        <p class="font-bold text-white mb-1">إدارة الحوكمة والمراجعة الداخلية</p>
-        <p class="text-xs text-slate-300">© 2025 جميع الحقوق محفوظة</p>
+      <div class="text-xs opacity-75">
+        <p>© 2025 جميع الحقوق محفوظة</p>
+        <p class="en-font mt-0.5 text-[10px]">Governance Supervision – Dr. MAH</p>
       </div>
     </div>
   </footer>
