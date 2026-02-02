@@ -4,27 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
     <title>تسجيل الدخول | نظام الحوكمة</title>
+    
     <link rel="icon" href="assets/icons/favicon.png">
     <link rel="apple-touch-icon" href="assets/icons/favicon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#0f766e">
+
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        .header-official { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .login-card { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 2.5rem; width: 100%; max-width: 400px; border: 1px solid #e2e8f0; }
-        .custom-input { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 12px; transition: 0.3s; outline: none; }
-        .custom-input:focus { border-color: #0f766e; }
-        .btn-primary { background: #0f766e; color: white; padding: 12px; border-radius: 12px; width: 100%; font-weight: bold; transition: 0.2s; }
+        /* تنسيقات أساسية */
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #f8fafc; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+
+        /* الهيدر الأخضر الرسمي */
+        .header-official { 
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); 
+            color: white; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        }
+
+        /* كارت الدخول */
+        .login-card { 
+            background: white; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            padding: 2.5rem; 
+            width: 100%; 
+            max-width: 400px; 
+            border: 1px solid #e2e8f0; 
+        }
+
+        /* حقول الإدخال */
+        .custom-input { 
+            width: 100%; 
+            padding: 12px 16px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 12px; 
+            transition: 0.3s; 
+            outline: none; 
+            font-size: 16px;
+        }
+        .custom-input:focus { 
+            border-color: #0f766e; 
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+        }
+
+        /* زر الدخول */
+        .btn-primary { 
+            background: #0f766e; 
+            color: white; 
+            padding: 12px; 
+            border-radius: 12px; 
+            width: 100%; 
+            font-weight: bold; 
+            transition: 0.2s; 
+            border: none;
+            cursor: pointer;
+        }
         .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
     </style>
 </head>
 <body>
+
     <header class="header-official py-4">
         <div class="container mx-auto px-6 flex items-center gap-3">
-            <div class="bg-white/20 p-2 rounded-lg"><i data-lucide="shield-check" class="w-7 h-7 text-white"></i></div>
+            <div class="bg-white/20 p-2 rounded-lg">
+                <i data-lucide="shield-check" class="w-7 h-7 text-white"></i>
+            </div>
             <div>
-                <h1 class="text-lg font-bold">نظام الحوكمة</h1>
+                <h1 class="text-lg font-bold leading-tight">نظام الحوكمة</h1>
                 <p class="text-xs text-teal-100 opacity-90">مديرية الشؤون الصحية بالفيوم</p>
             </div>
         </div>
@@ -32,9 +90,10 @@
 
     <main class="flex-1 flex items-center justify-center p-4">
         <div class="login-card" id="login-box">
+            
             <div class="text-center mb-8">
-                <div class="w-20 h-20 mx-auto mb-4 bg-teal-50 rounded-full flex items-center justify-center">
-                    <img src="assets/icons/favicon.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" class="w-12 h-12 object-contain">
+                <div class="w-20 h-20 mx-auto mb-4 bg-teal-50 rounded-full flex items-center justify-center border border-teal-100">
+                    <img src="assets/icons/favicon.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" class="w-12 h-12 object-contain" alt="Logo">
                     <i data-lucide="lock" class="w-8 h-8 text-teal-700 hidden"></i>
                 </div>
                 <h2 class="text-xl font-bold text-slate-800">تسجيل الدخول</h2>
@@ -44,18 +103,22 @@
             <form id="login-form" class="space-y-5">
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رقم الموبايل</label>
-                    <input type="tel" id="mobile-input" maxlength="11" class="custom-input text-left" placeholder="01xxxxxxxxx" dir="ltr">
+                    <input type="tel" id="mobile-input" maxlength="11" class="custom-input text-left" placeholder="01xxxxxxxxx" dir="ltr" autocomplete="tel">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رمز الدخول (PIN)</label>
-                    <input type="password" id="pin-input" maxlength="4" class="custom-input text-center tracking-[4px] font-bold" placeholder="••••">
+                    <input type="password" id="pin-input" maxlength="4" class="custom-input text-center tracking-[4px] font-bold" placeholder="••••" autocomplete="current-password">
                 </div>
                 <button type="submit" id="login-btn" class="btn-primary flex justify-center items-center gap-2">
-                    <span>دخول للنظام</span> <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>دخول للنظام</span> 
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 </button>
             </form>
             
-            <div id="error-msg" class="hidden mt-4 p-3 bg-red-50 text-red-600 text-sm font-bold rounded-xl text-center border border-red-100">بيانات غير صحيحة</div>
+            <div id="error-msg" class="hidden mt-4 p-3 bg-red-50 text-red-600 text-sm font-bold rounded-xl text-center border border-red-100 flex items-center justify-center gap-2">
+                <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                <span>بيانات غير صحيحة</span>
+            </div>
         </div>
     </main>
 
@@ -64,41 +127,83 @@
     </footer>
 
     <script src="assets/js/config.js"></script>
+
     <script src="assets/js/auth.js"></script>
+    
     <script>
         lucide.createIcons();
         
-        // التحقق لو مسجل دخول يوجهه فوراً
+        // التحقق عند تحميل الصفحة
         window.addEventListener('load', () => {
+            // نتأكد إن auth موجودة قبل ما نستخدمها
+            if (typeof auth === 'undefined') {
+                console.error("خطأ خطير: ملف auth.js لم يتم تحميله!");
+                alert("يوجد ملف مفقود (auth.js)، يرجى مراجعة الملفات.");
+                return;
+            }
+
+            // لو المستخدم مسجل دخول، حوله لصفحته فوراً
             const user = localStorage.getItem('user');
-            if(user) auth.redirectUser(JSON.parse(user).role);
-            else document.getElementById('mobile-input').focus();
-        });
-
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('login-btn');
-            const errorDiv = document.getElementById('error-msg');
-            const mobile = document.getElementById('mobile-input').value;
-            const pin = document.getElementById('pin-input').value;
-
-            errorDiv.classList.add('hidden');
-            if(mobile.length < 11 || pin.length < 4) return errorDiv.classList.remove('hidden');
-
-            const oldText = btn.innerHTML;
-            btn.innerHTML = '<span class="animate-pulse">جاري التحقق...</span>';
-            btn.disabled = true;
-
-            try {
-                const res = await auth.login(mobile, pin);
-                if(!res.success) throw new Error(res.error);
-            } catch(err) {
-                errorDiv.textContent = err.message || "خطأ في الاتصال";
-                errorDiv.classList.remove('hidden');
-                btn.innerHTML = oldText;
-                btn.disabled = false;
+            if(user) {
+                try {
+                    auth.redirectUser(JSON.parse(user).role);
+                } catch (e) {
+                    localStorage.removeItem('user'); // لو الداتا بايظة، امسحها
+                }
+            } else {
+                const input = document.getElementById('mobile-input');
+                if(input) input.focus();
             }
         });
+
+        // التعامل مع زر الدخول
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                if (typeof auth === 'undefined') {
+                    alert("السيستم غير جاهز: ملف auth.js غير موجود.");
+                    return;
+                }
+
+                const btn = document.getElementById('login-btn');
+                const errorDiv = document.getElementById('error-msg');
+                const mobile = document.getElementById('mobile-input').value;
+                const pin = document.getElementById('pin-input').value;
+
+                // تنظيف الحالة السابقة
+                errorDiv.classList.add('hidden');
+                
+                // تحقق مبدئي
+                if(mobile.length < 11 || pin.length < 4) {
+                    errorDiv.innerHTML = '<i data-lucide="alert-circle" class="w-4 h-4"></i> <span>يرجى إدخال البيانات كاملة</span>';
+                    lucide.createIcons();
+                    return errorDiv.classList.remove('hidden');
+                }
+
+                // بدء التحميل
+                const oldText = btn.innerHTML;
+                btn.innerHTML = '<span class="animate-pulse">جاري التحقق...</span>';
+                btn.disabled = true;
+
+                try {
+                    const res = await auth.login(mobile, pin);
+                    if(!res.success) throw new Error(res.error || "بيانات خطأ");
+                    
+                    // نجاح الدخول (التوجيه بيحصل جوا auth.login)
+                    
+                } catch(err) {
+                    // فشل الدخول
+                    errorDiv.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i> <span>${err.message || "خطأ في الاتصال"}</span>`;
+                    lucide.createIcons();
+                    errorDiv.classList.remove('hidden');
+                    
+                    btn.innerHTML = oldText;
+                    btn.disabled = false;
+                }
+            });
+        }
     </script>
 </body>
 </html>
