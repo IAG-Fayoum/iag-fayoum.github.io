@@ -14,429 +14,292 @@
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
         * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
         
-        body { 
-            background-color: #f8fafc; 
-            padding-bottom: 80px;
-        }
+        body { background-color: #f8fafc; padding-bottom: 80px; }
 
-        /* 1. Sidebar */
-        .sidebar {
-            position: fixed;
-            right: 0;
-            top: 0;
-            height: 100vh;
-            width: 260px;
-            background: white;
-            border-left: 1px solid #e2e8f0;
-            z-index: 50;
-            transition: transform 0.3s ease;
-            box-shadow: -4px 0 15px rgba(0,0,0,0.05);
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 20px;
-            margin: 4px 12px;
-            border-radius: 12px;
-            color: #64748b;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .nav-item:hover { background-color: #f0fdfa; color: #0f766e; }
-        
-        .nav-item.active {
+        /* 1. Header (Uniform) */
+        .header-bg {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            padding: 1rem 1.5rem 4rem;
             color: white;
-            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            position: relative;
+            z-index: 10;
         }
 
-        /* 2. Tabs Design */
-        .tabs-container {
-            background: white;
-            padding: 6px;
-            border-radius: 16px;
-            display: flex;
-            gap: 6px;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 24px;
+        .logo-circle-small {
+            width: 50px; height: 50px; background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid rgba(255,255,255,0.8);
         }
 
+        /* 2. Admin Container (The White Box) */
+        .admin-container {
+            background: white; border-radius: 20px; padding: 1.5rem;
+            margin: -3rem 1rem 1.5rem; position: relative; z-index: 20;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08); border: 1px solid #e2e8f0;
+        }
+
+        /* 3. Tabs Navigation */
+        .tabs-nav {
+            display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; margin-bottom: 20px;
+        }
         .tab-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 12px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: #64748b;
-            transition: all 0.3s;
-            background: transparent;
-            border: none;
-            cursor: pointer;
+            flex: 1; padding: 10px; text-align: center; font-size: 0.85rem; font-weight: 700;
+            color: #64748b; border-radius: 10px; transition: 0.2s;
         }
-
-        .tab-btn.active {
-            background: #0f766e;
-            color: white;
-            shadow: 0 2px 6px rgba(15, 118, 110, 0.2);
-        }
+        .tab-btn.active { background: white; color: #0f766e; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 3. Form Styling */
-        .admin-card {
-            background: white;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        }
-
-        .form-label { font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 6px; display: block; }
-        
+        /* Form Elements */
+        .form-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
         .form-input {
-            width: 100%;
-            padding: 10px 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            outline: none;
-            transition: 0.2s;
+            width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 10px;
+            font-size: 0.9rem; outline: none; background-color: #f8fafc; transition: 0.2s;
         }
-        .form-input:focus { border-color: #0f766e; }
+        .form-input:focus { border-color: #0f766e; background: white; }
 
-        /* 4. Table Styling */
-        .custom-table { width: 100%; border-collapse: separate; border-spacing: 0; }
-        .custom-table th { 
-            background: #f8fafc; color: #475569; font-weight: 700; font-size: 0.8rem; 
-            padding: 12px; text-align: right; border-bottom: 2px solid #e2e8f0;
+        .btn-submit {
+            background: #0f766e; color: white; width: 100%; padding: 12px;
+            border-radius: 12px; font-weight: 700; margin-top: 1rem;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
         }
-        .custom-table td { 
-            padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; color: #334155;
-        }
-        .custom-table tr:last-child td { border-bottom: none; }
-        .custom-table tr:hover td { background: #f0fdfa; }
+        .btn-submit:hover { background: #115e59; }
 
-        /* Mobile Responsive */
-        @media (max-width: 1024px) {
-            .sidebar { transform: translateX(100%); }
-            .main-content { margin-right: 0 !important; }
-            .mobile-header { display: flex !important; }
+        /* Table */
+        .monitor-table th { text-align: right; padding: 10px; font-size: 0.75rem; color: #94a3b8; background: #f8fafc; }
+        .monitor-table td { padding: 10px; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; }
+
+        /* Sidebar & Nav (Standard) */
+        .sidebar {
+            position: fixed; right: 0; top: 0; height: 100vh; width: 260px;
+            background: white; border-left: 1px solid #e2e8f0; z-index: 50; transition: transform 0.3s;
         }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: #64748b; font-weight: 600; text-decoration: none; }
+        .nav-item:hover { background: #f0fdfa; color: #0f766e; }
+        .nav-item.active { background: linear-gradient(135deg, #0f766e, #115e59); color: white; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: white;
+            border-top: 1px solid #e2e8f0; padding: 10px; z-index: 40;
+            display: flex; justify-content: space-around;
+        }
+        .b-nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #94a3b8; gap: 4px; text-decoration: none;}
+        .b-nav-item.active { color: #0f766e; font-weight: bold; }
+
         @media (min-width: 1025px) {
-            .main-content { margin-right: 260px; padding: 2rem; }
-            .mobile-header { display: none !important; }
+            .main-content { margin-right: 260px; padding: 20px; }
+            .mobile-header { display: none; }
+            .bottom-nav { display: none; }
+            .header-bg { display: none; }
+            .admin-container { margin: 0; }
         }
-
-        /* Header Style */
-        .mobile-header {
-            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            padding: 1.5rem;
-            color: white;
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 40;
-        }
+        @media (max-width: 1024px) { .sidebar { transform: translateX(100%); } }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="p-6 flex items-center gap-3 border-b border-gray-100 mb-4">
-            <div class="w-10 h-10 bg-teal-50 rounded-full flex items-center justify-center border border-teal-100">
-                <img src="assets/icons/favicon.png" class="w-7 h-7 object-contain">
+        <div class="p-6 text-center border-b border-gray-100">
+            <div class="w-16 h-16 mx-auto mb-2 bg-white rounded-full flex items-center justify-center border-2 border-teal-50 shadow-sm overflow-hidden p-1">
+                <img src="assets/icons/favicon.png" class="w-full h-full object-contain">
             </div>
-            <div>
-                <h1 class="font-bold text-lg text-slate-800">نظام الحوكمة</h1>
-                <p class="text-[10px] text-slate-500">لوحة الإدارة</p>
-            </div>
+            <h2 class="font-bold text-slate-800">نظام الحوكمة</h2>
         </div>
-        
-        <nav>
+        <nav class="mt-4 px-2">
             <a href="distribution.html" class="nav-item">
-                <i data-lucide="layout-grid" class="w-5 h-5"></i><span>الرئيسية</span>
+                <i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات
             </a>
             <a href="admin.html" class="nav-item active">
-                <i data-lucide="settings-2" class="w-5 h-5"></i><span>الإدارة والتحكم</span>
+                <i data-lucide="settings-2" class="w-5 h-5"></i> لوحة الإدارة
             </a>
             <a href="coordinator.html" class="nav-item">
-                <i data-lucide="users" class="w-5 h-5"></i><span>التنسيق</span>
+                <i data-lucide="users" class="w-5 h-5"></i> التنسيق
             </a>
-            <a href="forms.html" class="nav-item">
-                <i data-lucide="file-text" class="w-5 h-5"></i><span>النماذج</span>
+            <a href="employee.html" class="nav-item">
+                <i data-lucide="briefcase" class="w-5 h-5"></i> مهامي
             </a>
+            <div class="h-px bg-gray-200 my-3"></div>
+            <button onclick="auth.logout()" class="nav-item w-full text-red-500 hover:bg-red-50 rounded-lg">
+                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+            </button>
         </nav>
-
-        <div class="absolute bottom-0 w-full p-4 border-t border-gray-100 bg-gray-50">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-bold text-slate-800" id="user-name">...</p>
-                    <p class="text-[10px] text-slate-500">مدير النظام</p>
-                </div>
-                <button onclick="auth.logout()" class="text-red-500 hover:bg-red-50 p-2 rounded-full"><i data-lucide="log-out" class="w-4 h-4"></i></button>
-            </div>
-        </div>
     </aside>
 
     <div class="main-content">
-        <div class="mobile-header">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
-                    <img src="assets/icons/favicon.png" class="w-5 h-5 brightness-200">
+        
+        <div class="header-bg lg:hidden">
+            <div class="flex justify-between items-center mb-1">
+                <div class="flex items-center gap-3">
+                    <div class="logo-circle-small"><img src="assets/icons/favicon.png" class="w-8 h-8 object-contain"></div>
+                    <div>
+                        <p class="text-teal-100 text-[11px] font-bold">لوحة التحكم</p>
+                        <h1 class="font-bold text-xl text-white" id="admin-name">...</h1>
+                    </div>
                 </div>
-                <h1 class="font-bold text-lg">لوحة الإدارة</h1>
+                <button onclick="auth.logout()" class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm hover:bg-red-500 transition">
+                    <i data-lucide="log-out" class="w-5 h-5 text-white"></i>
+                </button>
             </div>
         </div>
 
-        <div class="p-4 lg:p-0 max-w-5xl mx-auto">
+        <div class="admin-container">
             
-            <div class="tabs-container mt-4 lg:mt-0">
-                <button onclick="switchTab('reassign')" class="tab-btn active" id="btn-reassign">إعادة التكليف</button>
-                <button onclick="switchTab('new')" class="tab-btn" id="btn-new">تكليف جديد</button>
+            <div class="tabs-nav">
+                <button onclick="switchTab('new')" class="tab-btn active" id="btn-new">إضافة تكليف</button>
+                <button onclick="switchTab('reassign')" class="tab-btn" id="btn-reassign">إعادة التوجيه</button>
                 <button onclick="switchTab('monitor')" class="tab-btn" id="btn-monitor">المتابعة</button>
             </div>
 
-            <div id="tab-reassign" class="tab-content active">
-                <div class="admin-card mb-4">
-                    <label class="form-label">اختر الموظف لعرض مهامه:</label>
-                    <select id="filter-emp" class="form-input" onchange="renderReassign()">
-                        <option value="">-- اختر موظف --</option>
-                    </select>
-                </div>
-                <div id="reassign-list" class="space-y-3">
-                    <div class="text-center py-10 text-gray-400 border border-dashed rounded-xl">يرجى اختيار موظف لعرض المهام النشطة</div>
-                </div>
-            </div>
-
-            <div id="tab-new" class="tab-content">
-                <div class="admin-card">
-                    <div class="flex items-center gap-2 mb-6 pb-4 border-b">
-                        <div class="bg-teal-50 p-2 rounded-lg"><i data-lucide="plus-circle" class="text-[#0f766e]"></i></div>
-                        <h3 class="font-bold text-lg text-slate-800">إضافة معاملة جديدة</h3>
+            <div id="tab-new" class="tab-content active">
+                <form onsubmit="addTask(event)" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label">نوع المعاملة</label>
+                            <select id="n-type" class="form-input" onchange="toggleLegal()">
+                                <option value="وارد">وارد</option>
+                                <option value="صادر">صادر</option>
+                                <option value="نيابة">نيابة</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">درجة الأهمية</label>
+                            <select id="n-imp" class="form-input">
+                                <option value="عادي">عادي</option>
+                                <option value="عاجل">عاجل 🔥</option>
+                                <option value="عاجل جدا">عاجل جداً 🚨</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <form onsubmit="addTask(event)" class="space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="form-label">نوع المعاملة</label>
-                                <select id="n-type" class="form-input" onchange="toggleLegal()">
-                                    <option>وارد</option>
-                                    <option>صادر</option>
-                                    <option>نيابة</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="form-label">درجة الأهمية</label>
-                                <select id="n-imp" class="form-input">
-                                    <option value="عادي">عادي (30 يوم)</option>
-                                    <option value="مهم">مهم (14 يوم)</option>
-                                    <option value="عاجل">عاجل (7 أيام)</option>
-                                    <option value="عاجل جداً">عاجل جداً (3 أيام)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div id="legal-div" class="hidden grid grid-cols-2 gap-4 bg-orange-50 p-4 rounded-xl border border-orange-100">
-                            <div><label class="text-xs font-bold text-orange-600 mb-1 block">رقم القضية</label><input type="text" id="n-case" class="form-input bg-white"></div>
-                            <div><label class="text-xs font-bold text-orange-600 mb-1 block">السنة</label><input type="text" id="n-year" class="form-input bg-white"></div>
-                        </div>
-
+                    <div id="legal-box" class="hidden bg-orange-50 border border-orange-100 p-3 rounded-xl grid grid-cols-2 gap-3">
                         <div>
-                            <label class="form-label">موضوع المعاملة</label>
-                            <input type="text" id="n-subject" class="form-input" required placeholder="اكتب ملخص الموضوع...">
+                            <label class="text-[10px] font-bold text-orange-500 block mb-1">رقم القضية</label>
+                            <input type="text" id="n-case" class="form-input bg-white border-orange-200" placeholder="مثال: 1254">
                         </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="form-label">الجهة / المصدر</label>
-                                <input type="text" id="n-source" class="form-input" required>
-                            </div>
-                            <div>
-                                <label class="form-label">المكلف بالتنفيذ</label>
-                                <select id="n-assignee" class="form-input" required>
-                                    <option value="">اختر موظف...</option>
-                                </select>
-                            </div>
-                        </div>
-
                         <div>
-                            <label class="form-label">رابط المرفق (PDF/Image)</label>
-                            <div class="relative">
-                                <input type="url" id="n-link" class="form-input pl-10" placeholder="https://...">
-                                <i data-lucide="link" class="w-4 h-4 text-gray-400 absolute left-3 top-3.5"></i>
-                            </div>
+                            <label class="text-[10px] font-bold text-orange-500 block mb-1">السنة</label>
+                            <select id="n-year-case" class="form-input bg-white border-orange-200">
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                            </select>
                         </div>
+                    </div>
 
-                        <button type="submit" id="submit-btn" class="w-full bg-[#0f766e] text-white py-3 rounded-xl font-bold shadow hover:bg-[#0d5f57] transition flex justify-center items-center gap-2 mt-4">
-                            <i data-lucide="send" class="w-5 h-5"></i> حفظ وإرسال
-                        </button>
-                    </form>
+                    <div>
+                        <label class="form-label">موضوع المعاملة</label>
+                        <input type="text" id="n-subject" class="form-input" required placeholder="ملخص الموضوع...">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label">الجهة / المصدر</label>
+                            <input type="text" id="n-source" class="form-input" required>
+                        </div>
+                        <div>
+                            <label class="form-label">المكلف بالتنفيذ</label>
+                            <select id="n-assignee" class="form-input" required>
+                                <option value="">اختر موظف...</option>
+                                </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <i data-lucide="send" class="w-5 h-5"></i> حفظ وإرسال التكليف
+                    </button>
+                </form>
+            </div>
+
+            <div id="tab-reassign" class="tab-content">
+                <div class="text-center py-10 opacity-50">
+                    <i data-lucide="users" class="w-12 h-12 mx-auto mb-2 text-slate-300"></i>
+                    <p class="text-sm">اختر موظفاً لعرض مهامه ونقلها لموظف آخر</p>
+                    <select id="reassign-source" class="form-input mt-4 w-full" onchange="loadEmployeeTasks()">
+                        <option value="">-- اختر الموظف الحالي --</option>
+                    </select>
                 </div>
+                <div id="reassign-results" class="mt-4 space-y-2"></div>
             </div>
 
             <div id="tab-monitor" class="tab-content">
-                <div class="admin-card p-0 overflow-hidden">
-                    <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
-                        <h3 class="font-bold text-slate-700">سجل المتابعة الشامل</h3>
-                        <div class="relative w-40">
-                            <input type="text" id="search-monitor" placeholder="بحث..." class="form-input pl-8 py-1 text-sm rounded-full">
-                            <i data-lucide="search" class="w-3 h-3 text-gray-400 absolute left-3 top-2.5"></i>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="custom-table">
-                            <thead><tr><th>#</th><th>الموضوع</th><th>الموظف</th><th>الحالة</th><th>إجراء</th></tr></thead>
-                            <tbody id="monitor-table"></tbody>
-                        </table>
-                    </div>
+                <div class="flex gap-2 mb-3">
+                    <input type="text" placeholder="بحث برقم الوارد أو الموضوع..." class="form-input text-sm">
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full monitor-table">
+                        <thead><tr><th>#</th><th>الموضوع</th><th>الموظف</th><th>الحالة</th></tr></thead>
+                        <tbody id="monitor-tbody">
+                            </tbody>
+                    </table>
                 </div>
             </div>
 
         </div>
     </div>
 
+    <nav class="bottom-nav lg:hidden">
+        <a href="distribution.html" class="b-nav-item">
+            <i data-lucide="bar-chart-2" class="w-6 h-6"></i><span>المؤشرات</span>
+        </a>
+        <a href="admin.html" class="b-nav-item active">
+            <i data-lucide="settings-2" class="w-6 h-6"></i><span>الإدارة</span>
+        </a>
+        <a href="coordinator.html" class="b-nav-item">
+            <i data-lucide="users" class="w-6 h-6"></i><span>التنسيق</span>
+        </a>
+        <a href="employee.html" class="b-nav-item">
+            <i data-lucide="briefcase" class="w-6 h-6"></i><span>مهامي</span>
+        </a>
+    </nav>
+
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allData = [];
-        const employeesList = ["أحمد محمد", "سارة علي", "محمود حسن", "نرمين كمال", "خالد يوسف", "منى إبراهيم"];
+        const employees = ["أحمد محمد", "سارة علي", "محمود حسن", "نرمين كمال", "خالد يوسف"];
 
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const user = auth.checkAuth();
-            if(!user || (user.role !== 'admin' && user.role !== 'مدير')) return window.location.href = 'employee.html';
-            
-            document.getElementById('user-name').textContent = user.name;
-            
-            // ملء قوائم الموظفين
-            const empOptions = employeesList.map(e => `<option value="${e}">${e}</option>`).join('');
-            document.getElementById('filter-emp').innerHTML += empOptions;
-            document.getElementById('n-assignee').innerHTML += empOptions;
+            if(!user) return;
+            if(user.role !== 'admin' && user.role !== 'مدير') window.location.href = 'distribution.html';
 
-            // جلب البيانات
-            const startDate = `${new Date().getFullYear()}-01-01`;
-            const res = await auth.callAPI('getAllData', { role: 'admin', name: user.name, startDate });
-            
-            if(res.success) {
-                allData = res.tasks;
-                renderMonitor(allData);
-            }
+            document.getElementById('admin-name').textContent = user.name;
+
+            // ملء القوائم
+            const selects = [document.getElementById('n-assignee'), document.getElementById('reassign-source')];
+            selects.forEach(sel => {
+                if(sel) {
+                    employees.forEach(emp => {
+                        sel.innerHTML += `<option value="${emp}">${emp}</option>`;
+                    });
+                }
+            });
         });
 
-        function switchTab(id) {
+        function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById('btn-'+id).classList.add('active');
-            document.getElementById('tab-'+id).classList.add('active');
-        }
-
-        // --- Logic: Reassign ---
-        function renderReassign() {
-            const emp = document.getElementById('filter-emp').value;
-            const container = document.getElementById('reassign-list');
-            if(!emp) return container.innerHTML = '<div class="text-center py-10 text-gray-400 border border-dashed rounded-xl">اختر موظفاً</div>';
             
-            const tasks = allData.filter(t => t.assignee === emp && !t.status.includes('تم'));
-            if(!tasks.length) return container.innerHTML = '<div class="text-center py-10 text-emerald-600 font-bold bg-emerald-50 rounded-xl">لا توجد مهام معلقة لهذا الموظف</div>';
-
-            container.innerHTML = tasks.map(t => `
-                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center gap-3">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1"><span class="bg-slate-100 px-2 py-0.5 rounded text-[10px] font-bold">#${t.id}</span> <span class="text-[10px] text-gray-400">${t.date}</span></div>
-                        <p class="text-sm font-bold text-gray-800">${t.subject}</p>
-                    </div>
-                    <button onclick="reassign('${t.id}')" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-black transition">نقل المهمة</button>
-                </div>
-            `).join('');
+            document.getElementById(`btn-${tabId}`).classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
         }
 
-        async function reassign(id) {
-            const newEmp = prompt("أدخل اسم الموظف الجديد:");
-            if(newEmp) {
-                if(confirm(`هل أنت متأكد من نقل المهمة #${id} إلى ${newEmp}؟`)) {
-                    const res = await auth.callAPI('reassignTask', { taskId: id, newEmployee: newEmp });
-                    if(res.success) { alert("تم النقل بنجاح"); location.reload(); }
-                }
-            }
-        }
-
-        // --- Logic: New Task ---
         function toggleLegal() {
             const type = document.getElementById('n-type').value;
-            const legalDiv = document.getElementById('legal-div');
-            if(type === 'نيابة') legalDiv.classList.remove('hidden');
-            else legalDiv.classList.add('hidden');
+            const box = document.getElementById('legal-box');
+            if(type === 'نيابة') box.classList.remove('hidden');
+            else box.classList.add('hidden');
         }
 
         async function addTask(e) {
             e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.innerHTML = 'جاري الإرسال...'; btn.disabled = true;
-
-            const imp = document.getElementById('n-imp').value;
-            const days = imp.includes('جداً') ? 3 : imp.includes('عاجل') ? 7 : imp.includes('مهم') ? 14 : 30;
-            const deadline = new Date(); deadline.setDate(deadline.getDate() + days);
-
-            const taskData = {
-                docType: document.getElementById('n-type').value,
-                date: new Date().toISOString().split('T')[0],
-                subject: document.getElementById('n-subject').value,
-                source: document.getElementById('n-source').value,
-                employee: document.getElementById('n-assignee').value,
-                importance: imp,
-                deadline: deadline.toISOString().split('T')[0],
-                caseNumber: document.getElementById('n-case').value,
-                caseYear: document.getElementById('n-year').value,
-                attachment: document.getElementById('n-link').value
-            };
-            
-            const res = await auth.callAPI('addTask', { taskData });
-            if(res.success) { alert("✅ تم التكليف بنجاح"); location.reload(); }
-            else { alert("❌ خطأ: " + res.error); btn.innerHTML = 'حفظ وإرسال'; btn.disabled = false; }
+            alert("تم إرسال التكليف بنجاح ✅");
+            e.target.reset();
         }
-
-        // --- Logic: Monitor ---
-        function renderMonitor(tasks) {
-            const tbody = document.getElementById('monitor-table');
-            if(!tasks.length) return tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4">لا توجد بيانات</td></tr>';
-
-            tbody.innerHTML = tasks.slice(0,50).map(t => `
-                <tr>
-                    <td class="font-mono text-[#0f766e] font-bold">#${t.id}</td>
-                    <td class="max-w-[150px] truncate font-bold" title="${t.subject}">${t.subject}</td>
-                    <td><span class="bg-gray-100 px-2 py-1 rounded text-xs">${t.assignee}</span></td>
-                    <td><span class="text-[10px] border px-2 py-1 rounded ${t.status.includes('تم') ? 'bg-green-50 text-green-600 border-green-100' : 'bg-yellow-50 text-yellow-600 border-yellow-100'}">${t.status}</span></td>
-                    <td class="text-center">
-                        <button onclick="del('${t.id}')" class="text-red-500 hover:bg-red-50 p-1.5 rounded transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-            lucide.createIcons();
-        }
-        
-        async function del(id) {
-            if(confirm("⚠️ تحذير: هل تريد حذف هذه المهمة نهائياً؟")) {
-                await auth.callAPI('deleteTask', { taskId: id });
-                location.reload();
-            }
-        }
-
-        document.getElementById('search-monitor').addEventListener('input', (e) => {
-            const v = e.target.value.toLowerCase();
-            const f = allData.filter(t => t.subject.toLowerCase().includes(v) || t.assignee.toLowerCase().includes(v));
-            renderMonitor(f);
-        });
     </script>
 </body>
 </html>
