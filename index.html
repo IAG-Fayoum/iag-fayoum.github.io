@@ -22,15 +22,29 @@
       flex-direction: column;
     }
     
-    /* Header */
+    /* Header Style */
     .header-bg {
       background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
       position: relative;
       box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
       padding-bottom: 3rem;
+      overflow: hidden; /* عشان التأثيرات متبوظش الصفحة */
     }
 
-    /* Login Card */
+    /* زخرفة خلفية خفيفة */
+    .header-bg::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Login Card Style */
     .login-card {
       background: white;
       border-radius: 1.5rem;
@@ -41,9 +55,11 @@
       max-width: 420px;
       position: relative;
       margin-top: -3rem;
+      z-index: 10; /* عشان يظهر فوق الخلفية */
     }
     
-    .logo-circle {
+    /* دائرة اللوجو (فقط داخل الكارت الأبيض) */
+    .card-logo-circle {
       background: white;
       border-radius: 50%;
       display: flex;
@@ -51,6 +67,7 @@
       justify-content: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       overflow: hidden;
+      border: 1px solid #f1f5f9;
     }
 
     .form-input {
@@ -121,8 +138,11 @@
 <body>
 
   <header class="header-bg pt-8 pb-16 px-4 text-center">
-    <div class="mx-auto mb-4 logo-circle w-28 h-28 border-4 border-white/20">
-      <img src="assets/icons/favicon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/9311/9311895.png'" class="w-20 h-20 object-contain" alt="Logo">
+    <div class="mx-auto mb-4 w-32 h-32 flex items-center justify-center filter drop-shadow-lg">
+      <img src="assets/icons/icon-512.png" 
+           onerror="this.src='assets/icons/favicon.png'" 
+           class="w-full h-full object-contain transform hover:scale-105 transition-transform duration-300" 
+           alt="Ministry Logo">
     </div>
     
     <h1 class="text-2xl md:text-3xl font-bold text-white mb-1 drop-shadow-md">
@@ -137,8 +157,11 @@
     <div class="login-card">
       
       <div class="text-center mb-6">
-        <div class="mx-auto mb-3 logo-circle w-20 h-20 border border-gray-100">
-          <img src="assets/icons/favicon.png" onerror="this.style.display='none'" class="w-14 h-14 object-contain" alt="Logo">
+        <div class="mx-auto mb-3 card-logo-circle w-20 h-20">
+          <img src="assets/icons/icon-192.png" 
+               onerror="this.src='assets/icons/favicon.png'" 
+               class="w-14 h-14 object-contain" 
+               alt="Logo">
         </div>
         <h2 class="text-xl font-bold text-slate-800">تسجيل الدخول</h2>
         <p class="text-xs text-slate-500 mt-1 font-bold">المنصة الرقمية الموحدة</p>
@@ -182,14 +205,17 @@
 
   <footer class="footer-bg">
     <div class="container mx-auto px-4 flex flex-col items-center justify-center gap-3">
-      <div class="logo-circle w-16 h-16 bg-white p-2">
-         <img src="assets/icons/favicon.png" onerror="this.style.display='none'" class="w-full h-full object-contain" alt="Logo">
+      <div class="w-16 h-16 flex items-center justify-center mb-1">
+         <img src="assets/icons/icon-192.png" 
+              onerror="this.src='assets/icons/favicon.png'" 
+              class="w-full h-full object-contain brightness-0 invert opacity-90" 
+              alt="Logo White">
       </div>
       
       <div class="text-sm opacity-90 font-light">
         <p class="font-bold text-white mb-2 text-base">إدارة الحوكمة والمراجعة الداخلية</p>
         
-        <div class="text-xs text-slate-300 space-y-1 en-font">
+        <div class="text-xs text-slate-300 space-y-1 en-font dir-ltr">
             <p>MoH Fayoum Governance – Internal Access Page</p>
             <p class="opacity-75">Developed under Governance Supervision – <span class="text-teal-400 font-bold">Dr. MAH</span></p>
         </div>
