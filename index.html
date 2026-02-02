@@ -91,6 +91,31 @@
     .btn-login:hover { background: #115e59; transform: translateY(-2px); }
     .btn-login:active { transform: translateY(0); }
     .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
+
+    /* زر النماذج الجديد (Secondary Button) */
+    .btn-outline {
+      width: 100%;
+      background: white;
+      color: #64748b;
+      border: 2px solid #e2e8f0;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    
+    .btn-outline:hover {
+      border-color: #0f766e;
+      color: #0f766e;
+      background: #f0fdfa;
+    }
     
     .error-box {
       margin-top: 1rem;
@@ -115,6 +140,25 @@
       margin-top: auto;
       text-align: center;
       border-top: 4px solid #0f766e;
+    }
+    
+    /* فاصل بسيط */
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 1.5rem 0;
+    }
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .divider span {
+        padding: 0 10px;
+        font-size: 0.8rem;
+        color: #94a3b8;
+        font-weight: bold;
     }
   </style>
 </head>
@@ -166,6 +210,15 @@
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
         </button>
       </form>
+      
+      <div class="divider">
+          <span>خدمات الجمهور</span>
+      </div>
+
+      <a href="forms.html" class="btn-outline">
+          <span>النماذج العامة</span>
+          <i data-lucide="layout-grid" class="w-4 h-4"></i>
+      </a>
       
       <div id="error-msg" class="error-box hidden">
         <i data-lucide="alert-circle" class="w-4 h-4"></i>
