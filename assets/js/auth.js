@@ -1,28 +1,19 @@
 /**
- * 🔐 IAG System - Core Authentication & Routing (v7.1 Turbo)
+ * 🔐 IAG System - Authentication & Logic (v7.1 Clean)
+ * يعتمد على config.js
  */
 
-const CONFIG = {
-    // ⚠️ ضع رابط النشر الجديد هنا
-    API_URL: "https://script.google.com/macros/s/AKfycbzB0a7A7Dq4j5-l_-4YkBH1c-cOmgi7kIFP6Da8ZjM1CLfz9xZIncim13cJfc2LPyru3A/exec", 
-    
-    // روابط النماذج (يمكنك تعديلها لاحقاً)
-    FORMS: {
-        INBOX: "https://forms.google.com/example1",
-        COMPLAINTS: "https://forms.google.com/example2",
-        FINANCIAL: "https://forms.google.com/example3",
-        PRIMARY_CARE: "https://forms.google.com/example4",
-        HOSPITALS: "https://forms.google.com/example5"
-    }
-};
-
 const auth = {
+    
+    // حالة المستخدم
     currentUser: null,
 
+    // الاتصال بالسيرفر
     async callAPI(action, data = {}) {
-        if (!CONFIG.API_URL || CONFIG.API_URL.includes("XXX")) {
-            alert("⚠️ تنبيه: يرجى وضع رابط السكريبت في ملف auth.js");
-            return { success: false, error: "Config Error" };
+        // التحقق من وجود ملف الكونفيج
+        if (typeof CONFIG === 'undefined') {
+            alert("خطأ: ملف config.js مفقود أو لم يتم تحميله!");
+            return { success: false, error: "Missing Config" };
         }
 
         const payload = { action, ...data };
@@ -37,10 +28,11 @@ const auth = {
             return await response.json();
         } catch (error) {
             console.error("API Error:", error);
-            return { success: false, error: "خطأ في الاتصال" };
+            return { success: false, error: "فشل الاتصال بالسيرفر" };
         }
     },
 
+    // تسجيل الدخول
     async login(mobile, pin) {
         const result = await this.callAPI("login", { mobile: mobile.trim(), pin: pin.trim() });
 
@@ -58,6 +50,7 @@ const auth = {
         return result;
     },
 
+    // التوجيه الذكي
     redirectUser(role) {
         const r = role.toLowerCase();
         if (r === 'admin' || r === 'مدير') window.location.href = 'admin.html';
@@ -65,9 +58,11 @@ const auth = {
         else window.location.href = 'employee.html';
     },
 
+    // التحقق من الجلسة
     checkAuth() {
         const stored = localStorage.getItem("user");
         if (!stored) {
+            // لو مش في صفحة الدخول، ارجع للدخول
             if (!window.location.pathname.endsWith("index.html") && !window.location.pathname.endsWith("/")) {
                 window.location.href = "index.html";
             }
@@ -77,33 +72,33 @@ const auth = {
         return this.currentUser;
     },
 
+    // الخروج
     logout() {
         localStorage.removeItem("user");
         window.location.href = "index.html";
     },
 
+    // تهيئة الواجهة (للمدير فقط)
     setupUI() {
         if (!this.currentUser) return;
         
-        // إظهار/إخفاء عناصر الأدمن
         const isAdmin = this.currentUser.role === 'admin' || this.currentUser.role === 'مدير';
         document.querySelectorAll('.only-admin').forEach(el => {
             el.style.display = isAdmin ? '' : 'none';
         });
 
-        // تعبئة البيانات
-        const els = {
-            name: document.getElementById('user-name'),
-            role: document.getElementById('user-role'),
-            avatar: document.getElementById('user-avatar')
-        };
-        if (els.name) els.name.textContent = this.currentUser.name;
-        if (els.role) els.role.textContent = this.currentUser.jobTitle;
-        if (els.avatar) els.avatar.textContent = this.currentUser.name.charAt(0);
+        // تعبئة البيانات في الهيدر
+        const nameEl = document.getElementById('user-name');
+        const roleEl = document.getElementById('user-role');
+        const avatarEl = document.getElementById('user-avatar');
+
+        if (nameEl) nameEl.textContent = this.currentUser.name;
+        if (roleEl) roleEl.textContent = this.currentUser.jobTitle || this.currentUser.role;
+        if (avatarEl) avatarEl.textContent = this.currentUser.name.charAt(0);
     }
 };
 
-// تشغيل التحقق تلقائياً (إلا في صفحة الدخول)
+// تشغيل التحقق تلقائياً
 if (!window.location.pathname.endsWith("index.html") && !window.location.pathname.endsWith("/")) {
     auth.checkAuth();
 }
