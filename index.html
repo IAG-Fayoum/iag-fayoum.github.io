@@ -15,165 +15,181 @@
     * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
     
     body {
-      background-color: #f8fafc;
       min-height: 100vh;
+      background: #f0fdfa; /* خلفية فاتحة موحدة ونظيفة */
       display: flex;
       flex-direction: column;
     }
-
-    /* 1. تصميم الهيدر (أخضر غامق وفخم) */
-    .header-hero {
+    
+    /* تصميم الهيدر الجديد */
+    .header-bg {
       background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      padding-top: 3rem;
-      padding-bottom: 6rem; /* مساحة عشان الكارت يركب عليها */
-      text-align: center;
-      color: white;
-      border-bottom-left-radius: 30px;
-      border-bottom-right-radius: 30px;
-      box-shadow: 0 4px 20px rgba(15, 118, 110, 0.15);
+      position: relative;
+      box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
+      padding-bottom: 3rem; /* مساحة عشان الكارت يدخل فيها */
     }
 
-    /* 2. دائرة اللوجو (الحل السحري للخلفية البيضاء) */
-    .logo-container {
-      width: 110px;
-      height: 110px;
+    /* كارت الدخول */
+    .login-card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); /* ظل ناعم */
+      border: 1px solid #e2e8f0;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 420px; /* عرض مناسب للموبايل والكمبيوتر */
+      position: relative;
+      margin-top: -3rem; /* يركب فوق الهيدر شوية */
+    }
+    
+    /* الدائرة البيضاء للوجو (نفس الستايل في كل مكان) */
+    .logo-circle {
       background: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-      border: 4px solid rgba(255,255,255,0.3);
-      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow: hidden; /* عشان الصورة متخرجش بره */
     }
 
-    .logo-container img {
-      width: 80%; /* تصغير الصورة جوه الدايرة عشان الحواف متظهرش */
-      height: auto;
-      object-fit: contain;
-    }
-
-    /* 3. كارت الدخول العائم */
-    .login-wrapper {
-      margin-top: -4rem; /* يرفع الكارت لفوق يغطي جزء من الهيدر */
-      padding: 0 1rem;
-      display: flex;
-      justify-content: center;
-      margin-bottom: 2rem;
-    }
-
-    .login-card {
-      background: white;
-      width: 100%;
-      max-width: 380px; /* عرض مثالي للموبايل والكمبيوتر */
-      border-radius: 1.5rem;
-      padding: 2.5rem 2rem;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-      border: 1px solid #e2e8f0;
-    }
-
-    /* حقول الإدخال */
-    .input-field {
+    .form-input {
       width: 100%;
       padding: 12px 16px;
       border: 2px solid #e2e8f0;
       border-radius: 12px;
       font-size: 15px;
       font-weight: 600;
+      transition: all 0.2s;
       outline: none;
-      transition: all 0.3s;
     }
-    .input-field:focus {
+    
+    .form-input:focus {
       border-color: #0f766e;
       box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+      background: #fff;
     }
-
-    /* زر الدخول */
-    .btn-submit {
+    
+    .btn-login {
       width: 100%;
       background: #0f766e;
       color: white;
       padding: 14px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 1rem;
       border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2);
       display: flex;
-      justify-content: center;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
+      gap: 0.5rem;
     }
-    .btn-submit:hover { background: #0d5f57; transform: translateY(-2px); }
-    .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+    
+    .btn-login:hover { background: #115e59; transform: translateY(-2px); }
+    .btn-login:active { transform: translateY(0); }
+    .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
+    
+    .error-box {
+      margin-top: 1rem;
+      padding: 10px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      color: #b91c1c;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
 
-    /* الفوتر */
-    .footer {
+    .footer-bg {
+      background: #1e293b; /* لون غامق للفوتر */
+      color: white;
+      padding: 2rem 0;
       margin-top: auto;
       text-align: center;
-      padding: 1.5rem;
-      color: #64748b;
-      font-size: 0.85rem;
-      background: #f1f5f9;
-      border-top: 1px solid #e2e8f0;
+      border-top: 4px solid #0f766e;
     }
   </style>
 </head>
 <body>
 
-  <div class="header-hero">
-    <div class="logo-container">
-      <img src="assets/icons/favicon.png" onerror="this.style.display='none'" alt="Logo">
+  <header class="header-bg pt-8 pb-16 px-4 text-center">
+    <div class="mx-auto mb-4 logo-circle w-28 h-28 border-4 border-white/20">
+      <img src="assets/icons/favicon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/9311/9311895.png'" class="w-20 h-20 object-contain" alt="Logo">
     </div>
     
-    <h1 class="text-2xl font-bold mb-1">نظام الحوكمة</h1>
-    <p class="text-teal-100 text-sm opacity-90 font-medium">مديرية الشؤون الصحية بالفيوم</p>
-  </div>
+    <h1 class="text-2xl md:text-3xl font-bold text-white mb-1 drop-shadow-md">
+      إدارة المراجعة الداخلية والحوكمة
+    </h1>
+    <p class="text-teal-100 text-sm md:text-base font-medium opacity-90">
+      مديرية الشؤون الصحية بالفيوم
+    </p>
+  </header>
 
-  <div class="login-wrapper">
+  <div class="flex-grow flex items-start justify-center px-4 mb-8">
     <div class="login-card">
+      
       <div class="text-center mb-6">
-        <h2 class="text-xl font-bold text-gray-800">تسجيل الدخول</h2>
-        <p class="text-sm text-gray-500 mt-1">المنصة الرقمية الموحدة</p>
+        <div class="mx-auto mb-3 logo-circle w-20 h-20 border border-gray-100">
+          <img src="assets/icons/favicon.png" onerror="this.style.display='none'" class="w-14 h-14 object-contain" alt="Logo">
+        </div>
+        <h2 class="text-xl font-bold text-slate-800">تسجيل الدخول</h2>
+        <p class="text-xs text-slate-500 mt-1 font-bold">المنصة الرقمية الموحدة</p>
       </div>
-
+      
       <form id="login-form" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-gray-600 mb-1.5 mr-1">رقم الموبايل</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رقم الموبايل</label>
           <div class="relative">
-            <input type="tel" id="mobile-input" class="input-field text-left pl-10" placeholder="01xxxxxxxxx" maxlength="11" dir="ltr" autocomplete="tel" required>
+            <input type="tel" id="mobile-input" class="form-input text-left pl-10" placeholder="01xxxxxxxxx" maxlength="11" dir="ltr" autocomplete="tel" required>
             <i data-lucide="smartphone" class="w-4 h-4 text-gray-400 absolute left-3 top-3.5"></i>
           </div>
         </div>
-
+        
         <div>
-          <label class="block text-xs font-bold text-gray-600 mb-1.5 mr-1">رمز الدخول (PIN)</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رمز الدخول (PIN)</label>
           <div class="relative">
-            <input type="password" id="pin-input" class="input-field text-center tracking-[4px]" placeholder="••••" maxlength="4" autocomplete="current-password" required>
+            <input type="password" id="pin-input" class="form-input text-center tracking-[4px]" placeholder="••••" maxlength="4" autocomplete="current-password" required>
             <i data-lucide="key-round" class="w-4 h-4 text-gray-400 absolute left-3 top-3.5"></i>
           </div>
         </div>
-
-        <button type="submit" id="login-btn" class="btn-submit mt-2">
+        
+        <button type="submit" id="login-btn" class="btn-login mt-2">
           <span>دخول للنظام</span>
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
         </button>
       </form>
+      
+      <div id="error-msg" class="error-box hidden">
+        <i data-lucide="alert-circle" class="w-4 h-4"></i>
+        <span id="error-text">بيانات غير صحيحة</span>
+      </div>
 
-      <div id="error-msg" class="hidden mt-4 p-3 bg-red-50 border border-red-100 rounded-lg text-red-600 text-xs font-bold text-center flex items-center justify-center gap-2">
-        <i data-lucide="alert-circle" class="w-4 h-4"></i> <span id="error-text">خطأ</span>
+      <div class="mt-6 text-center">
+        <p class="text-[10px] text-gray-400 font-bold flex items-center justify-center gap-1">
+            <i data-lucide="shield-check" class="w-3 h-3"></i> اتصال آمن ومشفر
+        </p>
       </div>
     </div>
   </div>
 
-  <footer class="footer">
-    <div class="flex items-center justify-center gap-2 mb-2 opacity-50">
-       <img src="assets/icons/favicon.png" class="w-6 h-6 grayscale opacity-50" alt="">
-       <span class="font-bold">إدارة المراجعة الداخلية</span>
+  <footer class="footer-bg">
+    <div class="container mx-auto px-4 flex flex-col items-center justify-center gap-3">
+      <div class="logo-circle w-16 h-16 bg-white p-2">
+         <img src="assets/icons/favicon.png" onerror="this.style.display='none'" class="w-full h-full object-contain" alt="Logo">
+      </div>
+      
+      <div class="text-sm opacity-80 font-light">
+        <p class="font-bold text-white mb-1">إدارة الحوكمة والمراجعة الداخلية</p>
+        <p class="text-xs text-slate-300">© 2025 جميع الحقوق محفوظة</p>
+      </div>
     </div>
-    <p>© 2025 جميع الحقوق محفوظة</p>
   </footer>
 
   <script src="assets/js/config.js"></script>
@@ -183,18 +199,20 @@
     lucide.createIcons();
     
     window.addEventListener('load', () => {
-      if (typeof auth === 'undefined') return console.error('Auth missing');
-      
+      if (typeof auth === 'undefined') { console.error('Auth missing'); return; }
       const user = localStorage.getItem('user');
       if (user) {
-        try { auth.redirectUser(JSON.parse(user).role); } 
-        catch(e) { localStorage.removeItem('user'); }
+        try { auth.redirectUser(JSON.parse(user).role); } catch(e) { localStorage.removeItem('user'); }
         return;
       }
-      document.getElementById('mobile-input')?.focus();
+      const mobileInput = document.getElementById('mobile-input');
+      if (mobileInput) setTimeout(() => mobileInput.focus(), 100);
     });
     
     const loginForm = document.getElementById('login-form');
+    const loginBtn = document.getElementById('login-btn');
+    const errorMsg = document.getElementById('error-msg');
+    const errorText = document.getElementById('error-text');
     
     if (loginForm) {
       loginForm.addEventListener('submit', async (e) => {
@@ -203,29 +221,27 @@
         
         const mobile = document.getElementById('mobile-input').value.trim();
         const pin = document.getElementById('pin-input').value.trim();
-        const btn = document.getElementById('login-btn');
-        const errBox = document.getElementById('error-msg');
         
-        errBox.classList.add('hidden');
+        errorMsg.classList.add('hidden');
         
         if (mobile.length !== 11 || pin.length < 4) {
-          document.getElementById('error-text').textContent = 'يرجى إكمال البيانات';
-          errBox.classList.remove('hidden');
+          errorText.textContent = 'أكمل البيانات';
+          errorMsg.classList.remove('hidden');
           return;
         }
         
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<span class="animate-pulse">جاري التحقق...</span>';
-        btn.disabled = true;
+        const originalBtn = loginBtn.innerHTML;
+        loginBtn.innerHTML = '<span class="animate-pulse">جاري التحقق...</span>';
+        loginBtn.disabled = true;
         
         try {
           const result = await auth.login(mobile, pin);
           if (!result.success) throw new Error(result.error);
         } catch (error) {
-          document.getElementById('error-text').textContent = error.message || 'خطأ في الاتصال';
-          errBox.classList.remove('hidden');
-          btn.innerHTML = originalText;
-          btn.disabled = false;
+          errorText.textContent = error.message || 'خطأ في الاتصال';
+          errorMsg.classList.remove('hidden');
+          loginBtn.innerHTML = originalBtn;
+          loginBtn.disabled = false;
           lucide.createIcons();
         }
       });
