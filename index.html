@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-  <title>بوابة إدارة المراجعة الداخلية والحوكمة</title>
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Governance"> <meta name="application-name" content="Governance">
   
   <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+  <link rel="apple-touch-icon" href="assets/icons/favicon.png"> <title>بوابة إدارة المراجعة الداخلية والحوكمة</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -20,6 +24,8 @@
       background: #f0fdfa;
       display: flex;
       flex-direction: column;
+      /* منع السحب لأسفل في الموبايل للتحديث عشان يبان كأنه تطبيق */
+      overscroll-behavior-y: none; 
     }
     
     /* Header */
@@ -58,10 +64,11 @@
       padding: 12px 16px;
       border: 2px solid #e2e8f0;
       border-radius: 12px;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 18px; /* تكبير الخط للأرقام */
+      font-weight: 700;
       transition: all 0.2s;
       outline: none;
+      letter-spacing: 1px;
     }
     
     .form-input:focus {
@@ -70,7 +77,6 @@
       background: #fff;
     }
     
-    /* زر الدخول (Solid Green) */
     .btn-login {
       width: 100%;
       background: #0f766e;
@@ -92,11 +98,10 @@
     .btn-login:active { transform: translateY(0); }
     .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
 
-    /* زر نماذج العمل الجديد (Navy/Slate Style) */
     .btn-work-forms {
       width: 100%;
       background: white;
-      color: #334155;       /* لون كحلي/رمادي غامق */
+      color: #334155;
       border: 2px solid #e2e8f0;
       padding: 12px;
       border-radius: 12px;
@@ -109,22 +114,13 @@
       justify-content: center;
       gap: 0.5rem;
       text-decoration: none;
-      margin-top: 1rem; /* مسافة بينه وبين زر الدخول */
+      margin-top: 1rem;
     }
     
     .btn-work-forms:hover {
-      border-color: #0f766e; /* يقلب أخضر لما تقف عليه */
+      border-color: #0f766e;
       color: #0f766e;
       background: #f0fdfa;
-    }
-
-    .btn-work-forms i {
-      color: #475569; /* لون الأيقونة */
-      transition: color 0.2s;
-    }
-
-    .btn-work-forms:hover i {
-      color: #0f766e;
     }
     
     .error-box {
@@ -142,7 +138,6 @@
       gap: 6px;
     }
 
-    /* Footer Style */
     .footer-bg {
       background: #1e293b;
       color: white;
@@ -183,16 +178,37 @@
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رقم الموبايل</label>
           <div class="relative">
-            <input type="tel" id="mobile-input" class="form-input text-left pl-10" placeholder="01xxxxxxxxx" maxlength="11" dir="ltr" autocomplete="tel" required>
-            <i data-lucide="smartphone" class="w-4 h-4 text-gray-400 absolute left-3 top-3.5"></i>
+            <input 
+                type="tel" 
+                inputmode="numeric" 
+                pattern="[0-9]*"
+                id="mobile-input" 
+                class="form-input text-left pl-10" 
+                placeholder="01xxxxxxxxx" 
+                maxlength="11" 
+                dir="ltr" 
+                autocomplete="tel" 
+                required
+            >
+            <i data-lucide="smartphone" class="w-5 h-5 text-gray-400 absolute left-3 top-3.5"></i>
           </div>
         </div>
         
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رمز الدخول (PIN)</label>
           <div class="relative">
-            <input type="password" id="pin-input" class="form-input text-center tracking-[4px]" placeholder="••••" maxlength="4" autocomplete="current-password" required>
-            <i data-lucide="key-round" class="w-4 h-4 text-gray-400 absolute left-3 top-3.5"></i>
+            <input 
+                type="password" 
+                inputmode="numeric" 
+                pattern="[0-9]*"
+                id="pin-input" 
+                class="form-input text-center tracking-[6px]" 
+                placeholder="••••" 
+                maxlength="4" 
+                autocomplete="current-password" 
+                required
+            >
+            <i data-lucide="key-round" class="w-5 h-5 text-gray-400 absolute left-3 top-3.5"></i>
           </div>
         </div>
         
@@ -246,17 +262,14 @@
   <script>
     lucide.createIcons();
     
-    // تعديل بسيط لحماية الصفحة: السماح بفتح forms.html
     window.addEventListener('load', () => {
       if (typeof auth === 'undefined') { console.error('Auth missing'); return; }
       
-      // هنا بنشيك لو المستخدم مسجل دخول
       const user = localStorage.getItem('user');
       if (user) {
         try { auth.redirectUser(JSON.parse(user).role); } catch(e) { localStorage.removeItem('user'); }
         return;
       }
-      
       const mobileInput = document.getElementById('mobile-input');
       if (mobileInput) setTimeout(() => mobileInput.focus(), 100);
     });
