@@ -68,7 +68,6 @@
         }
         .filter-input:focus { border-color: #0f766e; background: white; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
 
-        /* زر البحث */
         .btn-search {
             background: #0f766e;
             color: white;
@@ -101,17 +100,17 @@
         }
         .task-card:hover { transform: translateY(-3px); border-color: #0f766e; }
 
-        /* 4. ألوان الحالات (تحديث نهائي حسب الصورة الأخيرة) */
-        .st-new         { background: #ffffff; color: #334155; border: 1px solid #e2e8f0; } /* جديد - أبيض */
-        .st-pending     { background: #dcfce7; color: #166534; border: 1px solid #86efac; } /* بانتظار الاعتماد - أخضر فاتح */
-        .st-approved    { background: #15803d; color: white;   border: 1px solid #14532d; } /* تم الاعتماد - أخضر غامق */
-        .st-followup    { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; } /* بحاجة لمتابعة - رصاصي */
-        .st-late        { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; } /* متأخر - أحمر فاتح */
+        /* 4. ألوان الحالات */
+        .st-new         { background: #ffffff; color: #334155; border: 1px solid #e2e8f0; }
+        .st-pending     { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .st-approved    { background: #15803d; color: white;   border: 1px solid #14532d; }
+        .st-followup    { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+        .st-late        { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 
         .status-badge {
             font-size: 0.75rem;
             padding: 4px 12px;
-            border-radius: 6px; /* حواف مربعة قليلاً زي الاكسيل */
+            border-radius: 6px;
             font-weight: 700;
             display: inline-block;
         }
@@ -122,7 +121,6 @@
             background: white; border-left: 1px solid #e2e8f0; z-index: 50;
             transition: transform 0.3s;
         }
-        
         .nav-item {
             display: flex; align-items: center; gap: 10px; padding: 12px 20px;
             color: #64748b; font-weight: 600; text-decoration: none; transition: 0.2s;
@@ -196,7 +194,6 @@
                         <h1 class="font-bold text-xl text-white leading-tight" id="mobile-welcome-name">...</h1>
                     </div>
                 </div>
-                
                 <button onclick="auth.logout()" class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm hover:bg-red-500/80 transition shadow-inner">
                     <i data-lucide="log-out" class="w-5 h-5 text-white"></i>
                 </button>
@@ -217,7 +214,6 @@
                     <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">الجهة / المصدر</label>
                     <input type="text" id="f-source" class="filter-input" placeholder="اكتب اسم الجهة...">
                 </div>
-                
                 <div>
                     <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">الحالة</label>
                     <select id="f-status" class="filter-input">
@@ -229,18 +225,17 @@
                         <option value="متأخر">🔴 متأخر</option>
                     </select>
                 </div>
-
                 <div>
                     <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">السنة</label>
                     <select id="f-year" class="filter-input">
                         <option value="">الكل</option>
                         <option value="2024">2024</option>
                         <option value="2025">2025</option>
-                        <option value="2026" selected>2026</option> <option value="2027">2027</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2027">2027</option>
                         <option value="2028">2028</option>
                     </select>
                 </div>
-
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">من</label>
@@ -252,7 +247,6 @@
                     </div>
                 </div>
             </div>
-
             <button onclick="applyFilters()" class="btn-search">
                 <i data-lucide="search" class="w-5 h-5"></i>
                 بحث وتنفيذ الفلتر
@@ -271,7 +265,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <nav class="bottom-nav lg:hidden">
@@ -295,7 +288,6 @@
         lucide.createIcons();
         let allTasks = [];
 
-        // خريطة الألوان المحدثة
         const statusStyles = {
             'جديد': 'st-new',
             'بانتظار الاعتماد': 'st-pending',
@@ -308,12 +300,12 @@
             const user = auth.checkAuth();
             if (!user) return;
 
-            // الترحيب
             const firstName = user.name.split(' ')[0];
             const welcomeText = document.getElementById('mobile-welcome-name');
             if(welcomeText) welcomeText.textContent = firstName;
 
-            // جلب البيانات (من 2024)
+            document.getElementById('f-year').value = new Date().getFullYear();
+
             const res = await auth.callAPI('getAllData', {
                 role: 'employee',
                 name: user.name,
@@ -322,13 +314,12 @@
 
             if (res.success) {
                 allTasks = res.tasks.filter(t => t.assignee && t.assignee.includes(user.name));
-                applyFilters(); // تطبيق الفلتر الافتراضي (سنة 2026)
+                applyFilters();
             } else {
                 document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 font-bold">عفواً، حدث خطأ في التحميل</div>`;
             }
         });
 
-        // دالة الفلترة (تعمل عند الضغط على زر البحث)
         function applyFilters() {
             const sourceVal = document.getElementById('f-source').value.toLowerCase();
             const statusVal = document.getElementById('f-status').value;
@@ -337,19 +328,11 @@
             const dateEnd = document.getElementById('f-date-end').value;
 
             const filtered = allTasks.filter(t => {
-                // 1. الجهة
                 if (sourceVal && !t.source.toLowerCase().includes(sourceVal)) return false;
-                
-                // 2. الحالة (مطابقة تامة)
                 if (statusVal && t.status !== statusVal) return false;
-
-                // 3. السنة (مهم: لو مختار "الكل" يعدي، غير كده يطابق السنة)
                 if (yearVal && !t.date.startsWith(yearVal)) return false;
-
-                // 4. التاريخ
                 if (dateStart && t.date < dateStart) return false;
                 if (dateEnd && t.date > dateEnd) return false;
-
                 return true;
             });
 
@@ -373,32 +356,74 @@
             }
 
             container.innerHTML = tasks.map(t => {
-                // تطبيق الستايل
                 const styleClass = statusStyles[t.status] || 'bg-gray-100 text-gray-600 border-gray-200';
                 
+                // 1. تحديد السنة من التاريخ (عشان نحطها جنب الرقم)
+                const year = t.date ? t.date.split('-')[0] : '';
+                
+                // 2. التحقق من وجود قضية (Legal Info)
+                const hasLegal = t.caseNumber && t.caseNumber.trim() !== '';
+                
+                // 3. التحقق من المرفق
+                const hasAttachment = t.attachment && t.attachment.trim() !== '';
+
+                // 4. منطق الزر الذكي (Action Button)
+                // لو الحالة "تم الاعتماد" واللينك موجود -> "معاينة الرد"
+                // غير كده -> "تسجيل فحص"
+                const isDone = t.status.includes('تم') || t.status.includes('أرشفة');
+                const docLink = t.replyLink || '#'; // المفروض الـ API يرجع لينك الـ Doc
+                
+                let actionBtnHTML = '';
+                if (isDone) {
+                    // زر معاينة الرد (أزرق/سماوي)
+                    actionBtnHTML = `
+                    <a href="${docLink}" target="_blank" class="flex-1 bg-[#0284c7] text-white py-2 rounded-lg text-xs font-bold text-center hover:bg-[#0369a1] transition flex items-center justify-center gap-1 shadow-sm">
+                        <i data-lucide="file-check" class="w-3 h-3"></i> معاينة الرد
+                    </a>`;
+                } else {
+                    // زر تسجيل الفحص (أخضر/زمردي) يفتح نموذج الشكاوى
+                    actionBtnHTML = `
+                    <a href="${CONFIG.FORMS.COMPLAINTS}" target="_blank" class="flex-1 bg-[#0f766e] text-white py-2 rounded-lg text-xs font-bold text-center hover:bg-[#0d5f57] transition flex items-center justify-center gap-1 shadow-sm">
+                        <i data-lucide="edit-3" class="w-3 h-3"></i> تسجيل فحص
+                    </a>`;
+                }
+
                 return `
                 <div class="task-card group">
                     <div class="flex justify-between items-start mb-3">
                         <span class="status-badge ${styleClass}">${t.status}</span>
-                        <span class="text-[10px] text-slate-400 font-mono bg-slate-50 px-2 py-1 rounded border">${t.date}</span>
+                        <span class="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded border border-slate-200 font-mono">
+                            #${t.id} <span class="text-slate-300 mx-1">|</span> ${year}
+                        </span>
                     </div>
                     
                     <h3 class="font-bold text-slate-800 text-sm mb-2 leading-relaxed">${t.subject}</h3>
                     
-                    <div class="flex items-center gap-2 text-xs text-slate-500 mb-4 bg-slate-50 p-2 rounded-lg border border-slate-100">
-                        <i data-lucide="building-2" class="w-3 h-3"></i>
+                    <div class="flex items-center gap-2 text-xs text-slate-500 mb-2">
+                        <i data-lucide="building-2" class="w-3 h-3 text-slate-400"></i>
                         <span>${t.source}</span>
                     </div>
 
-                    <div class="flex gap-2 pt-2 border-t border-dashed border-slate-200">
-                        ${t.attachment ? `
-                        <a href="${t.attachment}" target="_blank" class="flex-1 bg-white border border-slate-200 text-[#0f766e] py-2 rounded-lg text-xs font-bold text-center hover:bg-teal-50 transition flex items-center justify-center gap-1">
-                            <i data-lucide="eye" class="w-3 h-3"></i> معاينة
+                    ${hasLegal ? `
+                    <div class="bg-orange-50 border border-orange-100 rounded-lg p-2 mb-3 flex items-center gap-4">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] text-orange-400 font-bold">رقم القضية</span>
+                            <span class="text-xs font-bold text-orange-700">${t.caseNumber}</span>
+                        </div>
+                        <div class="w-px h-6 bg-orange-200"></div>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] text-orange-400 font-bold">السنة</span>
+                            <span class="text-xs font-bold text-orange-700">${t.caseYear || '-'}</span>
+                        </div>
+                    </div>` : ''}
+
+                    <div class="flex gap-2 pt-3 border-t border-dashed border-slate-200 mt-2">
+                        ${hasAttachment ? `
+                        <a href="${t.attachment}" target="_blank" class="flex-1 bg-white border border-slate-200 text-slate-600 py-2 rounded-lg text-xs font-bold text-center hover:bg-slate-50 transition flex items-center justify-center gap-1">
+                            <i data-lucide="paperclip" class="w-3 h-3"></i> المرفقات
                         </a>` : ''}
                         
-                        <a href="${CONFIG.FORMS.INBOX}" target="_blank" class="flex-1 bg-[#0f766e] text-white py-2 rounded-lg text-xs font-bold text-center hover:bg-[#0d5f57] transition flex items-center justify-center gap-1 shadow-sm">
-                            <i data-lucide="edit-3" class="w-3 h-3"></i> تحديث الحالة
-                        </a>
+                        ${actionBtnHTML}
                     </div>
                 </div>`;
             }).join('');
@@ -409,7 +434,7 @@
         function resetFilters() {
             document.getElementById('f-source').value = '';
             document.getElementById('f-status').value = '';
-            document.getElementById('f-year').value = new Date().getFullYear(); // يرجع للسنة الحالية
+            document.getElementById('f-year').value = new Date().getFullYear();
             document.getElementById('f-date-start').value = '';
             document.getElementById('f-date-end').value = '';
             applyFilters();
