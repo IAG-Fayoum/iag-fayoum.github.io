@@ -16,10 +16,10 @@
         
         body { 
             background-color: #f8fafc; 
-            padding-bottom: 80px;
+            padding-bottom: 80px; /* مساحة للقائمة السفلية في الموبايل */
         }
 
-        /* 1. Sidebar */
+        /* 1. Sidebar (Desktop) */
         .sidebar {
             position: fixed;
             right: 0;
@@ -94,10 +94,10 @@
             border-radius: 20px;
             font-weight: 700;
         }
-        .st-new { background: #e0f2fe; color: #0284c7; } /* جديد */
+        .st-new { background: #e0f2fe; color: #0284c7; } /* تم التكليف */
         .st-wait { background: #fef3c7; color: #d97706; } /* انتظار التوزيع */
 
-        /* 4. Assignment Section within Card */
+        /* 4. Assignment Box */
         .assign-box {
             background: #f8fafc;
             border-radius: 12px;
@@ -169,6 +169,9 @@
             <a href="forms.html" class="nav-item">
                 <i data-lucide="file-text" class="w-5 h-5"></i><span>النماذج</span>
             </a>
+            <a href="employee.html" class="nav-item">
+                <i data-lucide="briefcase" class="w-5 h-5"></i><span>مهامي</span>
+            </a>
         </nav>
 
         <div class="absolute bottom-0 w-full p-4 border-t border-gray-100 bg-gray-50">
@@ -230,7 +233,7 @@
         lucide.createIcons();
         let allTasks = [];
         
-        // قائمة موظفين وهمية (للعرض فقط، يمكن تعديلها لاحقاً لتأتي من الداتابيز)
+        // قائمة الموظفين (للعرض فقط)
         const employeesList = [
             "أحمد محمد", "سارة علي", "محمود حسن", "نرمين كمال", 
             "خالد يوسف", "منى إبراهيم", "عمر طارق", "مدير الإدارة"
@@ -239,7 +242,8 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const user = auth.checkAuth();
             if (!user) return;
-            // التأكد من الصلاحية (منسق أو مدير)
+            
+            // التحقق من الصلاحية
             if(user.role !== 'coordinator' && user.role !== 'منسق' && user.role !== 'admin' && user.role !== 'مدير') {
                  window.location.href = 'employee.html';
                  return;
@@ -250,8 +254,7 @@
             const startDate = `${new Date().getFullYear()}-01-01`;
 
             try {
-                // المنسق بيشوف كل المهام الخاصة بإدارته عشان يوزعها
-                // هنا هنجيب الداتا ونفلتر اللي لسه "بدون موظف" أو "باسم الإدارة العام"
+                // جلب المهام
                 const res = await auth.callAPI('getAllData', {
                     role: 'coordinator',
                     name: user.name,
@@ -272,10 +275,6 @@
 
         function renderCoordinatorTasks() {
             const container = document.getElementById('tasks-container');
-            
-            // الفلتر: المهام التي لم يتم تكليف موظف محدد بها بعد (أو يمكن إعادة تكليفها)
-            // نفترض أن المهام الجديدة بتيجي والـ Assignee فاضي أو باسم القسم
-            // هنا هنعرض كل المهام عشان المنسق يقدر يغير الموظف في أي وقت
             
             // ترتيب: الأحدث أولاً
             const tasks = allTasks.sort((a, b) => b.id - a.id);
@@ -298,7 +297,6 @@
                     ? `<span class="status-badge st-new">تم التكليف: ${t.assignee}</span>` 
                     : `<span class="status-badge st-wait">بانتظار التوزيع</span>`;
 
-                // إنشاء قائمة الموظفين
                 const options = employeesList.map(emp => 
                     `<option value="${emp}" ${t.assignee === emp ? 'selected' : ''}>${emp}</option>`
                 ).join('');
@@ -336,7 +334,7 @@
         async function assignTask(id) {
             const select = document.getElementById(`sel-${id}`);
             const newEmp = select.value;
-            const btn = select.nextElementSibling; // الزرار اللي تحته
+            const btn = select.nextElementSibling;
 
             if (!newEmp) return alert("يرجى اختيار موظف أولاً");
 
@@ -345,7 +343,6 @@
             btn.disabled = true;
 
             try {
-                // استدعاء API لتحديث الموظف (Reassign)
                 const res = await auth.callAPI('reassignTask', { 
                     taskId: id, 
                     newEmployee: newEmp 
