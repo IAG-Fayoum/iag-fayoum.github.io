@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>بوابة إدارة المراجعة الداخلية والحوكمة</title>
   
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%231a9b8e%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z%22/></svg>">
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png">
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -135,8 +135,8 @@
     <div class="max-w-4xl mx-auto px-4 md:px-6 pt-12 md:pt-16 text-center relative z-10">
       
       <div class="flex justify-center mb-8">
-        <div class="bg-white/15 backdrop-blur-md p-5 md:p-6 rounded-3xl border-2 border-white/30 shadow-2xl group hover:bg-white/20 hover:scale-105 transition-all duration-500">
-          <i data-lucide="landmark" class="text-white/95 w-20 h-20 md:w-24 md:h-24 drop-shadow-2xl"></i>
+        <div class="bg-white/15 backdrop-blur-md p-4 rounded-3xl border-2 border-white/30 shadow-2xl group hover:bg-white/20 hover:scale-105 transition-all duration-500">
+          <img src="assets/icons/favicon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/9311/9311895.png'" class="w-20 h-20 md:w-24 md:h-24 object-contain drop-shadow-2xl brightness-200 grayscale contrast-200" alt="Ministry Logo">
         </div>
       </div>
       
@@ -159,9 +159,11 @@
       
       <div class="login-card">
         <div class="text-center mb-8 relative z-10">
-          <div class="w-20 h-20 mx-auto mb-5 bg-gradient-to-br from-teal-50 to-teal-100 rounded-full flex items-center justify-center border-3 border-teal-200 shadow-lg">
-            <i data-lucide="lock-keyhole" class="w-10 h-10 text-teal-700"></i>
+          <div class="w-24 h-24 mx-auto mb-5 bg-white rounded-full flex items-center justify-center border-4 border-teal-50 shadow-lg overflow-hidden p-2">
+            <img src="assets/icons/favicon.png" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')" class="w-full h-full object-contain" alt="Logo">
+            <i data-lucide="lock-keyhole" class="w-10 h-10 text-teal-700 hidden"></i>
           </div>
+          
           <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">تسجيل الدخول</h2>
           <p class="text-slate-600 font-semibold text-base">دخول مخصص لأعضاء الإدارة</p>
           <p class="text-slate-500 text-sm mt-2 font-medium">الرجاء إدخال بيانات الدخول المعتمدة</p>
@@ -229,7 +231,8 @@
       
       <div class="flex justify-center mb-5">
         <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-sm border border-white/5 shadow-lg">
-           <i data-lucide="landmark" class="text-white/90 w-12 h-12 md:w-14 md:h-14"></i>
+           <img src="assets/icons/favicon.png" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')" class="w-12 h-12 object-contain brightness-0 invert" alt="Logo">
+           <i data-lucide="landmark" class="text-white/90 w-12 h-12 hidden"></i>
         </div>
       </div>
 
@@ -262,17 +265,14 @@
   <script>
     lucide.createIcons();
     
-    // 2. التحقق عند تحميل الصفحة
     window.addEventListener('load', () => {
-      // التأكد إن auth.js محمل
       if (typeof auth === 'undefined') {
         console.error('❌ auth.js not loaded!');
         showError('خطأ في النظام: ملف المصادقة غير موجود');
         return;
       }
       
-      // التعديل الوحيد: استخدام دالة التوجيه الصحيحة (redirectUser) بدلاً من (redirectToDashboard)
-      // والتحقق من التخزين المحلي (LocalStorage)
+      // التوجيه (باستخدام الدالة الصحيحة redirectUser)
       const user = localStorage.getItem('user');
       if (user) {
         try {
@@ -324,7 +324,7 @@
           if (!result.success) {
             throw new Error(result.error || 'بيانات الدخول غير صحيحة');
           }
-          // النجاح: دالة auth.login بتقوم بالتوجيه تلقائياً
+          // الدالة auth.login هتعمل redirectUser لوحدها
           
         } catch (error) {
           showError(error.message || 'خطأ في الاتصال بالخادم');
