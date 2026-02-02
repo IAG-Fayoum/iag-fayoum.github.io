@@ -1,264 +1,313 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>النماذج الإلكترونية | نظام الحوكمة</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+  <title>بوابة إدارة المراجعة الداخلية والحوكمة</title>
+  
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
+    * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    .en-font { font-family: system-ui, -apple-system, sans-serif; letter-spacing: 0.5px; }
     
-    <link rel="icon" href="assets/icons/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    body {
+      min-height: 100vh;
+      background: #f0fdfa;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header */
+    .header-bg {
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+      position: relative;
+      box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
+      padding-bottom: 3rem;
+    }
 
-    <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; color: #1e293b; padding-bottom: 80px; }
-        
-        /* Sidebar Styling (Desktop) */
-        @media (min-width: 1024px) {
-            body { padding-bottom: 0; padding-right: 260px; }
-            .sidebar { transform: translateX(0) !important; width: 260px; }
-            .bottom-nav { display: none !important; }
-            .mobile-header { display: none !important; }
-        }
+    /* Login Card */
+    .login-card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e2e8f0;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      margin-top: -3rem;
+    }
+    
+    .logo-circle {
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
 
-        /* Form Card Styling */
-        .form-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .form-card:hover {
-            transform: translateY(-5px);
-            border-color: #0f766e;
-            box-shadow: 0 10px 20px -5px rgba(15, 118, 110, 0.1);
-        }
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.2s;
+      outline: none;
+    }
+    
+    .form-input:focus {
+      border-color: #0f766e;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+      background: #fff;
+    }
+    
+    /* زر الدخول (Solid Green) */
+    .btn-login {
+      width: 100%;
+      background: #0f766e;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-login:hover { background: #115e59; transform: translateY(-2px); }
+    .btn-login:active { transform: translateY(0); }
+    .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        .form-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 4px;
-            background: #e2e8f0;
-            transition: background 0.3s;
-        }
-        
-        .form-card:hover::before { background: #0f766e; }
+    /* زر الخدمات الجديد (Soft Green) */
+    .btn-services {
+      width: 100%;
+      background: #f0fdfa; /* خلفية خضراء فاتحة جداً */
+      color: #0f766e;       /* نص أخضر غامق */
+      border: 1px solid #ccfbf1;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    
+    .btn-services:hover {
+      background: #e6fffa;
+      border-color: #99f6e4;
+      transform: translateY(-1px);
+    }
+    
+    .error-box {
+      margin-top: 1rem;
+      padding: 10px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      color: #b91c1c;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
 
-        .icon-box {
-            width: 60px; height: 60px;
-            border-radius: 50%;
-            background: #f0fdfa;
-            color: #0f766e;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 16px;
-            transition: transform 0.3s;
-        }
-        
-        .form-card:hover .icon-box {
-            transform: scale(1.1);
-            background: #0f766e;
-            color: white;
-        }
-    </style>
+    /* Footer Style */
+    .footer-bg {
+      background: #1e293b;
+      color: white;
+      padding: 2rem 0;
+      margin-top: auto;
+      text-align: center;
+      border-top: 4px solid #0f766e;
+    }
+    
+    /* الفاصل */
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 1.5rem 0;
+    }
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .divider span {
+        padding: 0 10px;
+        font-size: 0.8rem;
+        color: #94a3b8;
+        font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
-    <aside class="sidebar fixed top-0 right-0 h-full bg-white border-l border-slate-200 z-50 transition-transform duration-300 translate-x-full flex flex-col shadow-lg">
-        <div class="p-6 border-b border-slate-100 flex items-center gap-3 bg-[#0f766e] text-white">
-            <div class="bg-white/20 p-2 rounded-lg">
-                <i data-lucide="shield-check" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h1 class="font-bold text-lg leading-tight">نظام الحوكمة</h1>
-                <p class="text-[10px] text-teal-100 opacity-90">النماذج الرقمية</p>
-            </div>
+  <header class="header-bg pt-8 pb-16 px-4 text-center">
+    <div class="mx-auto mb-4 logo-circle w-28 h-28 border-4 border-white/20">
+      <img src="assets/icons/favicon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/9311/9311895.png'" class="w-20 h-20 object-contain" alt="Logo">
+    </div>
+    
+    <h1 class="text-2xl md:text-3xl font-bold text-white mb-1 drop-shadow-md">
+      إدارة المراجعة الداخلية والحوكمة
+    </h1>
+    <p class="text-teal-100 text-sm md:text-base font-medium opacity-90">
+      مديرية الشؤون الصحية بالفيوم
+    </p>
+  </header>
+
+  <div class="flex-grow flex items-start justify-center px-4 mb-8">
+    <div class="login-card">
+      
+      <div class="text-center mb-6">
+        <div class="mx-auto mb-3 logo-circle w-20 h-20 border border-gray-100">
+          <img src="assets/icons/favicon.png" onerror="this.style.display='none'" class="w-14 h-14 object-contain" alt="Logo">
         </div>
-
-        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-            <a href="distribution.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                <span>الرئيسية</span>
-            </a>
-            
-            <a href="employee.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="briefcase" class="w-5 h-5"></i>
-                <span>مهامي</span>
-            </a>
-
-            <a href="forms.html" class="flex items-center gap-3 px-4 py-3 bg-teal-50 text-teal-700 rounded-xl font-bold transition-colors shadow-sm">
-                <i data-lucide="file-text" class="w-5 h-5"></i>
-                <span>النماذج</span>
-            </a>
-
-            <a href="Notifications.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                <i data-lucide="bell" class="w-5 h-5"></i>
-                <span>الإشعارات</span>
-            </a>
-
-            <div class="only-admin hidden pt-4 mt-2 border-t border-slate-100">
-                <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">الإدارة</p>
-                <a href="admin.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                    <i data-lucide="settings-2" class="w-5 h-5"></i>
-                    <span>لوحة التحكم</span>
-                </a>
-            </div>
-        </nav>
-
-        <div class="p-4 border-t border-slate-100 bg-slate-50">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 overflow-hidden">
-                    <div class="w-9 h-9 rounded-full bg-[#0f766e] text-white flex items-center justify-center font-bold text-sm" id="user-avatar"></div>
-                    <div class="min-w-0">
-                        <p class="text-sm font-bold text-slate-800 truncate" id="user-name">...</p>
-                        <p class="text-xs text-slate-500 truncate" id="user-role">...</p>
-                    </div>
-                </div>
-                <button onclick="auth.logout()" class="text-slate-400 hover:text-red-500 transition-colors p-1"><i data-lucide="log-out" class="w-5 h-5"></i></button>
-            </div>
+        <h2 class="text-xl font-bold text-slate-800">تسجيل الدخول</h2>
+        <p class="text-xs text-slate-500 mt-1 font-bold">المنصة الرقمية الموحدة</p>
+      </div>
+      
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رقم الموبايل</label>
+          <div class="relative">
+            <input type="tel" id="mobile-input" class="form-input text-left pl-10" placeholder="01xxxxxxxxx" maxlength="11" dir="ltr" autocomplete="tel" required>
+            <i data-lucide="smartphone" class="w-4 h-4 text-gray-400 absolute left-3 top-3.5"></i>
+          </div>
         </div>
-    </aside>
-
-    <main class="min-h-screen w-full">
-        <div class="mobile-header bg-white p-4 sticky top-0 z-30 border-b border-slate-200 flex items-center justify-between lg:hidden shadow-sm">
-            <h1 class="font-bold text-lg text-teal-800">النماذج</h1>
-            <div class="w-8"></div> </div>
-
-        <div class="p-4 lg:p-10 max-w-7xl mx-auto space-y-8">
-            
-            <div class="text-center max-w-2xl mx-auto mb-8">
-                <h2 class="text-2xl font-bold text-slate-800 mb-2">النماذج الإلكترونية الموحدة</h2>
-                <p class="text-slate-500">اختر النموذج المناسب لتقديم طلبك أو تقريرك، سيتم فتح النموذج في نافذة جديدة.</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                <div onclick="openForm('INBOX')" class="form-card group">
-                    <div class="icon-box">
-                        <i data-lucide="inbox" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="font-bold text-lg text-slate-800 mb-1">سجل الصادر والوارد</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">تسجيل المعاملات والمكاتبات الرسمية اليومية</p>
-                    <div class="mt-4 flex items-center gap-1 text-[#0f766e] text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span>فتح النموذج</span>
-                        <i data-lucide="external-link" class="w-3 h-3"></i>
-                    </div>
-                </div>
-
-                <div onclick="openForm('COMPLAINTS')" class="form-card group">
-                    <div class="icon-box">
-                        <i data-lucide="message-square-warning" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="font-bold text-lg text-slate-800 mb-1">منظومة الشكاوى</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">فحص وتسجيل شكاوى المواطنين والمرضى</p>
-                    <div class="mt-4 flex items-center gap-1 text-[#0f766e] text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span>فتح النموذج</span>
-                        <i data-lucide="external-link" class="w-3 h-3"></i>
-                    </div>
-                </div>
-
-                <div onclick="openForm('FINANCIAL')" class="form-card group">
-                    <div class="icon-box">
-                        <i data-lucide="banknote" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="font-bold text-lg text-slate-800 mb-1">المراجعة المالية</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">تقارير المخزون، الحسابات، والدفاتر المالية</p>
-                    <div class="mt-4 flex items-center gap-1 text-[#0f766e] text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span>فتح النموذج</span>
-                        <i data-lucide="external-link" class="w-3 h-3"></i>
-                    </div>
-                </div>
-
-                <div onclick="openForm('PRIMARY_CARE')" class="form-card group">
-                    <div class="icon-box">
-                        <i data-lucide="activity-square" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="font-bold text-lg text-slate-800 mb-1">الرعاية الأساسية</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">مرور الوحدات الصحية ومراكز طب الأسرة</p>
-                    <div class="mt-4 flex items-center gap-1 text-[#0f766e] text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span>فتح النموذج</span>
-                        <i data-lucide="external-link" class="w-3 h-3"></i>
-                    </div>
-                </div>
-
-                <div onclick="openForm('HOSPITALS')" class="form-card group">
-                    <div class="icon-box">
-                        <i data-lucide="building-2" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="font-bold text-lg text-slate-800 mb-1">المستشفيات</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">تقارير المرور على المستشفيات العامة والمركزية</p>
-                    <div class="mt-4 flex items-center gap-1 text-[#0f766e] text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span>فتح النموذج</span>
-                        <i data-lucide="external-link" class="w-3 h-3"></i>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="mt-12 p-4 bg-yellow-50 rounded-xl border border-yellow-100 flex gap-3 items-start max-w-2xl mx-auto">
-                <i data-lucide="info" class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5"></i>
-                <p class="text-xs text-yellow-800 leading-relaxed">
-                    <strong>تنبيه هام:</strong> يرجى التأكد من اختيار النموذج الصحيح وملء كافة البيانات المطلوبة بدقة. جميع البيانات المسجلة تذهب مباشرة لقاعدة البيانات المركزية.
-                </p>
-            </div>
-
+        
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رمز الدخول (PIN)</label>
+          <div class="relative">
+            <input type="password" id="pin-input" class="form-input text-center tracking-[4px]" placeholder="••••" maxlength="4" autocomplete="current-password" required>
+            <i data-lucide="key-round" class="w-4 h-4 text-gray-400 absolute left-3 top-3.5"></i>
+          </div>
         </div>
-    </main>
+        
+        <button type="submit" id="login-btn" class="btn-login mt-2">
+          <span>دخول للنظام</span>
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        </button>
+      </form>
+      
+      <div class="divider">
+          <span>روابط</span>
+      </div>
 
-    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
-            <i data-lucide="layout-grid" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">الرئيسية</span>
-        </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
-            <i data-lucide="briefcase" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">مهامي</span>
-        </a>
-        <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-[#0f766e]">
-            <i data-lucide="file-text" class="w-6 h-6"></i>
-            <span class="text-[10px] font-bold">النماذج</span>
-        </a>
-        <a href="admin.html" class="only-admin hidden flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
-            <i data-lucide="settings-2" class="w-6 h-6"></i>
-            <span class="text-[10px] font-medium">الإدارة</span>
-        </a>
-    </nav>
+      <a href="forms.html" class="btn-services">
+          <span>الخدمات</span>
+          <i data-lucide="layout-grid" class="w-4 h-4"></i>
+      </a>
+      
+      <div id="error-msg" class="error-box hidden">
+        <i data-lucide="alert-circle" class="w-4 h-4"></i>
+        <span id="error-text">بيانات غير صحيحة</span>
+      </div>
 
-    <script src="assets/js/config.js"></script>
-    <script src="assets/js/auth.js"></script>
-    <script>
-        lucide.createIcons();
+      <div class="mt-6 text-center">
+        <p class="text-[10px] text-gray-400 font-bold flex items-center justify-center gap-1">
+            <i data-lucide="shield-check" class="w-3 h-3"></i> اتصال آمن ومشفر
+        </p>
+      </div>
+    </div>
+  </div>
 
-        // 1. تهيئة المستخدم
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = auth.checkAuth();
-            if(user) {
-                document.getElementById('user-name').textContent = user.name;
-                document.getElementById('user-role').textContent = user.jobTitle || 'موظف';
-                document.getElementById('user-avatar').textContent = user.name.charAt(0);
-                auth.setupUI();
-            }
-        });
+  <footer class="footer-bg">
+    <div class="container mx-auto px-4 flex flex-col items-center justify-center gap-3">
+      <div class="logo-circle w-16 h-16 bg-white p-2">
+         <img src="assets/icons/favicon.png" onerror="this.style.display='none'" class="w-full h-full object-contain" alt="Logo">
+      </div>
+      
+      <div class="text-sm opacity-90 font-light">
+        <p class="font-bold text-white mb-2 text-base">إدارة الحوكمة والمراجعة الداخلية</p>
+        
+        <div class="text-xs text-slate-300 space-y-1 en-font">
+            <p>MoH Fayoum Governance – Internal Access Page</p>
+            <p class="opacity-75">Developed under Governance Supervision – <span class="text-teal-400 font-bold">Dr. MAH</span></p>
+        </div>
+        
+        <div class="w-16 h-px bg-slate-700 mx-auto my-3"></div>
+        <p class="text-[10px] text-slate-500">© 2025 جميع الحقوق محفوظة</p>
+      </div>
+    </div>
+  </footer>
 
-        // 2. دالة فتح النماذج
-        function openForm(formKey) {
-            // جلب الرابط من ملف config.js
-            const url = CONFIG.FORMS[formKey];
-            
-            if (url) {
-                window.open(url, '_blank');
-            } else {
-                alert('عذراً، رابط هذا النموذج غير متوفر حالياً.');
-            }
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  
+  <script>
+    lucide.createIcons();
+    
+    window.addEventListener('load', () => {
+      if (typeof auth === 'undefined') { console.error('Auth missing'); return; }
+      const user = localStorage.getItem('user');
+      if (user) {
+        try { auth.redirectUser(JSON.parse(user).role); } catch(e) { localStorage.removeItem('user'); }
+        return;
+      }
+      const mobileInput = document.getElementById('mobile-input');
+      if (mobileInput) setTimeout(() => mobileInput.focus(), 100);
+    });
+    
+    const loginForm = document.getElementById('login-form');
+    const loginBtn = document.getElementById('login-btn');
+    const errorMsg = document.getElementById('error-msg');
+    const errorText = document.getElementById('error-text');
+    
+    if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (typeof auth === 'undefined') return;
+        
+        const mobile = document.getElementById('mobile-input').value.trim();
+        const pin = document.getElementById('pin-input').value.trim();
+        
+        errorMsg.classList.add('hidden');
+        
+        if (mobile.length !== 11 || pin.length < 4) {
+          errorText.textContent = 'أكمل البيانات';
+          errorMsg.classList.remove('hidden');
+          return;
         }
-    </script>
+        
+        const originalBtn = loginBtn.innerHTML;
+        loginBtn.innerHTML = '<span class="animate-pulse">جاري التحقق...</span>';
+        loginBtn.disabled = true;
+        
+        try {
+          const result = await auth.login(mobile, pin);
+          if (!result.success) throw new Error(result.error);
+        } catch (error) {
+          errorText.textContent = error.message || 'خطأ في الاتصال';
+          errorMsg.classList.remove('hidden');
+          loginBtn.innerHTML = originalBtn;
+          loginBtn.disabled = false;
+          lucide.createIcons();
+        }
+      });
+    }
+  </script>
+
 </body>
 </html>
