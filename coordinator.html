@@ -5,197 +5,221 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
     <title>مكتب التنسيق | نظام الحوكمة</title>
     
-    <link rel="icon" href="assets/icons/favicon.png">
-    <link rel="apple-touch-icon" href="assets/icons/favicon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#0f766e">
-
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* إعدادات الثيم */
-        :root {
-            --primary: #0f766e;       /* الأخضر الرسمي */
-            --bg-main: #f8fafc;
-            --surface: #ffffff;
-            --border: #e2e8f0;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
+        * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        
         body { 
-            font-family: 'Cairo', sans-serif; 
-            background-color: var(--bg-main); 
-            color: #1e293b;
-            padding-bottom: 80px; 
+            background-color: #f8fafc; 
+            padding-bottom: 80px;
         }
 
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-
-        /* الكارت الشامل */
-        .super-card {
+        /* 1. Sidebar */
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            width: 260px;
             background: white;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: transform 0.2s;
-            margin-bottom: 16px;
-            position: relative;
+            border-left: 1px solid #e2e8f0;
+            z-index: 50;
+            transition: transform 0.3s ease;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.05);
         }
-        .super-card:hover { border-color: var(--primary); transform: translateY(-2px); }
 
-        /* شريط الحالة الملون */
-        .status-strip { width: 5px; height: 100%; position: absolute; right: 0; top: 0; }
-        .st-new { border-right: 5px solid #3b82f6; }      /* أزرق: جديد/جاري */
-        .st-done { border-right: 5px solid #10b981; }     /* أخضر: منتهي */
-        .st-late { border-right: 5px solid #ef4444; }     /* أحمر: متأخر */
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            margin: 4px 12px;
+            border-radius: 12px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
 
-        /* حقول الفلتر */
-        .filter-select {
+        .nav-item:hover {
+            background-color: #f0fdfa;
+            color: #0f766e;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+        }
+
+        /* 2. Mobile Header */
+        .mobile-header {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            padding: 1.5rem;
+            color: white;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        /* 3. Task Card */
+        .task-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            position: relative;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+        }
+        
+        .task-card:hover { transform: translateY(-3px); border-color: #0f766e; }
+
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+        .st-new { background: #e0f2fe; color: #0284c7; } /* جديد */
+        .st-wait { background: #fef3c7; color: #d97706; } /* انتظار التوزيع */
+
+        /* 4. Assignment Section within Card */
+        .assign-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .custom-select {
             width: 100%;
             padding: 10px;
             border: 1px solid #cbd5e1;
             border-radius: 8px;
-            background-color: white;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             outline: none;
-            cursor: pointer;
+            background: white;
+            margin-bottom: 8px;
         }
-        .filter-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
+        .custom-select:focus { border-color: #0f766e; }
 
-        /* Responsive Sidebar */
-        @media (min-width: 1024px) {
-            body { padding-bottom: 0; padding-right: 260px; }
-            .sidebar { width: 260px; transform: translateX(0) !important; }
-            .mobile-header, .bottom-nav { display: none !important; }
+        .btn-assign {
+            background: #0f766e;
+            color: white;
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-assign:hover { background: #115e59; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(100%); }
+            .main-content { margin-right: 0 !important; }
+        }
+        @media (min-width: 1025px) {
+            .mobile-header { display: none; }
+            .bottom-nav { display: none; }
+            .main-content { margin-right: 260px; padding: 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar fixed top-0 right-0 h-full bg-white z-50 transition-transform duration-300 translate-x-full flex flex-col shadow-lg border-l border-gray-100">
-        <div class="p-6 border-b border-gray-100 flex items-center gap-3">
-            <div class="bg-teal-50 p-2.5 rounded-lg text-[#0f766e]">
-                <i data-lucide="shield-check" class="w-7 h-7"></i>
+    <aside class="sidebar">
+        <div class="p-6 flex items-center gap-3 border-b border-gray-100 mb-4">
+            <div class="w-10 h-10 bg-teal-50 rounded-full flex items-center justify-center border border-teal-100">
+                <img src="assets/icons/favicon.png" class="w-7 h-7 object-contain">
             </div>
             <div>
                 <h1 class="font-bold text-lg text-slate-800">نظام الحوكمة</h1>
-                <p class="text-xs text-slate-500">مكتب التنسيق</p>
+                <p class="text-[10px] text-slate-500">مكتب التنسيق</p>
             </div>
         </div>
-
-        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-            <a href="distribution.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#0f766e] rounded-xl font-medium transition-colors">
+        
+        <nav>
+            <a href="distribution.html" class="nav-item">
                 <i data-lucide="layout-grid" class="w-5 h-5"></i><span>الرئيسية</span>
             </a>
-            
-            <a href="coordinator.html" class="flex items-center gap-3 px-4 py-3 bg-[#0f766e] text-white rounded-xl font-bold shadow-md">
-                <i data-lucide="users" class="w-5 h-5"></i><span>المتابعة والتكليف</span>
+            <a href="coordinator.html" class="nav-item active">
+                <i data-lucide="users" class="w-5 h-5"></i><span>توزيع المهام</span>
             </a>
-            
-            <a href="forms.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#0f766e] rounded-xl font-medium transition-colors">
+            <a href="forms.html" class="nav-item">
                 <i data-lucide="file-text" class="w-5 h-5"></i><span>النماذج</span>
             </a>
         </nav>
 
-        <div class="p-4 border-t border-slate-100 bg-slate-50">
+        <div class="absolute bottom-0 w-full p-4 border-t border-gray-100 bg-gray-50">
             <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-[#0f766e] text-white flex items-center justify-center font-bold text-xs" id="user-avatar"></div>
-                    <div>
-                        <p class="text-xs font-bold text-slate-800" id="user-name">...</p>
-                        <p class="text-[10px] text-slate-500">منسق</p>
-                    </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-800" id="user-name">...</p>
+                    <p class="text-[10px] text-slate-500">منسق إدارة</p>
                 </div>
-                <button onclick="auth.logout()" class="text-slate-400 hover:text-red-500"><i data-lucide="log-out" class="w-4 h-4"></i></button>
+                <button onclick="auth.logout()" class="text-red-500 hover:bg-red-50 p-2 rounded-full"><i data-lucide="log-out" class="w-4 h-4"></i></button>
             </div>
         </div>
     </aside>
 
-    <main class="min-h-screen w-full">
-        <div class="mobile-header bg-white p-4 sticky top-0 z-30 border-b border-slate-200 flex items-center justify-between shadow-sm">
+    <div class="main-content">
+        <div class="mobile-header">
             <div class="flex items-center gap-2">
-                <div class="bg-[#0f766e] p-1.5 rounded-lg text-white">
-                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
+                    <img src="assets/icons/favicon.png" class="w-5 h-5 brightness-200">
                 </div>
-                <h1 class="font-bold text-base text-slate-800">مكتب التنسيق</h1>
+                <h1 class="font-bold text-lg">مكتب التنسيق</h1>
             </div>
-            <button onclick="location.reload()" class="p-2 bg-slate-50 text-slate-500 rounded-lg">
-                <i data-lucide="refresh-cw" class="w-5 h-5"></i>
-            </button>
+            <button onclick="location.reload()" class="p-2 bg-white/20 rounded-lg backdrop-blur-sm"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
         </div>
 
-        <div class="p-4 lg:p-8 max-w-7xl mx-auto space-y-6">
+        <div class="p-4 lg:p-0 max-w-5xl mx-auto space-y-6">
             
-            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
-                    <i data-lucide="filter" class="w-4 h-4 text-[#0f766e]"></i>
-                    <h3 class="font-bold text-sm text-slate-800">تصفية البيانات</h3>
+            <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm mt-4 lg:mt-0 flex justify-between items-center">
+                <div>
+                    <h2 class="text-sm font-bold text-slate-600">المهام الواردة</h2>
+                    <p class="text-xs text-slate-400">قم باختيار الموظف المناسب لكل مهمة</p>
                 </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div>
-                        <label class="filter-label">الموظف / المجموعة</label>
-                        <select id="filter-employee" class="filter-select">
-                            <option value="all">كل الموظفين</option>
-                            <optgroup label="القائمة" id="emp-options">
-                                </optgroup>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="filter-label">الجهة الوارد منها</label>
-                        <select id="filter-source" class="filter-select">
-                            <option value="all">كل الجهات</option>
-                            </select>
-                    </div>
-
-                    <div>
-                        <label class="filter-label">محل التنفيذ</label>
-                        <select id="filter-location" class="filter-select">
-                            <option value="all">الكل</option>
-                            </select>
-                    </div>
-
-                    <div>
-                        <label class="filter-label">حالة المهمة</label>
-                        <select id="filter-status" class="filter-select">
-                            <option value="all">كل الحالات</option>
-                            <option value="late">⚠️ متأخر</option>
-                            <option value="pending">⏳ قيد العمل / جاري</option>
-                            <option value="done">✅ منتهي / تم الاعتماد</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mt-4 flex justify-end">
-                    <button onclick="applyAdvancedFilter()" class="bg-[#0f766e] text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow hover:bg-[#0d5f57] flex items-center gap-2 transition">
-                        <i data-lucide="search" class="w-4 h-4"></i> عرض النتائج
-                    </button>
-                </div>
+                <div class="bg-teal-50 text-[#0f766e] px-4 py-2 rounded-lg font-bold text-xl border border-teal-100" id="count-new">0</div>
             </div>
 
-            <div id="tasks-container" class="space-y-4">
+            <div id="tasks-container" class="space-y-4 pb-20">
                 <div class="text-center py-12">
-                    <span class="inline-block animate-spin text-[#0f766e] mb-2"><i data-lucide="loader-2" class="w-8 h-8"></i></span>
-                    <p class="text-slate-400 text-sm">جاري الاتصال بالسيرفر...</p>
+                    <span class="inline-block animate-spin text-[#0f766e]"><i data-lucide="loader-2" class="w-8 h-8"></i></span>
+                    <p class="text-slate-400 text-sm mt-2">جاري تحميل المهام...</p>
                 </div>
             </div>
-
         </div>
-    </main>
+    </div>
 
-    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-40 lg:hidden shadow-lg">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
+    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around p-2 pb-safe z-40 lg:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-slate-400">
             <i data-lucide="layout-grid" class="w-6 h-6"></i><span class="text-[10px]">الرئيسية</span>
         </a>
-        
         <a href="coordinator.html" class="flex flex-col items-center gap-1 p-2 text-[#0f766e]">
-            <i data-lucide="users" class="w-6 h-6"></i><span class="text-[10px] font-bold">التنسيق</span>
+            <i data-lucide="users" class="w-6 h-6"></i><span class="text-[10px] font-bold">التوزيع</span>
         </a>
-        
-        <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
+        <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-slate-400">
             <i data-lucide="file-text" class="w-6 h-6"></i><span class="text-[10px]">النماذج</span>
         </a>
     </nav>
@@ -204,176 +228,141 @@
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allTasks = []; 
+        let allTasks = [];
+        
+        // قائمة موظفين وهمية (للعرض فقط، يمكن تعديلها لاحقاً لتأتي من الداتابيز)
+        const employeesList = [
+            "أحمد محمد", "سارة علي", "محمود حسن", "نرمين كمال", 
+            "خالد يوسف", "منى إبراهيم", "عمر طارق", "مدير الإدارة"
+        ];
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const user = auth.checkAuth(); 
-            if (!user) return; 
-
-            // الحماية: لو موظف عادي يحاول يدخل، يرجع
-            if (user.role === 'employee' || user.role === 'موظف') {
-                window.location.href = 'distribution.html';
-                return;
+            const user = auth.checkAuth();
+            if (!user) return;
+            // التأكد من الصلاحية (منسق أو مدير)
+            if(user.role !== 'coordinator' && user.role !== 'منسق' && user.role !== 'admin' && user.role !== 'مدير') {
+                 window.location.href = 'employee.html';
+                 return;
             }
 
             document.getElementById('user-name').textContent = user.name;
-            document.getElementById('user-avatar').textContent = user.name.charAt(0);
 
-            await loadData(user);
-        });
+            const startDate = `${new Date().getFullYear()}-01-01`;
 
-        async function loadData(user) {
             try {
-                // Turbo Load: بيانات السنة الحالية فقط
-                const currentYear = new Date().getFullYear();
-                const startDate = `${currentYear}-01-01`;
-
-                // طلب البيانات بصلاحية "coordinator"
+                // المنسق بيشوف كل المهام الخاصة بإدارته عشان يوزعها
+                // هنا هنجيب الداتا ونفلتر اللي لسه "بدون موظف" أو "باسم الإدارة العام"
                 const res = await auth.callAPI('getAllData', {
                     role: 'coordinator',
                     name: user.name,
-                    startDate: startDate 
+                    startDate: startDate
                 });
 
                 if (res.success) {
                     allTasks = res.tasks;
-                    populateFilterDropdowns(allTasks); // ملء القوائم تلقائياً
-                    renderCards(allTasks); // عرض الكل
+                    renderCoordinatorTasks();
                 } else {
-                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500">❌ لم يتم العثور على بيانات</div>`;
+                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 font-bold">فشل تحميل البيانات</div>`;
                 }
             } catch (e) {
                 console.error(e);
-                document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-slate-400">⚠️ خطأ في الاتصال بالسيرفر</div>`;
+                document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-slate-400">خطأ في الاتصال</div>`;
             }
-        }
+        });
 
-        // --- 1. ملء القوائم المنسدلة من البيانات الحقيقية ---
-        function populateFilterDropdowns(tasks) {
-            const employees = new Set();
-            const sources = new Set();
-            const locations = new Set();
-
-            tasks.forEach(t => {
-                if(t.assignee) employees.add(t.assignee);
-                if(t.source) sources.add(t.source);
-                if(t.entity) locations.add(t.entity);
-            });
-
-            // ملء الموظفين
-            document.getElementById('emp-options').innerHTML = Array.from(employees).sort().map(e => `<option value="${e}">${e}</option>`).join('');
-            
-            // ملء الجهات الواردة
-            const srcSelect = document.getElementById('filter-source');
-            srcSelect.innerHTML = '<option value="all">الكل</option>' + Array.from(sources).sort().map(s => `<option value="${s}">${s}</option>`).join('');
-
-            // ملء محل التنفيذ
-            const locSelect = document.getElementById('filter-location');
-            locSelect.innerHTML = '<option value="all">الكل</option>' + Array.from(locations).sort().map(l => `<option value="${l}">${l}</option>`).join('');
-        }
-
-        // --- 2. منطق الفلترة ---
-        function applyAdvancedFilter() {
-            const empVal = document.getElementById('filter-employee').value;
-            const srcVal = document.getElementById('filter-source').value;
-            const locVal = document.getElementById('filter-location').value;
-            const statusVal = document.getElementById('filter-status').value;
-
-            const filtered = allTasks.filter(t => {
-                const empMatch = empVal === 'all' || t.assignee === empVal;
-                const srcMatch = srcVal === 'all' || t.source === srcVal;
-                const locMatch = locVal === 'all' || t.entity === locVal;
-                
-                let statusMatch = true;
-                const s = (t.status || '').toLowerCase();
-                
-                if (statusVal === 'late') statusMatch = s.includes('متأخر');
-                else if (statusVal === 'pending') statusMatch = s.includes('جاري') || s.includes('جديد') || s.includes('مراجعة');
-                else if (statusVal === 'done') statusMatch = s.includes('تم') || s.includes('منتهي');
-
-                return empMatch && srcMatch && locMatch && statusMatch;
-            });
-
-            renderCards(filtered);
-        }
-
-        // --- 3. رسم الكروت (Super Cards) ---
-        function renderCards(tasks) {
+        function renderCoordinatorTasks() {
             const container = document.getElementById('tasks-container');
             
+            // الفلتر: المهام التي لم يتم تكليف موظف محدد بها بعد (أو يمكن إعادة تكليفها)
+            // نفترض أن المهام الجديدة بتيجي والـ Assignee فاضي أو باسم القسم
+            // هنا هنعرض كل المهام عشان المنسق يقدر يغير الموظف في أي وقت
+            
+            // ترتيب: الأحدث أولاً
+            const tasks = allTasks.sort((a, b) => b.id - a.id);
+            document.getElementById('count-new').textContent = tasks.length;
+
             if (tasks.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 text-slate-400 bg-white rounded-xl border border-dashed">لا توجد نتائج مطابقة للبحث</div>`;
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-xl border border-dashed border-slate-300">
+                        <div class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i data-lucide="check-circle" class="w-6 h-6 text-slate-400"></i>
+                        </div>
+                        <p class="text-slate-500 text-sm font-bold">لا توجد مهام لتوزيعها حالياً</p>
+                    </div>`;
                 return;
             }
 
             container.innerHTML = tasks.map(t => {
-                const statusInfo = getStatusInfo(t.status);
-                const isLegal = t.caseNumber && t.caseNumber !== ''; // هل يوجد رقم قضية؟
+                const isAssigned = t.assignee && t.assignee.length > 2;
+                const statusBadge = isAssigned 
+                    ? `<span class="status-badge st-new">تم التكليف: ${t.assignee}</span>` 
+                    : `<span class="status-badge st-wait">بانتظار التوزيع</span>`;
+
+                // إنشاء قائمة الموظفين
+                const options = employeesList.map(emp => 
+                    `<option value="${emp}" ${t.assignee === emp ? 'selected' : ''}>${emp}</option>`
+                ).join('');
 
                 return `
-                <div class="super-card">
-                    <div class="status-strip ${statusInfo.class}"></div>
-                    
-                    <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <div class="task-card group">
+                    <div class="flex justify-between items-start mb-3">
                         <div class="flex items-center gap-2">
-                            <span class="bg-white border border-slate-200 px-2 py-0.5 rounded text-[10px] font-bold text-slate-600">
-                                ${t.docType || 'وارد'}
-                            </span>
-                            <span class="font-mono text-sm font-bold text-slate-700">#${t.id}</span>
+                            <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded font-bold">#${t.id}</span>
+                            ${statusBadge}
                         </div>
-                        <span class="px-2 py-1 rounded text-[10px] font-bold" style="background:${statusInfo.bg}; color:${statusInfo.text}">
-                            ${statusInfo.label}
-                        </span>
+                        <span class="text-[10px] text-slate-400 font-mono">${t.date}</span>
                     </div>
 
-                    <div class="p-4">
-                        <h3 class="text-sm font-bold text-slate-800 leading-relaxed mb-3">${t.subject}</h3>
+                    <h3 class="font-bold text-slate-800 text-sm mb-2">${t.subject}</h3>
+                    <p class="text-xs text-slate-500 mb-3 flex items-center gap-1"><i data-lucide="building-2" class="w-3 h-3"></i> المصدر: ${t.source}</p>
 
-                        ${isLegal ? `
-                        <div class="flex gap-4 mb-3 bg-orange-50 border border-orange-100 p-2 rounded-lg">
-                            <div class="flex flex-col border-l border-orange-200 pl-3 ml-2">
-                                <span class="text-[9px] text-orange-500">رقم القضية</span>
-                                <span class="text-xs font-bold text-orange-800 font-mono">${t.caseNumber}</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="text-[9px] text-orange-500">السنة</span>
-                                <span class="text-xs font-bold text-orange-800 font-mono">${t.caseYear || '-'}</span>
-                            </div>
-                        </div>` : ''}
-
-                        <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-                            ${t.source ? `<span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📥 ${t.source}</span>` : ''}
-                            ${t.entity ? `<span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📍 ${t.entity}</span>` : ''}
-                            <span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📅 ${t.date}</span>
-                        </div>
+                    <div class="assign-box">
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">اختر الموظف المسؤول:</label>
+                        <select id="sel-${t.id}" class="custom-select">
+                            <option value="">-- اختر موظف --</option>
+                            ${options}
+                        </select>
+                        <button onclick="assignTask('${t.id}')" class="btn-assign">
+                            <i data-lucide="user-check" class="w-4 h-4"></i>
+                            <span>حفظ التكليف</span>
+                        </button>
                     </div>
-
-                    <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
-                        <div class="flex gap-2">
-                            ${t.attachment ? `<a href="${t.attachment}" target="_blank" class="px-3 py-1.5 bg-white border border-slate-200 rounded text-xs font-bold text-[#0f766e] hover:bg-emerald-50 shadow-sm flex items-center gap-1"><i data-lucide="paperclip" class="w-3"></i> التكليف</a>` : ''}
-                            ${t.report ? `<a href="${t.report}" target="_blank" class="px-3 py-1.5 bg-white border border-slate-200 rounded text-xs font-bold text-blue-600 hover:bg-blue-50 shadow-sm flex items-center gap-1"><i data-lucide="file-text" class="w-3"></i> الرد</a>` : ''}
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold text-slate-700">${t.assignee}</span>
-                            <div class="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500 shadow-sm">
-                                ${t.assignee ? t.assignee.charAt(0) : '?'}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                `;
+                </div>`;
             }).join('');
             
             lucide.createIcons();
         }
 
-        // مساعد الحالة والألوان
-        function getStatusInfo(s) {
-            s = (s || '').toLowerCase();
-            if (s.includes('تم') || s.includes('منتهي')) return { label: '✅ منتهي', class: 'st-done', bg: '#dcfce7', text: '#166534' };
-            if (s.includes('متأخر')) return { label: '🔥 متأخر', class: 'st-late', bg: '#fee2e2', text: '#991b1b' };
-            // الافتراضي (جديد/جاري)
-            return { label: '⏳ قيد العمل', class: 'st-new', bg: '#dbeafe', text: '#1e40af' };
+        async function assignTask(id) {
+            const select = document.getElementById(`sel-${id}`);
+            const newEmp = select.value;
+            const btn = select.nextElementSibling; // الزرار اللي تحته
+
+            if (!newEmp) return alert("يرجى اختيار موظف أولاً");
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<span class="animate-spin">⌛</span> جاري الحفظ...`;
+            btn.disabled = true;
+
+            try {
+                // استدعاء API لتحديث الموظف (Reassign)
+                const res = await auth.callAPI('reassignTask', { 
+                    taskId: id, 
+                    newEmployee: newEmp 
+                });
+
+                if (res.success) {
+                    btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> تم بنجاح`;
+                    btn.classList.replace('bg-[#0f766e]', 'bg-emerald-600');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    throw new Error(res.error);
+                }
+            } catch (e) {
+                alert("خطأ: " + e.message);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
