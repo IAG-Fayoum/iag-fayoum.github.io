@@ -13,36 +13,36 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
     * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    .en-font { font-family: system-ui, -apple-system, sans-serif; letter-spacing: 0.5px; }
     
     body {
       min-height: 100vh;
-      background: #f0fdfa; /* خلفية فاتحة موحدة ونظيفة */
+      background: #f0fdfa;
       display: flex;
       flex-direction: column;
     }
     
-    /* تصميم الهيدر الجديد */
+    /* Header */
     .header-bg {
       background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
       position: relative;
       box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
-      padding-bottom: 3rem; /* مساحة عشان الكارت يدخل فيها */
+      padding-bottom: 3rem;
     }
 
-    /* كارت الدخول */
+    /* Login Card */
     .login-card {
       background: white;
       border-radius: 1.5rem;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); /* ظل ناعم */
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
       border: 1px solid #e2e8f0;
       padding: 2.5rem 2rem;
       width: 100%;
-      max-width: 420px; /* عرض مناسب للموبايل والكمبيوتر */
+      max-width: 420px;
       position: relative;
-      margin-top: -3rem; /* يركب فوق الهيدر شوية */
+      margin-top: -3rem;
     }
     
-    /* الدائرة البيضاء للوجو (نفس الستايل في كل مكان) */
     .logo-circle {
       background: white;
       border-radius: 50%;
@@ -50,7 +50,7 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      overflow: hidden; /* عشان الصورة متخرجش بره */
+      overflow: hidden;
     }
 
     .form-input {
@@ -107,8 +107,9 @@
       gap: 6px;
     }
 
+    /* Footer Style */
     .footer-bg {
-      background: #1e293b; /* لون غامق للفوتر */
+      background: #1e293b;
       color: white;
       padding: 2rem 0;
       margin-top: auto;
@@ -185,9 +186,16 @@
          <img src="assets/icons/favicon.png" onerror="this.style.display='none'" class="w-full h-full object-contain" alt="Logo">
       </div>
       
-      <div class="text-sm opacity-80 font-light">
-        <p class="font-bold text-white mb-1">إدارة الحوكمة والمراجعة الداخلية</p>
-        <p class="text-xs text-slate-300">© 2025 جميع الحقوق محفوظة</p>
+      <div class="text-sm opacity-90 font-light">
+        <p class="font-bold text-white mb-2 text-base">إدارة الحوكمة والمراجعة الداخلية</p>
+        
+        <div class="text-xs text-slate-300 space-y-1 en-font">
+            <p>MoH Fayoum Governance – Internal Access Page</p>
+            <p class="opacity-75">Developed under Governance Supervision – <span class="text-teal-400 font-bold">Dr. MAH</span></p>
+        </div>
+        
+        <div class="w-16 h-px bg-slate-700 mx-auto my-3"></div>
+        <p class="text-[10px] text-slate-500">© 2025 جميع الحقوق محفوظة</p>
       </div>
     </div>
   </footer>
