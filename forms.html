@@ -3,9 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Governance">
+  <meta name="application-name" content="Governance">
+  
   <title>نماذج العمل | نظام الحوكمة</title>
   
   <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+  <link rel="apple-touch-icon" href="assets/icons/favicon.png">
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -19,13 +25,14 @@
       background: #f0fdfa;
       display: flex;
       flex-direction: column;
+      overscroll-behavior-y: none;
     }
 
-    /* 1. الهيدر الفخم (نفس صفحة الدخول) */
+    /* الهيدر الفخم */
     .header-hero {
       background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
       padding-top: 2rem;
-      padding-bottom: 4rem; /* مساحة عشان الكروت تركب */
+      padding-bottom: 4rem;
       text-align: center;
       color: white;
       border-bottom-left-radius: 30px;
@@ -48,10 +55,10 @@
       overflow: hidden;
     }
 
-    /* 2. شبكة الكروت العائمة */
+    /* الكروت */
     .cards-wrapper {
       max-width: 600px;
-      margin: -3rem auto 2rem; /* الرفع لفوق */
+      margin: -3rem auto 2rem;
       padding: 0 1rem;
       position: relative;
       z-index: 10;
@@ -59,7 +66,6 @@
       gap: 1rem;
     }
 
-    /* تصميم الكارت */
     .form-card {
       background: white;
       border: 1px solid #e2e8f0;
@@ -81,7 +87,6 @@
       border-color: #0f766e;
     }
 
-    /* ألوان الأيقونات لكل نموذج */
     .icon-box {
       width: 50px;
       height: 50px;
@@ -118,6 +123,7 @@
       transition: all 0.2s;
       font-size: 0.9rem;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      text-decoration: none; /* مهم عشان شكل الزرار */
     }
 
     .btn-back:hover {
@@ -140,9 +146,7 @@
   <div class="cards-wrapper">
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeJhAdpfoQAs6wqMDUD12N_H4YnL0Xv9KITCj2pHGCaKSyhJA/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-teal">
-        <i data-lucide="inbox" class="w-6 h-6"></i>
-      </div>
+      <div class="icon-box bg-teal"><i data-lucide="inbox" class="w-6 h-6"></i></div>
       <div class="flex-1">
         <h3 class="font-bold text-gray-800 text-sm">سجل الصادر والوارد</h3>
         <p class="text-xs text-gray-500 mt-1">تسجيل المعاملات والمكاتبات</p>
@@ -151,9 +155,7 @@
     </a>
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeLbdP8tzEyNFaVI53h0jfHMp3j9uJL-mLors14rIjuUQaGIg/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-rose">
-        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
-      </div>
+      <div class="icon-box bg-rose"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
       <div class="flex-1">
         <h3 class="font-bold text-gray-800 text-sm">فحص الشكاوى</h3>
         <p class="text-xs text-gray-500 mt-1">منظومة الشكاوى والتحقيقات</p>
@@ -162,9 +164,7 @@
     </a>
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSfe94k6Im0Y4IODqw3UCLAczVQYdKivnyZ2s8SiCAU4uTwwpA/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-amber">
-        <i data-lucide="calculator" class="w-6 h-6"></i>
-      </div>
+      <div class="icon-box bg-amber"><i data-lucide="calculator" class="w-6 h-6"></i></div>
       <div class="flex-1">
         <h3 class="font-bold text-gray-800 text-sm">المرور المالي والإداري</h3>
         <p class="text-xs text-gray-500 mt-1">مراجعة الحسابات والمخزون</p>
@@ -173,9 +173,7 @@
     </a>
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSePbkn17cO2EFDUm4-7A4Le560ep6Zce9-QlyTdP7MEG_eAew/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-blue">
-        <i data-lucide="stethoscope" class="w-6 h-6"></i>
-      </div>
+      <div class="icon-box bg-blue"><i data-lucide="stethoscope" class="w-6 h-6"></i></div>
       <div class="flex-1">
         <h3 class="font-bold text-gray-800 text-sm">فني وحدات الرعاية</h3>
         <p class="text-xs text-gray-500 mt-1">تفتيش الوحدات الصحية</p>
@@ -184,9 +182,7 @@
     </a>
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSedsoD3zW51Lwd7VanPQ1hVMB3OTmmaorOATiMieTXjaOBbRw/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-violet">
-        <i data-lucide="building-2" class="w-6 h-6"></i>
-      </div>
+      <div class="icon-box bg-violet"><i data-lucide="building-2" class="w-6 h-6"></i></div>
       <div class="flex-1">
         <h3 class="font-bold text-gray-800 text-sm">مرور فني مستشفيات</h3>
         <p class="text-xs text-gray-500 mt-1">المرور الفني على المستشفيات</p>
