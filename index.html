@@ -15,16 +15,20 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { 
       font-family: 'Cairo', sans-serif; 
-      background: #f5f5f5;
+      background: #f1f5f9; /* خلفية رمادية فاتحة جداً تبرز الكارت الأبيض */
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
     
+    /* تأثير ظهور ناعم للصفحة */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+
     .official-header {
       background: white;
       border-bottom: 4px solid #0f766e;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
     }
     
     .header-top {
@@ -32,13 +36,12 @@
       color: white;
       padding: 0.5rem 0;
       text-align: center;
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       font-weight: 600;
+      letter-spacing: 0.5px;
     }
     
-    .header-main {
-      padding: 1.5rem 0;
-    }
+    .header-main { padding: 1rem 0; }
     
     .logo-container {
       display: flex;
@@ -48,27 +51,29 @@
     }
     
     .logo-circle {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #0f766e, #115e59);
+      width: 70px;
+      height: 70px;
+      background: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15);
+      border: 2px solid #e2e8f0;
+      overflow: hidden;
     }
     
     .header-text h1 {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       font-weight: 800;
       color: #1e293b;
-      margin-bottom: 0.25rem;
+      line-height: 1.2;
     }
     
     .header-text p {
-      font-size: 1rem;
-      color: #64748b;
-      font-weight: 600;
+      font-size: 0.9rem;
+      color: #0f766e; /* لون مميز لاسم المديرية */
+      font-weight: 700;
     }
     
     .main-content {
@@ -79,59 +84,29 @@
       padding: 2rem 1rem;
     }
     
-    .login-container {
-      width: 100%;
-      max-width: 480px;
-    }
-    
     .login-card {
       background: white;
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 2.5rem;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
       border: 1px solid #e2e8f0;
+      width: 100%;
+      max-width: 450px;
     }
     
-    .login-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
+    .login-header { text-align: center; margin-bottom: 2rem; }
     
-    .lock-icon {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-      border-radius: 50%;
+    .lock-icon-container {
+      width: 64px;
+      height: 64px;
+      background: #f0fdfa;
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 1rem;
-      border: 3px solid #0f766e;
-    }
-    
-    .login-header h3 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #1e293b;
-      margin-bottom: 0.5rem;
-    }
-    
-    .login-header p {
-      color: #64748b;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-    
-    .login-subtitle {
-      color: #64748b;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-top: 0.5rem;
-      opacity: 0.8;
-    }
-    
-    .form-group {
-      margin-bottom: 1.25rem;
+      color: #0f766e;
+      border: 1px solid #ccfbf1;
     }
     
     .form-label {
@@ -144,81 +119,51 @@
     
     .form-input {
       width: 100%;
-      padding: 14px 16px;
+      padding: 12px 16px;
       border: 2px solid #e2e8f0;
       border-radius: 12px;
       font-size: 16px;
       font-weight: 600;
-      transition: all 0.3s;
+      transition: all 0.2s;
       outline: none;
+      color: #1e293b;
     }
     
     .form-input:focus {
       border-color: #0f766e;
       box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
-      background: #fafafa;
     }
     
     .btn-login {
       width: 100%;
-      background: linear-gradient(135deg, #0f766e, #115e59);
+      background: #0f766e;
       color: white;
       padding: 14px;
       border: none;
       border-radius: 12px;
-      font-size: 1.1rem;
-      font-weight: 800;
+      font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
     }
     
-    .btn-login:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(15, 118, 110, 0.4);
-    }
-    
-    .btn-login:active {
-      transform: translateY(0);
-    }
-    
-    .btn-login:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .btn-login:hover { background: #115e59; transform: translateY(-1px); }
+    .btn-login:active { transform: translateY(0); }
+    .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
     
     .error-box {
       margin-top: 1rem;
-      padding: 12px;
+      padding: 10px;
       background: #fef2f2;
-      border: 2px solid #fecaca;
-      border-radius: 12px;
-      color: #dc2626;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.9rem;
-    }
-    
-    .info-note {
-      margin-top: 1.5rem;
-      padding: 12px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      text-align: center;
-    }
-    
-    .info-note p {
-      color: #64748b;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      color: #b91c1c;
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -228,58 +173,20 @@
     .official-footer {
       background: #1e293b;
       color: white;
-      padding: 2rem 0;
-      margin-top: auto;
+      padding: 1.5rem 0;
       border-top: 4px solid #0f766e;
-    }
-    
-    .footer-content {
       text-align: center;
     }
     
-    .footer-logo {
-      margin-bottom: 1rem;
-    }
-    
-    .footer-text h4 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-    }
-    
-    .footer-text p {
-      font-size: 0.9rem;
-      color: #94a3b8;
-      margin-bottom: 0.25rem;
-    }
-    
-    .footer-divider {
-      width: 100px;
-      height: 3px;
-      background: #0f766e;
-      margin: 1rem auto;
-      border-radius: 2px;
-    }
-    
     @media (max-width: 640px) {
-      .logo-container {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      .header-text h1 {
-        font-size: 1.5rem;
-      }
-      
-      .login-card {
-        padding: 2rem 1.5rem;
-      }
+      .logo-container { flex-direction: column; gap: 0.5rem; }
+      .header-text h1 { font-size: 1.25rem; }
+      .login-card { padding: 1.5rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
   <header class="official-header">
     <div class="header-top">
       <p>جمهورية مصر العربية - وزارة الصحة والسكان</p>
@@ -289,10 +196,11 @@
       <div class="container mx-auto px-4">
         <div class="logo-container">
           <div class="logo-circle">
-            <i data-lucide="shield-check" class="w-12 h-12 text-white"></i>
+             <img src="assets/icons/favicon.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" class="w-full h-full object-contain p-1" alt="Logo">
+             <i data-lucide="shield-check" class="w-8 h-8 text-[#0f766e] hidden"></i>
           </div>
-          <div class="header-text text-center">
-            <h1>نظام إدارة الحوكمة والمراجعة الداخلية</h1>
+          <div class="header-text text-center lg:text-right">
+            <h1>نظام الحوكمة والمراجعة</h1>
             <p>مديرية الشؤون الصحية بالفيوم</p>
           </div>
         </div>
@@ -300,95 +208,59 @@
     </div>
   </header>
 
-  <!-- MAIN CONTENT -->
   <main class="main-content">
-    <div class="login-container">
-      
-      <!-- Login Card -->
-      <div class="login-card">
+    <div class="login-card fade-in">
         <div class="login-header">
-          <div class="lock-icon">
-            <i data-lucide="lock-keyhole" class="w-9 h-9 text-teal-700"></i>
+          <div class="lock-icon-container">
+            <i data-lucide="lock" class="w-8 h-8"></i>
           </div>
-          <h3>تسجيل الدخول</h3>
-          <p>دخول مخصص لأعضاء الإدارة</p>
-          <p class="login-subtitle">هذا النظام مخصص لأعضاء إدارة المراجعة الداخلية والحوكمة فقط</p>
+          <h3 class="text-xl font-bold text-slate-800">تسجيل الدخول</h3>
+          <p class="text-sm text-slate-500 mt-1">المنصة الرقمية الموحدة</p>
         </div>
         
         <form id="login-form">
-          <div class="form-group">
-            <label class="form-label">
-              <i data-lucide="smartphone" class="w-4 h-4 inline-block ml-1"></i>
-              رقم الموبايل
-            </label>
-            <input 
-              type="tel" 
-              id="mobile-input" 
-              class="form-input text-left" 
-              placeholder="01xxxxxxxxx" 
-              maxlength="11"
-              dir="ltr"
-              autocomplete="tel"
-              required
-            >
+          <div class="mb-4">
+            <label class="form-label">رقم الموبايل</label>
+            <div class="relative">
+                <input type="tel" id="mobile-input" class="form-input text-left pl-10" placeholder="01xxxxxxxxx" maxlength="11" dir="ltr" autocomplete="tel" required>
+                <i data-lucide="smartphone" class="w-5 h-5 text-gray-400 absolute left-3 top-3.5"></i>
+            </div>
           </div>
           
-          <div class="form-group">
-            <label class="form-label">
-              <i data-lucide="key-round" class="w-4 h-4 inline-block ml-1"></i>
-              رمز الدخول السري (PIN)
-            </label>
-            <input 
-              type="password" 
-              id="pin-input" 
-              class="form-input text-center tracking-[6px]" 
-              placeholder="••••" 
-              maxlength="4"
-              autocomplete="current-password"
-              required
-            >
+          <div class="mb-6">
+            <label class="form-label">رمز الدخول (PIN)</label>
+            <div class="relative">
+                <input type="password" id="pin-input" class="form-input text-center tracking-[6px] font-bold" placeholder="••••" maxlength="4" autocomplete="current-password" required>
+                <i data-lucide="key-round" class="w-5 h-5 text-gray-400 absolute left-3 top-3.5"></i>
+            </div>
           </div>
           
           <button type="submit" id="login-btn" class="btn-login">
-            <span>دخول إلى النظام</span>
-            <i data-lucide="log-in" class="w-5 h-5"></i>
+            <span>دخول للنظام</span>
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
           </button>
         </form>
         
         <div id="error-msg" class="error-box hidden">
-          <i data-lucide="alert-circle" class="w-5 h-5"></i>
-          <span id="error-text">بيانات الدخول غير صحيحة</span>
+          <i data-lucide="alert-circle" class="w-4 h-4"></i>
+          <span id="error-text">بيانات غير صحيحة</span>
         </div>
         
-        <div class="info-note">
-          <p>
-            <i data-lucide="shield-check" class="w-4 h-4"></i>
-            <span>نظام آمن ومحمي</span>
-          </p>
+        <div class="mt-6 text-center">
+            <p class="text-[10px] text-gray-400 font-bold bg-gray-50 inline-block px-3 py-1 rounded-full border border-gray-100">
+                <i data-lucide="shield-check" class="w-3 h-3 inline mr-1"></i> اتصال مشفر وآمن
+            </p>
         </div>
-      </div>
     </div>
   </main>
 
-  <!-- FOOTER -->
   <footer class="official-footer">
-    <div class="footer-content">
-      <div class="footer-logo">
-        <div class="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center mx-auto mb-2">
-          <i data-lucide="shield-check" class="w-10 h-10 text-white"></i>
-        </div>
-      </div>
-      <div class="footer-text">
-        <h4>إدارة المراجعة الداخلية والحوكمة</h4>
-        <p>مديرية الشؤون الصحية بالفيوم</p>
-        <p>وزارة الصحة والسكان - جمهورية مصر العربية</p>
-      </div>
-      <div class="footer-divider"></div>
-      <p class="text-sm text-slate-400">© 2025 جميع الحقوق محفوظة</p>
+    <div class="container mx-auto px-4">
+      <h4 class="font-bold text-lg mb-1">إدارة المراجعة الداخلية والحوكمة</h4>
+      <p class="text-sm text-gray-400">جميع الحقوق محفوظة © 2025</p>
     </div>
   </footer>
 
-  <!-- SCRIPTS -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   
@@ -396,15 +268,20 @@
     lucide.createIcons();
     
     window.addEventListener('load', () => {
+      // التأكد من ملف auth.js
       if (typeof auth === 'undefined') {
-        console.error('❌ auth.js not loaded!');
-        showError('خطأ في النظام: ملف المصادقة غير موجود');
+        showError('ملف النظام (auth.js) مفقود!');
         return;
       }
       
-      if (auth.currentUser) {
-        auth.redirectToDashboard();
-        return;
+      // التوجيه التلقائي لو مسجل دخول
+      // ملاحظة: استخدمنا redirectUser بدلاً من redirectDashboard للتوافق
+      const user = localStorage.getItem('user');
+      if (user) {
+         try {
+             auth.redirectUser(JSON.parse(user).role);
+         } catch(e) { localStorage.removeItem('user'); }
+         return;
       }
       
       const mobileInput = document.getElementById('mobile-input');
@@ -412,37 +289,28 @@
     });
     
     const loginForm = document.getElementById('login-form');
-    const loginBtn = document.getElementById('login-btn');
-    const errorMsg = document.getElementById('error-msg');
-    const errorText = document.getElementById('error-text');
     
     if (loginForm) {
       loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        if (typeof auth === 'undefined') {
-          showError('النظام غير جاهز');
-          return;
-        }
+        if (typeof auth === 'undefined') return showError('النظام غير جاهز');
         
         const mobile = document.getElementById('mobile-input').value.trim();
         const pin = document.getElementById('pin-input').value.trim();
+        const btn = document.getElementById('login-btn');
         
         hideError();
         
-        if (mobile.length !== 11) {
-          showError('رقم الموبايل يجب أن يكون 11 رقم');
-          return;
+        if (mobile.length !== 11 || pin.length < 4) {
+          return showError('يرجى إدخال البيانات كاملة');
         }
         
-        if (pin.length !== 4) {
-          showError('رمز الدخول يجب أن يكون 4 أرقام');
-          return;
-        }
-        
-        const originalBtn = loginBtn.innerHTML;
-        loginBtn.innerHTML = '<span class="animate-pulse">جارِ التحقق من البيانات...</span>';
-        loginBtn.disabled = true;
+        // تأثير التحميل
+        const originalContent = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> <span>جاري التحقق...</span>';
+        btn.disabled = true;
+        lucide.createIcons();
         
         try {
           const result = await auth.login(mobile, pin);
@@ -450,28 +318,29 @@
           if (!result.success) {
             throw new Error(result.error || 'بيانات الدخول غير صحيحة');
           }
+          // الدالة auth.login بتقوم بالتوجيه تلقائياً لو نجح
           
         } catch (error) {
-          showError(error.message || 'خطأ في الاتصال بالخادم');
-          loginBtn.innerHTML = originalBtn;
-          loginBtn.disabled = false;
+          showError(error.message || 'خطأ في الاتصال');
+          btn.innerHTML = originalContent;
+          btn.disabled = false;
           lucide.createIcons();
         }
       });
     }
     
-    function showError(message) {
-      if (errorMsg && errorText) {
-        errorText.textContent = message;
-        errorMsg.classList.remove('hidden');
-        lucide.createIcons();
+    function showError(msg) {
+      const box = document.getElementById('error-msg');
+      const txt = document.getElementById('error-text');
+      if(box && txt) {
+        txt.textContent = msg;
+        box.classList.remove('hidden');
       }
     }
     
     function hideError() {
-      if (errorMsg) {
-        errorMsg.classList.add('hidden');
-      }
+      const box = document.getElementById('error-msg');
+      if(box) box.classList.add('hidden');
     }
   </script>
 </body>
