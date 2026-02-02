@@ -70,6 +70,7 @@
       background: #fff;
     }
     
+    /* زر الدخول (Solid Green) */
     .btn-login {
       width: 100%;
       background: #0f766e;
@@ -87,16 +88,15 @@
       justify-content: center;
       gap: 0.5rem;
     }
-    
     .btn-login:hover { background: #115e59; transform: translateY(-2px); }
     .btn-login:active { transform: translateY(0); }
     .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
 
-    /* زر النماذج الجديد (Secondary Button) */
-    .btn-outline {
+    /* زر نماذج العمل الجديد (Navy/Slate Style) */
+    .btn-work-forms {
       width: 100%;
       background: white;
-      color: #64748b;
+      color: #334155;       /* لون كحلي/رمادي غامق */
       border: 2px solid #e2e8f0;
       padding: 12px;
       border-radius: 12px;
@@ -109,12 +109,22 @@
       justify-content: center;
       gap: 0.5rem;
       text-decoration: none;
+      margin-top: 1rem; /* مسافة بينه وبين زر الدخول */
     }
     
-    .btn-outline:hover {
-      border-color: #0f766e;
+    .btn-work-forms:hover {
+      border-color: #0f766e; /* يقلب أخضر لما تقف عليه */
       color: #0f766e;
       background: #f0fdfa;
+    }
+
+    .btn-work-forms i {
+      color: #475569; /* لون الأيقونة */
+      transition: color 0.2s;
+    }
+
+    .btn-work-forms:hover i {
+      color: #0f766e;
     }
     
     .error-box {
@@ -140,25 +150,6 @@
       margin-top: auto;
       text-align: center;
       border-top: 4px solid #0f766e;
-    }
-    
-    /* فاصل بسيط */
-    .divider {
-        display: flex;
-        align-items: center;
-        text-align: center;
-        margin: 1.5rem 0;
-    }
-    .divider::before, .divider::after {
-        content: '';
-        flex: 1;
-        border-bottom: 1px solid #e2e8f0;
-    }
-    .divider span {
-        padding: 0 10px;
-        font-size: 0.8rem;
-        color: #94a3b8;
-        font-weight: bold;
     }
   </style>
 </head>
@@ -211,13 +202,9 @@
         </button>
       </form>
       
-      <div class="divider">
-          <span>خدمات الجمهور</span>
-      </div>
-
-      <a href="forms.html" class="btn-outline">
-          <span>النماذج العامة</span>
-          <i data-lucide="layout-grid" class="w-4 h-4"></i>
+      <a href="forms.html" class="btn-work-forms">
+          <span>نماذج العمل</span>
+          <i data-lucide="file-text" class="w-4 h-4"></i>
       </a>
       
       <div id="error-msg" class="error-box hidden">
@@ -259,13 +246,17 @@
   <script>
     lucide.createIcons();
     
+    // تعديل بسيط لحماية الصفحة: السماح بفتح forms.html
     window.addEventListener('load', () => {
       if (typeof auth === 'undefined') { console.error('Auth missing'); return; }
+      
+      // هنا بنشيك لو المستخدم مسجل دخول
       const user = localStorage.getItem('user');
       if (user) {
         try { auth.redirectUser(JSON.parse(user).role); } catch(e) { localStorage.removeItem('user'); }
         return;
       }
+      
       const mobileInput = document.getElementById('mobile-input');
       if (mobileInput) setTimeout(() => mobileInput.focus(), 100);
     });
