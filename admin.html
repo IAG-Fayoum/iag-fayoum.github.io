@@ -16,7 +16,7 @@
         
         body { background-color: #f8fafc; padding-bottom: 80px; }
 
-        /* 1. Header (Uniform) */
+        /* 1. Header (Standard Teal Design) */
         .header-bg {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             padding: 1rem 1.5rem 4rem;
@@ -25,15 +25,17 @@
             border-bottom-right-radius: 30px;
             position: relative;
             z-index: 10;
+            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
         }
 
         .logo-circle-small {
             width: 50px; height: 50px; background: white; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid rgba(255,255,255,0.8);
+            overflow: hidden;
         }
 
-        /* 2. Admin Container (The White Box) */
+        /* 2. Admin Container (Card Style) */
         .admin-container {
             background: white; border-radius: 20px; padding: 1.5rem;
             margin: -3rem 1rem 1.5rem; position: relative; z-index: 20;
@@ -66,19 +68,22 @@
             background: #0f766e; color: white; width: 100%; padding: 12px;
             border-radius: 12px; font-weight: 700; margin-top: 1rem;
             display: flex; justify-content: center; align-items: center; gap: 8px;
+            transition: 0.2s;
         }
-        .btn-submit:hover { background: #115e59; }
+        .btn-submit:hover { background: #115e59; transform: translateY(-1px); }
 
-        /* Table */
-        .monitor-table th { text-align: right; padding: 10px; font-size: 0.75rem; color: #94a3b8; background: #f8fafc; }
-        .monitor-table td { padding: 10px; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; }
+        /* Table Style */
+        .monitor-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .monitor-table th { text-align: right; padding: 12px; font-size: 0.75rem; color: #64748b; background: #f8fafc; border-bottom: 2px solid #e2e8f0; }
+        .monitor-table td { padding: 12px; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; color: #334155; }
+        .monitor-table tr:last-child td { border: none; }
 
-        /* Sidebar & Nav (Standard) */
+        /* Sidebar & Nav */
         .sidebar {
             position: fixed; right: 0; top: 0; height: 100vh; width: 260px;
             background: white; border-left: 1px solid #e2e8f0; z-index: 50; transition: transform 0.3s;
         }
-        .nav-item { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: #64748b; font-weight: 600; text-decoration: none; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: #64748b; font-weight: 600; text-decoration: none; transition: 0.2s; }
         .nav-item:hover { background: #f0fdfa; color: #0f766e; }
         .nav-item.active { background: linear-gradient(135deg, #0f766e, #115e59); color: white; }
 
@@ -86,6 +91,7 @@
             position: fixed; bottom: 0; width: 100%; background: white;
             border-top: 1px solid #e2e8f0; padding: 10px; z-index: 40;
             display: flex; justify-content: space-around;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
         }
         .b-nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #94a3b8; gap: 4px; text-decoration: none;}
         .b-nav-item.active { color: #0f766e; font-weight: bold; }
@@ -110,20 +116,20 @@
             <h2 class="font-bold text-slate-800">نظام الحوكمة</h2>
         </div>
         <nav class="mt-4 px-2">
-            <a href="distribution.html" class="nav-item">
+            <a href="distribution.html" class="nav-item rounded-lg mb-1">
                 <i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات
             </a>
-            <a href="admin.html" class="nav-item active">
+            <a href="admin.html" class="nav-item active rounded-lg mb-1">
                 <i data-lucide="settings-2" class="w-5 h-5"></i> لوحة الإدارة
             </a>
-            <a href="coordinator.html" class="nav-item">
+            <a href="coordinator.html" class="nav-item rounded-lg mb-1">
                 <i data-lucide="users" class="w-5 h-5"></i> التنسيق
             </a>
-            <a href="employee.html" class="nav-item">
+            <a href="employee.html" class="nav-item rounded-lg mb-1">
                 <i data-lucide="briefcase" class="w-5 h-5"></i> مهامي
             </a>
             <div class="h-px bg-gray-200 my-3"></div>
-            <button onclick="auth.logout()" class="nav-item w-full text-red-500 hover:bg-red-50 rounded-lg">
+            <button onclick="auth.logout()" class="nav-item w-full text-red-500 hover:bg-red-50 hover:text-red-600 rounded-lg">
                 <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
             </button>
         </nav>
@@ -136,11 +142,11 @@
                 <div class="flex items-center gap-3">
                     <div class="logo-circle-small"><img src="assets/icons/favicon.png" class="w-8 h-8 object-contain"></div>
                     <div>
-                        <p class="text-teal-100 text-[11px] font-bold">لوحة التحكم</p>
-                        <h1 class="font-bold text-xl text-white" id="admin-name">...</h1>
+                        <p class="text-teal-100 text-[11px] font-bold opacity-90">لوحة التحكم</p>
+                        <h1 class="font-bold text-xl text-white leading-tight" id="admin-name">...</h1>
                     </div>
                 </div>
-                <button onclick="auth.logout()" class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm hover:bg-red-500 transition">
+                <button onclick="auth.logout()" class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm hover:bg-red-500/80 transition shadow-inner">
                     <i data-lucide="log-out" class="w-5 h-5 text-white"></i>
                 </button>
             </div>
@@ -149,9 +155,15 @@
         <div class="admin-container">
             
             <div class="tabs-nav">
-                <button onclick="switchTab('new')" class="tab-btn active" id="btn-new">إضافة تكليف</button>
-                <button onclick="switchTab('reassign')" class="tab-btn" id="btn-reassign">إعادة التوجيه</button>
-                <button onclick="switchTab('monitor')" class="tab-btn" id="btn-monitor">المتابعة</button>
+                <button onclick="switchTab('new')" class="tab-btn active" id="btn-new">
+                    <i data-lucide="plus-circle" class="w-4 h-4 inline-block mb-1"></i><br>تكليف جديد
+                </button>
+                <button onclick="switchTab('reassign')" class="tab-btn" id="btn-reassign">
+                    <i data-lucide="repeat" class="w-4 h-4 inline-block mb-1"></i><br>إعادة التوجيه
+                </button>
+                <button onclick="switchTab('monitor')" class="tab-btn" id="btn-monitor">
+                    <i data-lucide="activity" class="w-4 h-4 inline-block mb-1"></i><br>المتابعة
+                </button>
             </div>
 
             <div id="tab-new" class="tab-content active">
@@ -166,7 +178,7 @@
                             </select>
                         </div>
                         <div>
-                            <label class="form-label">درجة الأهمية</label>
+                            <label class="form-label">الأهمية</label>
                             <select id="n-imp" class="form-input">
                                 <option value="عادي">عادي</option>
                                 <option value="عاجل">عاجل 🔥</option>
@@ -175,10 +187,10 @@
                         </div>
                     </div>
 
-                    <div id="legal-box" class="hidden bg-orange-50 border border-orange-100 p-3 rounded-xl grid grid-cols-2 gap-3">
+                    <div id="legal-box" class="hidden bg-orange-50 border border-orange-100 p-3 rounded-xl grid grid-cols-2 gap-3 mb-3">
                         <div>
                             <label class="text-[10px] font-bold text-orange-500 block mb-1">رقم القضية</label>
-                            <input type="text" id="n-case" class="form-input bg-white border-orange-200" placeholder="مثال: 1254">
+                            <input type="text" id="n-case" class="form-input bg-white border-orange-200 focus:border-orange-500" placeholder="مثال: 1254">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold text-orange-500 block mb-1">السنة</label>
@@ -192,7 +204,7 @@
 
                     <div>
                         <label class="form-label">موضوع المعاملة</label>
-                        <input type="text" id="n-subject" class="form-input" required placeholder="ملخص الموضوع...">
+                        <input type="text" id="n-subject" class="form-input" required placeholder="اكتب ملخص الموضوع...">
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
@@ -201,11 +213,16 @@
                             <input type="text" id="n-source" class="form-input" required>
                         </div>
                         <div>
-                            <label class="form-label">المكلف بالتنفيذ</label>
+                            <label class="form-label">الموظف المسؤول</label>
                             <select id="n-assignee" class="form-input" required>
-                                <option value="">اختر موظف...</option>
+                                <option value="">-- اختر --</option>
                                 </select>
                         </div>
+                    </div>
+
+                    <div>
+                         <label class="form-label">رابط المرفق (PDF/صورة)</label>
+                         <input type="url" id="n-attachment" class="form-input" placeholder="https://...">
                     </div>
 
                     <button type="submit" class="btn-submit">
@@ -215,23 +232,39 @@
             </div>
 
             <div id="tab-reassign" class="tab-content">
-                <div class="text-center py-10 opacity-50">
-                    <i data-lucide="users" class="w-12 h-12 mx-auto mb-2 text-slate-300"></i>
-                    <p class="text-sm">اختر موظفاً لعرض مهامه ونقلها لموظف آخر</p>
-                    <select id="reassign-source" class="form-input mt-4 w-full" onchange="loadEmployeeTasks()">
+                <div class="text-center py-6">
+                    <div class="bg-blue-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="users" class="w-6 h-6 text-blue-500"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">اختر موظفاً لعرض المهام النشطة لديه ونقلها لموظف آخر</p>
+                    
+                    <select id="reassign-source" class="form-input w-full font-bold text-slate-700" onchange="loadEmployeeTasks()">
                         <option value="">-- اختر الموظف الحالي --</option>
-                    </select>
+                        </select>
                 </div>
-                <div id="reassign-results" class="mt-4 space-y-2"></div>
+                
+                <div id="reassign-results" class="mt-4 space-y-3">
+                    </div>
             </div>
 
             <div id="tab-monitor" class="tab-content">
-                <div class="flex gap-2 mb-3">
-                    <input type="text" placeholder="بحث برقم الوارد أو الموضوع..." class="form-input text-sm">
+                <div class="flex gap-2 mb-4">
+                    <div class="relative w-full">
+                        <input type="text" id="monitor-search" placeholder="بحث برقم الوارد أو الموضوع..." class="form-input pl-10">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute right-3 top-3"></i>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full monitor-table">
-                        <thead><tr><th>#</th><th>الموضوع</th><th>الموظف</th><th>الحالة</th></tr></thead>
+                <div class="overflow-x-auto rounded-xl border border-gray-100">
+                    <table class="monitor-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الموضوع</th>
+                                <th>الموظف</th>
+                                <th>الحالة</th>
+                                <th>إجراء</th>
+                            </tr>
+                        </thead>
                         <tbody id="monitor-tbody">
                             </tbody>
                     </table>
@@ -260,26 +293,44 @@
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        const employees = ["أحمد محمد", "سارة علي", "محمود حسن", "نرمين كمال", "خالد يوسف"];
+        
+        // قائمة الموظفين (للمحاكاة)
+        const employees = ["أحمد محمد", "سارة علي", "محمود حسن", "نرمين كمال", "خالد يوسف", "منى إبراهيم"];
+        let allAdminTasks = [];
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const user = auth.checkAuth();
             if(!user) return;
-            if(user.role !== 'admin' && user.role !== 'مدير') window.location.href = 'distribution.html';
+            // التحقق من صلاحية الأدمن
+            if(user.role !== 'admin' && user.role !== 'مدير') {
+                window.location.href = 'distribution.html';
+                return;
+            }
 
             document.getElementById('admin-name').textContent = user.name;
 
-            // ملء القوائم
+            // ملء قوائم الموظفين
             const selects = [document.getElementById('n-assignee'), document.getElementById('reassign-source')];
             selects.forEach(sel => {
                 if(sel) {
                     employees.forEach(emp => {
-                        sel.innerHTML += `<option value="${emp}">${emp}</option>`;
+                        const opt = document.createElement('option');
+                        opt.value = emp;
+                        opt.textContent = emp;
+                        sel.appendChild(opt);
                     });
                 }
             });
+
+            // جلب كل البيانات للمتابعة
+            const res = await auth.callAPI('getAllData', { role: 'admin', name: user.name, startDate: '2024-01-01' });
+            if(res.success) {
+                allAdminTasks = res.tasks;
+                renderMonitorTable(allAdminTasks);
+            }
         });
 
+        // --- TABS LOGIC ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -288,6 +339,7 @@
             document.getElementById(`tab-${tabId}`).classList.add('active');
         }
 
+        // --- NEW TASK LOGIC ---
         function toggleLegal() {
             const type = document.getElementById('n-type').value;
             const box = document.getElementById('legal-box');
@@ -297,9 +349,117 @@
 
         async function addTask(e) {
             e.preventDefault();
-            alert("تم إرسال التكليف بنجاح ✅");
-            e.target.reset();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'جاري الإرسال...';
+            btn.disabled = true;
+
+            // محاكاة إرسال البيانات
+            setTimeout(() => {
+                alert("✅ تم إرسال التكليف بنجاح للموظف المختص.");
+                e.target.reset();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                // إعادة تحميل الجدول
+                location.reload(); 
+            }, 1000);
         }
+
+        // --- REASSIGN LOGIC ---
+        function loadEmployeeTasks() {
+            const empName = document.getElementById('reassign-source').value;
+            const container = document.getElementById('reassign-results');
+            
+            if(!empName) {
+                container.innerHTML = '';
+                return;
+            }
+
+            // فلتر المهام النشطة للموظف المختار
+            const activeTasks = allAdminTasks.filter(t => t.assignee === empName && !t.status.includes('تم'));
+
+            if(activeTasks.length === 0) {
+                container.innerHTML = `<div class="text-center p-4 bg-gray-50 rounded-lg text-gray-500 text-sm">لا توجد مهام نشطة لهذا الموظف</div>`;
+                return;
+            }
+
+            container.innerHTML = activeTasks.map(t => `
+                <div class="bg-white p-3 rounded-xl border border-gray-200 flex justify-between items-center gap-2 shadow-sm">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded font-bold">#${t.id}</span>
+                            <span class="text-[10px] text-slate-400">${t.date}</span>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800 truncate w-48">${t.subject}</h4>
+                    </div>
+                    <button onclick="reassignTask('${t.id}')" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-black transition">
+                        نقل
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function reassignTask(taskId) {
+            const newEmp = prompt("أدخل اسم الموظف الجديد:");
+            if(newEmp && employees.includes(newEmp)) {
+                if(confirm(`هل أنت متأكد من نقل المهمة #${taskId} إلى ${newEmp}؟`)) {
+                    await auth.callAPI('reassignTask', { taskId, newEmployee: newEmp });
+                    alert("تم النقل بنجاح");
+                    loadEmployeeTasks(); // Refresh list
+                }
+            } else if (newEmp) {
+                alert("اسم الموظف غير صحيح");
+            }
+        }
+
+        // --- MONITOR LOGIC ---
+        function renderMonitorTable(tasks) {
+            const tbody = document.getElementById('monitor-tbody');
+            tbody.innerHTML = tasks.slice(0, 50).map(t => `
+                <tr>
+                    <td class="font-mono font-bold text-[#0f766e]">#${t.id}</td>
+                    <td>
+                        <div class="font-bold text-slate-700 truncate w-32 md:w-auto">${t.subject}</div>
+                        <div class="text-[10px] text-slate-400">${t.source}</div>
+                    </td>
+                    <td><span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] font-bold">${t.assignee}</span></td>
+                    <td><span class="text-[10px] font-bold ${getStatusColor(t.status)}">${t.status}</span></td>
+                    <td>
+                        <button onclick="deleteTask('${t.id}')" class="text-red-400 hover:text-red-600 hover:bg-red-50 p-1 rounded transition">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function getStatusColor(status) {
+            if(status.includes('تم')) return 'text-green-600';
+            if(status.includes('متأخر')) return 'text-red-600';
+            if(status.includes('جديد')) return 'text-slate-600';
+            return 'text-blue-600';
+        }
+
+        async function deleteTask(id) {
+            if(confirm("⚠️ تحذير: هل أنت متأكد من حذف هذه المعاملة نهائياً؟")) {
+                // API Call to delete
+                alert("تم الحذف");
+                location.reload();
+            }
+        }
+
+        // Search Filter
+        document.getElementById('monitor-search').addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const filtered = allAdminTasks.filter(t => 
+                t.subject.toLowerCase().includes(val) || 
+                t.id.toString().includes(val) ||
+                t.assignee.toLowerCase().includes(val)
+            );
+            renderMonitorTable(filtered);
+        });
+
     </script>
 </body>
 </html>
