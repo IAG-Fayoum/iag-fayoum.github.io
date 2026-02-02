@@ -1,209 +1,478 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>تسجيل الدخول | نظام الحوكمة</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#0f766e">
+  <title>نظام الحوكمة - وزارة الصحة والسكان</title>
+  
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Cairo', sans-serif; 
+      background: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
     
-    <link rel="icon" href="assets/icons/favicon.png">
-    <link rel="apple-touch-icon" href="assets/icons/favicon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#0f766e">
-
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-
-    <style>
-        /* تنسيقات أساسية */
-        body { 
-            font-family: 'Cairo', sans-serif; 
-            background-color: #f8fafc; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-        }
-
-        /* الهيدر الأخضر الرسمي */
-        .header-official { 
-            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); 
-            color: white; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-        }
-
-        /* كارت الدخول */
-        .login-card { 
-            background: white; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            padding: 2.5rem; 
-            width: 100%; 
-            max-width: 400px; 
-            border: 1px solid #e2e8f0; 
-        }
-
-        /* حقول الإدخال */
-        .custom-input { 
-            width: 100%; 
-            padding: 12px 16px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 12px; 
-            transition: 0.3s; 
-            outline: none; 
-            font-size: 16px;
-        }
-        .custom-input:focus { 
-            border-color: #0f766e; 
-            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
-        }
-
-        /* زر الدخول */
-        .btn-primary { 
-            background: #0f766e; 
-            color: white; 
-            padding: 12px; 
-            border-radius: 12px; 
-            width: 100%; 
-            font-weight: bold; 
-            transition: 0.2s; 
-            border: none;
-            cursor: pointer;
-        }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
-    </style>
+    .official-header {
+      background: white;
+      border-bottom: 4px solid #0f766e;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .header-top {
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+      color: white;
+      padding: 0.5rem 0;
+      text-align: center;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    
+    .header-main {
+      padding: 1.5rem 0;
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    
+    .logo-circle {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #0f766e, #115e59);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+    }
+    
+    .header-text h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 0.25rem;
+    }
+    
+    .header-text p {
+      font-size: 1rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    
+    .login-container {
+      width: 100%;
+      max-width: 480px;
+    }
+    
+    .login-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      border: 1px solid #e2e8f0;
+    }
+    
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .lock-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      border: 3px solid #0f766e;
+    }
+    
+    .login-header h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+    
+    .login-header p {
+      color: #64748b;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    
+    .login-subtitle {
+      color: #64748b;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+      opacity: 0.8;
+    }
+    
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-label {
+      display: block;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s;
+      outline: none;
+    }
+    
+    .form-input:focus {
+      border-color: #0f766e;
+      box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
+      background: #fafafa;
+    }
+    
+    .btn-login {
+      width: 100%;
+      background: linear-gradient(135deg, #0f766e, #115e59);
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(15, 118, 110, 0.4);
+    }
+    
+    .btn-login:active {
+      transform: translateY(0);
+    }
+    
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .error-box {
+      margin-top: 1rem;
+      padding: 12px;
+      background: #fef2f2;
+      border: 2px solid #fecaca;
+      border-radius: 12px;
+      color: #dc2626;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+    
+    .info-note {
+      margin-top: 1.5rem;
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      text-align: center;
+    }
+    
+    .info-note p {
+      color: #64748b;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    .official-footer {
+      background: #1e293b;
+      color: white;
+      padding: 2rem 0;
+      margin-top: auto;
+      border-top: 4px solid #0f766e;
+    }
+    
+    .footer-content {
+      text-align: center;
+    }
+    
+    .footer-logo {
+      margin-bottom: 1rem;
+    }
+    
+    .footer-text h4 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-text p {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 0.25rem;
+    }
+    
+    .footer-divider {
+      width: 100px;
+      height: 3px;
+      background: #0f766e;
+      margin: 1rem auto;
+      border-radius: 2px;
+    }
+    
+    @media (max-width: 640px) {
+      .logo-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .header-text h1 {
+        font-size: 1.5rem;
+      }
+      
+      .login-card {
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <header class="header-official py-4">
-        <div class="container mx-auto px-6 flex items-center gap-3">
-            <div class="bg-white/20 p-2 rounded-lg">
-                <i data-lucide="shield-check" class="w-7 h-7 text-white"></i>
-            </div>
-            <div>
-                <h1 class="text-lg font-bold leading-tight">نظام الحوكمة</h1>
-                <p class="text-xs text-teal-100 opacity-90">مديرية الشؤون الصحية بالفيوم</p>
-            </div>
-        </div>
-    </header>
-
-    <main class="flex-1 flex items-center justify-center p-4">
-        <div class="login-card" id="login-box">
-            
-            <div class="text-center mb-8">
-                <div class="w-20 h-20 mx-auto mb-4 bg-teal-50 rounded-full flex items-center justify-center border border-teal-100">
-                    <img src="assets/icons/favicon.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" class="w-12 h-12 object-contain" alt="Logo">
-                    <i data-lucide="lock" class="w-8 h-8 text-teal-700 hidden"></i>
-                </div>
-                <h2 class="text-xl font-bold text-slate-800">تسجيل الدخول</h2>
-                <p class="text-slate-500 text-sm mt-1">المنصة الرقمية الموحدة</p>
-            </div>
-
-            <form id="login-form" class="space-y-5">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رقم الموبايل</label>
-                    <input type="tel" id="mobile-input" maxlength="11" class="custom-input text-left" placeholder="01xxxxxxxxx" dir="ltr" autocomplete="tel">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1.5 mr-1">رمز الدخول (PIN)</label>
-                    <input type="password" id="pin-input" maxlength="4" class="custom-input text-center tracking-[4px] font-bold" placeholder="••••" autocomplete="current-password">
-                </div>
-                <button type="submit" id="login-btn" class="btn-primary flex justify-center items-center gap-2">
-                    <span>دخول للنظام</span> 
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                </button>
-            </form>
-            
-            <div id="error-msg" class="hidden mt-4 p-3 bg-red-50 text-red-600 text-sm font-bold rounded-xl text-center border border-red-100 flex items-center justify-center gap-2">
-                <i data-lucide="alert-circle" class="w-4 h-4"></i>
-                <span>بيانات غير صحيحة</span>
-            </div>
-        </div>
-    </main>
-
-    <footer class="bg-[#0f766e] text-white py-4 text-center border-t-4 border-black/10">
-        <p class="text-sm font-bold opacity-90">© 2025 جميع الحقوق محفوظة - إدارة الحوكمة</p>
-    </footer>
-
-    <script src="assets/js/config.js"></script>
-
-    <script src="assets/js/auth.js"></script>
+  <!-- HEADER -->
+  <header class="official-header">
+    <div class="header-top">
+      <p>جمهورية مصر العربية - وزارة الصحة والسكان</p>
+    </div>
     
-    <script>
-        lucide.createIcons();
+    <div class="header-main">
+      <div class="container mx-auto px-4">
+        <div class="logo-container">
+          <div class="logo-circle">
+            <i data-lucide="shield-check" class="w-12 h-12 text-white"></i>
+          </div>
+          <div class="header-text text-center">
+            <h1>نظام إدارة الحوكمة والمراجعة الداخلية</h1>
+            <p>مديرية الشؤون الصحية بالفيوم</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <div class="login-container">
+      
+      <!-- Login Card -->
+      <div class="login-card">
+        <div class="login-header">
+          <div class="lock-icon">
+            <i data-lucide="lock-keyhole" class="w-9 h-9 text-teal-700"></i>
+          </div>
+          <h3>تسجيل الدخول</h3>
+          <p>دخول مخصص لأعضاء الإدارة</p>
+          <p class="login-subtitle">هذا النظام مخصص لأعضاء إدارة المراجعة الداخلية والحوكمة فقط</p>
+        </div>
         
-        // التحقق عند تحميل الصفحة
-        window.addEventListener('load', () => {
-            // نتأكد إن auth موجودة قبل ما نستخدمها
-            if (typeof auth === 'undefined') {
-                console.error("خطأ خطير: ملف auth.js لم يتم تحميله!");
-                alert("يوجد ملف مفقود (auth.js)، يرجى مراجعة الملفات.");
-                return;
-            }
+        <form id="login-form">
+          <div class="form-group">
+            <label class="form-label">
+              <i data-lucide="smartphone" class="w-4 h-4 inline-block ml-1"></i>
+              رقم الموبايل
+            </label>
+            <input 
+              type="tel" 
+              id="mobile-input" 
+              class="form-input text-left" 
+              placeholder="01xxxxxxxxx" 
+              maxlength="11"
+              dir="ltr"
+              autocomplete="tel"
+              required
+            >
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">
+              <i data-lucide="key-round" class="w-4 h-4 inline-block ml-1"></i>
+              رمز الدخول السري (PIN)
+            </label>
+            <input 
+              type="password" 
+              id="pin-input" 
+              class="form-input text-center tracking-[6px]" 
+              placeholder="••••" 
+              maxlength="4"
+              autocomplete="current-password"
+              required
+            >
+          </div>
+          
+          <button type="submit" id="login-btn" class="btn-login">
+            <span>دخول إلى النظام</span>
+            <i data-lucide="log-in" class="w-5 h-5"></i>
+          </button>
+        </form>
+        
+        <div id="error-msg" class="error-box hidden">
+          <i data-lucide="alert-circle" class="w-5 h-5"></i>
+          <span id="error-text">بيانات الدخول غير صحيحة</span>
+        </div>
+        
+        <div class="info-note">
+          <p>
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+            <span>نظام آمن ومحمي</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
 
-            // لو المستخدم مسجل دخول، حوله لصفحته فوراً
-            const user = localStorage.getItem('user');
-            if(user) {
-                try {
-                    auth.redirectUser(JSON.parse(user).role);
-                } catch (e) {
-                    localStorage.removeItem('user'); // لو الداتا بايظة، امسحها
-                }
-            } else {
-                const input = document.getElementById('mobile-input');
-                if(input) input.focus();
-            }
-        });
+  <!-- FOOTER -->
+  <footer class="official-footer">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <div class="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center mx-auto mb-2">
+          <i data-lucide="shield-check" class="w-10 h-10 text-white"></i>
+        </div>
+      </div>
+      <div class="footer-text">
+        <h4>إدارة المراجعة الداخلية والحوكمة</h4>
+        <p>مديرية الشؤون الصحية بالفيوم</p>
+        <p>وزارة الصحة والسكان - جمهورية مصر العربية</p>
+      </div>
+      <div class="footer-divider"></div>
+      <p class="text-sm text-slate-400">© 2025 جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
 
-        // التعامل مع زر الدخول
-        const loginForm = document.getElementById('login-form');
-        if (loginForm) {
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                if (typeof auth === 'undefined') {
-                    alert("السيستم غير جاهز: ملف auth.js غير موجود.");
-                    return;
-                }
-
-                const btn = document.getElementById('login-btn');
-                const errorDiv = document.getElementById('error-msg');
-                const mobile = document.getElementById('mobile-input').value;
-                const pin = document.getElementById('pin-input').value;
-
-                // تنظيف الحالة السابقة
-                errorDiv.classList.add('hidden');
-                
-                // تحقق مبدئي
-                if(mobile.length < 11 || pin.length < 4) {
-                    errorDiv.innerHTML = '<i data-lucide="alert-circle" class="w-4 h-4"></i> <span>يرجى إدخال البيانات كاملة</span>';
-                    lucide.createIcons();
-                    return errorDiv.classList.remove('hidden');
-                }
-
-                // بدء التحميل
-                const oldText = btn.innerHTML;
-                btn.innerHTML = '<span class="animate-pulse">جاري التحقق...</span>';
-                btn.disabled = true;
-
-                try {
-                    const res = await auth.login(mobile, pin);
-                    if(!res.success) throw new Error(res.error || "بيانات خطأ");
-                    
-                    // نجاح الدخول (التوجيه بيحصل جوا auth.login)
-                    
-                } catch(err) {
-                    // فشل الدخول
-                    errorDiv.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i> <span>${err.message || "خطأ في الاتصال"}</span>`;
-                    lucide.createIcons();
-                    errorDiv.classList.remove('hidden');
-                    
-                    btn.innerHTML = oldText;
-                    btn.disabled = false;
-                }
-            });
+  <!-- SCRIPTS -->
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  
+  <script>
+    lucide.createIcons();
+    
+    window.addEventListener('load', () => {
+      if (typeof auth === 'undefined') {
+        console.error('❌ auth.js not loaded!');
+        showError('خطأ في النظام: ملف المصادقة غير موجود');
+        return;
+      }
+      
+      if (auth.currentUser) {
+        auth.redirectToDashboard();
+        return;
+      }
+      
+      const mobileInput = document.getElementById('mobile-input');
+      if (mobileInput) setTimeout(() => mobileInput.focus(), 100);
+    });
+    
+    const loginForm = document.getElementById('login-form');
+    const loginBtn = document.getElementById('login-btn');
+    const errorMsg = document.getElementById('error-msg');
+    const errorText = document.getElementById('error-text');
+    
+    if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (typeof auth === 'undefined') {
+          showError('النظام غير جاهز');
+          return;
         }
-    </script>
+        
+        const mobile = document.getElementById('mobile-input').value.trim();
+        const pin = document.getElementById('pin-input').value.trim();
+        
+        hideError();
+        
+        if (mobile.length !== 11) {
+          showError('رقم الموبايل يجب أن يكون 11 رقم');
+          return;
+        }
+        
+        if (pin.length !== 4) {
+          showError('رمز الدخول يجب أن يكون 4 أرقام');
+          return;
+        }
+        
+        const originalBtn = loginBtn.innerHTML;
+        loginBtn.innerHTML = '<span class="animate-pulse">جارِ التحقق من البيانات...</span>';
+        loginBtn.disabled = true;
+        
+        try {
+          const result = await auth.login(mobile, pin);
+          
+          if (!result.success) {
+            throw new Error(result.error || 'بيانات الدخول غير صحيحة');
+          }
+          
+        } catch (error) {
+          showError(error.message || 'خطأ في الاتصال بالخادم');
+          loginBtn.innerHTML = originalBtn;
+          loginBtn.disabled = false;
+          lucide.createIcons();
+        }
+      });
+    }
+    
+    function showError(message) {
+      if (errorMsg && errorText) {
+        errorText.textContent = message;
+        errorMsg.classList.remove('hidden');
+        lucide.createIcons();
+      }
+    }
+    
+    function hideError() {
+      if (errorMsg) {
+        errorMsg.classList.add('hidden');
+      }
+    }
+  </script>
 </body>
 </html>
