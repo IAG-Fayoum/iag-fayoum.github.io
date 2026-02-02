@@ -8,15 +8,16 @@
     <link rel="icon" href="assets/icons/favicon.png">
     <link rel="apple-touch-icon" href="assets/icons/favicon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#047857">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#0f766e">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
     <style>
+        /* إعدادات الثيم */
         :root {
-            --primary: #047857;       
+            --primary: #0f766e;       /* الأخضر الرسمي */
             --bg-main: #f8fafc;
             --surface: #ffffff;
             --border: #e2e8f0;
@@ -31,7 +32,7 @@
 
         .hide-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* الكروت */
+        /* الكارت الشامل */
         .super-card {
             background: white;
             border: 1px solid var(--border);
@@ -42,16 +43,15 @@
             margin-bottom: 16px;
             position: relative;
         }
-        .super-card:hover { border-color: var(--primary); }
+        .super-card:hover { border-color: var(--primary); transform: translateY(-2px); }
 
-        /* شريط الحالة */
+        /* شريط الحالة الملون */
         .status-strip { width: 5px; height: 100%; position: absolute; right: 0; top: 0; }
-        .st-new { border-right: 5px solid #3b82f6; }
-        .st-pending { border-right: 5px solid #f59e0b; }
-        .st-done { border-right: 5px solid #10b981; }
-        .st-late { border-right: 5px solid #ef4444; }
+        .st-new { border-right: 5px solid #3b82f6; }      /* أزرق: جديد/جاري */
+        .st-done { border-right: 5px solid #10b981; }     /* أخضر: منتهي */
+        .st-late { border-right: 5px solid #ef4444; }     /* أحمر: متأخر */
 
-        /* الفلاتر */
+        /* حقول الفلتر */
         .filter-select {
             width: 100%;
             padding: 10px;
@@ -60,9 +60,11 @@
             background-color: white;
             font-size: 0.85rem;
             outline: none;
+            cursor: pointer;
         }
         .filter-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
 
+        /* Responsive Sidebar */
         @media (min-width: 1024px) {
             body { padding-bottom: 0; padding-right: 260px; }
             .sidebar { width: 260px; transform: translateX(0) !important; }
@@ -74,7 +76,7 @@
 
     <aside class="sidebar fixed top-0 right-0 h-full bg-white z-50 transition-transform duration-300 translate-x-full flex flex-col shadow-lg border-l border-gray-100">
         <div class="p-6 border-b border-gray-100 flex items-center gap-3">
-            <div class="bg-teal-50 p-2.5 rounded-lg text-[#047857]">
+            <div class="bg-teal-50 p-2.5 rounded-lg text-[#0f766e]">
                 <i data-lucide="shield-check" class="w-7 h-7"></i>
             </div>
             <div>
@@ -84,21 +86,23 @@
         </div>
 
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-            <a href="distribution.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#047857] rounded-xl font-medium transition-colors">
+            <a href="distribution.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#0f766e] rounded-xl font-medium transition-colors">
                 <i data-lucide="layout-grid" class="w-5 h-5"></i><span>الرئيسية</span>
             </a>
-            <a href="coordinator.html" class="flex items-center gap-3 px-4 py-3 bg-[#047857] text-white rounded-xl font-bold shadow-md">
+            
+            <a href="coordinator.html" class="flex items-center gap-3 px-4 py-3 bg-[#0f766e] text-white rounded-xl font-bold shadow-md">
                 <i data-lucide="users" class="w-5 h-5"></i><span>المتابعة والتكليف</span>
             </a>
-            <a href="forms.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#047857] rounded-xl font-medium transition-colors">
+            
+            <a href="forms.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-teal-50 hover:text-[#0f766e] rounded-xl font-medium transition-colors">
                 <i data-lucide="file-text" class="w-5 h-5"></i><span>النماذج</span>
             </a>
-            </nav>
+        </nav>
 
         <div class="p-4 border-t border-slate-100 bg-slate-50">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-[#047857] text-white flex items-center justify-center font-bold text-xs" id="user-avatar"></div>
+                    <div class="w-8 h-8 rounded-full bg-[#0f766e] text-white flex items-center justify-center font-bold text-xs" id="user-avatar"></div>
                     <div>
                         <p class="text-xs font-bold text-slate-800" id="user-name">...</p>
                         <p class="text-[10px] text-slate-500">منسق</p>
@@ -112,7 +116,7 @@
     <main class="min-h-screen w-full">
         <div class="mobile-header bg-white p-4 sticky top-0 z-30 border-b border-slate-200 flex items-center justify-between shadow-sm">
             <div class="flex items-center gap-2">
-                <div class="bg-[#047857] p-1.5 rounded-lg text-white">
+                <div class="bg-[#0f766e] p-1.5 rounded-lg text-white">
                     <i data-lucide="shield-check" class="w-5 h-5"></i>
                 </div>
                 <h1 class="font-bold text-base text-slate-800">مكتب التنسيق</h1>
@@ -126,48 +130,56 @@
             
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                 <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
-                    <i data-lucide="filter" class="w-4 h-4 text-[#047857]"></i>
+                    <i data-lucide="filter" class="w-4 h-4 text-[#0f766e]"></i>
                     <h3 class="font-bold text-sm text-slate-800">تصفية البيانات</h3>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
-                        <label class="filter-label">الموظف</label>
+                        <label class="filter-label">الموظف / المجموعة</label>
                         <select id="filter-employee" class="filter-select">
-                            <option value="all">الكل</option>
-                            <optgroup label="القائمة" id="emp-options"></optgroup>
+                            <option value="all">كل الموظفين</option>
+                            <optgroup label="القائمة" id="emp-options">
+                                </optgroup>
                         </select>
                     </div>
 
                     <div>
                         <label class="filter-label">الجهة الوارد منها</label>
                         <select id="filter-source" class="filter-select">
+                            <option value="all">كل الجهات</option>
+                            </select>
+                    </div>
+
+                    <div>
+                        <label class="filter-label">محل التنفيذ</label>
+                        <select id="filter-location" class="filter-select">
                             <option value="all">الكل</option>
-                        </select>
+                            </select>
                     </div>
 
                     <div>
                         <label class="filter-label">حالة المهمة</label>
                         <select id="filter-status" class="filter-select">
-                            <option value="all">الكل</option>
+                            <option value="all">كل الحالات</option>
                             <option value="late">⚠️ متأخر</option>
-                            <option value="pending">⏳ قيد العمل</option>
-                            <option value="done">✅ منتهي</option>
+                            <option value="pending">⏳ قيد العمل / جاري</option>
+                            <option value="done">✅ منتهي / تم الاعتماد</option>
                         </select>
                     </div>
+                </div>
 
-                    <div class="flex items-end">
-                        <button onclick="applyAdvancedFilter()" class="w-full bg-[#047857] text-white py-2.5 rounded-lg text-sm font-bold shadow hover:bg-[#065f46] flex justify-center items-center gap-2">
-                            <i data-lucide="search" class="w-4 h-4"></i> عرض النتائج
-                        </button>
-                    </div>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="applyAdvancedFilter()" class="bg-[#0f766e] text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow hover:bg-[#0d5f57] flex items-center gap-2 transition">
+                        <i data-lucide="search" class="w-4 h-4"></i> عرض النتائج
+                    </button>
                 </div>
             </div>
 
             <div id="tasks-container" class="space-y-4">
                 <div class="text-center py-12">
-                    <span class="inline-block animate-spin text-[#047857]"><i data-lucide="loader-2" class="w-8 h-8"></i></span>
-                    <p class="text-slate-400 text-sm mt-2">جاري الاتصال بالسيرفر...</p>
+                    <span class="inline-block animate-spin text-[#0f766e] mb-2"><i data-lucide="loader-2" class="w-8 h-8"></i></span>
+                    <p class="text-slate-400 text-sm">جاري الاتصال بالسيرفر...</p>
                 </div>
             </div>
 
@@ -175,13 +187,15 @@
     </main>
 
     <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-40 lg:hidden shadow-lg">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#047857]">
+        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
             <i data-lucide="layout-grid" class="w-6 h-6"></i><span class="text-[10px]">الرئيسية</span>
         </a>
-        <a href="coordinator.html" class="flex flex-col items-center gap-1 p-2 text-[#047857]">
+        
+        <a href="coordinator.html" class="flex flex-col items-center gap-1 p-2 text-[#0f766e]">
             <i data-lucide="users" class="w-6 h-6"></i><span class="text-[10px] font-bold">التنسيق</span>
         </a>
-        <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#047857]">
+        
+        <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-slate-400 hover:text-[#0f766e]">
             <i data-lucide="file-text" class="w-6 h-6"></i><span class="text-[10px]">النماذج</span>
         </a>
     </nav>
@@ -196,8 +210,8 @@
             const user = auth.checkAuth(); 
             if (!user) return; 
 
-            // توجيه لو دخل غلط
-            if (user.role === 'employee') {
+            // الحماية: لو موظف عادي يحاول يدخل، يرجع
+            if (user.role === 'employee' || user.role === 'موظف') {
                 window.location.href = 'distribution.html';
                 return;
             }
@@ -205,16 +219,16 @@
             document.getElementById('user-name').textContent = user.name;
             document.getElementById('user-avatar').textContent = user.name.charAt(0);
 
-            // Turbo Load: تحميل من 2024 فقط للسرعة
             await loadData(user);
         });
 
         async function loadData(user) {
             try {
-                // تحديد تاريخ بداية السنة الحالية لتقليل الداتا
+                // Turbo Load: بيانات السنة الحالية فقط
                 const currentYear = new Date().getFullYear();
                 const startDate = `${currentYear}-01-01`;
 
+                // طلب البيانات بصلاحية "coordinator"
                 const res = await auth.callAPI('getAllData', {
                     role: 'coordinator',
                     name: user.name,
@@ -223,63 +237,78 @@
 
                 if (res.success) {
                     allTasks = res.tasks;
-                    populateFilterDropdowns(allTasks);
-                    renderCards(allTasks);
+                    populateFilterDropdowns(allTasks); // ملء القوائم تلقائياً
+                    renderCards(allTasks); // عرض الكل
                 } else {
-                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500">⚠️ لا توجد بيانات (تأكد من تحديث الباك إند)</div>`;
+                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500">❌ لم يتم العثور على بيانات</div>`;
                 }
             } catch (e) {
                 console.error(e);
-                document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500">⚠️ خطأ في الاتصال</div>`;
+                document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-slate-400">⚠️ خطأ في الاتصال بالسيرفر</div>`;
             }
         }
 
-        // ملء القوائم المنسدلة من البيانات الحقيقية
+        // --- 1. ملء القوائم المنسدلة من البيانات الحقيقية ---
         function populateFilterDropdowns(tasks) {
             const employees = new Set();
             const sources = new Set();
+            const locations = new Set();
 
             tasks.forEach(t => {
                 if(t.assignee) employees.add(t.assignee);
                 if(t.source) sources.add(t.source);
+                if(t.entity) locations.add(t.entity);
             });
 
+            // ملء الموظفين
             document.getElementById('emp-options').innerHTML = Array.from(employees).sort().map(e => `<option value="${e}">${e}</option>`).join('');
-            document.getElementById('filter-source').innerHTML = '<option value="all">الكل</option>' + Array.from(sources).sort().map(s => `<option value="${s}">${s}</option>`).join('');
+            
+            // ملء الجهات الواردة
+            const srcSelect = document.getElementById('filter-source');
+            srcSelect.innerHTML = '<option value="all">الكل</option>' + Array.from(sources).sort().map(s => `<option value="${s}">${s}</option>`).join('');
+
+            // ملء محل التنفيذ
+            const locSelect = document.getElementById('filter-location');
+            locSelect.innerHTML = '<option value="all">الكل</option>' + Array.from(locations).sort().map(l => `<option value="${l}">${l}</option>`).join('');
         }
 
+        // --- 2. منطق الفلترة ---
         function applyAdvancedFilter() {
             const empVal = document.getElementById('filter-employee').value;
             const srcVal = document.getElementById('filter-source').value;
+            const locVal = document.getElementById('filter-location').value;
             const statusVal = document.getElementById('filter-status').value;
 
             const filtered = allTasks.filter(t => {
                 const empMatch = empVal === 'all' || t.assignee === empVal;
                 const srcMatch = srcVal === 'all' || t.source === srcVal;
+                const locMatch = locVal === 'all' || t.entity === locVal;
                 
                 let statusMatch = true;
                 const s = (t.status || '').toLowerCase();
+                
                 if (statusVal === 'late') statusMatch = s.includes('متأخر');
-                else if (statusVal === 'pending') statusMatch = s.includes('جاري') || s.includes('جديد');
+                else if (statusVal === 'pending') statusMatch = s.includes('جاري') || s.includes('جديد') || s.includes('مراجعة');
                 else if (statusVal === 'done') statusMatch = s.includes('تم') || s.includes('منتهي');
 
-                return empMatch && srcMatch && statusMatch;
+                return empMatch && srcMatch && locMatch && statusMatch;
             });
 
             renderCards(filtered);
         }
 
+        // --- 3. رسم الكروت (Super Cards) ---
         function renderCards(tasks) {
             const container = document.getElementById('tasks-container');
             
             if (tasks.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 text-slate-400 bg-white rounded-xl border border-dashed">لا توجد نتائج مطابقة</div>`;
+                container.innerHTML = `<div class="text-center py-12 text-slate-400 bg-white rounded-xl border border-dashed">لا توجد نتائج مطابقة للبحث</div>`;
                 return;
             }
 
             container.innerHTML = tasks.map(t => {
                 const statusInfo = getStatusInfo(t.status);
-                const isLegal = t.caseNumber && t.caseNumber !== '';
+                const isLegal = t.caseNumber && t.caseNumber !== ''; // هل يوجد رقم قضية؟
 
                 return `
                 <div class="super-card">
@@ -287,7 +316,9 @@
                     
                     <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                         <div class="flex items-center gap-2">
-                            <span class="bg-white border border-slate-200 px-2 py-0.5 rounded text-[10px] font-bold text-slate-600">${t.docType || 'وارد'}</span>
+                            <span class="bg-white border border-slate-200 px-2 py-0.5 rounded text-[10px] font-bold text-slate-600">
+                                ${t.docType || 'وارد'}
+                            </span>
                             <span class="font-mono text-sm font-bold text-slate-700">#${t.id}</span>
                         </div>
                         <span class="px-2 py-1 rounded text-[10px] font-bold" style="background:${statusInfo.bg}; color:${statusInfo.text}">
@@ -300,24 +331,33 @@
 
                         ${isLegal ? `
                         <div class="flex gap-4 mb-3 bg-orange-50 border border-orange-100 p-2 rounded-lg">
-                            <div class="flex flex-col"><span class="text-[9px] text-orange-400">رقم القضية</span><span class="text-xs font-bold text-orange-700 font-mono">${t.caseNumber}</span></div>
-                            <div class="flex flex-col"><span class="text-[9px] text-orange-400">السنة</span><span class="text-xs font-bold text-orange-700 font-mono">${t.caseYear || '-'}</span></div>
+                            <div class="flex flex-col border-l border-orange-200 pl-3 ml-2">
+                                <span class="text-[9px] text-orange-500">رقم القضية</span>
+                                <span class="text-xs font-bold text-orange-800 font-mono">${t.caseNumber}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[9px] text-orange-500">السنة</span>
+                                <span class="text-xs font-bold text-orange-800 font-mono">${t.caseYear || '-'}</span>
+                            </div>
                         </div>` : ''}
 
                         <div class="flex flex-wrap gap-2 text-xs text-slate-500">
                             ${t.source ? `<span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📥 ${t.source}</span>` : ''}
+                            ${t.entity ? `<span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📍 ${t.entity}</span>` : ''}
                             <span class="bg-slate-50 px-2 py-1 rounded border border-slate-100">📅 ${t.date}</span>
                         </div>
                     </div>
 
                     <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
                         <div class="flex gap-2">
-                            ${t.attachment ? `<a href="${t.attachment}" target="_blank" class="px-3 py-1.5 bg-white border border-slate-200 rounded text-xs font-bold text-[#047857] hover:bg-emerald-50">📎 التكليف</a>` : ''}
-                            ${t.report ? `<a href="${t.report}" target="_blank" class="px-3 py-1.5 bg-white border border-slate-200 rounded text-xs font-bold text-blue-600 hover:bg-blue-50">📄 الرد</a>` : ''}
+                            ${t.attachment ? `<a href="${t.attachment}" target="_blank" class="px-3 py-1.5 bg-white border border-slate-200 rounded text-xs font-bold text-[#0f766e] hover:bg-emerald-50 shadow-sm flex items-center gap-1"><i data-lucide="paperclip" class="w-3"></i> التكليف</a>` : ''}
+                            ${t.report ? `<a href="${t.report}" target="_blank" class="px-3 py-1.5 bg-white border border-slate-200 rounded text-xs font-bold text-blue-600 hover:bg-blue-50 shadow-sm flex items-center gap-1"><i data-lucide="file-text" class="w-3"></i> الرد</a>` : ''}
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-bold text-slate-700">${t.assignee}</span>
-                            <div class="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500 shadow-sm">${t.assignee ? t.assignee.charAt(0) : '?'}</div>
+                            <div class="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500 shadow-sm">
+                                ${t.assignee ? t.assignee.charAt(0) : '?'}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -327,11 +367,13 @@
             lucide.createIcons();
         }
 
+        // مساعد الحالة والألوان
         function getStatusInfo(s) {
             s = (s || '').toLowerCase();
             if (s.includes('تم') || s.includes('منتهي')) return { label: '✅ منتهي', class: 'st-done', bg: '#dcfce7', text: '#166534' };
             if (s.includes('متأخر')) return { label: '🔥 متأخر', class: 'st-late', bg: '#fee2e2', text: '#991b1b' };
-            return { label: '⏳ قيد العمل', class: 'st-pending', bg: '#fef3c7', text: '#92400e' };
+            // الافتراضي (جديد/جاري)
+            return { label: '⏳ قيد العمل', class: 'st-new', bg: '#dbeafe', text: '#1e40af' };
         }
     </script>
 </body>
