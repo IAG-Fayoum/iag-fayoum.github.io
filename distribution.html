@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>لوحة المؤشرات | نظام الحوكمة</title>
+    <title>المؤشرات | نظام الحوكمة</title>
     
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
@@ -19,248 +19,280 @@
             padding-bottom: 80px;
         }
 
-        /* 1. Sidebar */
-        .sidebar {
-            position: fixed;
-            right: 0;
-            top: 0;
-            height: 100vh;
-            width: 260px;
-            background: white;
-            border-left: 1px solid #e2e8f0;
-            z-index: 50;
-            transition: transform 0.3s ease;
-            box-shadow: -4px 0 15px rgba(0,0,0,0.05);
+        /* 1. Header Styles */
+        .header-bg {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            padding: 1.5rem 1.5rem 5rem;
+            color: white;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
         }
 
-        .nav-item {
+        .logo-circle-small {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
             display: flex;
             align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+
+        /* 2. Stats Grid (Floating Cards) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            padding: 14px 20px;
-            margin: 4px 12px;
-            border-radius: 12px;
-            color: #64748b;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-            text-decoration: none;
+            margin: -4rem 1rem 1.5rem;
+            position: relative;
+            z-index: 20;
         }
 
-        .nav-item:hover { background-color: #f0fdfa; color: #0f766e; }
-        
-        .nav-item.active {
-            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
-        }
-
-        /* 2. Stat Cards (Modern Gradients) */
         .stat-card {
             background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            border: 1px solid #f1f5f9;
-            position: relative;
-            overflow: hidden;
+            border-radius: 20px;
+            padding: 1.25rem;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             transition: transform 0.2s;
         }
         .stat-card:hover { transform: translateY(-4px); }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
-        /* Colors */
-        .bg-blue-soft { background: #eff6ff; color: #2563eb; }
-        .bg-green-soft { background: #f0fdf4; color: #16a34a; }
-        .bg-orange-soft { background: #fff7ed; color: #ea580c; }
-        .bg-red-soft { background: #fef2f2; color: #dc2626; }
+        /* Card Colors */
+        .sc-blue { background: #eff6ff; color: #2563eb; }   /* إجمالي */
+        .sc-orange { background: #fff7ed; color: #ea580c; } /* جاري العمل */
+        .sc-green { background: #f0fdf4; color: #16a34a; }  /* منجز */
+        .sc-red { background: #fef2f2; color: #dc2626; }    /* متأخر */
 
-        /* 3. Progress Bar */
-        .progress-container {
-            width: 100%;
-            height: 8px;
+        /* 3. Progress Card */
+        .progress-card {
+            background: white;
+            margin: 0 1rem 1.5rem;
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+        }
+        .prog-bar-bg {
+            height: 10px;
             background: #e2e8f0;
-            border-radius: 4px;
+            border-radius: 99px;
             overflow: hidden;
-            margin-top: 8px;
+            margin-top: 10px;
         }
-        .progress-bar {
+        .prog-bar-fill {
             height: 100%;
             background: linear-gradient(90deg, #0f766e, #2dd4bf);
-            border-radius: 4px;
-            transition: width 1s ease-in-out;
+            width: 0%;
+            transition: width 1.5s ease-out;
         }
 
-        /* 4. Recent Table */
-        .recent-table th { font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-align: right; padding: 12px; }
-        .recent-table td { padding: 12px; border-bottom: 1px solid #f8fafc; font-size: 0.85rem; font-weight: 600; color: #334155; }
-        .recent-table tr:last-child td { border: none; }
+        /* 4. Recent Activity Table */
+        .recent-card {
+            background: white;
+            margin: 0 1rem;
+            padding: 0;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+        }
+        .table-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .table-row:last-child { border: none; }
 
-        /* Responsive */
+        /* Status Colors (Same as Employee Page) */
+        .badge-new      { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
+        .badge-pending  { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .badge-approved { background: #15803d; color: white;   border: 1px solid #14532d; }
+        .badge-followup { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+        .badge-late     { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        .status-badge-small {
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        /* 5. Sidebar & Nav */
+        .sidebar {
+            position: fixed; right: 0; top: 0; height: 100vh; width: 260px;
+            background: white; border-left: 1px solid #e2e8f0; z-index: 50;
+            transition: transform 0.3s;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px; padding: 12px 20px;
+            color: #64748b; font-weight: 600; text-decoration: none; transition: 0.2s;
+        }
+        .nav-item:hover { background: #f0fdfa; color: #0f766e; }
+        .nav-item.active { background: linear-gradient(135deg, #0f766e, #115e59); color: white; }
+
+        /* Mobile Bottom Nav */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: white;
+            border-top: 1px solid #e2e8f0; padding: 10px; z-index: 40;
+            display: flex; justify-content: space-around;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+        }
+        .b-nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            font-size: 10px; color: #94a3b8; gap: 4px; text-decoration: none;
+        }
+        .b-nav-item.active { color: #0f766e; font-weight: bold; }
+
+        @media (min-width: 1025px) {
+            .main-content { margin-right: 260px; padding: 20px; }
+            .mobile-header { display: none; }
+            .bottom-nav { display: none; }
+            .header-bg { display: none; }
+            .stats-grid, .progress-card, .recent-card { margin: 0 0 20px; }
+            .stats-grid { grid-template-columns: repeat(4, 1fr); margin-top: 20px; }
+        }
         @media (max-width: 1024px) {
             .sidebar { transform: translateX(100%); }
-            .main-content { margin-right: 0 !important; }
-            .mobile-header { display: flex !important; }
-        }
-        @media (min-width: 1025px) {
-            .main-content { margin-right: 260px; padding: 2rem; }
-            .mobile-header { display: none !important; }
-        }
-
-        /* Mobile Header */
-        .mobile-header {
-            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            padding: 1.5rem;
-            color: white;
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 40;
         }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="p-6 flex items-center gap-3 border-b border-gray-100 mb-4">
-            <div class="w-10 h-10 bg-teal-50 rounded-full flex items-center justify-center border border-teal-100">
-                <img src="assets/icons/favicon.png" class="w-7 h-7 object-contain">
+        <div class="p-6 text-center border-b border-gray-100">
+            <div class="w-16 h-16 mx-auto mb-2 bg-white rounded-full flex items-center justify-center border-2 border-teal-50 shadow-sm overflow-hidden p-1">
+                <img src="assets/icons/favicon.png" class="w-full h-full object-contain">
             </div>
-            <div>
-                <h1 class="font-bold text-lg text-slate-800">نظام الحوكمة</h1>
-                <p class="text-[10px] text-slate-500">لوحة المؤشرات</p>
-            </div>
+            <h2 class="font-bold text-slate-800">نظام الحوكمة</h2>
         </div>
-        
-        <nav>
-            <a href="distribution.html" class="nav-item active">
-                <i data-lucide="layout-grid" class="w-5 h-5"></i><span>الرئيسية</span>
+        <nav class="mt-4 px-2">
+            <a href="index.html" class="nav-item rounded-lg mb-1">
+                <i data-lucide="home" class="w-5 h-5"></i> الصفحة الرئيسية
             </a>
-            <a href="employee.html" class="nav-item">
-                <i data-lucide="briefcase" class="w-5 h-5"></i><span>مهامي</span>
+            <a href="distribution.html" class="nav-item active rounded-lg mb-1">
+                <i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات
             </a>
-            <a href="forms.html" class="nav-item">
-                <i data-lucide="file-text" class="w-5 h-5"></i><span>النماذج</span>
+            <a href="employee.html" class="nav-item rounded-lg mb-1">
+                <i data-lucide="briefcase" class="w-5 h-5"></i> مهامي
             </a>
-            <a href="admin.html" class="nav-item hidden" id="admin-link">
-                <i data-lucide="settings-2" class="w-5 h-5"></i><span>الإدارة</span>
+            <a href="forms.html" class="nav-item rounded-lg mb-1">
+                <i data-lucide="file-text" class="w-5 h-5"></i> النماذج
             </a>
+            <div class="h-px bg-gray-200 my-3"></div>
+            <button onclick="auth.logout()" class="nav-item w-full text-red-500 hover:bg-red-50 hover:text-red-600 rounded-lg">
+                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+            </button>
         </nav>
-
-        <div class="absolute bottom-0 w-full p-4 border-t border-gray-100 bg-gray-50">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-bold text-slate-800" id="user-name">...</p>
-                    <p class="text-[10px] text-slate-500" id="user-role">...</p>
-                </div>
-                <button onclick="auth.logout()" class="text-red-500 hover:bg-red-50 p-2 rounded-full"><i data-lucide="log-out" class="w-4 h-4"></i></button>
-            </div>
-        </div>
     </aside>
 
     <div class="main-content">
-        <div class="mobile-header">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
-                    <img src="assets/icons/favicon.png" class="w-5 h-5 brightness-200">
-                </div>
-                <h1 class="font-bold text-lg">لوحة المؤشرات</h1>
-            </div>
-            <button onclick="location.reload()" class="p-2 bg-white/20 rounded-lg backdrop-blur-sm"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
-        </div>
-
-        <div class="p-4 lg:p-0 max-w-6xl mx-auto space-y-6">
-            
-            <div class="hidden lg:flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-800">أهلاً بك 👋</h2>
-                    <p class="text-slate-500 text-sm">إليك ملخص الأداء اليومي</p>
-                </div>
-                <div class="bg-white px-4 py-2 rounded-lg border shadow-sm text-sm font-bold text-slate-600">
-                    <i data-lucide="calendar" class="w-4 h-4 inline mr-2 text-[#0f766e]"></i> <span id="current-date">...</span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4 lg:mt-0">
-                
-                <div class="stat-card">
-                    <div class="stat-icon bg-blue-soft"><i data-lucide="layers" class="w-6 h-6"></i></div>
-                    <p class="text-xs text-slate-500 font-bold uppercase">إجمالي الوارد</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800 mt-1" id="s-total">0</h3>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon bg-orange-soft"><i data-lucide="clock" class="w-6 h-6"></i></div>
-                    <p class="text-xs text-slate-500 font-bold uppercase">قيد التنفيذ</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800 mt-1" id="s-pending">0</h3>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon bg-green-soft"><i data-lucide="check-circle-2" class="w-6 h-6"></i></div>
-                    <p class="text-xs text-slate-500 font-bold uppercase">تم الإنجاز</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800 mt-1" id="s-done">0</h3>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon bg-red-soft"><i data-lucide="alert-octagon" class="w-6 h-6"></i></div>
-                    <p class="text-xs text-slate-500 font-bold uppercase">متأخرات</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800 mt-1" id="s-late">0</h3>
-                </div>
-            </div>
-
-            <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
-                <div class="flex justify-between items-end mb-2">
-                    <div>
-                        <h3 class="font-bold text-slate-800">نسبة الإنجاز العام</h3>
-                        <p class="text-xs text-slate-400">معدل إنهاء المهام بالنسبة للوارد الكلي</p>
+        
+        <div class="header-bg lg:hidden">
+            <div class="flex justify-between items-center mb-1">
+                <div class="flex items-center gap-3">
+                    <div class="logo-circle-small">
+                        <img src="assets/icons/favicon.png" class="w-8 h-8 object-contain">
                     </div>
-                    <span class="text-xl font-bold text-[#0f766e]" id="rate-text">0%</span>
+                    <div>
+                        <p class="text-teal-100 text-[11px] font-bold opacity-90">ملخص الأداء</p>
+                        <h1 class="font-bold text-xl text-white leading-tight" id="user-name">...</h1>
+                    </div>
                 </div>
-                <div class="progress-container">
-                    <div class="progress-bar" id="rate-bar" style="width: 0%"></div>
-                </div>
+                <button onclick="auth.logout()" class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm hover:bg-red-500/80 transition shadow-inner">
+                    <i data-lucide="log-out" class="w-5 h-5 text-white"></i>
+                </button>
             </div>
-
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                <div class="p-4 border-b flex justify-between items-center bg-gray-50/50">
-                    <h3 class="font-bold text-slate-700 text-sm">أحدث المعاملات</h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full recent-table text-right">
-                        <thead>
-                            <tr><th>الموضوع</th><th>جهة المصدر</th><th>الحالة</th></tr>
-                        </thead>
-                        <tbody id="recent-table">
-                            <tr><td colspan="3" class="text-center p-6 text-slate-400">جاري التحميل...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
         </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon sc-blue"><i data-lucide="layers" class="w-5 h-5"></i></div>
+                <h3 class="text-2xl font-black text-slate-800" id="s-total">0</h3>
+                <p class="text-[10px] text-slate-500 font-bold">إجمالي الوارد</p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon sc-orange"><i data-lucide="clock" class="w-5 h-5"></i></div>
+                <h3 class="text-2xl font-black text-slate-800" id="s-pending">0</h3>
+                <p class="text-[10px] text-slate-500 font-bold">قيد العمل</p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon sc-green"><i data-lucide="check-circle-2" class="w-5 h-5"></i></div>
+                <h3 class="text-2xl font-black text-slate-800" id="s-approved">0</h3>
+                <p class="text-[10px] text-slate-500 font-bold">تم الاعتماد</p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon sc-red"><i data-lucide="alert-octagon" class="w-5 h-5"></i></div>
+                <h3 class="text-2xl font-black text-slate-800" id="s-late">0</h3>
+                <p class="text-[10px] text-slate-500 font-bold">متأخر</p>
+            </div>
+        </div>
+
+        <div class="progress-card">
+            <div class="flex justify-between items-end mb-1">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-sm">معدل الإنجاز العام</h3>
+                    <p class="text-[10px] text-slate-400">نسبة المعاملات المعتمدة</p>
+                </div>
+                <span class="text-xl font-black text-[#0f766e]" id="prog-val">0%</span>
+            </div>
+            <div class="prog-bar-bg">
+                <div class="prog-bar-fill" id="prog-fill"></div>
+            </div>
+        </div>
+
+        <div class="recent-card">
+            <div class="p-4 border-b border-slate-100 bg-gray-50 flex justify-between items-center">
+                <h3 class="font-bold text-slate-700 text-sm">أحدث المعاملات</h3>
+                <a href="employee.html" class="text-xs text-[#0f766e] font-bold hover:underline">عرض الكل</a>
+            </div>
+            <div id="recent-list">
+                <div class="p-6 text-center text-gray-400 text-sm">جاري التحميل...</div>
+            </div>
+        </div>
+
     </div>
 
-    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around p-2 pb-safe z-40 lg:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 p-2 text-[#0f766e]">
-            <i data-lucide="layout-grid" class="w-6 h-6"></i><span class="text-[10px] font-bold">الرئيسية</span>
+    <nav class="bottom-nav lg:hidden">
+        <a href="index.html" class="b-nav-item">
+            <i data-lucide="home" class="w-6 h-6"></i><span>الرئيسية</span>
         </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 p-2 text-slate-400">
-            <i data-lucide="briefcase" class="w-6 h-6"></i><span class="text-[10px]">مهامي</span>
+        <a href="distribution.html" class="b-nav-item active">
+            <i data-lucide="bar-chart-2" class="w-6 h-6"></i><span>المؤشرات</span>
         </a>
-        <a href="forms.html" class="flex flex-col items-center gap-1 p-2 text-slate-400">
-            <i data-lucide="file-text" class="w-6 h-6"></i><span class="text-[10px]">النماذج</span>
+        <a href="employee.html" class="b-nav-item">
+            <i data-lucide="briefcase" class="w-6 h-6"></i><span>مهامي</span>
+        </a>
+        <a href="forms.html" class="b-nav-item">
+            <i data-lucide="file-text" class="w-6 h-6"></i><span>النماذج</span>
+        </a>
+        <a href="admin.html" class="b-nav-item hidden" id="mob-admin-link">
+            <i data-lucide="settings-2" class="w-6 h-6"></i><span>الإدارة</span>
         </a>
     </nav>
 
@@ -268,69 +300,97 @@
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('ar-EG');
 
         document.addEventListener('DOMContentLoaded', async () => {
             const user = auth.checkAuth();
             if(!user) return;
 
-            document.getElementById('user-name').textContent = user.name;
-            document.getElementById('user-role').textContent = user.role;
+            // عرض الاسم
+            const firstName = user.name.split(' ')[0];
+            document.getElementById('user-name').textContent = firstName;
 
-            // إظهار زر الإدارة لو كان أدمن
+            // إظهار رابط الإدارة
             if(user.role === 'admin' || user.role === 'مدير') {
-                document.getElementById('admin-link').classList.remove('hidden');
+                document.getElementById('mob-admin-link').classList.remove('hidden');
             }
 
-            // جلب البيانات
-            const startDate = `${new Date().getFullYear()}-01-01`;
-            const res = await auth.callAPI('getAllData', { role: user.role, name: user.name, startDate });
+            // جلب البيانات (من 2024 شامل)
+            const res = await auth.callAPI('getAllData', { 
+                role: user.role, 
+                name: user.name, 
+                startDate: '2024-01-01' 
+            });
             
             if(res.success) {
-                const s = res.stats.totals;
+                const tasks = res.tasks;
                 
+                // --- حساب الإحصائيات بناءً على الحالات الجديدة ---
+                const total = tasks.length;
+                
+                // تم الاعتماد (المهمة المنجزة)
+                const approved = tasks.filter(t => t.status.includes('تم الاعتماد') || t.status.includes('أرشفة')).length;
+                
+                // متأخر
+                const late = tasks.filter(t => t.status.includes('متأخر')).length;
+                
+                // قيد العمل (جديد + انتظار + متابعة)
+                const pending = tasks.filter(t => 
+                    t.status.includes('جديد') || 
+                    t.status.includes('انتظار') || 
+                    t.status.includes('متابعة') ||
+                    t.status.includes('مراجعة')
+                ).length;
+
                 // تحديث العدادات
-                animateValue('s-total', s.total);
-                animateValue('s-pending', s.inProgress);
-                animateValue('s-done', s.completed);
-                animateValue('s-late', s.overdue);
+                animateValue('s-total', total);
+                animateValue('s-pending', pending);
+                animateValue('s-approved', approved);
+                animateValue('s-late', late);
 
                 // حساب النسبة
-                const rate = s.total > 0 ? Math.round((s.completed / s.total) * 100) : 0;
-                document.getElementById('rate-text').textContent = rate + '%';
-                document.getElementById('rate-bar').style.width = rate + '%';
+                const rate = total > 0 ? Math.round((approved / total) * 100) : 0;
+                document.getElementById('prog-val').textContent = rate + '%';
+                document.getElementById('prog-fill').style.width = rate + '%';
 
-                // الجدول
-                const rows = res.tasks.slice(0,5).map(t => {
-                    let badgeClass = 'bg-slate-100 text-slate-600';
-                    if(t.status.includes('تم')) badgeClass = 'bg-emerald-50 text-emerald-600 border border-emerald-100';
-                    else if(t.status.includes('متأخر')) badgeClass = 'bg-red-50 text-red-600 border border-red-100';
-                    else if(t.status.includes('جاري')) badgeClass = 'bg-blue-50 text-blue-600 border border-blue-100';
+                // الجدول المصغر (أحدث 5)
+                const list = document.getElementById('recent-list');
+                if (tasks.length === 0) {
+                    list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">لا توجد بيانات</div>';
+                } else {
+                    list.innerHTML = tasks.slice(0, 5).map(t => {
+                        let badgeClass = 'badge-new'; // افتراضي
+                        
+                        if(t.status.includes('تم الاعتماد')) badgeClass = 'badge-approved';
+                        else if(t.status.includes('متأخر')) badgeClass = 'badge-late';
+                        else if(t.status.includes('انتظار')) badgeClass = 'badge-pending';
+                        else if(t.status.includes('متابعة')) badgeClass = 'badge-followup';
 
-                    return `
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="font-bold truncate max-w-[150px]">${t.subject}</td>
-                        <td class="text-xs">${t.source}</td>
-                        <td><span class="text-[10px] px-2 py-1 rounded-md ${badgeClass}">${t.status}</span></td>
-                    </tr>`;
-                }).join('');
-                document.getElementById('recent-table').innerHTML = rows || '<tr><td colspan="3" class="text-center p-4">لا توجد بيانات</td></tr>';
+                        return `
+                        <div class="table-row">
+                            <div class="flex-1 min-w-0 pr-2">
+                                <h4 class="font-bold text-slate-800 text-xs truncate">${t.subject}</h4>
+                                <p class="text-[10px] text-slate-500 truncate">${t.source}</p>
+                            </div>
+                            <span class="status-badge-small ${badgeClass}">${t.status}</span>
+                        </div>
+                        `;
+                    }).join('');
+                }
             }
         });
 
-        // أنيميشن للأرقام
         function animateValue(id, end) {
             const obj = document.getElementById(id);
             let start = 0;
             const duration = 1000;
+            if (end === 0) { obj.innerHTML = 0; return; }
+            
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 obj.innerHTML = Math.floor(progress * end);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
+                if (progress < 1) window.requestAnimationFrame(step);
             };
             window.requestAnimationFrame(step);
         }
