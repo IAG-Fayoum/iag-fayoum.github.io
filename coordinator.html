@@ -177,7 +177,7 @@
                 <div>
                     <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">الموظف المسؤول</label>
                     <select id="f-emp" class="filter-input">
-                        <option value="">كل الموظفين</option>
+                        <option value="">جاري التحميل...</option>
                     </select>
                 </div>
 
@@ -235,7 +235,7 @@
             <div id="tasks-container" class="space-y-3 pb-20">
                 <div class="text-center py-12">
                     <span class="inline-block animate-spin text-[#0f766e]"><i data-lucide="loader-2" class="w-8 h-8"></i></span>
-                    <p class="text-slate-400 text-sm mt-2">جاري جلب البيانات...</p>
+                    <p class="text-slate-400 text-sm mt-2">جاري جلب بيانات الموظفين...</p>
                 </div>
             </div>
         </div>
@@ -261,16 +261,7 @@
     <script>
         lucide.createIcons();
         let allTasks = [];
-
-        // ⚠️ دكتور، من فضلك املأ القائمة دي بأسماء فريق العمل الحقيقيين ⚠️
-        // دي الأسماء اللي هتظهر في الفلتر وقائمة التوزيع
-        const DEPARTMENT_STAFF = [
-            "د. أحمد محمد",
-            "د. سارة علي",
-            "د. محمود حسن",
-            "أ. نرمين كمال",
-            "أ. خالد يوسف"
-        ];
+        let dbEmployees = []; // 🔥 القائمة الديناميكية للموظفين
 
         const statusStyles = {
             'جديد': 'st-new',
@@ -284,27 +275,23 @@
             const user = auth.checkAuth();
             if (!user) return;
             
-            // تحقق الصلاحية
             if(!['coordinator', 'منسق', 'admin', 'مدير'].includes(user.role)) {
-                 window.location.href = 'distribution.html'; // تحويل للمؤشرات
+                 window.location.href = 'distribution.html';
                  return;
             }
 
-            // عرض الاسم
             const firstName = user.name.split(' ')[0];
             document.getElementById('mobile-welcome-name').textContent = firstName;
             document.getElementById('f-year').value = new Date().getFullYear();
 
-            // 1. ملء قائمة الموظفين (من القائمة الثابتة DEPARTMENT_STAFF)
-            const selectFilter = document.getElementById('f-emp');
-            DEPARTMENT_STAFF.forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                selectFilter.appendChild(opt);
-            });
+            // 1. جلب قائمة الموظفين (أولاً)
+            const empRes = await auth.callAPI('getEmployees');
+            if(empRes.success) {
+                dbEmployees = empRes.data; // الأسماء من الشيت مباشرة
+                populateEmployeeFilter();
+            }
 
-            // 2. جلب البيانات
+            // 2. جلب المهام
             const res = await auth.callAPI('getAllData', {
                 role: 'coordinator',
                 name: user.name,
@@ -313,36 +300,38 @@
 
             if (res.success) {
                 allTasks = res.tasks;
-                
-                // 3. حساب الإحصائيات (مالي vs فني)
                 calculateStats();
-
-                // 4. تطبيق الفلتر الافتراضي
                 applyFilters();
             } else {
                 document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 font-bold">عفواً، حدث خطأ في التحميل</div>`;
             }
         });
 
-        // دالة حساب الإحصائيات البسيطة
+        // تعبئة فلتر الموظفين بالبيانات الحقيقية
+        function populateEmployeeFilter() {
+            const select = document.getElementById('f-emp');
+            select.innerHTML = '<option value="">كل الموظفين</option>';
+            dbEmployees.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+        }
+
         function calculateStats() {
             let adminCount = 0;
             let techCount = 0;
 
             allTasks.forEach(t => {
-                // بنحاول نخمن النوع من الكلام المكتوب في الموضوع أو المصدر
                 const txt = (t.subject + " " + t.source).toLowerCase();
-                
-                // كلمات مفتاحية للإداري والمالي
                 if(txt.includes('مالي') || txt.includes('حسابات') || txt.includes('إداري') || txt.includes('شؤون') || txt.includes('مخزن')) {
                     adminCount++;
                 } else {
-                    // الباقي نعتبره فني وطبي (افتراضياً)
                     techCount++;
                 }
             });
 
-            // تحديث الأرقام في الشاشة
             document.getElementById('count-admin').textContent = adminCount;
             document.getElementById('count-tech').textContent = techCount;
         }
@@ -384,10 +373,10 @@
                 return;
             }
 
-            // تجهيز قائمة الخيارات للدروب داون في كل كارت
+            // تجهيز قائمة الموظفين (من الداتابيز)
             let empOptions = '<option value="">-- غير محدد --</option>';
-            DEPARTMENT_STAFF.forEach(emp => {
-                empOptions += `<option value="${emp}">${emp}</option>`;
+            dbEmployees.forEach(name => {
+                empOptions += `<option value="${name}">${name}</option>`;
             });
 
             container.innerHTML = tasks.map(t => {
@@ -395,9 +384,7 @@
                 const year = t.date ? t.date.split('-')[0] : '';
                 const hasLegal = t.caseNumber && t.caseNumber.trim() !== '';
 
-                // تحديد الخيار المختار (Selected)
                 const currentAssignee = t.assignee || "";
-                // بنعمل Replace عشان نحط attribute 'selected' عند الموظف الحالي
                 const finalOptions = empOptions.replace(`value="${currentAssignee}"`, `value="${currentAssignee}" selected`);
 
                 return `
