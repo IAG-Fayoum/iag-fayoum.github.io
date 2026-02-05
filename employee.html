@@ -24,7 +24,7 @@
             --c-total: #334155;
             --c-new: #3b82f6;        
             --c-pending: #16a34a;    
-            --c-approved: #047857;
+            --c-approved: #047857;   /* لون أغمق حسب الطلب */
             --c-followup: #6b7280;   
             --c-late: #dc2626;       
         }
@@ -57,10 +57,12 @@
         .info-icon { color: var(--primary); width: 18px; height: 18px; }
         .info-val { font-weight: 700; color: #1f2937; }
 
-        /* --- Stats Grid --- */
+        /* --- Stats Grid (2 Rows) --- */
         .stats-wrapper { padding: 0 1rem 1rem; display: flex; flex-direction: column; gap: 10px; }
         .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        
+        /* Responsive for small stats */
         @media (max-width: 767px) { .stats-row-small { grid-template-columns: repeat(2, 1fr); } }
 
         .stat-card-big {
@@ -77,6 +79,7 @@
         .stat-card-big .stat-num { font-size: 2rem; }
         .stat-lbl { font-size: 0.75rem; font-weight: 700; color: #64748b; }
 
+        /* Status Text Colors */
         .txt-total { color: var(--c-total); } .txt-new { color: var(--c-new); }
         .txt-pending { color: var(--c-pending); } .txt-approved { color: var(--c-approved); }
         .txt-followup { color: var(--c-followup); } .txt-late { color: var(--c-late); }
@@ -96,58 +99,37 @@
         .tab-content { display: none; padding: 0 1rem 5rem; }
         .tab-content.active { display: block; animation: fadeIn 0.3s; }
 
-        /* --- Filters --- */
+        /* --- Filters (Inside Tabs) --- */
         .tab-filters { 
-            background: white; padding: 12px; border-radius: 12px; border: 1px solid #e5e7eb;
-            margin-bottom: 1rem; display: flex; flex-direction: column; gap: 10px;
+            background: white; padding: 10px; border-radius: 12px; border: 1px solid #e5e7eb;
+            margin-bottom: 1rem; display: flex; flex-direction: column; gap: 8px;
         }
-        /* Filter Grid Layout */
-        .filter-grid { display: grid; gap: 8px; }
-        @media (min-width: 768px) { .filter-grid { grid-template-columns: 1fr 1fr 1fr; align-items: end; } }
-        
-        .f-group { display: flex; flex-direction: column; gap: 4px; }
-        .f-label { font-size: 0.7rem; font-weight: 700; color: #6b7280; }
+        .filter-row { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
         .f-select, .f-input {
             width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px;
-            font-size: 0.85rem; outline: none; background: #f9fafb; height: 38px;
-        }
-
-        /* --- CARDS GRID SYSTEM (3 COLUMNS) --- */
-        .cards-grid-layout {
-            display: grid;
-            gap: 12px;
-            /* Mobile: 1 Column */
-            grid-template-columns: 1fr;
-        }
-        /* Tablet: 2 Columns */
-        @media (min-width: 768px) {
-            .cards-grid-layout { grid-template-columns: repeat(2, 1fr); }
-        }
-        /* Desktop: 3 Columns (مربعة) */
-        @media (min-width: 1024px) {
-            .cards-grid-layout { grid-template-columns: repeat(3, 1fr); }
+            font-size: 0.85rem; outline: none; background: #f9fafb;
         }
 
         /* --- Task Cards --- */
         .task-card {
-            background: white; border-radius: 12px; overflow: hidden; 
+            background: white; border-radius: 12px; overflow: hidden; margin-bottom: 1rem;
             box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb;
-            display: flex; flex-direction: column; height: 100%; /* Full height */
         }
         .card-header { padding: 8px 12px; color: white; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.75rem; }
         
+        /* Status Backgrounds */
         .bg-new { background-color: #3b82f6; }
         .bg-pending { background-color: #22c55e; }
         .bg-approved { background-color: #047857; }
         .bg-followup { background-color: #6b7280; }
         .bg-late { background-color: #dc2626; }
 
-        .card-body { padding: 12px; flex: 1; }
-        .card-subject { font-weight: 700; color: #1f2937; margin-bottom: 10px; font-size: 0.95rem; line-height: 1.4; }
-        .card-meta { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #4b5563; margin-bottom: 6px; }
-        .card-icon { width: 14px; height: 14px; color: var(--primary); opacity: 0.8; }
+        .card-body { padding: 12px; }
+        .card-subject { font-weight: 700; color: #1f2937; margin-bottom: 8px; font-size: 0.95rem; }
+        .card-meta { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #4b5563; margin-bottom: 4px; }
+        .card-icon { width: 14px; height: 14px; color: var(--primary); }
         
-        .card-footer { padding: 10px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; margin-top: auto; }
+        .card-footer { padding: 10px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; }
         .btn-card {
             flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;
             display: flex; align-items: center; justify-content: center; gap: 4px;
@@ -157,14 +139,12 @@
 
         /* --- Report Cards --- */
         .report-card {
-            background: white; border-radius: 12px; padding: 12px; 
-            border: 1px solid #e5e7eb; border-right: 4px solid #e5e7eb; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-            display: flex; flex-direction: column; height: 100%;
+            background: white; border-radius: 12px; padding: 12px; margin-bottom: 1rem;
+            border-right: 4px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
-        .border-tech { border-right-color: #60a5fa; }
-        .border-fin { border-right-color: #4ade80; }
-        .border-comp { border-right-color: #fbbf24; }
+        .border-tech { border-color: #60a5fa; }
+        .border-fin { border-color: #4ade80; }
+        .border-comp { border-color: #fbbf24; }
 
         /* --- Notification Cards --- */
         .notif-card {
@@ -174,8 +154,9 @@
         .n-new { background: #eff6ff; border-color: #bfdbfe; }
         .n-reassign { background: #fffbeb; border-color: #fde68a; }
         .n-alert { background: #fff7ed; border-color: #fed7aa; }
+        .n-time { font-size: 0.7rem; color: #64748b; align-self: flex-end; }
 
-        /* --- Modal & Side Menu & Nav --- */
+        /* --- Modal & Side Menu & Nav (Standard) --- */
         .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
         .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
@@ -189,7 +170,7 @@
         .data-lbl { font-size: 0.7rem; color: #64748b; font-weight: 700; }
         .data-val { font-size: 0.9rem; font-weight: 600; color: #1f2937; }
 
-        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
+        .loader-box { text-align: center; padding: 4rem; color: #94a3b8; }
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); } .nav-btn i { width: 22px; height: 22px; }
@@ -210,8 +191,8 @@
         </div>
         <nav class="flex-1 p-4 space-y-2">
             <a href="index.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="home" class="w-4 h-4"></i> الرئيسية</a>
-            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
-            <a href="employee.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="user" class="w-4 h-4"></i> صفحتي</a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Dashboard</a>
+            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
             <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
             <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
         </nav>
@@ -228,7 +209,7 @@
             <div class="text-center">
                 <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
                 <p class="dept-subtitle">Internal Audit & Governance Dept</p>
-                <div class="flex justify-center"><span class="page-badge">صفحة الموظف</span></div>
+                <div class="flex justify-center"><span class="page-badge">صفحتي</span></div>
             </div>
             <button onclick="switchTab('notifs')" class="p-2 text-white relative">
                 <i data-lucide="bell" class="w-6 h-6"></i>
@@ -245,6 +226,10 @@
         <div class="info-row">
             <i data-lucide="briefcase" class="info-icon"></i>
             <span class="info-val" id="emp-job">...</span>
+        </div>
+        <div class="info-row">
+            <i data-lucide="mail" class="info-icon"></i>
+            <span class="info-val text-xs" id="emp-email">...</span>
         </div>
     </div>
 
@@ -277,60 +262,36 @@
 
     <div id="tab-tasks" class="tab-content active">
         <div class="tab-filters">
-            <input type="text" id="f-search-tasks" class="f-input mb-2" placeholder="بحث باسم المهمة، الرقم، أو الموضوع..." oninput="filterTasks()">
-            
-            <div class="filter-grid">
-                <div class="f-group">
-                    <label class="f-label">الحالة</label>
-                    <select id="f-status" class="f-select" onchange="filterTasks()">
-                        <option value="">الكل</option>
-                        <option value="جديد">جديد</option>
-                        <option value="بانتظار">بانتظار الاعتماد</option>
-                        <option value="تم">تم الاعتماد</option>
-                        <option value="متابعة">بحاجة للمتابعة</option>
-                        <option value="متأخر">متأخر</option>
-                    </select>
-                </div>
-                <div class="f-group">
-                    <label class="f-label">من تاريخ</label>
-                    <input type="date" id="f-date-start" class="f-input" onchange="filterTasks()">
-                </div>
-                <div class="f-group">
-                    <label class="f-label">إلى تاريخ</label>
-                    <input type="date" id="f-date-end" class="f-input" onchange="filterTasks()">
-                </div>
+            <div class="filter-row">
+                <select id="f-status" class="f-select" onchange="filterTasks()">
+                    <option value="">الكل</option>
+                    <option value="جديد">جديد</option>
+                    <option value="بانتظار">بانتظار الاعتماد</option>
+                    <option value="تم">تم الاعتماد</option>
+                    <option value="متابعة">بحاجة للمتابعة</option>
+                    <option value="متأخر">متأخر</option>
+                </select>
+                <input type="text" id="f-search-tasks" class="f-input" placeholder="بحث..." oninput="filterTasks()">
             </div>
         </div>
-        <div id="tasks-list" class="cards-grid-layout">
+        <div id="tasks-list">
             <div class="loader-box"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto"></i></div>
         </div>
     </div>
 
     <div id="tab-reports" class="tab-content">
         <div class="tab-filters">
-            <input type="text" id="f-search-reports" class="f-input mb-2" placeholder="بحث في التقارير..." oninput="filterReports()">
-            
-            <div class="filter-grid">
-                <div class="f-group">
-                    <label class="f-label">النوع</label>
-                    <select id="f-type" class="f-select" onchange="filterReports()">
-                        <option value="">كل الأنواع</option>
-                        <option value="المرور الفني">المرور الفني</option>
-                        <option value="المرور المالي">المرور المالي</option>
-                        <option value="فحص الشكوى">فحص الشكوى</option>
-                    </select>
-                </div>
-                <div class="f-group">
-                    <label class="f-label">من تاريخ</label>
-                    <input type="date" id="f-rep-start" class="f-input" onchange="filterReports()">
-                </div>
-                <div class="f-group">
-                    <label class="f-label">إلى تاريخ</label>
-                    <input type="date" id="f-rep-end" class="f-input" onchange="filterReports()">
-                </div>
+            <div class="filter-row">
+                <select id="f-type" class="f-select" onchange="filterReports()">
+                    <option value="">كل الأنواع</option>
+                    <option value="المرور الفني">المرور الفني</option>
+                    <option value="المرور المالي">المرور المالي</option>
+                    <option value="فحص الشكوى">فحص الشكوى</option>
+                </select>
+                <input type="text" id="f-search-reports" class="f-input" placeholder="بحث..." oninput="filterReports()">
             </div>
         </div>
-        <div id="reports-list" class="cards-grid-layout"></div>
+        <div id="reports-list"></div>
     </div>
 
     <div id="tab-notifs" class="tab-content">
@@ -352,7 +313,7 @@
     <nav class="bottom-nav">
         <a href="index.html" class="nav-btn"><i data-lucide="home"></i> الرئيسية</a>
         <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
-        <a href="employee.html" class="nav-btn active"><i data-lucide="user"></i> صفحتي</a>
+        <a href="coordinator.html" class="nav-btn"><i data-lucide="users"></i> المنسق</a>
         <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
         <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
     </nav>
@@ -363,8 +324,11 @@
         lucide.createIcons();
         let allData = { tasks: [], reports: [] };
 
+        // --- PWA Service Worker ---
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(console.error);
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('SW Registered'))
+                .catch(err => console.error('SW Error', err));
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -380,7 +344,10 @@
             document.getElementById('menu-user').textContent = user.name;
             document.getElementById('menu-role').textContent = user.role;
 
+            // Load Data
             await loadEmployeeData(user.name);
+            
+            // Request Notification Permission
             if (Notification.permission === 'default') Notification.requestPermission();
         });
 
@@ -412,13 +379,10 @@
                     allData.tasks = data.tasks || [];
                     allData.reports = data.reports || [];
                     
-                    // ✅ FIXED: Safer Stats access
-                    const s = (data.stats && data.stats.totals) ? data.stats.totals : { total:0, new:0, pending:0, completed:0, followup:0, overdue:0 };
-                    updateStats(s);
-                    
+                    updateStats(data.stats.totals);
                     renderTasks(allData.tasks);
                     renderReports(allData.reports);
-                    renderNotifications(allData.tasks); 
+                    renderNotifications(allData.tasks); // Simulating notifications from tasks
                 }
             } catch (e) {
                 console.error(e);
@@ -426,18 +390,18 @@
         }
 
         function updateStats(s) {
-            document.getElementById('st-total').innerText = s.total || 0;
-            document.getElementById('st-new').innerText = s.new || 0;
-            document.getElementById('st-pending').innerText = s.pending || 0;
-            document.getElementById('st-approved').innerText = s.completed || 0;
-            document.getElementById('st-followup').innerText = s.followup || 0;
-            document.getElementById('st-late').innerText = s.overdue || 0;
+            document.getElementById('st-total').innerText = s.total;
+            document.getElementById('st-new').innerText = s.new;
+            document.getElementById('st-pending').innerText = s.pending;
+            document.getElementById('st-approved').innerText = s.completed;
+            document.getElementById('st-followup').innerText = s.followup || 0; // Backend may return it as inProgress
+            document.getElementById('st-late').innerText = s.overdue;
         }
 
         function renderTasks(tasks) {
             const container = document.getElementById('tasks-list');
             if(tasks.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400">لا توجد معاملات</div>';
+                container.innerHTML = '<div class="text-center py-8 text-gray-400">لا توجد معاملات</div>';
                 return;
             }
             
@@ -471,31 +435,13 @@
             lucide.createIcons();
         }
 
-        // --- Filter Logic ---
-        function parseDateToISO(dateStr) {
-            if(!dateStr) return null;
-            const parts = dateStr.split('/');
-            if(parts.length === 3) return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
-            return null;
-        }
-
         function filterTasks() {
             const status = document.getElementById('f-status').value;
             const search = document.getElementById('f-search-tasks').value.toLowerCase();
-            const start = document.getElementById('f-date-start').value;
-            const end = document.getElementById('f-date-end').value;
             
             const filtered = allData.tasks.filter(t => {
                 if (status && !t.status.includes(status)) return false;
                 if (search && !(t.subject + t.id + t.source).toLowerCase().includes(search)) return false;
-                
-                if (start || end) {
-                    const taskDate = parseDateToISO(t.date);
-                    if (taskDate) {
-                        if (start && taskDate < start) return false;
-                        if (end && taskDate > end) return false;
-                    }
-                }
                 return true;
             });
             renderTasks(filtered);
@@ -504,15 +450,15 @@
         function renderReports(reports) {
             const container = document.getElementById('reports-list');
             if(reports.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400">لا توجد تقارير</div>';
+                container.innerHTML = '<div class="text-center py-8 text-gray-400">لا توجد تقارير</div>';
                 return;
             }
 
             container.innerHTML = reports.map(r => {
                 let borderClass = 'border-gray-300';
-                if(r.type.includes('فني')) borderClass = 'border-tech';
-                else if(r.type.includes('مالي')) borderClass = 'border-fin';
-                else if(r.type.includes('شكوى')) borderClass = 'border-comp';
+                if(r.type.includes('فني')) borderClass = 'border-blue-400';
+                else if(r.type.includes('مالي')) borderClass = 'border-green-400';
+                else if(r.type.includes('شكوى')) borderClass = 'border-amber-400';
 
                 return `
                 <div class="report-card ${borderClass}">
@@ -521,7 +467,7 @@
                         <span class="text-xs bg-gray-100 px-2 py-1 rounded">${r.date}</span>
                     </div>
                     <p class="text-sm text-gray-600 mb-2"><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${r.entity}</p>
-                    <div class="flex gap-2 mt-auto pt-2">
+                    <div class="flex gap-2 mt-3">
                         ${r.docLink ? `<a href="${r.docLink}" target="_blank" class="flex-1 bg-blue-50 text-blue-700 text-center py-1 rounded text-xs font-bold border border-blue-200">Google Doc</a>` : ''}
                         ${r.pdfLink ? `<a href="${r.pdfLink}" target="_blank" class="flex-1 bg-red-50 text-red-700 text-center py-1 rounded text-xs font-bold border border-red-200">PDF</a>` : ''}
                     </div>
@@ -533,20 +479,10 @@
         function filterReports() {
             const type = document.getElementById('f-type').value;
             const search = document.getElementById('f-search-reports').value.toLowerCase();
-            const start = document.getElementById('f-rep-start').value;
-            const end = document.getElementById('f-rep-end').value;
             
             const filtered = allData.reports.filter(r => {
                 if (type && !r.type.includes(type)) return false;
                 if (search && !(r.entity + r.type).toLowerCase().includes(search)) return false;
-                
-                if (start || end) {
-                    const repDate = parseDateToISO(r.date);
-                    if (repDate) {
-                        if (start && repDate < start) return false;
-                        if (end && repDate > end) return false;
-                    }
-                }
                 return true;
             });
             renderReports(filtered);
@@ -554,6 +490,7 @@
 
         function renderNotifications(tasks) {
             const container = document.getElementById('notifs-list');
+            // Simulating notifications from new tasks
             const notifs = tasks.filter(t => t.status.includes('جديد') || t.status.includes('متابعة')).slice(0, 10);
             
             if(notifs.length === 0) {
