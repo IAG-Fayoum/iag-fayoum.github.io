@@ -26,11 +26,11 @@
             --secondary: #134e4a;
             /* Status Colors (Text) */
             --c-total: #334155;
-            --c-new: #475569;
-            --c-pending: #16a34a;
-            --c-approved: #064e3b;
-            --c-followup: #2563eb;
-            --c-late: #dc2626;
+            --c-new: #3b82f6;        /* Blue (New) */
+            --c-pending: #16a34a;    /* Green */
+            --c-approved: #059669;   /* Emerald 600 (Lighter Green) */
+            --c-followup: #6b7280;   /* Gray (Followup) */
+            --c-late: #dc2626;       /* Red */
         }
 
         /* --- Header (Dark Teal Area) --- */
@@ -42,8 +42,8 @@
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
-        .dept-title { font-size: 1.3rem; font-weight: 800; }
-        .dept-subtitle { font-size: 0.85rem; opacity: 0.9; font-weight: 600; }
+        .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
         /* --- Filter Box (The White Area) --- */
         .filter-container {
@@ -57,16 +57,16 @@
         }
 
         /* Form Elements Styling */
-        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; text-align: right; }
+        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; text-align: right; }
         
         .f-input {
-            width: 100%; height: 42px; padding: 0 12px; 
+            width: 100%; height: 40px; padding: 0 12px; 
             border: 1px solid #cbd5e1; border-radius: 8px;
-            font-size: 0.9rem; outline: none; background: #fff; 
+            font-size: 0.85rem; outline: none; background: #fff; 
             transition: all 0.2s; color: #1e293b;
         }
         .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
-        .f-input::placeholder { color: #94a3b8; font-size: 0.85rem; }
+        .f-input::placeholder { color: #94a3b8; font-size: 0.8rem; }
 
         /* Search Input Special Style */
         .search-input {
@@ -75,14 +75,14 @@
 
         /* Buttons matching the image */
         .btn-teal {
-            background: #0f766e; color: white; border: none; border-radius: 8px; height: 42px;
-            font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.2s;
+            background: #0f766e; color: white; border: none; border-radius: 8px; height: 40px;
+            font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
         }
         .btn-teal:hover { background: #115e59; }
         
         .btn-print {
-            background: #e2e8f0; color: #475569; border: none; border-radius: 8px; height: 42px;
+            background: #e2e8f0; color: #475569; border: none; border-radius: 8px; height: 40px;
             font-weight: 700; cursor: pointer; transition: 0.2s; width: 100%;
             display: flex; align-items: center; justify-content: center;
         }
@@ -194,6 +194,20 @@
             .filter-row-bottom { grid-template-columns: 1fr 1fr; }
             .btn-group { grid-column: 1 / -1; display: flex; gap: 8px; }
         }
+
+        /* --- Bottom Nav --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: white;
+            border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around;
+            padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom));
+        }
+        .nav-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600;
+            width: 60px;
+        }
+        .nav-btn.active { color: var(--primary); }
+        .nav-btn i { width: 22px; height: 22px; }
     </style>
 </head>
 <body>
@@ -210,7 +224,7 @@
         <nav class="flex-1 p-4 space-y-2">
             <a href="index.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="home" class="w-4 h-4"></i> الرئيسية</a>
             <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Dashboard</a>
-            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسقين</a>
+            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
             <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
             <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
         </nav>
@@ -225,8 +239,8 @@
         <div class="max-w-[1200px] mx-auto flex justify-between items-center">
             <button onclick="toggleMenu()" class="text-white"><i data-lucide="menu" class="w-7 h-7"></i></button>
             <div class="text-center">
-                <h1 class="dept-title">إدارة المراجعة الداخلية</h1>
-                <p class="dept-subtitle">مكتب التنسيق</p>
+                <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
+                <p class="dept-subtitle">Internal Audit & Governance Dept</p>
             </div>
             <button onclick="window.location.href='notifications.html'" class="text-white relative">
                 <i data-lucide="bell" class="w-6 h-6"></i>
@@ -333,22 +347,12 @@
         </div>
     </div>
 
-    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around py-2 z-50 lg:hidden">
-        <a href="index.html" class="flex flex-col items-center gap-1 text-gray-400 text-[10px] w-12">
-            <i data-lucide="home" class="w-5 h-5"></i> الرئيسية
-        </a>
-        <a href="distribution.html" class="flex flex-col items-center gap-1 text-gray-400 text-[10px] w-12">
-            <i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات
-        </a>
-        <a href="coordinator.html" class="flex flex-col items-center gap-1 text-teal-700 font-bold text-[10px] w-12">
-            <i data-lucide="users" class="w-5 h-5"></i> المنسق
-        </a>
-        <a href="forms.html" class="flex flex-col items-center gap-1 text-gray-400 text-[10px] w-12">
-            <i data-lucide="file-text" class="w-5 h-5"></i>
-        </a>
-        <a href="notifications.html" class="flex flex-col items-center gap-1 text-gray-400 text-[10px] w-12">
-            <i data-lucide="bell" class="w-5 h-5"></i>
-        </a>
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-btn"><i data-lucide="home"></i>الرئيسية</a>
+        <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i>المؤشرات</a>
+        <a href="coordinator.html" class="nav-btn active"><i data-lucide="users"></i>المنسق</a>
+        <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i>النماذج</a>
+        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i>الإشعارات</a>
     </nav>
 
     <script src="assets/js/config.js"></script>
@@ -367,10 +371,21 @@
             document.getElementById('menu-user').textContent = user.name;
             document.getElementById('menu-role').textContent = user.role;
 
-            // --- NO DEFAULT FILTER ---
-            // Leave dates empty to show ALL data initially
-            document.getElementById('f-start').value = '';
-            document.getElementById('f-end').value = '';
+            // --- DATE FIX: Current Month Default ---
+            // This now correctly sets YYYY-MM-DD for any browser
+            const now = new Date();
+            const toInputDate = (d) => {
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${y}-${m}-${day}`;
+            };
+
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            
+            document.getElementById('f-start').value = toInputDate(firstDay);
+            document.getElementById('f-end').value = toInputDate(lastDay);
 
             await loadData(user.name);
             document.getElementById('f-search').addEventListener('input', applyFilters);
@@ -548,7 +563,6 @@
                             <span class="flex items-center"><i data-lucide="calendar" class="tc-icon"></i>&nbsp;${displayDate}</span>
                             <span class="tc-val flex items-center text-teal-700">${t.assignee || 'غير موزع'}<i data-lucide="user" class="tc-icon ml-1"></i></span>
                         </div>
-                        ${t.delay ? `<div class="mt-2 text-xs font-bold text-red-600 bg-red-50 p-1 rounded inline-block">⚠️ متأخر ${t.delay} يوم</div>` : ''}
                     </div>
                     <div class="tc-footer">
                         <button onclick="openModal('${t.id}')" class="btn-card">
