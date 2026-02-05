@@ -2,151 +2,238 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - نظام الحوكمة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>المؤشرات | نظام الحوكمة</title>
+    
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        :root { --primary: #0f766e; --bg-light: #f8fafc; }
-        body { font-family: 'Cairo', sans-serif; background: var(--bg-light); padding-bottom: 80px; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
+        * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* Navigation Styles */
-        .header-bg { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); padding: 1rem 1.5rem 5rem; color: white; border-radius: 0 0 30px 30px; box-shadow: 0 4px 20px rgba(15,118,110,0.2); }
-        .sidebar { position: fixed; right: 0; top: 0; height: 100vh; width: 260px; background: white; border-left: 1px solid #e2e8f0; z-index: 50; display: none; flex-direction: column; padding: 1.5rem; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px; color: #64748b; font-weight: 600; border-radius: 10px; transition: 0.2s; margin-bottom: 5px; text-decoration: none; }
-        .nav-item:hover, .nav-item.active { background: #f0fdfa; color: #0f766e; }
-        .nav-item.active { background: linear-gradient(135deg, #0f766e, #115e59); color: white; }
-        
-        @media (min-width: 1024px) { 
-            body { padding-right: 260px; padding-bottom: 0; }
-            .sidebar { display: flex; }
-            .mobile-header { display: none; }
-            .bottom-nav { display: none; }
-            .header-bg { border-radius: 0; padding-bottom: 2rem; }
+        body { background-color: #f8fafc; padding-bottom: 80px; }
+
+        /* --- Header Styles --- */
+        .header-bg {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            padding: 1.5rem 1.5rem 5rem;
+            color: white;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            position: relative; z-index: 10;
+            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
         }
 
-        /* Stats Cards */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: -3rem; padding: 0 1.5rem; position: relative; z-index: 10; }
-        .stat-card { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; }
-        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-        
-        /* Colors */
-        .bg-blue-soft { background: #eff6ff; color: #3b82f6; }
-        .bg-green-soft { background: #dcfce7; color: #22c55e; }
-        .bg-red-soft { background: #fee2e2; color: #dc2626; }
-        .bg-orange-soft { background: #ffedd5; color: #f97316; }
+        .logo-circle-small {
+            width: 50px; height: 50px; background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid rgba(255,255,255,0.8);
+        }
 
-        /* Notification Badge */
-        .notif-btn { position: relative; padding: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; }
-        .badge { position: absolute; top: 0; right: 0; background: #dc2626; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 10px; border: 2px solid #0f766e; }
+        /* --- Stats Cards --- */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+            margin: -4rem 1rem 1.5rem; position: relative; z-index: 20;
+        }
+        @media (min-width: 1024px) { .stats-grid { grid-template-columns: repeat(4, 1fr); margin-top: 20px; } }
+
+        .stat-card {
+            background: white; border-radius: 20px; padding: 1.25rem;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08); border: 1px solid #e2e8f0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-3px); }
+        
+        .stat-icon {
+            width: 40px; height: 40px; border-radius: 12px; margin-bottom: 8px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Colors */
+        .sc-blue { background: #eff6ff; color: #2563eb; }
+        .sc-orange { background: #fff7ed; color: #ea580c; }
+        .sc-green { background: #f0fdf4; color: #16a34a; }
+        .sc-red { background: #fef2f2; color: #dc2626; }
+
+        /* --- Progress Bar --- */
+        .progress-card {
+            background: white; margin: 0 1rem 1.5rem; padding: 1.5rem;
+            border-radius: 20px; border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+        }
+        .prog-bar-bg { height: 10px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-top: 10px; }
+        .prog-bar-fill { height: 100%; background: linear-gradient(90deg, #0f766e, #2dd4bf); width: 0%; transition: width 1s ease-out; }
+
+        /* --- Table & List --- */
+        .recent-card {
+            background: white; margin: 0 1rem; padding: 0;
+            border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+        }
+        .table-row { display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+        .table-row:last-child { border: none; }
+
+        /* Status Badges */
+        .status-badge-small { font-size: 0.65rem; padding: 3px 8px; border-radius: 6px; font-weight: 700; }
+        .badge-gray { background: #f1f5f9; color: #64748b; }
+        .badge-green { background: #dcfce7; color: #166534; }
+        .badge-red { background: #fee2e2; color: #991b1b; }
+        .badge-blue { background: #eff6ff; color: #1d4ed8; }
+        .badge-orange { background: #fff7ed; color: #c2410c; }
+
+        /* --- Sidebar & Nav --- */
+        .sidebar {
+            position: fixed; right: 0; top: 0; height: 100vh; width: 260px;
+            background: white; border-left: 1px solid #e2e8f0; z-index: 50; transition: transform 0.3s;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px; padding: 12px 20px;
+            color: #64748b; font-weight: 600; text-decoration: none; transition: 0.2s;
+        }
+        .nav-item:hover { background: #f0fdfa; color: #0f766e; }
+        .nav-item.active { background: linear-gradient(135deg, #0f766e, #115e59); color: white; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: white;
+            border-top: 1px solid #e2e8f0; padding: 10px; z-index: 40;
+            display: flex; justify-content: space-around;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+        }
+        .b-nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            font-size: 10px; color: #94a3b8; gap: 4px; text-decoration: none;
+        }
+        .b-nav-item.active { color: #0f766e; font-weight: bold; }
+
+        @media (min-width: 1025px) {
+            .main-content { margin-right: 260px; padding: 20px; }
+            .mobile-header { display: none; }
+            .bottom-nav { display: none; }
+            .header-bg { display: none; }
+            .stats-grid, .progress-card, .recent-card { margin: 0 0 20px; }
+        }
+        @media (max-width: 1024px) { .sidebar { transform: translateX(100%); } }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="flex items-center gap-3 mb-8">
-            <img src="assets/icons/favicon.png" class="w-10 h-10">
-            <div>
-                <h1 class="font-bold text-slate-800">نظام الحوكمة</h1>
-                <p class="text-xs text-slate-500">مديرية الصحة بالفيوم</p>
+        <div class="p-6 text-center border-b border-gray-100">
+            <div class="w-16 h-16 mx-auto mb-2 bg-white rounded-full flex items-center justify-center border-2 border-teal-50 shadow-sm overflow-hidden p-1">
+                <img src="assets/icons/favicon.png" class="w-full h-full object-contain">
             </div>
+            <h2 class="font-bold text-slate-800">نظام الحوكمة</h2>
         </div>
-        
-        <div class="bg-slate-50 p-4 rounded-xl mb-6 border border-slate-100">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-teal-700 shadow-sm"><i data-lucide="user"></i></div>
-                <div>
-                    <p class="text-sm font-bold text-slate-800" id="user-name">...</p>
-                    <p class="text-xs text-slate-500" id="user-role">...</p>
-                </div>
-            </div>
-        </div>
-
-        <nav class="flex-1">
-            <a href="distribution.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
-            <a href="forms.html" class="nav-item"><i data-lucide="file-text"></i> النماذج</a>
-            <a href="employee.html" class="nav-item" data-role="موظف"><i data-lucide="clipboard-list"></i> مهامي</a>
-            <a href="coordinator.html" class="nav-item" data-role="منسق"><i data-lucide="users"></i> المنسقين</a>
-            <a href="admin.html" class="nav-item" data-role="مدير"><i data-lucide="shield"></i> الإدارة</a>
+        <nav class="mt-4 px-2">
+            <a href="index.html" class="nav-item rounded-lg mb-1">
+                <i data-lucide="home" class="w-5 h-5"></i> الصفحة الرئيسية
+            </a>
+            <a href="distribution.html" class="nav-item active rounded-lg mb-1">
+                <i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات
+            </a>
+            <a href="employee.html" class="nav-item rounded-lg mb-1">
+                <i data-lucide="briefcase" class="w-5 h-5"></i> مهامي
+            </a>
+            <a href="coordinator.html" class="nav-item rounded-lg mb-1">
+                <i data-lucide="users" class="w-5 h-5"></i> التنسيق
+            </a>
+            <a href="forms.html" class="nav-item rounded-lg mb-1">
+                <i data-lucide="file-text" class="w-5 h-5"></i> النماذج
+            </a>
+            <div class="h-px bg-gray-200 my-3"></div>
+            <button onclick="auth.logout()" class="nav-item w-full text-red-500 hover:bg-red-50 hover:text-red-600 rounded-lg">
+                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+            </button>
         </nav>
-
-        <button onclick="logout()" class="nav-item text-red-600 hover:bg-red-50 mt-auto">
-            <i data-lucide="log-out"></i> تسجيل خروج
-        </button>
     </aside>
 
-    <div class="header-bg mobile-header">
-        <div class="flex justify-between items-center mb-4">
-            <div class="flex items-center gap-3">
-                <img src="assets/icons/favicon.png" class="w-8 h-8 bg-white rounded-full p-1">
-                <div>
-                    <h1 class="font-bold text-lg">نظام الحوكمة</h1>
-                    <p class="text-xs text-teal-100 opacity-90">لوحة المؤشرات</p>
+    <div class="main-content">
+        
+        <div class="header-bg lg:hidden">
+            <div class="flex justify-between items-center mb-1">
+                <div class="flex items-center gap-3">
+                    <div class="logo-circle-small">
+                        <img src="assets/icons/favicon.png" class="w-8 h-8 object-contain">
+                    </div>
+                    <div>
+                        <p class="text-teal-100 text-[11px] font-bold opacity-90">ملخص الأداء</p>
+                        <h1 class="font-bold text-xl text-white leading-tight" id="user-name">...</h1>
+                    </div>
                 </div>
-            </div>
-            <div class="notif-btn">
-                <i data-lucide="bell"></i>
-                <span class="badge">3</span>
+                <button onclick="auth.logout()" class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm hover:bg-red-500/80 transition shadow-inner">
+                    <i data-lucide="log-out" class="w-5 h-5 text-white"></i>
+                </button>
             </div>
         </div>
-    </div>
 
-    <main class="lg:p-8">
         <div class="stats-grid">
             <div class="stat-card">
-                <div>
-                    <p class="text-xs text-slate-500 font-bold">إجمالي المعاملات</p>
-                    <h3 class="text-2xl font-black text-slate-800">1,204</h3>
-                </div>
-                <div class="stat-icon bg-blue-soft"><i data-lucide="files"></i></div>
+                <div class="stat-icon sc-blue"><i data-lucide="layers" class="w-5 h-5"></i></div>
+                <h3 class="text-2xl font-black text-slate-800" id="s-total">0</h3>
+                <p class="text-[10px] text-slate-500 font-bold">إجمالي الوارد</p>
             </div>
             <div class="stat-card">
-                <div>
-                    <p class="text-xs text-slate-500 font-bold">تم الاعتماد</p>
-                    <h3 class="text-2xl font-black text-slate-800">850</h3>
-                </div>
-                <div class="stat-icon bg-green-soft"><i data-lucide="check-circle-2"></i></div>
+                <div class="stat-icon sc-orange"><i data-lucide="clock" class="w-5 h-5"></i></div>
+                <h3 class="text-2xl font-black text-slate-800" id="s-pending">0</h3>
+                <p class="text-[10px] text-slate-500 font-bold">قيد العمل</p>
             </div>
             <div class="stat-card">
-                <div>
-                    <p class="text-xs text-slate-500 font-bold">قيد التنفيذ</p>
-                    <h3 class="text-2xl font-black text-slate-800">320</h3>
-                </div>
-                <div class="stat-icon bg-orange-soft"><i data-lucide="clock"></i></div>
+                <div class="stat-icon sc-green"><i data-lucide="check-circle-2" class="w-5 h-5"></i></div>
+                <h3 class="text-2xl font-black text-slate-800" id="s-approved">0</h3>
+                <p class="text-[10px] text-slate-500 font-bold">تم الإنجاز</p>
             </div>
             <div class="stat-card">
-                <div>
-                    <p class="text-xs text-slate-500 font-bold">متأخر</p>
-                    <h3 class="text-2xl font-black text-slate-800">34</h3>
-                </div>
-                <div class="stat-icon bg-red-soft"><i data-lucide="alert-circle"></i></div>
+                <div class="stat-icon sc-red"><i data-lucide="alert-octagon" class="w-5 h-5"></i></div>
+                <h3 class="text-2xl font-black text-slate-800" id="s-late">0</h3>
+                <p class="text-[10px] text-slate-500 font-bold">متأخرات</p>
             </div>
         </div>
 
-        <div class="p-6 mt-4">
-            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i data-lucide="activity" class="text-teal-600 w-5 h-5"></i> أحدث النشاطات
-            </h3>
-            <div class="bg-white rounded-xl border border-slate-200 p-4 text-center text-slate-500 py-12">
-                جاري تحميل البيانات...
+        <div class="progress-card">
+            <div class="flex justify-between items-end mb-1">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-sm">معدل الإنجاز العام</h3>
+                    <p class="text-[10px] text-slate-400">نسبة المعاملات المعتمدة</p>
+                </div>
+                <span class="text-xl font-black text-[#0f766e]" id="prog-val">0%</span>
+            </div>
+            <div class="prog-bar-bg">
+                <div class="prog-bar-fill" id="prog-fill"></div>
             </div>
         </div>
-    </main>
 
-    <nav class="fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around py-3 lg:hidden z-50">
-        <a href="distribution.html" class="flex flex-col items-center gap-1 text-teal-600 font-bold text-xs">
-            <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+        <div class="recent-card">
+            <div class="p-4 border-b border-slate-100 bg-gray-50 flex justify-between items-center">
+                <h3 class="font-bold text-slate-700 text-sm">أحدث المعاملات</h3>
+                <a href="employee.html" class="text-xs text-[#0f766e] font-bold hover:underline">عرض الكل</a>
+            </div>
+            <div id="recent-list">
+                <div class="p-6 text-center text-gray-400 text-sm flex flex-col items-center">
+                    <span class="animate-spin mb-2"><i data-lucide="loader-2"></i></span>
+                    جاري التحميل...
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <nav class="bottom-nav lg:hidden">
+        <a href="index.html" class="b-nav-item">
+            <i data-lucide="home" class="w-6 h-6"></i><span>الرئيسية</span>
         </a>
-        <a href="employee.html" class="flex flex-col items-center gap-1 text-slate-400 text-xs" data-role="موظف">
-            <i data-lucide="clipboard-list" class="w-5 h-5"></i> مهامي
+        <a href="distribution.html" class="b-nav-item active">
+            <i data-lucide="bar-chart-2" class="w-6 h-6"></i><span>المؤشرات</span>
         </a>
-        <a href="coordinator.html" class="flex flex-col items-center gap-1 text-slate-400 text-xs" data-role="منسق">
-            <i data-lucide="users" class="w-5 h-5"></i> المنسقين
+        <a href="employee.html" class="b-nav-item">
+            <i data-lucide="briefcase" class="w-6 h-6"></i><span>مهامي</span>
         </a>
-        <a href="admin.html" class="flex flex-col items-center gap-1 text-slate-400 text-xs" data-role="مدير">
-            <i data-lucide="shield" class="w-5 h-5"></i> الإدارة
+        <a href="forms.html" class="b-nav-item">
+            <i data-lucide="file-text" class="w-6 h-6"></i><span>النماذج</span>
         </a>
     </nav>
 
@@ -154,25 +241,117 @@
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        
-        // Mock Auth Check
-        const user = JSON.parse(sessionStorage.getItem('user')) || { name: 'زائر', role: 'موظف' };
-        document.getElementById('user-name').textContent = user.name;
-        document.getElementById('user-role').textContent = user.role;
 
-        // Role Based Navigation Logic
-        const roles = { 'موظف': 1, 'منسق': 2, 'مدير': 3 };
-        const currentLevel = roles[user.role] || 0;
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = auth.checkAuth();
+            
+            // عرض الاسم (سواء زائر أو مسجل)
+            const userName = user ? user.name.split(' ')[0] : 'زائر';
+            document.getElementById('user-name').textContent = userName;
 
-        document.querySelectorAll('[data-role]').forEach(el => {
-            const reqRole = el.getAttribute('data-role');
-            const reqLevel = roles[reqRole];
-            if (currentLevel < reqLevel) el.style.display = 'none';
+            // --- جلب البيانات ---
+            try {
+                // استخدام رابط من Config لو موجود، أو استخدام الرابط المباشر
+                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : 'https://script.google.com/macros/s/AKfycbzB0a7A7Dq4j5-l_-4YkBH1c-cOmgi7kIFP6Da8ZjM1CLfz9xZIncim13cJfc2LPyru3A/exec';
+
+                // إرسال طلب JSON صحيح
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ 
+                        action: 'getAllData',
+                        role: user ? user.role : 'مدير', // إفتراضي لجلب كل الداتا
+                        name: userName 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const tasks = data.tasks || [];
+                    
+                    // حساب الإحصائيات (الهجين: لو السيرفر مبعتش totals نحسبها احنا)
+                    let stats = data.stats && data.stats.totals ? data.stats.totals : calculateLocalStats(tasks);
+
+                    // تحديث الأرقام
+                    animateValue('s-total', stats.total || 0);
+                    animateValue('s-pending', (stats.inProgress + stats.new + stats.pending) || 0);
+                    animateValue('s-approved', stats.completed || 0);
+                    animateValue('s-late', stats.overdue || 0);
+
+                    // تحديث شريط الإنجاز
+                    const total = stats.total || 0;
+                    const done = stats.completed || 0;
+                    const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+                    document.getElementById('prog-val').textContent = rate + '%';
+                    document.getElementById('prog-fill').style.width = rate + '%';
+
+                    // تحديث الجدول (أحدث 5)
+                    renderRecentTable(tasks.slice(0, 5));
+
+                } else {
+                    document.getElementById('recent-list').innerHTML = '<div class="p-6 text-center text-red-400 text-sm">فشل في جلب البيانات</div>';
+                }
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('recent-list').innerHTML = '<div class="p-6 text-center text-red-400 text-sm">خطأ في الاتصال بالسيرفر</div>';
+            }
         });
 
-        function logout() {
-            sessionStorage.clear();
-            window.location.href = 'index.html';
+        // حساب الإحصائيات محلياً (Fallback)
+        function calculateLocalStats(tasks) {
+            return {
+                total: tasks.length,
+                completed: tasks.filter(t => (t.status||'').includes('تم') || (t.status||'').includes('منتهي') || (t.status||'').includes('أرشيف')).length,
+                overdue: tasks.filter(t => (t.status||'').includes('متأخر')).length,
+                inProgress: tasks.filter(t => (t.status||'').includes('جاري') || (t.status||'').includes('جديد') || (t.status||'').includes('انتظار')).length,
+                new: 0, 
+                pending: 0
+            };
+        }
+
+        // رسم الجدول
+        function renderRecentTable(tasks) {
+            const list = document.getElementById('recent-list');
+            if (tasks.length === 0) {
+                list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">لا توجد بيانات</div>';
+                return;
+            }
+
+            list.innerHTML = tasks.map(t => {
+                let badgeClass = 'badge-gray';
+                let statusText = t.status || 'غير محدد';
+
+                if(statusText.includes('تم') || statusText.includes('منتهي')) badgeClass = 'badge-green';
+                else if(statusText.includes('متأخر')) badgeClass = 'badge-red';
+                else if(statusText.includes('جاري') || statusText.includes('جديد')) badgeClass = 'badge-blue';
+                else if(statusText.includes('انتظار')) badgeClass = 'badge-orange';
+
+                return `
+                <div class="table-row">
+                    <div class="flex-1 min-w-0 pr-2">
+                        <h4 class="font-bold text-slate-800 text-xs truncate w-11/12">${t.subject || 'بدون عنوان'}</h4>
+                        <p class="text-[10px] text-slate-500 truncate">${t.source || t.entity || ''}</p>
+                    </div>
+                    <span class="status-badge-small ${badgeClass}">${statusText}</span>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function animateValue(id, end) {
+            const obj = document.getElementById(id);
+            if(!obj) return;
+            let start = 0;
+            if (end === 0) { obj.innerHTML = 0; return; }
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / 1000, 1);
+                obj.innerHTML = Math.floor(progress * end);
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
         }
     </script>
 </body>
