@@ -7,181 +7,180 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <title>المؤشرات | IAG</title>
+    <title>لوحة المؤشرات | IAG Dashboard</title>
     
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon.png">
-    <link rel="shortcut icon" href="assets/icons/favicon.png">
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        /* --- إعدادات عامة --- */
         body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         
-        /* --- Colors Variables --- */
+        /* --- متغيرات الألوان --- */
         :root {
             --primary: #0f766e;
-            --secondary: #134e4a;
+            --gold: #f59e0b;   /* المركز 1 */
+            --silver: #94a3b8; /* المركز 2 */
+            --bronze: #d97706; /* المركز 3 */
             
-            /* Status Colors */
+            /* ألوان الحالات */
             --c-total: #334155;
-            --c-new: #3b82f6;        
-            --c-pending: #16a34a;    
-            --c-approved: #059669;   
-            --c-followup: #6b7280;   
-            --c-late: #dc2626;       
+            --c-new: #3b82f6;
+            --c-pending: #16a34a;
+            --c-approved: #059669;
+            --c-followup: #6b7280;
+            --c-late: #dc2626;
         }
 
-        /* --- Header --- */
+        /* --- Header (مطابق لـ coordinator.html) --- */
         .main-header {
-            background: #115e59;
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             color: white; padding: 1rem 1.5rem 3rem;
-            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
-            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
+            border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.25);
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
-        .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
-        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
-        .page-label { font-size: 0.75rem; color: #ccfbf1; text-align: center; margin-top: 4px; font-weight: 700; background: rgba(255,255,255,0.1); display: inline-block; padding: 2px 10px; border-radius: 12px; }
+        .dept-title { font-size: 1.1rem; font-weight: 800; line-height: 1.2; text-align: center; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.9; text-align: center; font-family: sans-serif; letter-spacing: 0.5px; margin-top: 4px; }
+        .page-badge { 
+            background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; 
+            font-size: 0.8rem; font-weight: 700; margin-top: 8px; display: inline-block;
+            backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2);
+        }
 
-        /* --- Filter Container --- */
+        /* --- Filters Section --- */
         .filter-container {
             margin: -2.5rem 1rem 1rem; position: relative; z-index: 20;
             background: white; border-radius: 16px; padding: 1rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e5e7eb;
         }
+        .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         
-        .filters-row {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-        }
-
         @media (min-width: 1024px) {
             .filter-container { max-width: 1200px; margin-left: auto; margin-right: auto; padding: 1.5rem; }
-            .filters-row { grid-template-columns: 1fr 1fr; width: 50%; margin: 0 auto; }
+            .filter-grid { grid-template-columns: 1fr 1fr 1fr; } /* إضافة زر التحديث */
         }
 
-        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 3px; display: block; }
-        .f-input {
-            width: 100%; height: 42px; padding: 0 12px; 
-            border: 1px solid #cbd5e1; border-radius: 10px;
-            font-size: 0.9rem; outline: none; background: #fff; 
-            transition: all 0.2s; color: #1e293b; cursor: pointer;
+        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
+        .f-select {
+            width: 100%; height: 42px; padding: 0 12px; border: 1px solid #e2e8f0; 
+            border-radius: 10px; font-size: 0.9rem; outline: none; background: #f9fafb; 
+            transition: 0.2s; color: #1e293b; font-weight: 600;
         }
-        .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+        .f-select:focus { border-color: #0f766e; background: white; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
 
-        /* --- Stats Cards (Grid) --- */
+        /* --- Stats Cards Grid --- */
         .stats-grid {
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
             padding: 0 1rem 1.5rem; max-width: 1200px; margin: 0 auto;
         }
         @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (min-width: 1024px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
+        @media (min-width: 1280px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
 
         .stat-card {
-            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px;
-            text-align: center; display: flex; flex-direction: column; justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); min-height: 80px; transition: transform 0.2s;
+            background: white; border-radius: 12px; padding: 12px;
+            border: 1px solid #e2e8f0; text-align: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); min-height: 85px;
         }
-        .stat-card:hover { transform: translateY(-2px); }
-        .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-        .stat-lbl { font-size: 0.75rem; font-weight: 700; color: #64748b; }
+        .stat-num { font-size: 1.6rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+        .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
-        /* Colors classes */
-        .c-total { color: var(--c-total); } .c-new { color: var(--c-new); }
-        .c-pending { color: var(--c-pending); } .c-approved { color: var(--c-approved); }
-        .c-followup { color: var(--c-followup); } .c-late { color: var(--c-late); }
+        /* Colors for Stats */
+        .txt-total { color: var(--c-total); } .txt-new { color: var(--c-new); }
+        .txt-pending { color: var(--c-pending); } .txt-approved { color: var(--c-approved); }
+        .txt-followup { color: var(--c-followup); } .txt-late { color: var(--c-late); }
 
-        /* --- Leaderboard Cards --- */
-        .leaderboard-container {
+        /* --- Leaderboard (Cards) --- */
+        .leaderboard-wrapper {
             padding: 0 1rem 5rem; display: grid; gap: 1rem;
             max-width: 1200px; margin: 0 auto;
         }
-        @media (min-width: 768px) { .leaderboard-container { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1280px) { .leaderboard-container { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 768px) { .leaderboard-wrapper { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1280px) { .leaderboard-wrapper { grid-template-columns: repeat(3, 1fr); } }
 
         .emp-card {
-            background: white; border-radius: 16px; overflow: hidden;
+            background: white; border-radius: 16px; overflow: hidden; position: relative;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb;
-            transition: all 0.2s; position: relative;
+            transition: transform 0.2s;
         }
-        
-        /* Medal & Rank Styling */
-        .rank-badge {
-            position: absolute; top: 12px; left: 12px;
-            width: 32px; height: 32px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 1rem; color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 5;
-        }
-        .rank-1 { background: linear-gradient(135deg, #fbbf24, #d97706); border: 2px solid #fffbeb; } /* Gold */
-        .rank-2 { background: linear-gradient(135deg, #94a3b8, #64748b); border: 2px solid #f1f5f9; } /* Silver */
-        .rank-3 { background: linear-gradient(135deg, #d97706, #92400e); border: 2px solid #fef3c7; } /* Bronze */
-        .rank-other { background: #f1f5f9; color: #64748b; font-size: 0.8rem; }
+        .emp-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
 
+        /* Badge Styling */
+        .rank-badge {
+            position: absolute; top: 12px; left: 12px; width: 36px; height: 36px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1rem; color: white; z-index: 5;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid white;
+        }
+        .rank-1 { background: linear-gradient(135deg, #fbbf24, #d97706); } /* Gold */
+        .rank-2 { background: linear-gradient(135deg, #94a3b8, #64748b); } /* Silver */
+        .rank-3 { background: linear-gradient(135deg, #d97706, #92400e); } /* Bronze */
+        .rank-other { background: #f1f5f9; color: #64748b; font-size: 0.9rem; border: 1px solid #e2e8f0; }
+
+        /* Card Header */
         .emp-header {
             padding: 1.5rem 1.25rem 1rem; text-align: center; border-bottom: 1px dashed #e2e8f0;
             background: linear-gradient(to bottom, #f8fafc, white);
         }
         .emp-avatar {
-            width: 56px; height: 56px; margin: 0 auto 8px; background: #e0f2fe; color: #0284c7;
+            width: 64px; height: 64px; margin: 0 auto 10px; background: #f0fdfa; color: #0f766e;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; font-weight: 700; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            font-size: 1.5rem; font-weight: 700; border: 4px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .emp-name { font-size: 1rem; font-weight: 800; color: #1e293b; margin-bottom: 2px; }
-        .emp-dept { font-size: 0.75rem; color: #64748b; font-weight: 600; }
+        .emp-name { font-size: 1.1rem; font-weight: 800; color: #1e293b; margin-bottom: 2px; }
+        .emp-rate-lbl { font-size: 0.75rem; color: #64748b; font-weight: 600; }
 
         /* Progress Bar */
-        .progress-container { margin-top: 10px; position: relative; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-        .progress-bar { height: 100%; border-radius: 4px; transition: width 1s ease-in-out; }
-        .rate-text { font-size: 0.8rem; font-weight: 700; margin-top: 4px; display: flex; justify-content: space-between; }
+        .progress-wrapper { margin-top: 12px; }
+        .progress-bg { height: 10px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 99px; transition: width 1s ease-in-out; }
+        .progress-text { display: flex; justify-content: space-between; margin-top: 4px; font-size: 0.75rem; font-weight: 700; }
 
+        /* Stats Inside Card */
         .emp-body { padding: 1.25rem; }
-        
-        /* Stats Grid inside Card */
         .mini-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; text-align: center; margin-bottom: 1rem; }
-        .ms-box { background: #f8fafc; border-radius: 8px; padding: 6px 2px; border: 1px solid #f1f5f9; }
-        .ms-val { font-size: 0.9rem; font-weight: 800; line-height: 1; }
-        .ms-lbl { font-size: 0.6rem; color: #64748b; }
+        .ms-item { background: #f8fafc; border-radius: 8px; padding: 6px 2px; border: 1px solid #f1f5f9; }
+        .ms-val { font-size: 1rem; font-weight: 800; line-height: 1; }
+        .ms-lbl { font-size: 0.6rem; color: #64748b; font-weight: 600; }
 
         /* Entity List */
         .entity-list { margin-top: 1rem; }
-        .entity-item { 
+        .entity-row { 
             display: flex; justify-content: space-between; align-items: center; 
-            font-size: 0.75rem; padding: 6px 0; border-bottom: 1px solid #f1f5f9; 
+            font-size: 0.8rem; padding: 6px 0; border-bottom: 1px solid #f1f5f9; 
         }
-        .entity-item:last-child { border-bottom: none; }
-        .entity-name { color: #475569; font-weight: 600; }
-        .entity-count { background: #f1f5f9; padding: 2px 8px; border-radius: 10px; color: #0f172a; font-weight: 700; }
+        .entity-row:last-child { border-bottom: none; }
+        .ent-name { color: #475569; font-weight: 600; }
+        .ent-count { background: #f1f5f9; padding: 2px 8px; border-radius: 10px; color: #0f172a; font-weight: 700; font-size: 0.75rem; }
 
+        /* Footer */
         .emp-footer { padding: 10px; border-top: 1px solid #f1f5f9; }
         .btn-details {
-            width: 100%; padding: 8px; background: white; border: 1px solid #cbd5e1;
-            border-radius: 8px; font-size: 0.8rem; font-weight: 700; color: #475569;
+            width: 100%; padding: 10px; background: white; border: 1px solid #cbd5e1;
+            border-radius: 10px; font-size: 0.85rem; font-weight: 700; color: #475569;
             display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
             transition: 0.2s;
         }
         .btn-details:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
 
-        /* --- Side Menu & Modal --- */
-        /* Copying exact styles from coordinator.html for consistency */
-        .side-menu { position: fixed; top: 0; right: -250px; width: 250px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        /* --- Loading & Empty --- */
+        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #64748b; font-weight: 700; background: white; border-radius: 16px; border: 1px dashed #e2e8f0; }
+
+        /* --- Side Menu & Modal & Nav (Standard) --- */
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
         .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
         
-        /* Modal */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
-        .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
-        .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
-        .modal-body { padding: 1.5rem; }
-
-        /* Loader */
-        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
-
-        /* Bottom Nav */
+        .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); } .nav-btn i { width: 22px; height: 22px; }
@@ -191,47 +190,47 @@
 
     <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
     <aside class="side-menu" id="side-menu">
-        <div class="p-5 bg-teal-50 border-b border-teal-100 text-center">
-            <div class="w-14 h-14 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-2">
-                <i data-lucide="user" class="w-7 h-7 text-teal-700"></i>
+        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+                <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
             </div>
             <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
             <p class="text-xs text-teal-600" id="menu-role">...</p>
         </div>
-        <nav class="flex-1 p-3 space-y-1">
-            <a href="index.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="home" class="w-4 h-4"></i> الرئيسية</a>
-            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Dashboard</a>
-            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
-            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
-            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="index.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="home" class="w-5 h-5"></i> الرئيسية</a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> Dashboard</a>
+            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="users" class="w-5 h-5"></i> المنسق</a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-5 h-4"></i> النماذج</a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-5 h-5"></i> الإشعارات</a>
         </nav>
         <div class="p-4 border-t">
-            <button onclick="auth.logout()" class="w-full flex items-center justify-center gap-2 p-2 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
-                <i data-lucide="log-out" class="w-4 h-4"></i> خروج
+            <button onclick="auth.logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
             </button>
         </div>
     </aside>
 
     <header class="main-header">
         <div class="max-w-[1200px] mx-auto flex justify-between items-center">
-            <button onclick="toggleMenu()" class="text-white"><i data-lucide="menu" class="w-7 h-7"></i></button>
+            <button onclick="toggleMenu()" class="p-2 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
             <div class="text-center">
                 <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
-                <p class="dept-subtitle">Internal Audit & Governance Dept</p>
-                <div class="flex justify-center mt-1"><span class="page-label">Dashboard</span></div>
+                <p class="dept-subtitle">Internal Audit & Governance Department</p>
+                <div class="flex justify-center"><span class="page-badge">Dashboard</span></div>
             </div>
-            <button onclick="window.location.href='notifications.html'" class="text-white relative">
+            <button onclick="window.location.href='notifications.html'" class="p-2 text-white relative">
                 <i data-lucide="bell" class="w-6 h-6"></i>
-                <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
+                <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
             </button>
         </div>
     </header>
 
     <div class="filter-container">
-        <div class="filters-row">
+        <div class="filter-grid">
             <div>
-                <label class="f-label">السنة</label>
-                <select id="f-year" class="f-input" onchange="loadDashboardData()">
+                <label class="f-label">السنة المالية</label>
+                <select id="f-year" class="f-select" onchange="loadDashboardData()">
                     <option value="2024">2024</option>
                     <option value="2025">2025</option>
                     <option value="2026" selected>2026</option>
@@ -242,8 +241,8 @@
                 </select>
             </div>
             <div>
-                <label class="f-label">الفترة</label>
-                <select id="f-period" class="f-input" onchange="loadDashboardData()">
+                <label class="f-label">الفترة الزمنية</label>
+                <select id="f-period" class="f-select" onchange="loadDashboardData()">
                     <option value="">الكل (All)</option>
                     <optgroup label="الربع سنوي">
                         <option value="Q1">الربع الأول (Q1)</option>
@@ -271,52 +270,58 @@
     </div>
 
     <div class="stats-grid" id="stats-container">
-        <div class="col-span-full text-center py-4 text-gray-400">جاري التحميل...</div>
+        <div class="col-span-full text-center py-4 text-gray-400">جاري تحميل الإحصائيات...</div>
     </div>
 
-    <div class="leaderboard-container" id="leaderboard-list">
+    <div class="leaderboard-wrapper" id="leaderboard-container">
         <div class="loader-box">
-            <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i>
-            <p>جاري تحميل البيانات...</p>
+            <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto mb-3 text-teal-600"></i>
+            <p class="font-bold text-gray-500">جاري تحليل بيانات الأداء...</p>
         </div>
     </div>
 
-    <div class="modal-overlay" id="detail-modal">
+    <div class="modal-overlay" id="emp-modal">
         <div class="modal-box">
-            <div class="modal-header">
+            <div class="flex justify-between items-center p-4 border-b border-gray-100 bg-gray-50">
                 <div>
-                    <h3 class="font-bold text-lg text-gray-900" id="m-title">التفاصيل</h3>
-                    <p class="text-xs text-gray-500" id="m-subtitle">...</p>
+                    <h3 class="font-bold text-lg text-gray-900" id="m-name">...</h3>
+                    <p class="text-xs text-gray-500" id="m-dept">...</p>
                 </div>
-                <button onclick="closeModal()" class="p-2 bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeModal()" class="p-2 bg-white rounded-full border border-gray-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
-            <div class="modal-body" id="m-content">
+            
+            <div class="p-5" id="m-body">
                 </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-btn"><i data-lucide="home"></i> الرئيسية</a>
-        <a href="distribution.html" class="nav-btn active"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
-        <a href="coordinator.html" class="nav-btn"><i data-lucide="users"></i> المنسق</a>
-        <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
-        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
+        <a href="index.html" class="nav-btn"><i data-lucide="home"></i>الرئيسية</a>
+        <a href="distribution.html" class="nav-btn active"><i data-lucide="bar-chart-2"></i>المؤشرات</a>
+        <a href="coordinator.html" class="nav-btn"><i data-lucide="users"></i>المنسق</a>
+        <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i>النماذج</a>
+        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i>الإشعارات</a>
     </nav>
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allEmployees = [];
+        let currentEmployeesData = [];
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Auth Check
             if (typeof auth === 'undefined') { window.location.href = 'index.html'; return; }
             const user = auth.checkAuth();
             if (!user) { window.location.href = 'index.html'; return; }
 
+            // 2. Set User Info in Sidebar
             document.getElementById('menu-user').textContent = user.name;
             document.getElementById('menu-role').textContent = user.role;
 
+            // 3. Load Data
             await loadDashboardData();
         });
 
@@ -325,152 +330,152 @@
         async function loadDashboardData() {
             const year = document.getElementById('f-year').value;
             const period = document.getElementById('f-period').value;
-            
-            const container = document.getElementById('leaderboard-list');
+            const container = document.getElementById('leaderboard-container');
+            const statsContainer = document.getElementById('stats-container');
+
+            // Loading State
             container.innerHTML = `
                 <div class="loader-box">
-                    <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i>
-                    <p>جاري تحديث البيانات...</p>
+                    <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto mb-3 text-teal-600"></i>
+                    <p class="font-bold text-gray-500">جاري تحديث البيانات...</p>
                 </div>`;
 
             try {
                 const API_URL = CONFIG.API_URL;
-                const res = await fetch(API_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ 
-                        action: 'getDashboardData', 
-                        year: year, 
-                        period: period 
-                    }) 
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'getDashboardData',
+                        year: year,
+                        period: period
+                    })
                 });
+                
                 const data = await res.json();
 
                 if (data.success) {
-                    allEmployees = data.employees || [];
-                    calculateAndRenderStats(data.employees); // Calculate stats locally from employee data
+                    currentEmployeesData = data.employees || [];
+                    
+                    // Render Stats
+                    renderGlobalStats(data.stats);
+                    
+                    // Render Leaderboard
                     renderLeaderboard(data.employees);
                 } else {
-                    container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">${data.error || 'لا توجد بيانات'}</div>`;
+                    container.innerHTML = `<div class="empty-state"><i data-lucide="alert-triangle" class="w-8 h-8 mx-auto mb-2 text-red-400"></i>${data.error || 'فشل تحميل البيانات'}</div>`;
+                    lucide.createIcons();
                 }
-            } catch (e) {
-                console.error(e);
-                container.innerHTML = `<div class="col-span-full py-12 text-center text-red-500 font-bold">خطأ في الاتصال بالسيرفر</div>`;
+
+            } catch (error) {
+                console.error("Dashboard Error:", error);
+                container.innerHTML = `<div class="empty-state"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2 text-red-400"></i>خطأ في الاتصال بالخادم</div>`;
+                lucide.createIcons();
             }
         }
 
-        // Calculate global stats from the employee list to ensure consistency with the 6 requested cards
-        function calculateAndRenderStats(employees) {
-            let s = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
-
-            employees.forEach(emp => {
-                if(emp.tasks) {
-                    emp.tasks.forEach(t => {
-                        s.total++;
-                        const status = (t.status || '').trim();
-                        if (status.includes('جديد')) s.new++;
-                        else if (status.includes('بانتظار') || status.includes('للاعتماد')) s.pending++;
-                        else if (status.includes('تم') || status.includes('منتهي')) s.approved++;
-                        else if (status.includes('متابعة')) s.followup++;
-                        else if (status.includes('متأخر')) s.late++;
-                    });
-                }
-            });
-
-            // If tasks array isn't populated fully in dashboard mode, we might rely on the pre-calculated numbers from backend
-            // But getDashboardData backend usually returns simple stats. Let's use the aggregated counts.
-            
-            const statsHtml = `
-                <div class="stat-card"><span class="stat-num c-total">${s.total}</span><span class="stat-lbl">الإجمالي</span></div>
-                <div class="stat-card"><span class="stat-num c-new">${s.new}</span><span class="stat-lbl">جديد</span></div>
-                <div class="stat-card"><span class="stat-num c-pending">${s.pending}</span><span class="stat-lbl">بانتظار الاعتماد</span></div>
-                <div class="stat-card"><span class="stat-num c-approved">${s.approved}</span><span class="stat-lbl">تم الاعتماد والأرشفة</span></div>
-                <div class="stat-card"><span class="stat-num c-followup">${s.followup}</span><span class="stat-lbl">بحاجة للمتابعة</span></div>
-                <div class="stat-card"><span class="stat-num c-late">${s.late}</span><span class="stat-lbl">متأخر</span></div>
+        function renderGlobalStats(stats) {
+            const html = `
+                <div class="stat-card"><span class="stat-num txt-total">${stats.total}</span><span class="stat-lbl">الإجمالي</span></div>
+                <div class="stat-card"><span class="stat-num txt-new">${stats.new || 0}</span><span class="stat-lbl">جديد</span></div>
+                <div class="stat-card"><span class="stat-num txt-pending">${stats.pending}</span><span class="stat-lbl">بانتظار الاعتماد</span></div>
+                <div class="stat-card"><span class="stat-num txt-approved">${stats.completed}</span><span class="stat-lbl">تم الاعتماد والأرشفة</span></div>
+                <div class="stat-card"><span class="stat-num txt-followup">${stats.inProgress || 0}</span><span class="stat-lbl">بحاجة للمتابعة</span></div>
+                <div class="stat-card"><span class="stat-num txt-late">${stats.overdue}</span><span class="stat-lbl">متأخر</span></div>
             `;
-            document.getElementById('stats-container').innerHTML = statsHtml;
+            document.getElementById('stats-container').innerHTML = html;
         }
 
         function renderLeaderboard(employees) {
-            const container = document.getElementById('leaderboard-list');
+            const container = document.getElementById('leaderboard-container');
+            
             if (!employees || employees.length === 0) {
-                container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">لا توجد بيانات للفترة المحددة</div>`;
+                container.innerHTML = `<div class="empty-state">لا توجد بيانات للفترة المحددة</div>`;
                 return;
             }
 
-            // Sort by completion rate descending
-            employees.sort((a, b) => b.rate - a.rate);
+            // Sort by Rate (Desc) -> Then by Total Tasks (Desc)
+            employees.sort((a, b) => {
+                if (b.rate !== a.rate) return b.rate - a.rate;
+                return b.total - a.total;
+            });
 
             let html = '';
             employees.forEach((emp, index) => {
                 const rank = index + 1;
-                let rankClass = 'rank-other';
-                let rankIcon = rank;
-                
-                if (rank === 1) { rankClass = 'rank-1'; rankIcon = '🥇'; }
-                else if (rank === 2) { rankClass = 'rank-2'; rankIcon = '🥈'; }
-                else if (rank === 3) { rankClass = 'rank-3'; rankIcon = '🥉'; }
+                let badgeClass = 'rank-other';
+                let rankLabel = rank;
 
-                // Progress Bar Color
+                if (rank === 1) { badgeClass = 'rank-1'; rankLabel = '🥇'; }
+                else if (rank === 2) { badgeClass = 'rank-2'; rankLabel = '🥈'; }
+                else if (rank === 3) { badgeClass = 'rank-3'; rankLabel = '🥉'; }
+
+                // Progress Color
                 let progressColor = 'bg-red-500';
-                if (emp.rate >= 90) progressColor = 'bg-emerald-500';
-                else if (emp.rate >= 70) progressColor = 'bg-yellow-500';
+                let textColor = 'text-red-600';
+                if (emp.rate >= 90) { progressColor = 'bg-emerald-500'; textColor = 'text-emerald-600'; }
+                else if (emp.rate >= 70) { progressColor = 'bg-yellow-500'; textColor = 'text-yellow-600'; }
 
-                // Entity Distribution
-                const distMap = {};
-                if(emp.tasks) {
+                // Calculate Top Entities
+                const entityCounts = {};
+                if (emp.tasks) {
                     emp.tasks.forEach(t => {
-                        const ent = t.entity || 'أخرى';
-                        distMap[ent] = (distMap[ent] || 0) + 1;
+                        const ent = t.entity || 'جهة غير محددة';
+                        entityCounts[ent] = (entityCounts[ent] || 0) + 1;
                     });
                 }
-                const topEntities = Object.entries(distMap)
-                    .sort((a,b) => b[1] - a[1])
-                    .slice(0, 5); // Top 5
+                
+                const topEntities = Object.entries(entityCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5);
 
-                let distHtml = '';
+                let entitiesHtml = '';
                 topEntities.forEach(([name, count]) => {
-                    distHtml += `
-                        <div class="entity-item">
-                            <span class="entity-name">${name}</span>
-                            <span class="entity-count">${count}</span>
-                        </div>`;
+                    entitiesHtml += `
+                        <div class="entity-row">
+                            <span class="ent-name">${name}</span>
+                            <span class="ent-count">${count}</span>
+                        </div>
+                    `;
                 });
 
                 html += `
                 <div class="emp-card">
-                    <div class="rank-badge ${rankClass}">${rankIcon}</div>
+                    <div class="rank-badge ${badgeClass}">${rankLabel}</div>
                     
                     <div class="emp-header">
                         <div class="emp-avatar">${getInitials(emp.name)}</div>
                         <h3 class="emp-name">${emp.name}</h3>
-                        <p class="emp-dept">${emp.dept || 'الفريق الإداري'}</p>
+                        <p class="emp-rate-lbl">${emp.dept || 'الإدارة العامة'}</p>
                         
-                        <div class="progress-container">
-                            <div class="progress-bar ${progressColor}" style="width: ${emp.rate}%"></div>
-                        </div>
-                        <div class="rate-text">
-                            <span class="text-gray-500">معدل الإنجاز</span>
-                            <span class="${progressColor.replace('bg-','text-')}">${emp.rate}%</span>
+                        <div class="progress-wrapper">
+                            <div class="progress-bg">
+                                <div class="progress-fill ${progressColor}" style="width: ${emp.rate}%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span class="text-gray-400">نسبة الإنجاز</span>
+                                <span class="${textColor}">${emp.rate}%</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="emp-body">
                         <div class="mini-stats">
-                            <div class="ms-box"><div class="ms-val text-gray-700">${emp.total}</div><div class="ms-lbl">الكل</div></div>
-                            <div class="ms-box"><div class="ms-val text-emerald-600">${emp.completed}</div><div class="ms-lbl">منجز</div></div>
-                            <div class="ms-box"><div class="ms-val text-blue-600">${emp.pending}</div><div class="ms-lbl">جاري</div></div>
-                            <div class="ms-box"><div class="ms-val text-red-600">${emp.overdue}</div><div class="ms-lbl">متأخر</div></div>
+                            <div class="ms-item"><div class="ms-val text-gray-700">${emp.total}</div><div class="ms-lbl">إجمالي</div></div>
+                            <div class="ms-item"><div class="ms-val text-emerald-600">${emp.completed}</div><div class="ms-lbl">منجز</div></div>
+                            <div class="ms-item"><div class="ms-val text-blue-600">${emp.pending}</div><div class="ms-lbl">جاري</div></div>
+                            <div class="ms-item"><div class="ms-val text-red-600">${emp.overdue}</div><div class="ms-lbl">متأخر</div></div>
                         </div>
 
                         <div class="entity-list">
-                            <p class="text-xs font-bold text-gray-400 mb-2">🏛️ التوزيع حسب الجهة</p>
-                            ${distHtml || '<p class="text-center text-xs text-gray-300">لا توجد بيانات</p>'}
+                            <p class="text-xs font-bold text-gray-400 mb-2">🏛️ أكثر الجهات تكراراً</p>
+                            ${entitiesHtml || '<p class="text-center text-xs text-gray-300 py-2">لا توجد مهام موزعة</p>'}
                         </div>
                     </div>
 
                     <div class="emp-footer">
-                        <button onclick="openModal('${emp.name}')" class="btn-details">
-                            <i data-lucide="eye" class="w-4 h-4"></i> عرض التفاصيل
+                        <button onclick="openDetails('${emp.name}')" class="btn-details">
+                            <i data-lucide="eye" class="w-4 h-4"></i> عرض التفاصيل الكاملة
                         </button>
                     </div>
                 </div>`;
@@ -480,72 +485,67 @@
             lucide.createIcons();
         }
 
-        function openModal(empName) {
-            const emp = allEmployees.find(e => e.name === empName);
+        function openDetails(empName) {
+            const emp = currentEmployeesData.find(e => e.name === empName);
             if (!emp) return;
 
-            document.getElementById('m-title').textContent = emp.name;
-            document.getElementById('m-subtitle').textContent = emp.dept || 'تقرير الأداء التفصيلي';
+            document.getElementById('m-name').textContent = emp.name;
+            document.getElementById('m-dept').textContent = `معدل إنجاز: ${emp.rate}% | إجمالي: ${emp.total}`;
 
-            let tasksHtml = '';
+            let contentHtml = '';
+            
+            // Tasks Table
             if (emp.tasks && emp.tasks.length > 0) {
-                tasksHtml = `
-                <div class="overflow-x-auto mt-4">
+                contentHtml = `
+                <div class="overflow-x-auto border rounded-lg">
                     <table class="w-full text-right text-xs">
-                        <thead class="bg-gray-50 text-gray-500">
+                        <thead class="bg-gray-50 text-gray-500 font-bold border-b">
                             <tr>
-                                <th class="p-2">الرقم</th>
-                                <th class="p-2">الجهة</th>
-                                <th class="p-2">الموضوع</th>
-                                <th class="p-2">التاريخ</th>
-                                <th class="p-2">الحالة</th>
+                                <th class="p-3">الموضوع</th>
+                                <th class="p-3">الجهة</th>
+                                <th class="p-3">التاريخ</th>
+                                <th class="p-3">الحالة</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             ${emp.tasks.map(t => `
                                 <tr>
-                                    <td class="p-2 font-mono text-gray-400">#${t.id}</td>
-                                    <td class="p-2 font-bold text-gray-700">${t.entity}</td>
-                                    <td class="p-2 text-gray-600 truncate max-w-[150px]">${t.subject}</td>
-                                    <td class="p-2 text-gray-500">${t.date}</td>
-                                    <td class="p-2"><span class="px-2 py-1 rounded text-[10px] font-bold ${getStatusColor(t.status)}">${t.status}</span></td>
+                                    <td class="p-3 font-bold text-gray-700 max-w-[120px] truncate">${t.subject}</td>
+                                    <td class="p-3 text-gray-600">${t.entity}</td>
+                                    <td class="p-3 text-gray-500 font-mono">${t.date}</td>
+                                    <td class="p-3">
+                                        <span class="px-2 py-1 rounded text-[10px] font-bold ${getStatusClass(t.status)}">
+                                            ${t.status}
+                                        </span>
+                                    </td>
                                 </tr>
                             `).join('')}
                         </tbody>
                     </table>
                 </div>`;
             } else {
-                tasksHtml = '<p class="text-center py-4 text-gray-400">لا توجد تفاصيل متاحة</p>';
+                contentHtml = `<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-lg">لا توجد مهام مسجلة</div>`;
             }
 
-            document.getElementById('m-content').innerHTML = `
-                <div class="grid grid-cols-2 gap-4 mb-4 text-center">
-                    <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
-                        <p class="text-emerald-800 text-lg font-bold">${emp.completed}</p>
-                        <p class="text-emerald-600 text-xs">معاملات منجزة</p>
-                    </div>
-                    <div class="bg-red-50 p-3 rounded-lg border border-red-100">
-                        <p class="text-red-800 text-lg font-bold">${emp.overdue}</p>
-                        <p class="text-red-600 text-xs">معاملات متأخرة</p>
-                    </div>
-                </div>
-                <h4 class="font-bold text-sm text-gray-700 border-b pb-2">سجل المعاملات</h4>
-                ${tasksHtml}
-            `;
-            
-            document.getElementById('detail-modal').classList.add('open');
+            document.getElementById('m-body').innerHTML = contentHtml;
+            document.getElementById('emp-modal').classList.add('open');
         }
 
-        function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
+        function closeModal() {
+            document.getElementById('emp-modal').classList.remove('open');
+        }
 
         function getInitials(name) {
-            return name ? name.split(' ').slice(0, 2).map(n => n[0]).join('') : '?';
+            if (!name) return '?';
+            const parts = name.trim().split(' ');
+            if (parts.length === 1) return parts[0][0];
+            return (parts[0][0] + parts[1][0]);
         }
 
-        function getStatusColor(status) {
-            if(status.includes('تم') || status.includes('منتهي')) return 'bg-emerald-100 text-emerald-700';
-            if(status.includes('متأخر')) return 'bg-red-100 text-red-700';
-            if(status.includes('جديد')) return 'bg-blue-100 text-blue-700';
+        function getStatusClass(status) {
+            if (status.includes('تم') || status.includes('منتهي')) return 'bg-emerald-100 text-emerald-700';
+            if (status.includes('متأخر')) return 'bg-red-100 text-red-700';
+            if (status.includes('جديد')) return 'bg-blue-100 text-blue-700';
             return 'bg-gray-100 text-gray-600';
         }
     </script>
