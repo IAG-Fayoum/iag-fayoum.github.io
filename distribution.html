@@ -2,356 +2,551 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>المؤشرات | نظام الحوكمة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+    <title>المؤشرات | IAG</title>
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon.png">
+    <link rel="shortcut icon" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
-        * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         
-        body { background-color: #f8fafc; padding-bottom: 80px; }
+        /* --- Colors Variables --- */
+        :root {
+            --primary: #0f766e;
+            --secondary: #134e4a;
+            
+            /* Status Colors */
+            --c-total: #334155;
+            --c-new: #3b82f6;        
+            --c-pending: #16a34a;    
+            --c-approved: #059669;   
+            --c-followup: #6b7280;   
+            --c-late: #dc2626;       
+        }
 
-        /* --- Header Styles --- */
-        .header-bg {
-            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            padding: 1.5rem 1.5rem 5rem;
-            color: white;
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
+        /* --- Header --- */
+        .main-header {
+            background: #115e59;
+            color: white; padding: 1rem 1.5rem 3rem;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
             position: relative; z-index: 10;
-            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
+            padding-top: max(1rem, env(safe-area-inset-top));
+        }
+        .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
+        .page-label { font-size: 0.75rem; color: #ccfbf1; text-align: center; margin-top: 4px; font-weight: 700; background: rgba(255,255,255,0.1); display: inline-block; padding: 2px 10px; border-radius: 12px; }
+
+        /* --- Filter Container --- */
+        .filter-container {
+            margin: -2.5rem 1rem 1rem; position: relative; z-index: 20;
+            background: white; border-radius: 16px; padding: 1rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;
+        }
+        
+        .filters-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
         }
 
-        .logo-circle-small {
-            width: 50px; height: 50px; background: white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid rgba(255,255,255,0.8);
+        @media (min-width: 1024px) {
+            .filter-container { max-width: 1200px; margin-left: auto; margin-right: auto; padding: 1.5rem; }
+            .filters-row { grid-template-columns: 1fr 1fr; width: 50%; margin: 0 auto; }
         }
 
-        /* --- Stats Cards --- */
+        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 3px; display: block; }
+        .f-input {
+            width: 100%; height: 42px; padding: 0 12px; 
+            border: 1px solid #cbd5e1; border-radius: 10px;
+            font-size: 0.9rem; outline: none; background: #fff; 
+            transition: all 0.2s; color: #1e293b; cursor: pointer;
+        }
+        .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+
+        /* --- Stats Cards (Grid) --- */
         .stats-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
-            margin: -4rem 1rem 1.5rem; position: relative; z-index: 20;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+            padding: 0 1rem 1.5rem; max-width: 1200px; margin: 0 auto;
         }
-        @media (min-width: 1024px) { .stats-grid { grid-template-columns: repeat(4, 1fr); margin-top: 20px; } }
+        @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1024px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
 
         .stat-card {
-            background: white; border-radius: 20px; padding: 1.25rem;
-            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08); border: 1px solid #e2e8f0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; transition: transform 0.2s;
+            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px;
+            text-align: center; display: flex; flex-direction: column; justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); min-height: 80px; transition: transform 0.2s;
         }
-        .stat-card:hover { transform: translateY(-3px); }
+        .stat-card:hover { transform: translateY(-2px); }
+        .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+        .stat-lbl { font-size: 0.75rem; font-weight: 700; color: #64748b; }
+
+        /* Colors classes */
+        .c-total { color: var(--c-total); } .c-new { color: var(--c-new); }
+        .c-pending { color: var(--c-pending); } .c-approved { color: var(--c-approved); }
+        .c-followup { color: var(--c-followup); } .c-late { color: var(--c-late); }
+
+        /* --- Leaderboard Cards --- */
+        .leaderboard-container {
+            padding: 0 1rem 5rem; display: grid; gap: 1rem;
+            max-width: 1200px; margin: 0 auto;
+        }
+        @media (min-width: 768px) { .leaderboard-container { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1280px) { .leaderboard-container { grid-template-columns: repeat(3, 1fr); } }
+
+        .emp-card {
+            background: white; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb;
+            transition: all 0.2s; position: relative;
+        }
         
-        .stat-icon {
-            width: 40px; height: 40px; border-radius: 12px; margin-bottom: 8px;
+        /* Medal & Rank Styling */
+        .rank-badge {
+            position: absolute; top: 12px; left: 12px;
+            width: 32px; height: 32px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1rem; color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 5;
         }
+        .rank-1 { background: linear-gradient(135deg, #fbbf24, #d97706); border: 2px solid #fffbeb; } /* Gold */
+        .rank-2 { background: linear-gradient(135deg, #94a3b8, #64748b); border: 2px solid #f1f5f9; } /* Silver */
+        .rank-3 { background: linear-gradient(135deg, #d97706, #92400e); border: 2px solid #fef3c7; } /* Bronze */
+        .rank-other { background: #f1f5f9; color: #64748b; font-size: 0.8rem; }
 
-        /* Colors */
-        .sc-blue { background: #eff6ff; color: #2563eb; }
-        .sc-orange { background: #fff7ed; color: #ea580c; }
-        .sc-green { background: #f0fdf4; color: #16a34a; }
-        .sc-red { background: #fef2f2; color: #dc2626; }
+        .emp-header {
+            padding: 1.5rem 1.25rem 1rem; text-align: center; border-bottom: 1px dashed #e2e8f0;
+            background: linear-gradient(to bottom, #f8fafc, white);
+        }
+        .emp-avatar {
+            width: 56px; height: 56px; margin: 0 auto 8px; background: #e0f2fe; color: #0284c7;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 700; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .emp-name { font-size: 1rem; font-weight: 800; color: #1e293b; margin-bottom: 2px; }
+        .emp-dept { font-size: 0.75rem; color: #64748b; font-weight: 600; }
 
-        /* --- Progress Bar --- */
-        .progress-card {
-            background: white; margin: 0 1rem 1.5rem; padding: 1.5rem;
-            border-radius: 20px; border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
-        }
-        .prog-bar-bg { height: 10px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-top: 10px; }
-        .prog-bar-fill { height: 100%; background: linear-gradient(90deg, #0f766e, #2dd4bf); width: 0%; transition: width 1s ease-out; }
+        /* Progress Bar */
+        .progress-container { margin-top: 10px; position: relative; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .progress-bar { height: 100%; border-radius: 4px; transition: width 1s ease-in-out; }
+        .rate-text { font-size: 0.8rem; font-weight: 700; margin-top: 4px; display: flex; justify-content: space-between; }
 
-        /* --- Table & List --- */
-        .recent-card {
-            background: white; margin: 0 1rem; padding: 0;
-            border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
-        }
-        .table-row { display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
-        .table-row:last-child { border: none; }
+        .emp-body { padding: 1.25rem; }
+        
+        /* Stats Grid inside Card */
+        .mini-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; text-align: center; margin-bottom: 1rem; }
+        .ms-box { background: #f8fafc; border-radius: 8px; padding: 6px 2px; border: 1px solid #f1f5f9; }
+        .ms-val { font-size: 0.9rem; font-weight: 800; line-height: 1; }
+        .ms-lbl { font-size: 0.6rem; color: #64748b; }
 
-        /* Status Badges */
-        .status-badge-small { font-size: 0.65rem; padding: 3px 8px; border-radius: 6px; font-weight: 700; }
-        .badge-gray { background: #f1f5f9; color: #64748b; }
-        .badge-green { background: #dcfce7; color: #166534; }
-        .badge-red { background: #fee2e2; color: #991b1b; }
-        .badge-blue { background: #eff6ff; color: #1d4ed8; }
-        .badge-orange { background: #fff7ed; color: #c2410c; }
+        /* Entity List */
+        .entity-list { margin-top: 1rem; }
+        .entity-item { 
+            display: flex; justify-content: space-between; align-items: center; 
+            font-size: 0.75rem; padding: 6px 0; border-bottom: 1px solid #f1f5f9; 
+        }
+        .entity-item:last-child { border-bottom: none; }
+        .entity-name { color: #475569; font-weight: 600; }
+        .entity-count { background: #f1f5f9; padding: 2px 8px; border-radius: 10px; color: #0f172a; font-weight: 700; }
 
-        /* --- Sidebar & Nav --- */
-        .sidebar {
-            position: fixed; right: 0; top: 0; height: 100vh; width: 260px;
-            background: white; border-left: 1px solid #e2e8f0; z-index: 50; transition: transform 0.3s;
+        .emp-footer { padding: 10px; border-top: 1px solid #f1f5f9; }
+        .btn-details {
+            width: 100%; padding: 8px; background: white; border: 1px solid #cbd5e1;
+            border-radius: 8px; font-size: 0.8rem; font-weight: 700; color: #475569;
+            display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
+            transition: 0.2s;
         }
-        .nav-item {
-            display: flex; align-items: center; gap: 10px; padding: 12px 20px;
-            color: #64748b; font-weight: 600; text-decoration: none; transition: 0.2s;
-        }
-        .nav-item:hover { background: #f0fdfa; color: #0f766e; }
-        .nav-item.active { background: linear-gradient(135deg, #0f766e, #115e59); color: white; }
+        .btn-details:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
 
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: white;
-            border-top: 1px solid #e2e8f0; padding: 10px; z-index: 40;
-            display: flex; justify-content: space-around;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
-        }
-        .b-nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            font-size: 10px; color: #94a3b8; gap: 4px; text-decoration: none;
-        }
-        .b-nav-item.active { color: #0f766e; font-weight: bold; }
+        /* --- Side Menu & Modal --- */
+        /* Copying exact styles from coordinator.html for consistency */
+        .side-menu { position: fixed; top: 0; right: -250px; width: 250px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+        
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+        .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
+        .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+        .modal-body { padding: 1.5rem; }
 
-        @media (min-width: 1025px) {
-            .main-content { margin-right: 260px; padding: 20px; }
-            .mobile-header { display: none; }
-            .bottom-nav { display: none; }
-            .header-bg { display: none; }
-            .stats-grid, .progress-card, .recent-card { margin: 0 0 20px; }
-        }
-        @media (max-width: 1024px) { .sidebar { transform: translateX(100%); } }
+        /* Loader */
+        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+        .nav-btn.active { color: var(--primary); } .nav-btn i { width: 22px; height: 22px; }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="p-6 text-center border-b border-gray-100">
-            <div class="w-16 h-16 mx-auto mb-2 bg-white rounded-full flex items-center justify-center border-2 border-teal-50 shadow-sm overflow-hidden p-1">
-                <img src="assets/icons/favicon.png" class="w-full h-full object-contain">
+    <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
+    <aside class="side-menu" id="side-menu">
+        <div class="p-5 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-14 h-14 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-2">
+                <i data-lucide="user" class="w-7 h-7 text-teal-700"></i>
             </div>
-            <h2 class="font-bold text-slate-800">نظام الحوكمة</h2>
+            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
+            <p class="text-xs text-teal-600" id="menu-role">...</p>
         </div>
-        <nav class="mt-4 px-2">
-            <a href="index.html" class="nav-item rounded-lg mb-1">
-                <i data-lucide="home" class="w-5 h-5"></i> الصفحة الرئيسية
-            </a>
-            <a href="distribution.html" class="nav-item active rounded-lg mb-1">
-                <i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات
-            </a>
-            <a href="employee.html" class="nav-item rounded-lg mb-1">
-                <i data-lucide="briefcase" class="w-5 h-5"></i> مهامي
-            </a>
-            <a href="coordinator.html" class="nav-item rounded-lg mb-1">
-                <i data-lucide="users" class="w-5 h-5"></i> التنسيق
-            </a>
-            <a href="forms.html" class="nav-item rounded-lg mb-1">
-                <i data-lucide="file-text" class="w-5 h-5"></i> النماذج
-            </a>
-            <div class="h-px bg-gray-200 my-3"></div>
-            <button onclick="auth.logout()" class="nav-item w-full text-red-500 hover:bg-red-50 hover:text-red-600 rounded-lg">
-                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
-            </button>
+        <nav class="flex-1 p-3 space-y-1">
+            <a href="index.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="home" class="w-4 h-4"></i> الرئيسية</a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Dashboard</a>
+            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
         </nav>
+        <div class="p-4 border-t">
+            <button onclick="auth.logout()" class="w-full flex items-center justify-center gap-2 p-2 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+                <i data-lucide="log-out" class="w-4 h-4"></i> خروج
+            </button>
+        </div>
     </aside>
 
-    <div class="main-content">
-        
-        <div class="header-bg lg:hidden">
-            <div class="flex justify-between items-center mb-1">
-                <div class="flex items-center gap-3">
-                    <div class="logo-circle-small">
-                        <img src="assets/icons/favicon.png" class="w-8 h-8 object-contain">
-                    </div>
-                    <div>
-                        <p class="text-teal-100 text-[11px] font-bold opacity-90">ملخص الأداء</p>
-                        <h1 class="font-bold text-xl text-white leading-tight" id="user-name">...</h1>
-                    </div>
-                </div>
-                <button onclick="auth.logout()" class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm hover:bg-red-500/80 transition shadow-inner">
-                    <i data-lucide="log-out" class="w-5 h-5 text-white"></i>
-                </button>
+    <header class="main-header">
+        <div class="max-w-[1200px] mx-auto flex justify-between items-center">
+            <button onclick="toggleMenu()" class="text-white"><i data-lucide="menu" class="w-7 h-7"></i></button>
+            <div class="text-center">
+                <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
+                <p class="dept-subtitle">Internal Audit & Governance Dept</p>
+                <div class="flex justify-center mt-1"><span class="page-label">Dashboard</span></div>
+            </div>
+            <button onclick="window.location.href='notifications.html'" class="text-white relative">
+                <i data-lucide="bell" class="w-6 h-6"></i>
+                <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="filter-container">
+        <div class="filters-row">
+            <div>
+                <label class="f-label">السنة</label>
+                <select id="f-year" class="f-input" onchange="loadDashboardData()">
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026" selected>2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                    <option value="2029">2029</option>
+                    <option value="2030">2030</option>
+                </select>
+            </div>
+            <div>
+                <label class="f-label">الفترة</label>
+                <select id="f-period" class="f-input" onchange="loadDashboardData()">
+                    <option value="">الكل (All)</option>
+                    <optgroup label="الربع سنوي">
+                        <option value="Q1">الربع الأول (Q1)</option>
+                        <option value="Q2">الربع الثاني (Q2)</option>
+                        <option value="Q3">الربع الثالث (Q3)</option>
+                        <option value="Q4">الربع الرابع (Q4)</option>
+                    </optgroup>
+                    <optgroup label="شهري">
+                        <option value="1">يناير</option>
+                        <option value="2">فبراير</option>
+                        <option value="3">مارس</option>
+                        <option value="4">أبريل</option>
+                        <option value="5">مايو</option>
+                        <option value="6">يونيو</option>
+                        <option value="7">يوليو</option>
+                        <option value="8">أغسطس</option>
+                        <option value="9">سبتمبر</option>
+                        <option value="10">أكتوبر</option>
+                        <option value="11">نوفمبر</option>
+                        <option value="12">ديسمبر</option>
+                    </optgroup>
+                </select>
             </div>
         </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon sc-blue"><i data-lucide="layers" class="w-5 h-5"></i></div>
-                <h3 class="text-2xl font-black text-slate-800" id="s-total">0</h3>
-                <p class="text-[10px] text-slate-500 font-bold">إجمالي الوارد</p>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon sc-orange"><i data-lucide="clock" class="w-5 h-5"></i></div>
-                <h3 class="text-2xl font-black text-slate-800" id="s-pending">0</h3>
-                <p class="text-[10px] text-slate-500 font-bold">قيد العمل</p>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon sc-green"><i data-lucide="check-circle-2" class="w-5 h-5"></i></div>
-                <h3 class="text-2xl font-black text-slate-800" id="s-approved">0</h3>
-                <p class="text-[10px] text-slate-500 font-bold">تم الإنجاز</p>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon sc-red"><i data-lucide="alert-octagon" class="w-5 h-5"></i></div>
-                <h3 class="text-2xl font-black text-slate-800" id="s-late">0</h3>
-                <p class="text-[10px] text-slate-500 font-bold">متأخرات</p>
-            </div>
-        </div>
-
-        <div class="progress-card">
-            <div class="flex justify-between items-end mb-1">
-                <div>
-                    <h3 class="font-bold text-slate-800 text-sm">معدل الإنجاز العام</h3>
-                    <p class="text-[10px] text-slate-400">نسبة المعاملات المعتمدة</p>
-                </div>
-                <span class="text-xl font-black text-[#0f766e]" id="prog-val">0%</span>
-            </div>
-            <div class="prog-bar-bg">
-                <div class="prog-bar-fill" id="prog-fill"></div>
-            </div>
-        </div>
-
-        <div class="recent-card">
-            <div class="p-4 border-b border-slate-100 bg-gray-50 flex justify-between items-center">
-                <h3 class="font-bold text-slate-700 text-sm">أحدث المعاملات</h3>
-                <a href="employee.html" class="text-xs text-[#0f766e] font-bold hover:underline">عرض الكل</a>
-            </div>
-            <div id="recent-list">
-                <div class="p-6 text-center text-gray-400 text-sm flex flex-col items-center">
-                    <span class="animate-spin mb-2"><i data-lucide="loader-2"></i></span>
-                    جاري التحميل...
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <nav class="bottom-nav lg:hidden">
-        <a href="index.html" class="b-nav-item">
-            <i data-lucide="home" class="w-6 h-6"></i><span>الرئيسية</span>
-        </a>
-        <a href="distribution.html" class="b-nav-item active">
-            <i data-lucide="bar-chart-2" class="w-6 h-6"></i><span>المؤشرات</span>
-        </a>
-        <a href="employee.html" class="b-nav-item">
-            <i data-lucide="briefcase" class="w-6 h-6"></i><span>مهامي</span>
-        </a>
-        <a href="forms.html" class="b-nav-item">
-            <i data-lucide="file-text" class="w-6 h-6"></i><span>النماذج</span>
-        </a>
+    <div class="stats-grid" id="stats-container">
+        <div class="col-span-full text-center py-4 text-gray-400">جاري التحميل...</div>
+    </div>
+
+    <div class="leaderboard-container" id="leaderboard-list">
+        <div class="loader-box">
+            <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i>
+            <p>جاري تحميل البيانات...</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div>
+                    <h3 class="font-bold text-lg text-gray-900" id="m-title">التفاصيل</h3>
+                    <p class="text-xs text-gray-500" id="m-subtitle">...</p>
+                </div>
+                <button onclick="closeModal()" class="p-2 bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="modal-body" id="m-content">
+                </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-btn"><i data-lucide="home"></i> الرئيسية</a>
+        <a href="distribution.html" class="nav-btn active"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
+        <a href="coordinator.html" class="nav-btn"><i data-lucide="users"></i> المنسق</a>
+        <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
+        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
     </nav>
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
+        let allEmployees = [];
 
         document.addEventListener('DOMContentLoaded', async () => {
+            if (typeof auth === 'undefined') { window.location.href = 'index.html'; return; }
             const user = auth.checkAuth();
-            
-            // عرض الاسم (سواء زائر أو مسجل)
-            const userName = user ? user.name.split(' ')[0] : 'زائر';
-            document.getElementById('user-name').textContent = userName;
+            if (!user) { window.location.href = 'index.html'; return; }
 
-            // --- جلب البيانات ---
-            try {
-                // استخدام رابط من Config لو موجود، أو استخدام الرابط المباشر
-                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : 'https://script.google.com/macros/s/AKfycbzB0a7A7Dq4j5-l_-4YkBH1c-cOmgi7kIFP6Da8ZjM1CLfz9xZIncim13cJfc2LPyru3A/exec';
+            document.getElementById('menu-user').textContent = user.name;
+            document.getElementById('menu-role').textContent = user.role;
 
-                // إرسال طلب JSON صحيح
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ 
-                        action: 'getAllData',
-                        role: user ? user.role : 'مدير', // إفتراضي لجلب كل الداتا
-                        name: userName 
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    const tasks = data.tasks || [];
-                    
-                    // حساب الإحصائيات (الهجين: لو السيرفر مبعتش totals نحسبها احنا)
-                    let stats = data.stats && data.stats.totals ? data.stats.totals : calculateLocalStats(tasks);
-
-                    // تحديث الأرقام
-                    animateValue('s-total', stats.total || 0);
-                    animateValue('s-pending', (stats.inProgress + stats.new + stats.pending) || 0);
-                    animateValue('s-approved', stats.completed || 0);
-                    animateValue('s-late', stats.overdue || 0);
-
-                    // تحديث شريط الإنجاز
-                    const total = stats.total || 0;
-                    const done = stats.completed || 0;
-                    const rate = total > 0 ? Math.round((done / total) * 100) : 0;
-                    document.getElementById('prog-val').textContent = rate + '%';
-                    document.getElementById('prog-fill').style.width = rate + '%';
-
-                    // تحديث الجدول (أحدث 5)
-                    renderRecentTable(tasks.slice(0, 5));
-
-                } else {
-                    document.getElementById('recent-list').innerHTML = '<div class="p-6 text-center text-red-400 text-sm">فشل في جلب البيانات</div>';
-                }
-
-            } catch (error) {
-                console.error(error);
-                document.getElementById('recent-list').innerHTML = '<div class="p-6 text-center text-red-400 text-sm">خطأ في الاتصال بالسيرفر</div>';
-            }
+            await loadDashboardData();
         });
 
-        // حساب الإحصائيات محلياً (Fallback)
-        function calculateLocalStats(tasks) {
-            return {
-                total: tasks.length,
-                completed: tasks.filter(t => (t.status||'').includes('تم') || (t.status||'').includes('منتهي') || (t.status||'').includes('أرشيف')).length,
-                overdue: tasks.filter(t => (t.status||'').includes('متأخر')).length,
-                inProgress: tasks.filter(t => (t.status||'').includes('جاري') || (t.status||'').includes('جديد') || (t.status||'').includes('انتظار')).length,
-                new: 0, 
-                pending: 0
-            };
+        function toggleMenu() { document.body.classList.toggle('menu-open'); }
+
+        async function loadDashboardData() {
+            const year = document.getElementById('f-year').value;
+            const period = document.getElementById('f-period').value;
+            
+            const container = document.getElementById('leaderboard-list');
+            container.innerHTML = `
+                <div class="loader-box">
+                    <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i>
+                    <p>جاري تحديث البيانات...</p>
+                </div>`;
+
+            try {
+                const API_URL = CONFIG.API_URL;
+                const res = await fetch(API_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ 
+                        action: 'getDashboardData', 
+                        year: year, 
+                        period: period 
+                    }) 
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    allEmployees = data.employees || [];
+                    calculateAndRenderStats(data.employees); // Calculate stats locally from employee data
+                    renderLeaderboard(data.employees);
+                } else {
+                    container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">${data.error || 'لا توجد بيانات'}</div>`;
+                }
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-red-500 font-bold">خطأ في الاتصال بالسيرفر</div>`;
+            }
         }
 
-        // رسم الجدول
-        function renderRecentTable(tasks) {
-            const list = document.getElementById('recent-list');
-            if (tasks.length === 0) {
-                list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">لا توجد بيانات</div>';
+        // Calculate global stats from the employee list to ensure consistency with the 6 requested cards
+        function calculateAndRenderStats(employees) {
+            let s = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
+
+            employees.forEach(emp => {
+                if(emp.tasks) {
+                    emp.tasks.forEach(t => {
+                        s.total++;
+                        const status = (t.status || '').trim();
+                        if (status.includes('جديد')) s.new++;
+                        else if (status.includes('بانتظار') || status.includes('للاعتماد')) s.pending++;
+                        else if (status.includes('تم') || status.includes('منتهي')) s.approved++;
+                        else if (status.includes('متابعة')) s.followup++;
+                        else if (status.includes('متأخر')) s.late++;
+                    });
+                }
+            });
+
+            // If tasks array isn't populated fully in dashboard mode, we might rely on the pre-calculated numbers from backend
+            // But getDashboardData backend usually returns simple stats. Let's use the aggregated counts.
+            
+            const statsHtml = `
+                <div class="stat-card"><span class="stat-num c-total">${s.total}</span><span class="stat-lbl">الإجمالي</span></div>
+                <div class="stat-card"><span class="stat-num c-new">${s.new}</span><span class="stat-lbl">جديد</span></div>
+                <div class="stat-card"><span class="stat-num c-pending">${s.pending}</span><span class="stat-lbl">بانتظار الاعتماد</span></div>
+                <div class="stat-card"><span class="stat-num c-approved">${s.approved}</span><span class="stat-lbl">تم الاعتماد والأرشفة</span></div>
+                <div class="stat-card"><span class="stat-num c-followup">${s.followup}</span><span class="stat-lbl">بحاجة للمتابعة</span></div>
+                <div class="stat-card"><span class="stat-num c-late">${s.late}</span><span class="stat-lbl">متأخر</span></div>
+            `;
+            document.getElementById('stats-container').innerHTML = statsHtml;
+        }
+
+        function renderLeaderboard(employees) {
+            const container = document.getElementById('leaderboard-list');
+            if (!employees || employees.length === 0) {
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">لا توجد بيانات للفترة المحددة</div>`;
                 return;
             }
 
-            list.innerHTML = tasks.map(t => {
-                let badgeClass = 'badge-gray';
-                let statusText = t.status || 'غير محدد';
+            // Sort by completion rate descending
+            employees.sort((a, b) => b.rate - a.rate);
 
-                if(statusText.includes('تم') || statusText.includes('منتهي')) badgeClass = 'badge-green';
-                else if(statusText.includes('متأخر')) badgeClass = 'badge-red';
-                else if(statusText.includes('جاري') || statusText.includes('جديد')) badgeClass = 'badge-blue';
-                else if(statusText.includes('انتظار')) badgeClass = 'badge-orange';
+            let html = '';
+            employees.forEach((emp, index) => {
+                const rank = index + 1;
+                let rankClass = 'rank-other';
+                let rankIcon = rank;
+                
+                if (rank === 1) { rankClass = 'rank-1'; rankIcon = '🥇'; }
+                else if (rank === 2) { rankClass = 'rank-2'; rankIcon = '🥈'; }
+                else if (rank === 3) { rankClass = 'rank-3'; rankIcon = '🥉'; }
 
-                return `
-                <div class="table-row">
-                    <div class="flex-1 min-w-0 pr-2">
-                        <h4 class="font-bold text-slate-800 text-xs truncate w-11/12">${t.subject || 'بدون عنوان'}</h4>
-                        <p class="text-[10px] text-slate-500 truncate">${t.source || t.entity || ''}</p>
+                // Progress Bar Color
+                let progressColor = 'bg-red-500';
+                if (emp.rate >= 90) progressColor = 'bg-emerald-500';
+                else if (emp.rate >= 70) progressColor = 'bg-yellow-500';
+
+                // Entity Distribution
+                const distMap = {};
+                if(emp.tasks) {
+                    emp.tasks.forEach(t => {
+                        const ent = t.entity || 'أخرى';
+                        distMap[ent] = (distMap[ent] || 0) + 1;
+                    });
+                }
+                const topEntities = Object.entries(distMap)
+                    .sort((a,b) => b[1] - a[1])
+                    .slice(0, 5); // Top 5
+
+                let distHtml = '';
+                topEntities.forEach(([name, count]) => {
+                    distHtml += `
+                        <div class="entity-item">
+                            <span class="entity-name">${name}</span>
+                            <span class="entity-count">${count}</span>
+                        </div>`;
+                });
+
+                html += `
+                <div class="emp-card">
+                    <div class="rank-badge ${rankClass}">${rankIcon}</div>
+                    
+                    <div class="emp-header">
+                        <div class="emp-avatar">${getInitials(emp.name)}</div>
+                        <h3 class="emp-name">${emp.name}</h3>
+                        <p class="emp-dept">${emp.dept || 'الفريق الإداري'}</p>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar ${progressColor}" style="width: ${emp.rate}%"></div>
+                        </div>
+                        <div class="rate-text">
+                            <span class="text-gray-500">معدل الإنجاز</span>
+                            <span class="${progressColor.replace('bg-','text-')}">${emp.rate}%</span>
+                        </div>
                     </div>
-                    <span class="status-badge-small ${badgeClass}">${statusText}</span>
-                </div>
-                `;
-            }).join('');
+
+                    <div class="emp-body">
+                        <div class="mini-stats">
+                            <div class="ms-box"><div class="ms-val text-gray-700">${emp.total}</div><div class="ms-lbl">الكل</div></div>
+                            <div class="ms-box"><div class="ms-val text-emerald-600">${emp.completed}</div><div class="ms-lbl">منجز</div></div>
+                            <div class="ms-box"><div class="ms-val text-blue-600">${emp.pending}</div><div class="ms-lbl">جاري</div></div>
+                            <div class="ms-box"><div class="ms-val text-red-600">${emp.overdue}</div><div class="ms-lbl">متأخر</div></div>
+                        </div>
+
+                        <div class="entity-list">
+                            <p class="text-xs font-bold text-gray-400 mb-2">🏛️ التوزيع حسب الجهة</p>
+                            ${distHtml || '<p class="text-center text-xs text-gray-300">لا توجد بيانات</p>'}
+                        </div>
+                    </div>
+
+                    <div class="emp-footer">
+                        <button onclick="openModal('${emp.name}')" class="btn-details">
+                            <i data-lucide="eye" class="w-4 h-4"></i> عرض التفاصيل
+                        </button>
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+            lucide.createIcons();
         }
 
-        function animateValue(id, end) {
-            const obj = document.getElementById(id);
-            if(!obj) return;
-            let start = 0;
-            if (end === 0) { obj.innerHTML = 0; return; }
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / 1000, 1);
-                obj.innerHTML = Math.floor(progress * end);
-                if (progress < 1) window.requestAnimationFrame(step);
-            };
-            window.requestAnimationFrame(step);
+        function openModal(empName) {
+            const emp = allEmployees.find(e => e.name === empName);
+            if (!emp) return;
+
+            document.getElementById('m-title').textContent = emp.name;
+            document.getElementById('m-subtitle').textContent = emp.dept || 'تقرير الأداء التفصيلي';
+
+            let tasksHtml = '';
+            if (emp.tasks && emp.tasks.length > 0) {
+                tasksHtml = `
+                <div class="overflow-x-auto mt-4">
+                    <table class="w-full text-right text-xs">
+                        <thead class="bg-gray-50 text-gray-500">
+                            <tr>
+                                <th class="p-2">الرقم</th>
+                                <th class="p-2">الجهة</th>
+                                <th class="p-2">الموضوع</th>
+                                <th class="p-2">التاريخ</th>
+                                <th class="p-2">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            ${emp.tasks.map(t => `
+                                <tr>
+                                    <td class="p-2 font-mono text-gray-400">#${t.id}</td>
+                                    <td class="p-2 font-bold text-gray-700">${t.entity}</td>
+                                    <td class="p-2 text-gray-600 truncate max-w-[150px]">${t.subject}</td>
+                                    <td class="p-2 text-gray-500">${t.date}</td>
+                                    <td class="p-2"><span class="px-2 py-1 rounded text-[10px] font-bold ${getStatusColor(t.status)}">${t.status}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+            } else {
+                tasksHtml = '<p class="text-center py-4 text-gray-400">لا توجد تفاصيل متاحة</p>';
+            }
+
+            document.getElementById('m-content').innerHTML = `
+                <div class="grid grid-cols-2 gap-4 mb-4 text-center">
+                    <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                        <p class="text-emerald-800 text-lg font-bold">${emp.completed}</p>
+                        <p class="text-emerald-600 text-xs">معاملات منجزة</p>
+                    </div>
+                    <div class="bg-red-50 p-3 rounded-lg border border-red-100">
+                        <p class="text-red-800 text-lg font-bold">${emp.overdue}</p>
+                        <p class="text-red-600 text-xs">معاملات متأخرة</p>
+                    </div>
+                </div>
+                <h4 class="font-bold text-sm text-gray-700 border-b pb-2">سجل المعاملات</h4>
+                ${tasksHtml}
+            `;
+            
+            document.getElementById('detail-modal').classList.add('open');
+        }
+
+        function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
+
+        function getInitials(name) {
+            return name ? name.split(' ').slice(0, 2).map(n => n[0]).join('') : '?';
+        }
+
+        function getStatusColor(status) {
+            if(status.includes('تم') || status.includes('منتهي')) return 'bg-emerald-100 text-emerald-700';
+            if(status.includes('متأخر')) return 'bg-red-100 text-red-700';
+            if(status.includes('جديد')) return 'bg-blue-100 text-blue-700';
+            return 'bg-gray-100 text-gray-600';
         }
     </script>
 </body>
