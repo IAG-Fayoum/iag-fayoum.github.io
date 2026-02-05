@@ -63,31 +63,37 @@
         }
         .filter-input:focus { border-color: #0f766e; background: white; }
 
-        /* Tasks */
+        /* The Diamond Task Card Style */
         .task-card {
-            background: white; border-radius: 16px; border: 1px solid #e2e8f0;
-            padding: 1.25rem; margin-bottom: 1rem; position: relative;
+            background: white;
+            border-radius: 16px; /* Rounded 2XL style equivalent */
+            border: 1px solid #e2e8f0;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            position: relative;
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: all 0.2s;
         }
+        .task-card:hover { transform: translateY(-3px); border-color: #0f766e; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
 
-        /* Assign Section */
+        /* Assign Section (Inside Card) */
         .assign-section {
             background: #f0fdfa; border: 1px dashed #99f6e4; border-radius: 12px;
             padding: 10px; margin-top: 12px; display: flex; flex-direction: column; gap: 8px;
         }
-        .assign-select { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; }
+        .assign-select { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; font-size: 0.85rem; outline: none; }
         .btn-save-assign {
             width: 100%; background: #0f766e; color: white; padding: 8px;
-            border-radius: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px;
+            border-radius: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;
         }
+        .btn-save-assign:hover { background: #115e59; }
 
         /* Status Colors */
-        .st-new { background: #ffffff; color: #334155; border: 1px solid #e2e8f0; }
-        .st-pending { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-        .st-approved { background: #15803d; color: white; border: 1px solid #14532d; }
-        .st-followup { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
-        .st-late { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-        .status-badge { font-size: 0.7rem; padding: 3px 10px; border-radius: 6px; font-weight: 700; }
+        .st-new         { background: #ffffff; color: #334155; border: 1px solid #e2e8f0; }
+        .st-pending     { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .st-approved    { background: #15803d; color: white;   border: 1px solid #14532d; }
+        .st-followup    { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+        .st-late        { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 
         /* Sidebar & Nav */
         .sidebar { position: fixed; right: 0; top: 0; height: 100vh; width: 260px; background: white; border-left: 1px solid #e2e8f0; z-index: 50; transition: 0.3s; }
@@ -177,7 +183,7 @@
                 <div>
                     <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">الموظف المسؤول</label>
                     <select id="f-emp" class="filter-input">
-                        <option value="">جاري التحميل...</option>
+                        <option value="">كل الموظفين</option>
                     </select>
                 </div>
 
@@ -235,7 +241,7 @@
             <div id="tasks-container" class="space-y-3 pb-20">
                 <div class="text-center py-12">
                     <span class="inline-block animate-spin text-[#0f766e]"><i data-lucide="loader-2" class="w-8 h-8"></i></span>
-                    <p class="text-slate-400 text-sm mt-2">جاري جلب بيانات الموظفين...</p>
+                    <p class="text-slate-400 text-sm mt-2">جاري جلب البيانات...</p>
                 </div>
             </div>
         </div>
@@ -261,7 +267,22 @@
     <script>
         lucide.createIcons();
         let allTasks = [];
-        let dbEmployees = []; // 🔥 القائمة الديناميكية للموظفين
+        
+        // ⚠️ هام: قائمة الموظفين (لضمان ظهورها في الفلتر)
+        // يمكنك تعديل هذه الأسماء حسب الشيت الحقيقي
+        const DEPARTMENT_STAFF = [
+            "د. مصطفى أحمد حمزة",
+            "د. سهى مصطفى محمد",
+            "د. ريهام إبراهيم دسوقي",
+            "أ. منار جمال السيد",
+            "أ. عمرو رشاد",
+            "أ. محمود نور الدين",
+            "أ. إيمان عبد اللطيف",
+            "أ. علا سيد مفتاح",
+            "أ. نيفين مكرم حنين",
+            "أ. نسمه نادي",
+            "أ. أسماء محمود"
+        ];
 
         const statusStyles = {
             'جديد': 'st-new',
@@ -284,14 +305,16 @@
             document.getElementById('mobile-welcome-name').textContent = firstName;
             document.getElementById('f-year').value = new Date().getFullYear();
 
-            // 1. جلب قائمة الموظفين (أولاً)
-            const empRes = await auth.callAPI('getEmployees');
-            if(empRes.success) {
-                dbEmployees = empRes.data; // الأسماء من الشيت مباشرة
-                populateEmployeeFilter();
-            }
+            // 1. ملء قائمة الفلتر
+            const selectFilter = document.getElementById('f-emp');
+            DEPARTMENT_STAFF.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                selectFilter.appendChild(opt);
+            });
 
-            // 2. جلب المهام
+            // 2. جلب البيانات
             const res = await auth.callAPI('getAllData', {
                 role: 'coordinator',
                 name: user.name,
@@ -306,18 +329,6 @@
                 document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 font-bold">عفواً، حدث خطأ في التحميل</div>`;
             }
         });
-
-        // تعبئة فلتر الموظفين بالبيانات الحقيقية
-        function populateEmployeeFilter() {
-            const select = document.getElementById('f-emp');
-            select.innerHTML = '<option value="">كل الموظفين</option>';
-            dbEmployees.forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                select.appendChild(opt);
-            });
-        }
 
         function calculateStats() {
             let adminCount = 0;
@@ -373,17 +384,19 @@
                 return;
             }
 
-            // تجهيز قائمة الموظفين (من الداتابيز)
+            // تجهيز قائمة الموظفين (للدروب داون داخل الكارت)
             let empOptions = '<option value="">-- غير محدد --</option>';
-            dbEmployees.forEach(name => {
-                empOptions += `<option value="${name}">${name}</option>`;
+            DEPARTMENT_STAFF.forEach(emp => {
+                empOptions += `<option value="${emp}">${emp}</option>`;
             });
 
             container.innerHTML = tasks.map(t => {
                 const styleClass = statusStyles[t.status] || 'bg-gray-100 text-gray-600 border-gray-200';
                 const year = t.date ? t.date.split('-')[0] : '';
                 const hasLegal = t.caseNumber && t.caseNumber.trim() !== '';
+                const hasAttachment = t.attachment && t.attachment.trim() !== '';
 
+                // تحديد الموظف الحالي في القائمة
                 const currentAssignee = t.assignee || "";
                 const finalOptions = empOptions.replace(`value="${currentAssignee}"`, `value="${currentAssignee}" selected`);
 
@@ -391,23 +404,30 @@
                 <div class="task-card group">
                     <div class="flex justify-between items-start mb-3">
                         <span class="status-badge ${styleClass}">${t.status}</span>
-                        <span class="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded border border-slate-200 font-mono">
+                        <span class="text-[11px] font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded border border-slate-200 font-mono tracking-wider">
                             #${t.id} <span class="text-slate-300 mx-1">|</span> ${year}
                         </span>
                     </div>
 
                     <h3 class="font-bold text-slate-800 text-sm mb-2 leading-relaxed">${t.subject}</h3>
                     
-                    <div class="flex items-center gap-2 text-xs text-slate-500 mb-3">
+                    <div class="flex items-center gap-2 text-xs text-slate-500 mb-4">
                         <i data-lucide="building-2" class="w-3 h-3 text-slate-400"></i>
                         <span>${t.source}</span>
                     </div>
 
                     ${hasLegal ? `
-                    <div class="bg-orange-50 border border-orange-100 rounded-lg p-2 mb-3 flex items-center gap-4">
-                        <div class="flex flex-col"><span class="text-[9px] text-orange-400 font-bold">رقم القضية</span><span class="text-xs font-bold text-orange-700">${t.caseNumber}</span></div>
+                    <div class="bg-orange-50 border border-orange-100 rounded-lg p-2.5 mb-4 flex items-center gap-4">
+                        <div class="flex flex-col"><span class="text-[9px] text-orange-400 font-bold">رقم القضية</span><span class="text-xs font-bold text-orange-700 font-mono">${t.caseNumber}</span></div>
                         <div class="w-px h-6 bg-orange-200"></div>
-                        <div class="flex flex-col"><span class="text-[9px] text-orange-400 font-bold">السنة</span><span class="text-xs font-bold text-orange-700">${t.caseYear || '-'}</span></div>
+                        <div class="flex flex-col"><span class="text-[9px] text-orange-400 font-bold">السنة</span><span class="text-xs font-bold text-orange-700 font-mono">${t.caseYear || '-'}</span></div>
+                    </div>` : ''}
+                    
+                    ${hasAttachment ? `
+                    <div class="mb-3">
+                        <a href="${t.attachment}" target="_blank" class="w-full bg-white border border-slate-200 text-slate-600 py-2 rounded-xl text-xs font-bold hover:bg-slate-50 transition flex items-center justify-center gap-1.5">
+                            <i data-lucide="paperclip" class="w-3.5 h-3.5"></i> فتح المرفقات
+                        </a>
                     </div>` : ''}
 
                     <div class="assign-section">
