@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>مكتب التنسيق | نظام الحوكمة</title>
+    <title>توزيع المهام | إدارة الحوكمة</title>
     
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
@@ -12,327 +12,420 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; padding-bottom: 80px; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; padding-bottom: 80px; }
         
-        /* Header */
+        /* --- 1. Header Identity --- */
         .header-bg {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            padding: 1rem 1.5rem 6rem;
+            padding: 1.5rem 1.5rem 6rem;
             color: white;
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
             position: relative; z-index: 10;
-            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
+            box-shadow: 0 10px 30px -10px rgba(15, 118, 110, 0.5);
         }
 
-        /* Stats Scroll Container (عشان الـ 6 كروت تظهر كويس) */
-        .stats-container {
-            display: flex; gap: 10px; overflow-x: auto; 
-            padding: 5px 15px 20px; margin: -5rem 0 1rem;
-            position: relative; z-index: 20;
-            -webkit-overflow-scrolling: touch;
+        /* --- 2. Stats Layout (2 Big + Grid Small) --- */
+        .stats-wrapper { margin: -5rem 1rem 1.5rem; position: relative; z-index: 20; }
+        
+        .stats-big-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;
         }
-        .stats-container::-webkit-scrollbar { height: 4px; }
-        .stats-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-
-        .stat-box {
-            min-width: 140px; background: white; padding: 12px; border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center;
-            border: 1px solid #e2e8f0; flex-shrink: 0;
+        .stats-small-row {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
         }
-        .stat-num { font-size: 1.5rem; font-weight: 800; color: #1e293b; display: block; line-height: 1; margin-bottom: 4px; }
-        .stat-label { font-size: 0.7rem; font-weight: 700; color: #64748b; white-space: nowrap; }
-        .stat-icon { width: 30px; height: 30px; border-radius: 8px; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; }
-
-        /* Colors for Statuses */
-        .c-total { color: #0f766e; background: #f0fdfa; }
-        .c-new { color: #64748b; background: #f1f5f9; } /* جديد */
-        .c-pending { color: #0284c7; background: #e0f2fe; } /* انتظار الاعتماد */
-        .c-approved { color: #16a34a; background: #dcfce7; } /* تم الاعتماد */
-        .c-followup { color: #ea580c; background: #ffedd5; } /* بحاجة لمتابعة */
-        .c-late { color: #dc2626; background: #fee2e2; } /* متأخر */
-
-        /* Filters */
-        .filters-box {
-            background: white; border-radius: 20px; padding: 1.5rem;
-            margin: 0 1rem 1.5rem; position: relative; z-index: 15;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;
+        
+        /* Stat Cards */
+        .stat-card {
+            background: white; border-radius: 16px; padding: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+            text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        .inp {
-            width: 100%; padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 10px;
-            font-size: 0.8rem; outline: none; background-color: #f8fafc; transition: 0.2s;
-        }
-        .inp:focus { border-color: #0f766e; background: white; }
-        .lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
+        .stat-card.big { padding: 16px; border-bottom: 4px solid; }
+        
+        .stat-num { font-weight: 800; color: #1e293b; line-height: 1; }
+        .stat-lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; margin-top: 4px; }
+        .big .stat-num { font-size: 2rem; }
+        .big .stat-lbl { font-size: 0.8rem; }
+        
+        /* Colors */
+        .st-total { border-color: #0f766e; } .st-total .stat-num { color: #0f766e; }
+        .st-late { border-color: #dc2626; } .st-late .stat-num { color: #dc2626; }
+        
+        .bg-new { background: #f8fafc; border: 1px solid #e2e8f0; } /* جديد - رمادي */
+        .bg-pending { background: #dcfce7; border: 1px solid #86efac; } /* انتظار - أخضر فاتح */
+        .bg-approved { background: #064e3b; border: 1px solid #065f46; } /* تم - زيتي غامق */
+        .bg-followup { background: #eff6ff; border: 1px solid #bfdbfe; } /* متابعة - أزرق */
 
-        /* Task Card */
+        /* --- 3. Filters Section --- */
+        .filters-container {
+            background: white; border-radius: 16px; padding: 1.25rem;
+            margin: 0 1rem 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;
+        }
+        .filter-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .f-input {
+            width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #e2e8f0;
+            border-radius: 10px; font-size: 0.8rem; outline: none; transition: 0.2s;
+        }
+        .f-input:focus { border-color: #0f766e; background: white; }
+        .col-span-2 { grid-column: span 2; }
+
+        /* --- 4. The Diamond Card --- */
         .task-card {
-            background: white; border-radius: 16px; border: 1px solid #e2e8f0;
-            padding: 1.25rem; margin-bottom: 1rem; position: relative;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;
+            background: white; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;
+            margin-bottom: 1rem; position: relative; transition: all 0.2s;
         }
-        .task-card:hover { transform: translateY(-3px); border-color: #0f766e; }
+        .task-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); border-color: #0f766e; }
+        
+        /* Top Color Bar */
+        .card-top-bar { height: 4px; background: linear-gradient(90deg, #0f766e, #14b8a6); width: 100%; }
 
-        /* Status Badges */
-        .badge { font-size: 0.65rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; }
-        .bg-st-new { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
-        .bg-st-pending { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
-        .bg-st-approved { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
-        .bg-st-followup { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
-        .bg-st-late { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        /* Card Content */
+        .card-body { padding: 1rem; }
+        
+        /* Header: Status + Date */
+        .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px; }
+        .date-badge { 
+            font-family: monospace; font-size: 0.7rem; color: #64748b; 
+            background: #f1f5f9; padding: 4px 8px; border-radius: 6px; 
+            display: flex; align-items: center; gap: 4px;
+        }
 
-        /* Assignment Footer */
-        .assign-box {
-            background: #f8fafc; border-radius: 12px; padding: 10px; margin-top: 12px; border: 1px solid #f1f5f9;
+        /* Status Badges (The requested colors) */
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 700; display: inline-block; }
+        .st-new { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; } /* جديد */
+        .st-pending { background: #dcfce7; color: #15803d; border: 1px solid #86efac; } /* انتظار - أخضر فاتح */
+        .st-approved { background: #064e3b; color: white; border: 1px solid #065f46; } /* تم - زيتي */
+        .st-followup { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; } /* متابعة - أزرق */
+        .st-late { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; } /* متأخر */
+
+        /* Main Info */
+        .card-title { font-size: 0.9rem; font-weight: 700; color: #1e293b; line-height: 1.5; margin-bottom: 8px; }
+        .info-row { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #64748b; margin-bottom: 4px; }
+        .info-icon { width: 14px; height: 14px; color: #0f766e; }
+
+        /* Footer: Assignment */
+        .card-footer {
+            background: #f8fafc; padding: 10px; border-top: 1px solid #f1f5f9;
+            display: flex; justify-content: space-between; align-items: center; gap: 8px;
         }
-        .btn-save {
-            width: 100%; background: #0f766e; color: white; padding: 8px;
-            border-radius: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.8rem; margin-top: 8px;
+        .assign-select {
+            flex: 1; padding: 6px 10px; font-size: 0.8rem; border-radius: 8px; 
+            border: 1px solid #cbd5e1; outline: none; background: white; color: #334155;
         }
-        .btn-save:hover { background: #115e59; }
+        .btn-assign {
+            background: #0f766e; color: white; border-radius: 8px; width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
+        }
+        .btn-assign:hover { background: #115e59; }
 
         /* Navigation */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; padding: 10px; z-index: 50; display: flex; justify-content: space-around; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #94a3b8; gap: 4px; text-decoration: none; }
-        .nav-item.active { color: #0f766e; font-weight: bold; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; padding: 8px; z-index: 50; display: flex; justify-content: space-around; }
+        .b-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 0.65rem; color: #94a3b8; padding: 4px; width: 60px; }
+        .b-item.active { color: #0f766e; font-weight: 700; }
+        .b-item i { width: 20px; height: 20px; }
 
+        /* Desktop Sidebar */
         @media (min-width: 1024px) {
-            .main-content { margin-right: 260px; padding: 20px; }
+            .sidebar { position: fixed; right: 0; top: 0; height: 100vh; width: 260px; background: white; border-left: 1px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column; }
+            .main-content { margin-right: 260px; padding: 30px; }
             .mobile-header, .bottom-nav { display: none; }
             .header-bg { display: none; }
-            .stats-container { margin: 0 0 20px; overflow: unset; flex-wrap: wrap; justify-content: center; }
-            .stat-box { min-width: 180px; }
-            .sidebar { position: fixed; right: 0; top: 0; height: 100vh; width: 260px; background: white; border-left: 1px solid #e2e8f0; padding: 1.5rem; display: flex; flex-direction: column; }
-            #tasks-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+            .stats-wrapper { margin: 0 0 30px; }
+            .stats-big-row, .stats-small-row { display: grid; gap: 15px; }
+            .stats-big-row { grid-template-columns: repeat(2, 1fr); margin-bottom: 15px; }
+            .stats-small-row { grid-template-columns: repeat(4, 1fr); }
+            #tasks-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+            .task-card { margin-bottom: 0; }
         }
     </style>
 </head>
 <body>
 
     <aside class="sidebar hidden lg:flex">
-        <div class="flex items-center gap-3 mb-8 px-2">
+        <div class="flex items-center gap-3 mb-10 px-2">
             <img src="assets/icons/favicon.png" class="w-10 h-10">
-            <div><h1 class="font-bold text-slate-800">نظام الحوكمة</h1><p class="text-xs text-slate-500">لوحة التنسيق</p></div>
+            <div>
+                <h1 class="font-bold text-slate-800 text-sm">إدارة المراجعة الداخلية</h1>
+                <p class="text-xs text-slate-500">نظام الحوكمة</p>
+            </div>
         </div>
         <nav class="flex-1 space-y-2">
-            <a href="index.html" class="flex items-center gap-3 p-3 text-slate-500 hover:bg-teal-50 hover:text-teal-700 rounded-lg font-bold"><i data-lucide="home" class="w-5 h-5"></i> الرئيسية</a>
-            <a href="distribution.html" class="flex items-center gap-3 p-3 text-slate-500 hover:bg-teal-50 hover:text-teal-700 rounded-lg font-bold"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات</a>
-            <a href="coordinator.html" class="flex items-center gap-3 p-3 bg-teal-600 text-white rounded-lg font-bold shadow-md"><i data-lucide="users" class="w-5 h-5"></i> توزيع المهام</a>
-            <a href="forms.html" class="flex items-center gap-3 p-3 text-slate-500 hover:bg-teal-50 hover:text-teal-700 rounded-lg font-bold"><i data-lucide="file-text" class="w-5 h-5"></i> النماذج</a>
+            <a href="index.html" class="flex items-center gap-3 p-3 text-slate-500 hover:bg-teal-50 hover:text-teal-700 rounded-lg font-bold text-sm"><i data-lucide="home" class="w-5 h-5"></i> الرئيسية</a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 text-slate-500 hover:bg-teal-50 hover:text-teal-700 rounded-lg font-bold text-sm"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات</a>
+            <a href="coordinator.html" class="flex items-center gap-3 p-3 bg-teal-600 text-white rounded-lg font-bold text-sm shadow-md"><i data-lucide="users" class="w-5 h-5"></i> توزيع المهام</a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 text-slate-500 hover:bg-teal-50 hover:text-teal-700 rounded-lg font-bold text-sm"><i data-lucide="file-text" class="w-5 h-5"></i> النماذج</a>
         </nav>
-        <button onclick="auth.logout()" class="text-red-500 font-bold flex items-center gap-2 mt-auto p-2"><i data-lucide="log-out" class="w-5 h-5"></i> خروج</button>
+        <button onclick="auth.logout()" class="text-red-500 font-bold flex items-center gap-2 mt-auto p-2 text-sm"><i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج</button>
     </aside>
 
     <div class="main-content">
+        
         <div class="header-bg lg:hidden">
-            <div class="flex justify-between items-center mb-1">
+            <div class="flex justify-between items-center mb-2">
                 <div class="flex items-center gap-3">
                     <div class="logo-circle-small"><img src="assets/icons/favicon.png" class="w-8 h-8 object-contain"></div>
                     <div>
-                        <p class="text-teal-100 text-[11px] font-bold opacity-90">مكتب التنسيق</p>
-                        <h1 class="font-bold text-xl text-white" id="user-name">...</h1>
+                        <p class="text-teal-100 text-[10px] opacity-90">إدارة الحوكمة والمراجعة</p>
+                        <h1 class="font-bold text-lg text-white">توزيع المهام</h1>
                     </div>
                 </div>
-                <button onclick="auth.logout()" class="bg-white/20 p-2 rounded-xl text-white"><i data-lucide="log-out" class="w-5 h-5"></i></button>
+                <button onclick="auth.logout()" class="bg-white/20 p-2 rounded-xl text-white backdrop-blur-md"><i data-lucide="log-out" class="w-5 h-5"></i></button>
+            </div>
+            <div class="text-white/80 text-xs flex items-center gap-1 pr-1">
+                <i data-lucide="calendar" class="w-3 h-3"></i>
+                <span id="current-month-display">...</span>
             </div>
         </div>
 
-        <div class="stats-container">
-            <div class="stat-box border-b-4 border-teal-600">
-                <div class="stat-icon c-total"><i data-lucide="layers"></i></div>
-                <span class="stat-num" id="count-total">0</span>
-                <span class="stat-label">الإجمالي</span>
+        <div class="stats-wrapper">
+            <div class="stats-big-row">
+                <div class="stat-card big st-total">
+                    <span class="stat-num" id="s-total">0</span>
+                    <span class="stat-lbl">الإجمالي</span>
+                </div>
+                <div class="stat-card big st-late">
+                    <span class="stat-num" id="s-late">0</span>
+                    <span class="stat-lbl">متأخر</span>
+                </div>
             </div>
-            <div class="stat-box border-b-4 border-slate-400">
-                <div class="stat-icon c-new"><i data-lucide="plus-circle"></i></div>
-                <span class="stat-num" id="count-new">0</span>
-                <span class="stat-label">جديد</span>
-            </div>
-            <div class="stat-box border-b-4 border-sky-500">
-                <div class="stat-icon c-pending"><i data-lucide="clock"></i></div>
-                <span class="stat-num" id="count-pending">0</span>
-                <span class="stat-label">بانتظار الاعتماد</span>
-            </div>
-            <div class="stat-box border-b-4 border-green-600">
-                <div class="stat-icon c-approved"><i data-lucide="check-circle-2"></i></div>
-                <span class="stat-num" id="count-approved">0</span>
-                <span class="stat-label">تم الاعتماد والأرشفة</span>
-            </div>
-            <div class="stat-box border-b-4 border-orange-500">
-                <div class="stat-icon c-followup"><i data-lucide="eye"></i></div>
-                <span class="stat-num" id="count-followup">0</span>
-                <span class="stat-label">بحاجة الي متابعة</span>
-            </div>
-            <div class="stat-box border-b-4 border-red-600">
-                <div class="stat-icon c-late"><i data-lucide="alert-octagon"></i></div>
-                <span class="stat-num" id="count-late">0</span>
-                <span class="stat-label">متأخر</span>
+            <div class="stats-small-row">
+                <div class="stat-card bg-new">
+                    <span class="stat-num text-slate-600 text-xl" id="s-new">0</span>
+                    <span class="stat-lbl">جديد</span>
+                </div>
+                <div class="stat-card bg-pending">
+                    <span class="stat-num text-green-700 text-xl" id="s-pending">0</span>
+                    <span class="stat-lbl text-[9px]">انتظار اعتماد</span>
+                </div>
+                <div class="stat-card bg-approved">
+                    <span class="stat-num text-white text-xl" id="s-approved">0</span>
+                    <span class="stat-lbl text-white/90 text-[9px]">تم الاعتماد</span>
+                </div>
+                <div class="stat-card bg-followup">
+                    <span class="stat-num text-blue-700 text-xl" id="s-followup">0</span>
+                    <span class="stat-lbl">متابعة</span>
+                </div>
             </div>
         </div>
 
-        <div class="filters-box">
+        <div class="filters-container">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-slate-700 flex items-center gap-2 text-sm"><i data-lucide="filter" class="w-4 h-4 text-[#0f766e]"></i> تصفية البيانات</h3>
-                <button onclick="resetFilters()" class="text-xs text-red-500 font-bold">إعادة تعيين</button>
+                <h3 class="font-bold text-slate-700 flex items-center gap-2 text-sm">
+                    <i data-lucide="filter" class="w-4 h-4 text-[#0f766e]"></i> تصفية متقدمة
+                </h3>
+                <button onclick="resetFilters()" class="text-[10px] text-red-500 font-bold bg-red-50 px-2 py-1 rounded hover:bg-red-100">إعادة تعيين</button>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
-                <div>
-                    <label class="lbl">الحالة</label>
-                    <select id="f-status" class="inp">
-                        <option value="">الكل</option>
-                        <option value="جديد">جديد</option>
-                        <option value="بانتظار الاعتماد">بانتظار الاعتماد</option>
-                        <option value="تم الاعتماد والأرشفة">تم الاعتماد والأرشفة</option>
-                        <option value="بحاجة الي متابعة">بحاجة الي متابعة</option>
-                        <option value="متأخر">متأخر</option>
-                    </select>
+            <div class="filter-grid mb-3">
+                <div class="col-span-2">
+                    <input type="text" id="f-search" class="f-input" placeholder="بحث باسم الجهة، الرقم، أو الموضوع...">
                 </div>
-                <div>
-                    <label class="lbl">الموظف</label>
-                    <select id="f-emp" class="inp">
-                        <option value="">جار التحميل...</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="lbl">بحث</label>
-                    <input type="text" id="f-search" class="inp" placeholder="الجهة / الموضوع...">
-                </div>
-                <div>
-                    <label class="lbl">من تاريخ</label>
-                    <input type="date" id="f-start" class="inp">
-                </div>
-                <div>
-                    <label class="lbl">إلى تاريخ</label>
-                    <input type="date" id="f-end" class="inp">
-                </div>
+                <select id="f-status" class="f-input" onchange="applyFilters()">
+                    <option value="">كل الحالات</option>
+                    <option value="جديد">جديد</option>
+                    <option value="بانتظار الاعتماد">بانتظار الاعتماد</option>
+                    <option value="تم الاعتماد والأرشفة">تم الاعتماد والأرشفة</option>
+                    <option value="بحاجة الي متابعة">بحاجة الي متابعة</option>
+                    <option value="متأخر">متأخر</option>
+                </select>
+                <select id="f-sort" class="f-input" onchange="applyFilters()">
+                    <option value="newest">الأحدث أولاً</option>
+                    <option value="oldest">الأقدم أولاً</option>
+                    <option value="entity">أبجدي (الجهة)</option>
+                </select>
+                <select id="f-emp" class="f-input col-span-2" onchange="applyFilters()">
+                    <option value="">كل الموظفين</option>
+                </select>
+                <select id="f-month" class="f-input" onchange="applyFilters()">
+                    <option value="">كل السنة</option>
+                    <option value="1">يناير</option>
+                    <option value="2">فبراير</option>
+                    <option value="3">مارس</option>
+                    <option value="4">أبريل</option>
+                    <option value="5">مايو</option>
+                    <option value="6">يونيو</option>
+                    <option value="7">يوليو</option>
+                    <option value="8">أغسطس</option>
+                    <option value="9">سبتمبر</option>
+                    <option value="10">أكتوبر</option>
+                    <option value="11">نوفمبر</option>
+                    <option value="12">ديسمبر</option>
+                </select>
+                <select id="f-year" class="f-input" onchange="applyFilters()">
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
             </div>
-            
-            <button onclick="applyFilters()" class="w-full mt-4 bg-[#0f766e] text-white py-2 rounded-xl font-bold text-sm shadow hover:bg-[#0d5f57]">بحث وتنفيذ</button>
         </div>
 
         <div class="px-2 lg:px-0">
-            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                قائمة التكليفات <span class="text-xs bg-[#0f766e] text-white px-2 py-0.5 rounded-full" id="task-count">0</span>
+            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2 text-sm">
+                سجل المهام <span class="text-[10px] bg-[#0f766e] text-white px-2 py-0.5 rounded-full" id="task-count">0</span>
             </h3>
             <div id="tasks-container">
-                <div class="text-center py-12"><span class="inline-block animate-spin text-[#0f766e]"><i data-lucide="loader-2" class="w-8 h-8"></i></span><p class="text-slate-400 text-sm mt-2">جاري التحميل...</p></div>
+                <div class="text-center py-12"><span class="inline-block animate-spin text-[#0f766e]"><i data-lucide="loader-2" class="w-8 h-8"></i></span><p class="text-slate-400 text-xs mt-2">جاري تحميل البيانات...</p></div>
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-item"><i data-lucide="home" class="w-6 h-6"></i><span>الرئيسية</span></a>
-        <a href="distribution.html" class="nav-item"><i data-lucide="bar-chart-2" class="w-6 h-6"></i><span>المؤشرات</span></a>
-        <a href="coordinator.html" class="nav-item active"><i data-lucide="users" class="w-6 h-6"></i><span>توزيع</span></a>
-        <a href="forms.html" class="nav-item"><i data-lucide="file-text" class="w-6 h-6"></i><span>النماذج</span></a>
+        <a href="index.html" class="b-item"><i data-lucide="home"></i>الرئيسية</a>
+        <a href="distribution.html" class="b-item"><i data-lucide="bar-chart-2"></i>المؤشرات</a>
+        <a href="coordinator.html" class="b-item active"><i data-lucide="users"></i>التوزيع</a>
+        <a href="forms.html" class="b-item"><i data-lucide="file-text"></i>النماذج</a>
     </nav>
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allTasks = [], activeEmployees = [];
+        let allTasks = [];
+        let uniqueEmployees = new Set();
 
         document.addEventListener('DOMContentLoaded', async () => {
             const user = auth.checkAuth();
             if (!user) return;
-            document.getElementById('user-name').textContent = user.name.split(' ')[0];
 
-            // 1. Fetch Employees (Active Only)
-            await loadEmployees();
+            // 1. Set Defaults
+            const now = new Date();
+            document.getElementById('f-month').value = now.getMonth() + 1; // Current Month
+            document.getElementById('f-year').value = now.getFullYear();
             
-            // 2. Fetch All Tasks (Using 'Admin' role trick)
-            await loadTasks(user.name);
+            const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+            document.getElementById('current-month-display').textContent = `${months[now.getMonth()]} ${now.getFullYear()}`;
+
+            // 2. Fetch Data (Sending 'مدير' role to get everything)
+            await loadData(user.name);
         });
 
-        async function loadEmployees() {
+        async function loadData(username) {
             try {
                 const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'getEmployees' }) });
-                const data = await res.json();
-                
-                if (data.success && data.data) {
-                    activeEmployees = data.data; // Array of names
-                    populateEmpDropdowns();
-                }
-            } catch (e) { console.error("Error fetching employees", e); }
-        }
-
-        function populateEmpDropdowns() {
-            const filterSelect = document.getElementById('f-emp');
-            filterSelect.innerHTML = '<option value="">كل الموظفين</option>';
-            activeEmployees.forEach(emp => {
-                filterSelect.innerHTML += `<option value="${emp}">${emp}</option>`;
-            });
-        }
-
-        async function loadTasks(username) {
-            try {
-                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
-                // 🔥 Sending role: 'مدير' to get ALL data
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'getAllData', role: 'مدير', name: username }) });
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getAllData', role: 'مدير', name: username })
+                });
                 const data = await res.json();
 
                 if (data.success) {
                     allTasks = data.tasks || [];
+                    
+                    // Extract unique employees from tasks + active list
+                    extractEmployees(allTasks);
+                    
                     calculateStats();
-                    applyFilters();
+                    applyFilters(); // Will apply default month filter
                 } else {
-                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 font-bold">لا توجد بيانات</div>`;
+                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 text-xs">لا توجد بيانات</div>`;
                 }
             } catch (e) {
                 console.error(e);
-                document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 font-bold">خطأ في الاتصال</div>`;
+                document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 text-xs">خطأ في الاتصال</div>`;
             }
         }
 
+        // Extract employee names from the data itself to ensure filter works
+        function extractEmployees(tasks) {
+            tasks.forEach(t => { if(t.assignee) uniqueEmployees.add(t.assignee); });
+            
+            // Also try to fetch official list if possible
+            fetchEmployeesAPI();
+        }
+
+        async function fetchEmployeesAPI() {
+            try {
+                const res = await fetch(CONFIG.API_URL, { method: 'POST', body: JSON.stringify({ action: 'getEmployees' }) });
+                const data = await res.json();
+                if(data.success && data.data) {
+                    data.data.forEach(name => uniqueEmployees.add(name));
+                }
+            } catch(e) {}
+            
+            // Populate Dropdown
+            const select = document.getElementById('f-emp');
+            select.innerHTML = '<option value="">كل الموظفين</option>';
+            Array.from(uniqueEmployees).sort().forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+        }
+
         function calculateStats() {
-            // Initialize counts
-            let counts = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
+            let s = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
             
             allTasks.forEach(t => {
-                counts.total++;
-                const s = t.status || '';
+                s.total++;
+                const status = (t.status || '').trim();
                 
-                if (s === 'جديد') counts.new++;
-                else if (s === 'بانتظار الاعتماد') counts.pending++;
-                else if (s === 'تم الاعتماد والأرشفة') counts.approved++;
-                else if (s === 'بحاجة الي متابعة') counts.followup++;
-                else if (s === 'متأخر') counts.late++;
+                if (status.includes('جديد')) s.new++;
+                else if (status.includes('بانتظار')) s.pending++;
+                else if (status.includes('تم الاعتماد')) s.approved++;
+                else if (status.includes('متابعة')) s.followup++;
+                else if (status.includes('متأخر')) s.late++;
             });
 
-            // Update UI
-            document.getElementById('count-total').textContent = counts.total;
-            document.getElementById('count-new').textContent = counts.new;
-            document.getElementById('count-pending').textContent = counts.pending;
-            document.getElementById('count-approved').textContent = counts.approved;
-            document.getElementById('count-followup').textContent = counts.followup;
-            document.getElementById('count-late').textContent = counts.late;
+            document.getElementById('s-total').innerText = s.total;
+            document.getElementById('s-new').innerText = s.new;
+            document.getElementById('s-pending').innerText = s.pending;
+            document.getElementById('s-approved').innerText = s.approved;
+            document.getElementById('s-followup').innerText = s.followup;
+            document.getElementById('s-late').innerText = s.late;
         }
 
         function applyFilters() {
+            const search = document.getElementById('f-search').value.toLowerCase();
             const status = document.getElementById('f-status').value;
             const emp = document.getElementById('f-emp').value;
-            const search = document.getElementById('f-search').value.toLowerCase();
-            const start = document.getElementById('f-start').value;
-            const end = document.getElementById('f-end').value;
+            const month = document.getElementById('f-month').value;
+            const year = document.getElementById('f-year').value;
+            const sort = document.getElementById('f-sort').value;
 
-            const filtered = allTasks.filter(t => {
-                // Status Filter
-                if (status && t.status !== status) return false;
-                // Employee Filter
-                if (emp && t.assignee !== emp) return false;
-                // Search Filter
-                if (search && !(t.source + t.subject + t.id).toLowerCase().includes(search)) return false;
-                // Date Range Filter (Assuming date format DD/MM/YYYY)
-                if (start || end) {
-                    const taskDateParts = t.date.split('/'); // Convert DD/MM/YYYY to YYYY-MM-DD
-                    const taskDateISO = `${taskDateParts[2]}-${taskDateParts[1]}-${taskDateParts[0]}`;
-                    if (start && taskDateISO < start) return false;
-                    if (end && taskDateISO > end) return false;
+            let filtered = allTasks.filter(t => {
+                // Search: ID, Subject, Source
+                const matchSearch = !search || (
+                    (t.id+'').toLowerCase().includes(search) || 
+                    (t.subject||'').toLowerCase().includes(search) || 
+                    (t.source||'').toLowerCase().includes(search)
+                );
+                
+                const matchStatus = !status || (t.status || '').includes(status);
+                const matchEmp = !emp || (t.assignee === emp);
+                
+                // Date Filter (Assumes format DD/MM/YYYY or YYYY-MM-DD)
+                let matchDate = true;
+                if (month || year) {
+                    const dStr = t.date || '';
+                    // Try to parse date
+                    let dParts = dStr.split('/'); // DD/MM/YYYY
+                    if(dParts.length < 3) dParts = dStr.split('-'); // YYYY-MM-DD
+                    
+                    if(dParts.length >= 2) {
+                        // Assuming index 1 is month, index 0 or 2 is year depending on format
+                        // Let's rely on string inclusion for simplicity if format is consistent
+                        if(year && !dStr.includes(year)) matchDate = false;
+                        
+                        // Exact month check needs parsing
+                        if(month && matchDate) {
+                            const m = parseInt(month);
+                            const taskM = parseInt(dParts[1]); // usually month is in middle
+                            if(taskM !== m) matchDate = false;
+                        }
+                    }
                 }
-                return true;
+
+                return matchSearch && matchStatus && matchEmp && matchDate;
+            });
+
+            // Sorting
+            filtered.sort((a, b) => {
+                if (sort === 'entity') return (a.source || '').localeCompare(b.source || '');
+                // Date sort (simplified id based mostly works for chronological)
+                if (sort === 'oldest') return a.id - b.id;
+                return b.id - a.id; // Newest (default)
             });
 
             renderTasks(filtered);
@@ -343,50 +436,63 @@
             document.getElementById('task-count').textContent = tasks.length;
 
             if (tasks.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 text-slate-400">لا توجد نتائج مطابقة</div>`;
+                container.innerHTML = `<div class="col-span-full text-center py-12 opacity-50"><i data-lucide="search-x" class="w-12 h-12 mx-auto mb-2 text-slate-300"></i><p class="text-xs text-slate-400 font-bold">لا توجد نتائج مطابقة للفلاتر الحالية</p></div>`;
+                lucide.createIcons();
                 return;
             }
 
-            // Prepare Employee Options HTML once
-            let empOptions = '<option value="">-- اختر موظف --</option>';
-            activeEmployees.forEach(e => empOptions += `<option value="${e}">${e}</option>`);
+            // Employee Options for Dropdown
+            let empOpts = '<option value="">-- اختر --</option>';
+            Array.from(uniqueEmployees).sort().forEach(e => empOpts += `<option value="${e}">${e}</option>`);
 
             container.innerHTML = tasks.map(t => {
-                // Badge Logic
-                let badgeClass = 'bg-st-new';
-                if (t.status === 'بانتظار الاعتماد') badgeClass = 'bg-st-pending';
-                else if (t.status === 'تم الاعتماد والأرشفة') badgeClass = 'bg-st-approved';
-                else if (t.status === 'بحاجة الي متابعة') badgeClass = 'bg-st-followup';
-                else if (t.status === 'متأخر') badgeClass = 'bg-st-late';
+                // Determine Badge Style
+                let stClass = 'st-new';
+                const s = (t.status || '').trim();
+                if(s.includes('بانتظار')) stClass = 'st-pending';
+                else if(s.includes('تم')) stClass = 'st-approved';
+                else if(s.includes('متابعة')) stClass = 'st-followup';
+                else if(s.includes('متأخر')) stClass = 'st-late';
 
-                const assignOpts = empOptions.replace(`value="${t.assignee}"`, `value="${t.assignee}" selected`);
-                const hasAttachment = t.attachment && t.attachment.length > 5;
+                const assignDropdown = empOpts.replace(`value="${t.assignee}"`, `value="${t.assignee}" selected`);
 
                 return `
                 <div class="task-card group">
-                    <div class="flex justify-between items-start mb-3">
-                        <span class="badge ${badgeClass}">${t.status}</span>
-                        <span class="text-[10px] font-mono text-slate-400">#${t.id}</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-sm mb-2 leading-relaxed">${t.subject}</h3>
-                    <div class="flex items-center gap-2 text-xs text-slate-500 mb-3">
-                        <i data-lucide="building-2" class="w-3 h-3 text-slate-400"></i> ${t.source}
-                    </div>
-                    
-                    ${hasAttachment ? `<div class="mb-3"><a href="${t.attachment}" target="_blank" class="block w-full text-center bg-white border border-slate-200 text-slate-600 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-50">📎 فتح المرفق</a></div>` : ''}
+                    <div class="card-top-bar"></div>
+                    <div class="card-body">
+                        <div class="card-header">
+                            <span class="badge ${stClass}">${s || 'جديد'}</span>
+                            <div class="date-badge">
+                                <i data-lucide="calendar" class="w-3 h-3"></i> ${t.date || '-'}
+                                <span class="text-slate-300 mx-1">|</span>
+                                <span class="font-bold text-slate-600">#${t.id}</span>
+                            </div>
+                        </div>
 
-                    <div class="assign-box">
-                        <label class="lbl">توجيه إلى:</label>
-                        <select id="sel-${t.id}" class="inp py-1 mb-2">${assignOpts}</select>
-                        <button onclick="reassignTask('${t.id}')" class="btn-save">
-                            <i data-lucide="check" class="w-3 h-3"></i> حفظ التوزيع
+                        <h3 class="card-title">${t.subject}</h3>
+                        
+                        <div class="info-row">
+                            <i data-lucide="building-2" class="info-icon"></i>
+                            <span class="font-bold text-slate-600">${t.source || 'غير محدد'}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <i data-lucide="user-plus" class="w-4 h-4 text-slate-400"></i>
+                        <select id="sel-${t.id}" class="assign-select">
+                            ${assignDropdown}
+                        </select>
+                        <button onclick="reassignTask('${t.id}')" class="btn-assign">
+                            <i data-lucide="check" class="w-4 h-4"></i>
                         </button>
                     </div>
                 </div>`;
             }).join('');
+            
             lucide.createIcons();
         }
 
+        // Reassign Logic
         async function reassignTask(id) {
             const select = document.getElementById(`sel-${id}`);
             const newEmp = select.value;
@@ -394,45 +500,51 @@
             
             if(!newEmp) return alert("اختر موظف أولاً");
 
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = '⌛ جاري...';
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<span class="animate-spin">⌛</span>`;
             btn.disabled = true;
 
             try {
-                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
-                const res = await fetch(API_URL, {
+                const res = await fetch(CONFIG.API_URL, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'reassignTask', taskId: id, newEmployee: newEmp })
                 });
                 const data = await res.json();
                 
                 if(data.success) {
-                    btn.innerHTML = '✅ تم';
-                    btn.style.background = '#15803d';
-                    setTimeout(() => { 
-                        btn.innerHTML = originalHtml; 
-                        btn.style.background = ''; 
+                    btn.innerHTML = '✔';
+                    btn.style.background = '#16a34a';
+                    
+                    // Update Local
+                    const t = allTasks.find(x => x.id == id);
+                    if(t) t.assignee = newEmp;
+
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '';
                         btn.disabled = false;
-                        // Update local data
-                        const task = allTasks.find(t => t.id == id);
-                        if(task) task.assignee = newEmp;
-                    }, 2000);
+                    }, 1500);
                 } else {
                     throw new Error(data.error);
                 }
-            } catch (e) {
+            } catch(e) {
                 alert("خطأ: " + e.message);
-                btn.innerHTML = originalHtml;
+                btn.innerHTML = originalHTML;
                 btn.disabled = false;
             }
         }
 
+        // Filters Search Event
+        document.getElementById('f-search').addEventListener('input', applyFilters);
+
         function resetFilters() {
+            document.getElementById('f-search').value = '';
             document.getElementById('f-status').value = '';
             document.getElementById('f-emp').value = '';
-            document.getElementById('f-search').value = '';
-            document.getElementById('f-start').value = '';
-            document.getElementById('f-end').value = '';
+            document.getElementById('f-sort').value = 'newest';
+            const now = new Date();
+            document.getElementById('f-month').value = now.getMonth() + 1;
+            document.getElementById('f-year').value = now.getFullYear();
             applyFilters();
         }
     </script>
