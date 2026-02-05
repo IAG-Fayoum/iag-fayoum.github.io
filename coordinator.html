@@ -10,25 +10,25 @@
     <title>توزيع المهام | IAG</title>
     
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
-    <link rel="shortcut icon" href="assets/icons/favicon.png">
-    <link rel="apple-touch-icon" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        /* Base Settings */
         body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         
-        /* --- Colors Setup --- */
+        /* --- CSS Variables --- */
         :root {
             --primary: #0f766e;
-            --c-new: #64748b;        /* رمادي */
-            --c-pending: #84cc16;    /* أخضر فاتح (Lime) */
-            --c-approved: #064e3b;   /* أخضر زيتي غامق */
-            --c-followup: #0ea5e9;   /* أزرق سماوي */
+            /* Text Colors matching Cards */
+            --c-new: #475569;        /* رمادي */
+            --c-pending: #16a34a;    /* أخضر فاتح */
+            --c-approved: #064e3b;   /* أخضر زيتي */
+            --c-followup: #2563eb;   /* أزرق */
             --c-late: #dc2626;       /* أحمر */
-            --c-total: #1e293b;      /* كحلي غامق */
+            --c-total: #1e293b;      /* كحلي */
         }
 
         /* --- Header --- */
@@ -40,6 +40,8 @@
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
+        .dept-title { font-size: 1.1rem; font-weight: 800; line-height: 1.2; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.9; }
 
         /* --- Filter Container --- */
         .filter-container {
@@ -49,7 +51,6 @@
         }
         .filter-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         
-        /* Desktop */
         @media (min-width: 1024px) {
             .filter-grid { grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr; align-items: end; }
             .filter-container { max-width: 1200px; margin-left: auto; margin-right: auto; }
@@ -69,16 +70,14 @@
         }
         .btn-view:active { transform: scale(0.98); }
 
-        /* --- Stats Layout (The Specific Design You Want) --- */
+        /* --- Stats Layout (2 Big + 4 Small) --- */
         .stats-wrapper {
             padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto;
             display: flex; flex-direction: column; gap: 8px;
         }
         
-        /* Row 1: Total & Late (Big) */
-        .stats-row-big {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-        }
+        /* Row 1: Total & Late */
+        .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .stat-card-big {
             background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px;
             text-align: center; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden;
@@ -89,10 +88,8 @@
         .stat-card-big .num { font-size: 1.8rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
         .stat-card-big .lbl { font-size: 0.8rem; font-weight: 700; color: #64748b; }
 
-        /* Row 2: Others (4 Equal Columns) */
-        .stats-row-small {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
-        }
+        /* Row 2: Others */
+        .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .stat-card-small {
             background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 6px;
             text-align: center; cursor: pointer; transition: 0.2s;
@@ -102,7 +99,7 @@
         .stat-card-small .num { font-size: 1.2rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
         .stat-card-small .lbl { font-size: 0.6rem; font-weight: 700; color: #64748b; line-height: 1.1; }
 
-        /* Exact Text Colors Matching Cards */
+        /* Text Colors */
         .txt-total { color: var(--c-total); }
         .txt-late { color: var(--c-late); }
         .txt-new { color: var(--c-new); }
@@ -125,23 +122,20 @@
             padding: 12px; transition: transform 0.2s; display: flex; flex-direction: column;
         }
         
-        /* Colored Top Header */
-        .card-header-stripe {
-            margin: -12px -12px 10px; padding: 8px 12px; 
-            color: white; font-weight: 700; font-size: 0.75rem;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .ch-id { font-family: monospace; background: rgba(0,0,0,0.2); padding: 1px 6px; border-radius: 4px; }
-
-        /* Card Status Colors (Backgrounds) */
-        .bg-new { background-color: var(--c-new); }
-        .bg-pending { background-color: var(--c-pending); }
-        .bg-approved { background-color: var(--c-approved); }
-        .bg-followup { background-color: var(--c-followup); }
-        .bg-late { background-color: var(--c-late); }
-
-        .tc-subject { font-size: 0.9rem; font-weight: 800; color: #1f2937; margin-bottom: 8px; line-height: 1.4; flex: 1; }
+        .card-border { position: absolute; right: 0; top: 0; bottom: 0; width: 4px; }
         
+        /* Status Backgrounds & Borders */
+        .st-new .card-border { background: var(--c-new); }
+        .st-pending .card-border { background: var(--c-pending); }
+        .st-approved .card-border { background: var(--c-approved); }
+        .st-followup .card-border { background: var(--c-followup); }
+        .st-late .card-border { background: var(--c-late); }
+
+        .tc-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .tc-id { font-family: monospace; font-size: 0.75rem; color: #64748b; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+        .tc-status { font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: #f3f4f6; }
+        
+        .tc-subject { font-size: 0.9rem; font-weight: 700; color: #1f2937; margin-bottom: 8px; line-height: 1.4; flex: 1; }
         .tc-meta { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #4b5563; margin-bottom: 4px; }
         .tc-icon { width: 14px; height: 14px; color: var(--primary); opacity: 0.8; }
         
@@ -150,9 +144,7 @@
             font-size: 0.75rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 5px;
         }
 
-        .tc-footer {
-            margin-top: 10px; display: flex; gap: 8px;
-        }
+        .tc-footer { margin-top: 10px; display: flex; gap: 8px; }
         .btn-card {
             flex: 1; padding: 6px; border-radius: 6px; font-size: 0.75rem; font-weight: 700;
             display: flex; align-items: center; justify-content: center; gap: 4px;
@@ -163,7 +155,7 @@
         /* --- Side Menu (Compact 240px) --- */
         .side-menu {
             position: fixed; top: 0; right: -240px; width: 240px; height: 100%;
-            background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white; z-index: 100; transition: 0.3s;
             display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1);
         }
         .side-menu-overlay {
@@ -192,7 +184,7 @@
 
         /* Loading */
         .loader-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #9ca3af; }
-    </script>
+    </style>
 </head>
 <body>
 
@@ -223,7 +215,7 @@
         <div class="max-w-[1200px] mx-auto flex justify-between items-center">
             <button onclick="toggleMenu()" class="p-1 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
             <div class="text-center">
-                <h1 class="font-bold text-lg">إدارة الحوكمة</h1>
+                <h1 class="font-bold text-lg">إدارة المراجعة الداخلية</h1>
                 <p class="text-xs text-teal-100 opacity-90">مكتب التنسيق</p>
             </div>
             <button onclick="window.location.href='notifications.html'" class="p-1 text-white relative">
@@ -281,30 +273,24 @@
     <div class="stats-wrapper">
         <div class="stats-row-big">
             <div class="stat-card-big active" onclick="filterStatus('')" id="st-total">
-                <span class="num txt-total" id="c-total">0</span>
-                <span class="lbl">الإجمالي</span>
+                <span class="num txt-total" id="c-total">0</span><span class="lbl">الإجمالي</span>
             </div>
             <div class="stat-card-big" onclick="filterStatus('متأخر')" id="st-late">
-                <span class="num txt-late" id="c-late">0</span>
-                <span class="lbl">متأخر</span>
+                <span class="num txt-late" id="c-late">0</span><span class="lbl">متأخر</span>
             </div>
         </div>
         <div class="stats-row-small">
             <div class="stat-card-small" onclick="filterStatus('جديد')" id="st-new">
-                <span class="num txt-new" id="c-new">0</span>
-                <span class="lbl">جديد</span>
+                <span class="num txt-new" id="c-new">0</span><span class="lbl">جديد</span>
             </div>
             <div class="stat-card-small" onclick="filterStatus('بانتظار الاعتماد')" id="st-pending">
-                <span class="num txt-pending" id="c-pending">0</span>
-                <span class="lbl">بانتظار الاعتماد</span>
+                <span class="num txt-pending" id="c-pending">0</span><span class="lbl">بانتظار الاعتماد</span>
             </div>
             <div class="stat-card-small" onclick="filterStatus('تم الاعتماد والأرشفة')" id="st-approved">
-                <span class="num txt-approved" id="c-approved">0</span>
-                <span class="lbl">تم الاعتماد والأرشفة</span>
+                <span class="num txt-approved" id="c-approved">0</span><span class="lbl">تم الاعتماد والأرشفة</span>
             </div>
             <div class="stat-card-small" onclick="filterStatus('بحاجة الي متابعة')" id="st-followup">
-                <span class="num txt-followup" id="c-followup">0</span>
-                <span class="lbl">بحاجة الي متابعة</span>
+                <span class="num txt-followup" id="c-followup">0</span><span class="lbl">بحاجة الي متابعة</span>
             </div>
         </div>
     </div>
@@ -343,7 +329,7 @@
             <i data-lucide="users" class="w-5 h-5"></i> المنسق
         </a>
         <a href="forms.html" class="flex flex-col items-center gap-1 text-gray-400 text-[10px] w-12">
-            <i data-lucide="file-text" class="w-5 h-5"></i> النماذج
+            <i data-lucide="file-text" class="w-5 h-5"></i>
         </a>
         <a href="notifications.html" class="flex flex-col items-center gap-1 text-gray-400 text-[10px] w-12">
             <i data-lucide="bell" class="w-5 h-5"></i>
@@ -359,29 +345,30 @@
         let currentStatusFilter = '';
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // Check files
+            if (typeof auth === 'undefined' || typeof CONFIG === 'undefined') {
+                document.body.innerHTML = '<div style="text-align:center; padding:50px; color:red; font-weight:bold;">خطأ: ملفات النظام (js) مفقودة. تأكد من وجود auth.js و config.js</div>';
+                return;
+            }
+
             const user = auth.checkAuth();
             if (!user) return;
 
             document.getElementById('menu-user').textContent = user.name;
             document.getElementById('menu-role').textContent = user.role;
 
-            // 1. DATE FIX: Current Month Local
-            const date = new Date();
-            // Start of month
-            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-            // End of month
-            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+            // --- DATE FIX: Set Default Month (Manual YYYY-MM-DD) ---
+            const now = new Date();
+            // Start of current month
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
             
-            // Format to YYYY-MM-DD manually to avoid UTC shifts
-            const formatDateInput = (d) => {
-                const year = d.getFullYear();
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                const day = String(d.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            };
+            // Last day calculation
+            const lastDayDate = new Date(y, now.getMonth() + 1, 0);
+            const lastDay = String(lastDayDate.getDate()).padStart(2, '0');
 
-            document.getElementById('f-start').value = formatDateInput(firstDay);
-            document.getElementById('f-end').value = formatDateInput(lastDay);
+            document.getElementById('f-start').value = `${y}-${m}-01`;
+            document.getElementById('f-end').value = `${y}-${m}-${lastDay}`;
 
             await loadData(user.name);
             
@@ -395,8 +382,7 @@
 
         async function loadData(username) {
             try {
-                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
-                // Request 'مدير' to fetch ALL rows
+                const API_URL = CONFIG.API_URL;
                 const res = await fetch(API_URL, { 
                     method: 'POST', 
                     body: JSON.stringify({ action: 'getAllData', role: 'مدير', name: username }) 
@@ -411,10 +397,11 @@
                     updateStats();
                     applyFilters();
                 } else {
-                    document.getElementById('tasks-list').innerHTML = `<div class="col-span-full py-12 text-center text-gray-400">لا توجد بيانات</div>`;
+                    document.getElementById('tasks-list').innerHTML = `<div class="loader-box">لا توجد بيانات</div>`;
                 }
             } catch (e) {
-                document.getElementById('tasks-list').innerHTML = `<div class="col-span-full py-12 text-center text-red-500">خطأ في الاتصال</div>`;
+                console.error(e);
+                document.getElementById('tasks-list').innerHTML = `<div class="loader-box text-red-500">خطأ في الاتصال بالسيرفر</div>`;
             }
         }
 
@@ -445,11 +432,8 @@
             const map = {'': 'st-total', 'جديد': 'st-new', 'بانتظار': 'st-pending', 'تم': 'st-approved', 'متابعة': 'st-followup', 'متأخر': 'st-late'};
             let activeId = 'st-total';
             if(status) {
-                if(status.includes('جديد')) activeId = 'st-new';
-                else if(status.includes('بانتظار')) activeId = 'st-pending';
-                else if(status.includes('تم')) activeId = 'st-approved';
-                else if(status.includes('متابعة')) activeId = 'st-followup';
-                else if(status.includes('متأخر')) activeId = 'st-late';
+                const key = Object.keys(map).find(k => status.includes(k));
+                if(key) activeId = map[key];
             }
             document.getElementById(activeId).classList.add('active');
 
@@ -459,18 +443,18 @@
         function applyFilters() {
             const emp = document.getElementById('f-emp').value;
             const src = document.getElementById('f-source').value;
-            const search = document.getElementById('main-search').value.toLowerCase();
+            const search = document.getElementById('f-search').value.toLowerCase();
             const start = document.getElementById('f-start').value;
             const end = document.getElementById('f-end').value;
 
             const filtered = allTasks.filter(t => {
-                // Status Filter
+                // Status (from stats bar)
                 if(currentStatusFilter && !(t.status||'').includes(currentStatusFilter)) return false;
                 
-                // Search Filter
+                // Search
                 if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
                 
-                // Source Filter
+                // Source
                 if(src && t.source !== src) return false;
 
                 // Employee Group Logic
@@ -483,30 +467,28 @@
                     } else if(t.assignee !== emp) return false;
                 }
 
-                // Date Range Check (DD/MM/YYYY vs YYYY-MM-DD)
+                // DATE FIX: Compare ISO strings
                 if(start && end && t.date) {
-                    const parts = t.date.split('/'); // [DD, MM, YYYY]
+                    // t.date comes as DD/MM/YYYY. Need YYYY-MM-DD
+                    const parts = t.date.split('/');
                     if(parts.length === 3) {
-                        const tISO = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
-                        if(tISO < start || tISO > end) return false;
+                        const isoDate = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+                        if(isoDate < start || isoDate > end) return false;
                     }
                 }
 
                 return true;
             });
 
-            updateStats(filtered); // Calculate Stats from Filtered Data? No, usually Global or Date-based.
-            // Let's stick to updating based on "Context" (Date + Search + Emp) but ignoring Status
-            updateContextStats();
-            
+            updateStatsContext(); // Update numbers based on context filters
             renderTasks(filtered);
         }
 
-        function updateContextStats() {
+        function updateStatsContext() {
             // Count stats based on current filters EXCEPT Status
             const emp = document.getElementById('f-emp').value;
             const src = document.getElementById('f-source').value;
-            const search = document.getElementById('main-search').value.toLowerCase();
+            const search = document.getElementById('f-search').value.toLowerCase();
             const start = document.getElementById('f-start').value;
             const end = document.getElementById('f-end').value;
 
@@ -514,15 +496,17 @@
                 if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
                 if(src && t.source !== src) return false;
                 
+                // Date check
                 if(start && end && t.date) {
                     const parts = t.date.split('/');
                     if(parts.length === 3) {
-                        const tISO = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
-                        if(tISO < start || tISO > end) return false;
+                        const isoDate = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+                        if(isoDate < start || isoDate > end) return false;
                     }
                 }
 
                 if(emp) {
+                    // Same emp logic...
                     if(emp.startsWith('group_')) {
                         const eObj = allEmployees.find(x => x.name === t.assignee);
                         const isTech = eObj && (eObj.jobTitle||'').match(/فني|طبي|صيدلي/);
@@ -553,8 +537,7 @@
         }
 
         function updateStats() {
-            // Initial Load stats (global) - will be overridden by updateContextStats
-            updateContextStats();
+            updateStatsContext(); // Initial load
         }
 
         function renderTasks(tasks) {
@@ -565,41 +548,32 @@
             }
 
             container.innerHTML = tasks.map(t => {
-                let bgClass = 'bg-new';
-                let statusLabel = t.status;
-                
-                if(t.status.includes('بانتظار')) bgClass = 'bg-pending';
-                else if(t.status.includes('تم')) bgClass = 'bg-approved';
-                else if(t.status.includes('متابعة')) bgClass = 'bg-followup';
-                else if(t.status.includes('متأخر')) bgClass = 'bg-late';
+                let stClass = 'st-new', stIcon = 'circle', stLabel = t.status;
+                if(t.status.includes('بانتظار')) { stClass = 'st-pending'; stIcon = 'clock'; }
+                else if(t.status.includes('تم')) { stClass = 'st-approved'; stIcon = 'check-circle'; }
+                else if(t.status.includes('متابعة')) { stClass = 'st-followup'; stIcon = 'eye'; }
+                else if(t.status.includes('متأخر')) { stClass = 'st-late'; stIcon = 'alert-circle'; }
 
-                const dateDisplay = formatArabicDate(t.date);
+                const formattedDate = formatArabicDate(t.date);
 
                 return `
-                <div class="task-card">
-                    <div class="card-header-stripe ${bgClass}">
-                        <span class="ch-id">#${t.id}</span>
-                        <span>${statusLabel}</span>
+                <div class="task-card ${stClass}">
+                    <div class="card-border"></div>
+                    <div class="tc-header">
+                        <span class="tc-id">#${t.id}</span>
+                        <span class="tc-status"><i data-lucide="${stIcon}" class="w-3 h-3 inline"></i> ${stLabel}</span>
                     </div>
-
                     <div class="card-body">
                         <h3 class="tc-subject">${t.subject}</h3>
                         <div class="tc-meta"><i data-lucide="building-2" class="tc-icon"></i> <span>${t.source || 'غير محدد'}</span></div>
-                        <div class="tc-meta"><i data-lucide="calendar" class="tc-icon"></i> <span>${dateDisplay}</span></div>
-                        
-                        <div class="tc-assignee">
-                            <i data-lucide="user" class="w-4 h-4"></i>
-                            <span>${t.assignee || 'غير موزع'}</span>
-                        </div>
+                        <div class="tc-meta"><i data-lucide="calendar" class="tc-icon"></i> <span>${formattedDate}</span></div>
+                        <div class="tc-assignee"><i data-lucide="user" class="w-4 h-4"></i> <span>${t.assignee || 'غير موزع'}</span></div>
                     </div>
-
                     <div class="tc-footer">
                         <button onclick="openModal('${t.id}')" class="btn-card">
                             <i data-lucide="eye" class="w-4 h-4"></i> التفاصيل
                         </button>
-                        ${t.attachment ? `<button onclick="window.open('${t.attachment}')" class="btn-card">
-                            <i data-lucide="paperclip" class="w-4 h-4"></i> المرفق
-                        </button>` : ''}
+                        ${t.attachment ? `<button onclick="window.open('${t.attachment}')" class="btn-card"><i data-lucide="paperclip" class="w-4 h-4"></i> المرفق</button>` : ''}
                     </div>
                 </div>`;
             }).join('');
@@ -613,16 +587,13 @@
             
             const html = `
                 <div class="full-width"><span class="data-label">الموضوع</span><p class="data-val">${t.subject}</p></div>
-                <div class="data-item"><span class="data-label">الجهة الواردة</span><p class="data-val">${t.source}</p></div>
-                <div class="data-item"><span class="data-label">محل التنفيذ</span><p class="data-val">${t.entity}</p></div>
-                <div class="data-item"><span class="data-label">تاريخ الوارد</span><p class="data-val">${formatArabicDate(t.date)}</p></div>
-                <div class="data-item"><span class="data-label">تاريخ التكليف</span><p class="data-val">${formatArabicDate(t.assignDate)}</p></div>
-                <div class="data-item"><span class="data-label">تاريخ الإنجاز</span><p class="data-val">${t.completionDate ? formatArabicDate(t.completionDate) : '-'}</p></div>
-                <div class="data-item"><span class="data-label">الموظف</span><p class="data-val text-teal-700">${t.assignee}</p></div>
-                <div class="data-item"><span class="data-label">الحالة</span><p class="data-val">${t.status}</p></div>
-                <div class="full-width"><span class="data-label">نوع المعاملة</span><p class="data-val">${t.docType || '-'}</p></div>
-                <div class="data-item"><span class="data-label">رقم القضية</span><p class="data-val">${t.caseNumber || '-'}</p></div>
-                <div class="data-item"><span class="data-label">الأهمية</span><p class="data-val">${t.importance || '-'}</p></div>
+                <div class="full-width"><span class="data-label">الجهة الواردة</span><p class="data-val">${t.source}</p></div>
+                <div class="full-width"><span class="data-label">محل التنفيذ</span><p class="data-val">${t.entity}</p></div>
+                <div class="data-label">تاريخ الوارد</div><div class="data-val">${formatArabicDate(t.date)}</div>
+                <div class="data-label">تاريخ التكليف</div><div class="data-val">${formatArabicDate(t.assignDate)}</div>
+                <div class="data-label">الموعد النهائي</div><div class="data-val">${formatArabicDate(t.deadline)}</div>
+                <div class="data-label">الموظف المسؤول</div><div class="data-val text-teal-700">${t.assignee}</div>
+                <div class="data-label">الحالة</div><div class="data-val">${t.status}</div>
                 ${t.notes ? `<div class="full-width bg-yellow-50 p-2 rounded border border-yellow-200"><span class="data-label text-yellow-700">ملاحظات</span><p class="data-val text-sm">${t.notes}</p></div>` : ''}
             `;
             document.getElementById('m-content').innerHTML = html;
