@@ -44,7 +44,7 @@
             border: 2px solid rgba(255,255,255,0.8);
         }
 
-        /* 2. Stats Grid (Floating Cards) */
+        /* 2. Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -67,84 +67,54 @@
             text-align: center;
             transition: transform 0.2s;
         }
-        .stat-card:hover { transform: translateY(-4px); }
-
+        
         .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 8px;
+            width: 40px; height: 40px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; margin-bottom: 8px;
         }
 
-        /* Card Colors */
+        /* Colors */
         .sc-blue { background: #eff6ff; color: #2563eb; }   /* إجمالي */
-        .sc-orange { background: #fff7ed; color: #ea580c; } /* جاري العمل */
-        .sc-green { background: #f0fdf4; color: #16a34a; }  /* منجز */
+        .sc-orange { background: #fff7ed; color: #ea580c; } /* قيد العمل */
+        .sc-green { background: #f0fdf4; color: #16a34a; }  /* تم الإنجاز */
         .sc-red { background: #fef2f2; color: #dc2626; }    /* متأخر */
 
         /* 3. Progress Card */
         .progress-card {
-            background: white;
-            margin: 0 1rem 1.5rem;
-            padding: 1.5rem;
-            border-radius: 20px;
-            border: 1px solid #e2e8f0;
+            background: white; margin: 0 1rem 1.5rem; padding: 1.5rem;
+            border-radius: 20px; border: 1px solid #e2e8f0;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
         }
         .prog-bar-bg {
-            height: 10px;
-            background: #e2e8f0;
-            border-radius: 99px;
-            overflow: hidden;
-            margin-top: 10px;
+            height: 10px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-top: 10px;
         }
         .prog-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #0f766e, #2dd4bf);
-            width: 0%;
-            transition: width 1.5s ease-out;
+            height: 100%; background: linear-gradient(90deg, #0f766e, #2dd4bf); width: 0%; transition: width 1.5s ease-out;
         }
 
-        /* 4. Recent Activity Table */
+        /* 4. Recent Activity */
         .recent-card {
-            background: white;
-            margin: 0 1rem;
-            padding: 0;
-            border-radius: 20px;
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
+            background: white; margin: 0 1rem; padding: 0;
+            border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
         }
         .table-row {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            border-bottom: 1px solid #f1f5f9;
+            display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid #f1f5f9;
         }
         .table-row:last-child { border: none; }
 
-        /* Status Colors (Same as Employee Page) */
-        .badge-new      { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
-        .badge-pending  { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-        .badge-approved { background: #15803d; color: white;   border: 1px solid #14532d; }
-        .badge-followup { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
-        .badge-late     { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-
         .status-badge-small {
-            font-size: 0.65rem;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-weight: 700;
+            font-size: 0.65rem; padding: 3px 8px; border-radius: 6px; font-weight: 700;
         }
+        .badge-gray { background: #f1f5f9; color: #64748b; }
+        .badge-green { background: #dcfce7; color: #166534; }
+        .badge-red { background: #fee2e2; color: #991b1b; }
+        .badge-blue { background: #eff6ff; color: #1d4ed8; }
 
-        /* 5. Sidebar & Nav */
+        /* Sidebar & Nav */
         .sidebar {
             position: fixed; right: 0; top: 0; height: 100vh; width: 260px;
-            background: white; border-left: 1px solid #e2e8f0; z-index: 50;
-            transition: transform 0.3s;
+            background: white; border-left: 1px solid #e2e8f0; z-index: 50; transition: transform 0.3s;
         }
         .nav-item {
             display: flex; align-items: center; gap: 10px; padding: 12px 20px;
@@ -153,7 +123,6 @@
         .nav-item:hover { background: #f0fdfa; color: #0f766e; }
         .nav-item.active { background: linear-gradient(135deg, #0f766e, #115e59); color: white; }
 
-        /* Mobile Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 0; width: 100%; background: white;
             border-top: 1px solid #e2e8f0; padding: 10px; z-index: 40;
@@ -197,6 +166,9 @@
             </a>
             <a href="employee.html" class="nav-item rounded-lg mb-1">
                 <i data-lucide="briefcase" class="w-5 h-5"></i> مهامي
+            </a>
+            <a href="coordinator.html" class="nav-item rounded-lg mb-1">
+                <i data-lucide="users" class="w-5 h-5"></i> التنسيق
             </a>
             <a href="forms.html" class="nav-item rounded-lg mb-1">
                 <i data-lucide="file-text" class="w-5 h-5"></i> النماذج
@@ -243,7 +215,7 @@
             <div class="stat-card">
                 <div class="stat-icon sc-green"><i data-lucide="check-circle-2" class="w-5 h-5"></i></div>
                 <h3 class="text-2xl font-black text-slate-800" id="s-approved">0</h3>
-                <p class="text-[10px] text-slate-500 font-bold">تم الاعتماد</p>
+                <p class="text-[10px] text-slate-500 font-bold">تم الإنجاز</p>
             </div>
             
             <div class="stat-card">
@@ -272,7 +244,10 @@
                 <a href="employee.html" class="text-xs text-[#0f766e] font-bold hover:underline">عرض الكل</a>
             </div>
             <div id="recent-list">
-                <div class="p-6 text-center text-gray-400 text-sm">جاري التحميل...</div>
+                <div class="p-6 text-center text-gray-400 text-sm">
+                    <span class="inline-block animate-spin mb-2"><i data-lucide="loader-2"></i></span>
+                    <br>جاري التحميل...
+                </div>
             </div>
         </div>
 
@@ -291,9 +266,6 @@
         <a href="forms.html" class="b-nav-item">
             <i data-lucide="file-text" class="w-6 h-6"></i><span>النماذج</span>
         </a>
-        <a href="admin.html" class="b-nav-item hidden" id="mob-admin-link">
-            <i data-lucide="settings-2" class="w-6 h-6"></i><span>الإدارة</span>
-        </a>
     </nav>
 
     <script src="assets/js/config.js"></script>
@@ -306,81 +278,75 @@
             if(!user) return;
 
             // عرض الاسم
-            const firstName = user.name.split(' ')[0];
+            const firstName = user.name ? user.name.split(' ')[0] : 'يا بطل';
             document.getElementById('user-name').textContent = firstName;
 
-            // إظهار رابط الإدارة
-            if(user.role === 'admin' || user.role === 'مدير') {
-                document.getElementById('mob-admin-link').classList.remove('hidden');
-            }
-
-            // جلب البيانات (من 2024 شامل)
-            const res = await auth.callAPI('getAllData', { 
-                role: user.role, 
-                name: user.name, 
-                startDate: '2024-01-01' 
-            });
-            
-            if(res.success) {
-                const tasks = res.tasks;
+            // 🔥 الاتصال بالباك إند وجلب البيانات 🔥
+            try {
+                // بنطلب كل الداتا (role 'مدير' عشان يجيب كله للإحصائيات)
+                // الباك إند بتاعك ذكي كفاية إنه يرجع إحصائيات كاملة في `stats.totals`
+                const res = await auth.callAPI('getAllData', { 
+                    role: 'مدير', 
+                    name: user.name, 
+                    startDate: '2024-01-01' 
+                });
                 
-                // --- حساب الإحصائيات بناءً على الحالات الجديدة ---
-                const total = tasks.length;
-                
-                // تم الاعتماد (المهمة المنجزة)
-                const approved = tasks.filter(t => t.status.includes('تم الاعتماد') || t.status.includes('أرشفة')).length;
-                
-                // متأخر
-                const late = tasks.filter(t => t.status.includes('متأخر')).length;
-                
-                // قيد العمل (جديد + انتظار + متابعة)
-                const pending = tasks.filter(t => 
-                    t.status.includes('جديد') || 
-                    t.status.includes('انتظار') || 
-                    t.status.includes('متابعة') ||
-                    t.status.includes('مراجعة')
-                ).length;
+                if(res.success && res.stats && res.stats.totals) {
+                    const s = res.stats.totals;
 
-                // تحديث العدادات
-                animateValue('s-total', total);
-                animateValue('s-pending', pending);
-                animateValue('s-approved', approved);
-                animateValue('s-late', late);
+                    // 1. تحديث العدادات (من الباك إند مباشرة)
+                    animateValue('s-total', s.total || 0);
+                    animateValue('s-pending', (s.inProgress + s.pending + s.new) || 0); // نجمع كل اللي مش منتهي
+                    animateValue('s-approved', s.completed || 0);
+                    animateValue('s-late', s.overdue || 0);
 
-                // حساب النسبة
-                const rate = total > 0 ? Math.round((approved / total) * 100) : 0;
-                document.getElementById('prog-val').textContent = rate + '%';
-                document.getElementById('prog-fill').style.width = rate + '%';
+                    // 2. تحديث شريط الإنجاز
+                    const total = s.total || 0;
+                    const done = s.completed || 0;
+                    const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+                    
+                    document.getElementById('prog-val').textContent = rate + '%';
+                    document.getElementById('prog-fill').style.width = rate + '%';
 
-                // الجدول المصغر (أحدث 5)
-                const list = document.getElementById('recent-list');
-                if (tasks.length === 0) {
-                    list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">لا توجد بيانات</div>';
-                } else {
-                    list.innerHTML = tasks.slice(0, 5).map(t => {
-                        let badgeClass = 'badge-new'; // افتراضي
-                        
-                        if(t.status.includes('تم الاعتماد')) badgeClass = 'badge-approved';
-                        else if(t.status.includes('متأخر')) badgeClass = 'badge-late';
-                        else if(t.status.includes('انتظار')) badgeClass = 'badge-pending';
-                        else if(t.status.includes('متابعة')) badgeClass = 'badge-followup';
+                    // 3. تحديث جدول "أحدث المعاملات"
+                    const list = document.getElementById('recent-list');
+                    if (!res.tasks || res.tasks.length === 0) {
+                        list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">لا توجد بيانات</div>';
+                    } else {
+                        // نعرض أول 5 فقط
+                        list.innerHTML = res.tasks.slice(0, 5).map(t => {
+                            let badgeClass = 'badge-gray';
+                            let statusText = t.status || 'غير محدد';
 
-                        return `
-                        <div class="table-row">
-                            <div class="flex-1 min-w-0 pr-2">
-                                <h4 class="font-bold text-slate-800 text-xs truncate">${t.subject}</h4>
-                                <p class="text-[10px] text-slate-500 truncate">${t.source}</p>
+                            if(statusText.includes('تم') || statusText.includes('منتهي')) badgeClass = 'badge-green';
+                            else if(statusText.includes('متأخر')) badgeClass = 'badge-red';
+                            else if(statusText.includes('جاري') || statusText.includes('اعتماد')) badgeClass = 'badge-blue';
+
+                            return `
+                            <div class="table-row">
+                                <div class="flex-1 min-w-0 pr-2">
+                                    <h4 class="font-bold text-slate-800 text-xs truncate">${t.subject || 'بدون عنوان'}</h4>
+                                    <p class="text-[10px] text-slate-500 truncate">${t.entity || t.source || 'غير محدد'}</p>
+                                </div>
+                                <span class="status-badge-small ${badgeClass}">${statusText}</span>
                             </div>
-                            <span class="status-badge-small ${badgeClass}">${t.status}</span>
-                        </div>
-                        `;
-                    }).join('');
+                            `;
+                        }).join('');
+                    }
+                } else {
+                    console.error("Format Error:", res);
+                    document.getElementById('recent-list').innerHTML = '<div class="p-4 text-center text-red-500 text-sm">تنسيق البيانات غير صحيح</div>';
                 }
+            } catch (error) {
+                console.error("Connection Error:", error);
+                document.getElementById('recent-list').innerHTML = '<div class="p-4 text-center text-red-500 text-sm">خطأ في الاتصال بالسيرفر</div>';
             }
         });
 
+        // دالة تحريك الأرقام (Animation)
         function animateValue(id, end) {
             const obj = document.getElementById(id);
+            if(!obj) return;
             let start = 0;
             const duration = 1000;
             if (end === 0) { obj.innerHTML = 0; return; }
