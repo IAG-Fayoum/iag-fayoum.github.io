@@ -65,7 +65,7 @@
                     <a href="index.html" class="hover:text-[#ccfbf1] transition-colors">الرئيسية</a>
                     <a href="distribution.html" class="text-[#ccfbf1] border-b-2 border-[#ccfbf1] pb-1">Dashboard</a>
                     <a href="forms.html" class="hover:text-[#ccfbf1] transition-colors">النماذج</a>
-                    <a href="tasks.html" class="hover:text-[#ccfbf1] transition-colors">مهامي</a>
+                    <a href="employee.html" class="hover:text-[#ccfbf1] transition-colors">مهامي</a>
                 </nav>
 
                 <div class="flex items-center gap-4">
@@ -88,7 +88,7 @@
         <a href="distribution.html" class="flex flex-col items-center text-xs text-[#0f766e] font-bold">
             <i data-lucide="layout-dashboard" class="w-5 h-5 mb-1"></i> Dashboard
         </a>
-        <a href="tasks.html" class="flex flex-col items-center text-xs text-gray-500">
+        <a href="employee.html" class="flex flex-col items-center text-xs text-gray-500">
             <i data-lucide="list-todo" class="w-5 h-5 mb-1"></i> مهامي
         </a>
     </nav>
@@ -234,9 +234,9 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer hover:text-[#0f766e]" onclick="sortTable('رقم_القيد')">رقم القيد</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer hover:text-[#0f766e]" onclick="sortTable('id')">رقم القيد</th>
                             <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">نوع المستند</th>
-                            <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer hover:text-[#0f766e]" onclick="sortTable('التاريخ')">التاريخ</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer hover:text-[#0f766e]" onclick="sortTable('date')">التاريخ</th>
                             <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">الجهة</th>
                             <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider w-1/4">الموضوع</th>
                             <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">الموظف</th>
@@ -341,24 +341,30 @@
             refreshIcon.classList.add('animate-spin-custom');
 
             try {
-                // Determine API URL (Fallback if config not loaded)
+                // Determine API URL
                 const apiUrl = (typeof CONFIG !== 'undefined' && CONFIG.API_URL) ? CONFIG.API_URL : '';
                 
                 if (!apiUrl) throw new Error('API URL not configured');
 
-                // Simulate fetch parameters (in real app, pass them)
+                // ⚠️ FIX: Sending JSON instead of URLSearchParams
                 const response = await fetch(apiUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({
+                    body: JSON.stringify({
                         action: 'getAllData'
                     })
                 });
 
                 const data = await response.json();
 
-                if (data.success || Array.isArray(data)) { // Handle array response directly or {success: true, data: []}
-                    allData = data.tasks || data || []; // Adjust based on actual API response structure
+                if (data.success || Array.isArray(data)) { 
+                    allData = data.tasks || data || []; 
+                    
+                    // تحويل التواريخ بشكل صحيح للفرز
+                    allData.forEach(task => {
+                        // إضافة تاريخ افتراضي إذا لم يوجد
+                        if (!task.date) task.date = new Date().toLocaleDateString('en-GB');
+                    });
+                    
                     filterData();
                 } else {
                     throw new Error(data.error || 'فشل في جلب البيانات');
@@ -384,31 +390,38 @@
             today.setHours(0,0,0,0);
 
             filteredData = allData.filter(item => {
-                // Search Text
+                // البحث في الحقول المختلفة (تأكد أن أسماء الحقول تطابق ما يرسله الباك إند)
+                // الباك إند يرسل: id, date, type, subject, source, status, assignee, entity
                 const matchesSearch = 
-                    (item['الجهة']?.toLowerCase().includes(searchTerm) || '') ||
-                    (item['الموضوع']?.toLowerCase().includes(searchTerm) || '') ||
-                    (item['رقم_القيد']?.toLowerCase().includes(searchTerm) || '') ||
-                    (item['الموظف_المكلف']?.toLowerCase().includes(searchTerm) || '');
+                    (item.source?.toLowerCase().includes(searchTerm) || '') ||
+                    (item.subject?.toLowerCase().includes(searchTerm) || '') ||
+                    (String(item.id)?.toLowerCase().includes(searchTerm) || '') ||
+                    (item.assignee?.toLowerCase().includes(searchTerm) || '');
 
                 // Status
-                const matchesStatus = statusValue === 'all' || item['الحالة'] === statusValue;
+                // مطابقة مرنة للحالة (يحتوي على الكلمة)
+                const matchesStatus = statusValue === 'all' || (item.status && item.status.includes(statusValue));
 
                 // Type
-                const matchesType = typeValue === 'all' || item['نوع_المستند'] === typeValue;
+                // مطابقة نوع المستند (أو المعاملة)
+                const matchesType = typeValue === 'all' || (item.docType === typeValue);
 
-                // Date
+                // Date Parsing (DD/MM/YYYY)
                 let matchesDate = true;
-                const itemDate = new Date(item['التاريخ']);
-                if (dateValue !== 'all' && !isNaN(itemDate)) {
-                    const diffTime = Math.abs(today - itemDate);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-                    
-                    if (dateValue === 'today') matchesDate = diffDays === 0;
-                    if (dateValue === '7days') matchesDate = diffDays <= 7;
-                    if (dateValue === '30days') matchesDate = diffDays <= 30;
-                    if (dateValue === 'thisMonth') matchesDate = itemDate.getMonth() === today.getMonth() && itemDate.getFullYear() === today.getFullYear();
-                    if (dateValue === 'thisYear') matchesDate = itemDate.getFullYear() === today.getFullYear();
+                if (dateValue !== 'all' && item.date) {
+                    const parts = item.date.split('/');
+                    if (parts.length === 3) {
+                        const itemDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                        
+                        const diffTime = Math.abs(today - itemDate);
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                        
+                        if (dateValue === 'today') matchesDate = diffDays === 0;
+                        if (dateValue === '7days') matchesDate = diffDays <= 7;
+                        if (dateValue === '30days') matchesDate = diffDays <= 30;
+                        if (dateValue === 'thisMonth') matchesDate = itemDate.getMonth() === today.getMonth() && itemDate.getFullYear() === today.getFullYear();
+                        if (dateValue === 'thisYear') matchesDate = itemDate.getFullYear() === today.getFullYear();
+                    }
                 }
 
                 return matchesSearch && matchesStatus && matchesType && matchesDate;
@@ -431,7 +444,7 @@
 
             emptyState.classList.add('hidden');
             tableView.classList.remove('hidden');
-            cardsView.classList.remove('hidden'); // Logic below hides depending on screen size via CSS
+            cardsView.classList.remove('hidden'); 
             pagination.classList.remove('hidden');
 
             const start = (currentPage - 1) * itemsPerPage;
@@ -441,24 +454,26 @@
             // Render Table Rows
             tableBody.innerHTML = paginatedItems.map((item, index) => `
                 <tr class="hover:bg-slate-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-[#f8fafc]'}">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item['رقم_القيد']}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item['نوع_المستند']}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item['التاريخ']}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item['الجهة']}</td>
-                    <td class="px-6 py-4 text-sm text-gray-700 truncate max-w-xs" title="${item['الموضوع']}">${item['الموضوع']}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                         <span class="font-mono bg-slate-100 px-2 py-1 rounded border border-slate-200">${item.id}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.docType || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.source || item.entity}</td>
+                    <td class="px-6 py-4 text-sm text-gray-700 truncate max-w-xs" title="${item.subject}">${item.subject}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <div class="flex items-center gap-2">
                             <div class="w-6 h-6 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-xs font-bold">
-                                ${item['الموظف_المكلف'].charAt(0)}
+                                ${(item.assignee || '?').charAt(0)}
                             </div>
-                            ${item['الموظف_المكلف']}
+                            ${item.assignee || 'غير محدد'}
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                        ${getStatusBadge(item['الحالة'])}
+                        ${getStatusBadge(item.status)}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                        ${getDaysBadge(item['الأيام_المتبقية'])}
+                        ${getDaysBadge(item.delay || 0, item.status)}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                         <button class="text-[#0f766e] hover:text-[#115e59] mx-1"><i data-lucide="eye" class="w-4 h-4"></i></button>
@@ -470,18 +485,18 @@
             cardsView.innerHTML = paginatedItems.map(item => `
                 <div class="bg-white p-4 rounded-lg shadow border border-gray-100">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-1 rounded">${item['رقم_القيد']}</span>
-                        ${getStatusBadge(item['الحالة'])}
+                        <span class="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-1 rounded">#${item.id}</span>
+                        ${getStatusBadge(item.status)}
                     </div>
-                    <h4 class="font-bold text-gray-800 mb-1">${item['الموضوع']}</h4>
-                    <p class="text-xs text-gray-500 mb-3">${item['الجهة']} - ${item['التاريخ']}</p>
+                    <h4 class="font-bold text-gray-800 mb-1">${item.subject}</h4>
+                    <p class="text-xs text-gray-500 mb-3">${item.source || item.entity} - ${item.date}</p>
                     
                     <div class="flex justify-between items-center text-sm border-t pt-2">
                         <div class="flex items-center gap-1 text-gray-600">
-                            <i data-lucide="user" class="w-3 h-3"></i> ${item['الموظف_المكلف']}
+                            <i data-lucide="user" class="w-3 h-3"></i> ${item.assignee || 'غير محدد'}
                         </div>
                         <div class="text-xs">
-                             ${getDaysBadge(item['الأيام_المتبقية'])}
+                             ${getDaysBadge(item.delay || 0, item.status)}
                         </div>
                     </div>
                 </div>
@@ -494,10 +509,10 @@
         // Render Pagination
         function renderPagination() {
             const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-            document.getElementById('page-start').textContent = (currentPage - 1) * itemsPerPage + 1;
+            document.getElementById('page-start').textContent = filteredData.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
             document.getElementById('page-end').textContent = Math.min(currentPage * itemsPerPage, filteredData.length);
             document.getElementById('total-items').textContent = filteredData.length;
-            document.getElementById('page-info').textContent = `صفحة ${currentPage} من ${totalPages}`;
+            document.getElementById('page-info').textContent = `صفحة ${currentPage} من ${totalPages || 1}`;
         }
 
         function changePage(delta) {
@@ -506,7 +521,6 @@
             if (newPage >= 1 && newPage <= totalPages) {
                 currentPage = newPage;
                 renderData();
-                // Scroll to top of table
                 document.getElementById('content-area').scrollIntoView({ behavior: 'smooth' });
             }
         }
@@ -514,9 +528,10 @@
         // Update Stats Cards
         function updateStats() {
             const total = filteredData.length;
-            const progress = filteredData.filter(i => i['الحالة'] === 'قيد التنفيذ').length;
-            const completed = filteredData.filter(i => i['الحالة'] === 'مكتملة').length;
-            const late = filteredData.filter(i => i['الحالة'] === 'متأخرة' || parseInt(i['الأيام_المتبقية']) < 0).length;
+            // فلاتر الحالة بناءً على النصوص الموجودة
+            const progress = filteredData.filter(i => (i.status || '').includes('جاري') || (i.status || '').includes('تنفيذ') || (i.status || '').includes('جديد')).length;
+            const completed = filteredData.filter(i => (i.status || '').includes('تم') || (i.status || '').includes('منتهي') || (i.status || '').includes('مكتمل')).length;
+            const late = filteredData.filter(i => (i.status || '').includes('متأخر')).length;
 
             document.getElementById('stats-total').innerText = total;
             document.getElementById('stats-progress').innerText = progress;
@@ -530,27 +545,32 @@
 
         // Helper: Badges
         function getStatusBadge(status) {
+            status = status || 'غير محدد';
             let colorClass = 'bg-gray-100 text-gray-800';
             let icon = '';
-            if (status === 'مكتملة') {
+            
+            if (status.includes('مكتمل') || status.includes('تم') || status.includes('منتهي')) {
                 colorClass = 'bg-green-100 text-green-800';
                 icon = '<i data-lucide="check" class="w-3 h-3 inline ml-1"></i>';
-            } else if (status === 'قيد التنفيذ') {
+            } else if (status.includes('جاري') || status.includes('تنفيذ') || status.includes('جديد')) {
                 colorClass = 'bg-yellow-100 text-yellow-800';
                 icon = '<i data-lucide="clock" class="w-3 h-3 inline ml-1"></i>';
-            } else if (status === 'متأخرة') {
+            } else if (status.includes('متأخر')) {
                 colorClass = 'bg-red-100 text-red-800';
                 icon = '<i data-lucide="alert-circle" class="w-3 h-3 inline ml-1"></i>';
             }
             return `<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${colorClass}">${icon}${status}</span>`;
         }
 
-        function getDaysBadge(days) {
-            const d = parseInt(days);
-            if (isNaN(d)) return '';
-            if (d < 0) return `<span class="text-red-600 font-bold text-xs">${Math.abs(d)} يوم تأخير</span>`;
-            if (d <= 2) return `<span class="text-orange-600 font-bold text-xs">باقي ${d} أيام</span>`;
-            return `<span class="text-gray-500 text-xs">${d} أيام</span>`;
+        function getDaysBadge(delay, status) {
+            if ((status || '').includes('تم') || (status || '').includes('منتهي')) return '<span class="text-green-600 font-bold text-xs">تم الإنجاز</span>';
+            
+            const d = parseInt(delay);
+            if (!d || d === 0) return '<span class="text-gray-400 text-xs">-</span>';
+            
+            // في الباك إند، الـ delay بيتحسب للمتأخرين فقط
+            // إذا كان الرقم موجب، يعني متأخر
+            return `<span class="text-red-600 font-bold text-xs">${d} يوم تأخير</span>`;
         }
 
         // Sorting
@@ -565,10 +585,24 @@
             filteredData.sort((a, b) => {
                 let valA = a[column];
                 let valB = b[column];
-
-                if (!isNaN(Date.parse(valA)) && !isNaN(Date.parse(valB))) {
-                    valA = new Date(valA);
-                    valB = new Date(valB);
+                
+                // Special handling for date strings DD/MM/YYYY
+                if (column === 'date' && valA && valB) {
+                     const partsA = valA.split('/');
+                     const partsB = valB.split('/');
+                     if (partsA.length === 3 && partsB.length === 3) {
+                         valA = new Date(partsA[2], partsA[1]-1, partsA[0]).getTime();
+                         valB = new Date(partsB[2], partsB[1]-1, partsB[0]).getTime();
+                     }
+                }
+                // Special handling for numeric IDs
+                else if (column === 'id') {
+                    valA = parseInt(valA) || 0;
+                    valB = parseInt(valB) || 0;
+                }
+                else {
+                    valA = (valA || '').toString().toLowerCase();
+                    valB = (valB || '').toString().toLowerCase();
                 }
 
                 if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
@@ -610,13 +644,13 @@
             
             filteredData.forEach(row => {
                 const csvRow = [
-                    row['رقم_القيد'],
-                    row['نوع_المستند'],
-                    row['التاريخ'],
-                    row['الجهة'],
-                    `"${row['الموضوع']}"`,
-                    row['الموظف_المكلف'],
-                    row['الحالة']
+                    row.id,
+                    row.docType,
+                    row.date,
+                    row.source || row.entity,
+                    `"${(row.subject || '').replace(/"/g, '""')}"`,
+                    row.assignee,
+                    row.status
                 ].join(",");
                 csvContent += csvRow + "\n";
             });
