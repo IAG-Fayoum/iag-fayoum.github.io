@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>توزيع المهام | إدارة الحوكمة</title>
+    <title>مكتب التنسيق | إدارة الحوكمة</title>
     
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
@@ -14,7 +14,7 @@
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; padding-bottom: 80px; }
         
-        /* --- 1. Header Identity --- */
+        /* --- Header --- */
         .header-bg {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             padding: 1.5rem 1.5rem 6rem;
@@ -25,88 +25,110 @@
             box-shadow: 0 10px 30px -10px rgba(15, 118, 110, 0.5);
         }
 
-        /* --- 2. Stats Layout --- */
-        .stats-wrapper { margin: -5rem 1rem 1.5rem; position: relative; z-index: 20; }
-        
-        .stats-big-row {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;
+        /* --- 1. Filters Section (Top) --- */
+        .filters-wrapper {
+            margin: -4rem 1rem 1rem; position: relative; z-index: 20;
         }
-        .stats-small-row {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
-        }
-        
-        /* Stat Cards */
-        .stat-btn {
-            background: white; border-radius: 16px; padding: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
-            text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
-        }
-        .stat-btn:active { transform: scale(0.95); }
-        .stat-btn.active { ring: 2px solid #0f766e; background-color: #f0fdfa; }
-
-        .stat-btn.big { padding: 16px; height: 90px; }
-        .big .stat-num { font-size: 2.2rem; }
-        
-        .stat-num { font-weight: 800; line-height: 1; }
-        .stat-lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; margin-top: 4px; }
-        
-        /* Colors */
-        .c-total { color: #0f766e; }
-        .c-late { color: #dc2626; }
-        .c-new { color: #475569; }
-        .c-pending { color: #16a34a; }
-        .c-approved { color: #064e3b; }
-        .c-followup { color: #2563eb; }
-
-        /* --- 3. Filters --- */
-        .filters-container {
+        .filters-box {
             background: white; border-radius: 16px; padding: 1.25rem;
-            margin: 0 1rem 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
         }
+        
         .filter-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        
+        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
         .f-input {
             width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #e2e8f0;
             border-radius: 10px; font-size: 0.8rem; outline: none; transition: 0.2s;
         }
         .f-input:focus { border-color: #0f766e; background: white; }
-        .filter-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
+        
+        .btn-search {
+            background: #0f766e; color: white; border: none; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+            font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s;
+            padding: 10px;
+        }
+        .btn-search:hover { background: #115e59; }
+
         .col-span-2 { grid-column: span 2; }
 
-        /* --- 4. Task Cards --- */
-        .task-card {
-            border-radius: 16px; border: 1px solid transparent;
-            padding: 1rem; margin-bottom: 1rem; position: relative;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: all 0.2s;
-            background: white;
+        /* --- 2. Stats Section (Middle - Below Filter) --- */
+        .stats-wrapper {
+            padding: 0 1rem 1rem; display: flex; gap: 8px; overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        .task-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); }
+        .stats-wrapper::-webkit-scrollbar { height: 4px; }
+        .stats-wrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-        /* Themes */
-        .theme-new { background: #ffffff; border: 1px solid #e2e8f0; border-right: 5px solid #94a3b8; }
-        .theme-pending { background: #f0fdf4; border: 1px solid #bbf7d0; border-right: 5px solid #22c55e; }
-        .theme-approved { background: #ecfdf5; border: 1px solid #059669; border-right: 5px solid #064e3b; }
-        .theme-followup { background: #eff6ff; border: 1px solid #bfdbfe; border-right: 5px solid #2563eb; }
-        .theme-late { background: #fef2f2; border: 1px solid #fecaca; border-right: 5px solid #dc2626; }
+        .stat-card {
+            min-width: 100px; flex: 1; background: white; padding: 10px;
+            border-radius: 12px; border: 1px solid #e2e8f0; cursor: pointer;
+            text-align: center; transition: all 0.2s; position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .stat-card:active { transform: scale(0.95); }
+        .stat-card.active { background-color: #f0fdfa; ring: 2px solid #0f766e; border-color: #0f766e; }
 
-        .t-id { font-family: monospace; font-size: 0.75rem; color: #64748b; background: rgba(255,255,255,0.5); padding: 2px 6px; border-radius: 4px; }
-        .t-status { font-size: 0.65rem; font-weight: 800; padding: 4px 8px; border-radius: 20px; }
-        .t-subject { font-size: 0.95rem; font-weight: 700; color: #1e293b; line-height: 1.4; margin-bottom: 12px; }
+        .st-num { display: block; font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+        .st-lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; white-space: nowrap; }
+
+        /* Colors based on requirements */
+        .c-total { color: #334155; }
+        .c-new { color: #334155; }
+        .c-pending { color: #16a34a; } /* أخضر فاتح */
+        .c-approved { color: #064e3b; } /* أخضر زيتي */
+        .c-followup { color: #2563eb; } /* أزرق */
+        .c-late { color: #dc2626; } /* أحمر */
+
+        /* --- 3. Task Cards (Bottom) --- */
+        .tasks-container { padding: 0 1rem; display: grid; gap: 1rem; }
         
-        .t-meta-row { display: flex; align-items: center; gap: 15px; font-size: 0.75rem; color: #475569; margin-bottom: 6px; }
-        .t-icon { width: 14px; height: 14px; opacity: 0.8; color: #0f766e; }
+        .task-card {
+            background: white; border-radius: 16px; border: 1px solid transparent;
+            padding: 1.25rem; position: relative; overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03); transition: all 0.2s;
+        }
+        .task-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
 
-        /* Nav */
+        /* Card Status Styling (Right Border + BG Tint) */
+        .card-new { border-right: 5px solid #94a3b8; background: #ffffff; }
+        .card-pending { border-right: 5px solid #22c55e; background: #f0fdf4; } /* أخضر فاتح */
+        .card-approved { border-right: 5px solid #064e3b; background: #ecfdf5; } /* زيتي */
+        .card-followup { border-right: 5px solid #2563eb; background: #eff6ff; } /* أزرق */
+        .card-late { border-right: 5px solid #dc2626; background: #fef2f2; } /* أحمر */
+
+        /* Card Typography */
+        .t-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px; }
+        .t-id { font-family: monospace; font-size: 0.75rem; color: #64748b; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; }
+        .t-status { font-size: 0.65rem; font-weight: 800; padding: 4px 8px; border-radius: 20px; }
+        
+        /* Status Badges */
+        .badge-new { background: #f1f5f9; color: #475569; }
+        .badge-pending { background: #dcfce7; color: #16a34a; }
+        .badge-approved { background: #064e3b; color: white; }
+        .badge-followup { background: #eff6ff; color: #2563eb; }
+        .badge-late { background: #fee2e2; color: #dc2626; }
+
+        .t-subject { font-size: 0.95rem; font-weight: 700; color: #1e293b; line-height: 1.5; margin-bottom: 12px; }
+        
+        .t-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.75rem; color: #475569; }
+        .t-row { display: flex; align-items: center; gap: 6px; }
+        .t-icon { width: 14px; height: 14px; color: #0f766e; opacity: 0.8; }
+        .t-val { font-weight: 700; color: #334155; }
+
+        /* Sidebar & Nav */
+        .sidebar { position: fixed; right: 0; top: 0; height: 100vh; width: 260px; background: white; border-left: 1px solid #e2e8f0; padding: 1.5rem; display: flex; flex-direction: column; }
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; padding: 8px; z-index: 50; display: flex; justify-content: space-around; }
         .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #94a3b8; gap: 4px; text-decoration: none; }
         .nav-item.active { color: #0f766e; font-weight: bold; }
 
         @media (min-width: 1024px) {
-            .sidebar { position: fixed; right: 0; top: 0; height: 100vh; width: 260px; background: white; border-left: 1px solid #e2e8f0; padding: 1.5rem; display: flex; flex-direction: column; }
             .main-content { margin-right: 260px; padding: 20px; }
             .mobile-header, .bottom-nav { display: none; }
             .header-bg { display: none; }
-            #tasks-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+            .tasks-container { grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); }
+            .filters-wrapper { margin: 0 0 20px; }
         }
     </style>
 </head>
@@ -115,7 +137,7 @@
     <aside class="sidebar hidden lg:flex">
         <div class="flex items-center gap-3 mb-8 px-2">
             <img src="assets/icons/favicon.png" class="w-10 h-10">
-            <div><h1 class="font-bold text-slate-800">نظام الحوكمة</h1><p class="text-xs text-slate-500">لوحة المنسق</p></div>
+            <div><h1 class="font-bold text-slate-800">إدارة الحوكمة</h1><p class="text-xs text-slate-500">لوحة المنسق</p></div>
         </div>
         <nav class="flex-1 space-y-2">
             <a href="index.html" class="flex items-center gap-3 p-3 text-slate-500 hover:bg-teal-50 hover:text-teal-700 rounded-lg font-bold"><i data-lucide="home" class="w-5 h-5"></i> الرئيسية</a>
@@ -134,7 +156,7 @@
                         <img src="assets/icons/favicon.png" class="w-6 h-6 object-contain">
                     </div>
                     <div>
-                        <p class="text-teal-100 text-[10px]">إدارة المراجعة الداخلية</p>
+                        <p class="text-teal-100 text-[10px]">إدارة المراجعة الداخلية والحوكمة</p>
                         <h1 class="font-bold text-lg text-white">توزيع المهام</h1>
                     </div>
                 </div>
@@ -142,90 +164,81 @@
             </div>
         </div>
 
-        <div class="filters-container" style="margin-top: -3rem; position: relative; z-index: 30;">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                    <i data-lucide="sliders-horizontal" class="w-4 h-4 text-[#0f766e]"></i> أدوات الفرز
-                </h3>
-                <button onclick="resetFilters()" class="text-[10px] bg-red-50 text-red-600 px-2 py-1 rounded hover:bg-red-100 font-bold">إعادة تعيين</button>
-            </div>
-            
-            <div class="filter-grid">
-                <div class="col-span-2">
-                    <label class="filter-label">تصفية حسب الموظف / التخصص</label>
-                    <select id="f-emp" class="f-input" onchange="applyFilters()">
-                        <option value="">عرض الكل</option>
-                        <optgroup label="المجموعات">
-                            <option value="group_tech">👨‍⚕️ جميع الفني والطبي</option>
-                            <option value="group_admin">👨‍💼 جميع المالي والإداري</option>
-                        </optgroup>
-                        <optgroup label="الموظفين" id="emp-list-container">
+        <div class="filters-wrapper">
+            <div class="filters-box">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="col-span-2">
+                        <label class="f-label">الموظف المسؤول</label>
+                        <select id="f-emp" class="f-input">
+                            <option value="">عرض الكل</option>
+                            <optgroup label="حسب التخصص">
+                                <option value="group_tech">👨‍⚕️ جميع الفني والطبي</option>
+                                <option value="group_admin">👨‍💼 جميع المالي والإداري</option>
                             </optgroup>
-                    </select>
-                </div>
+                            <optgroup label="الموظفين" id="emp-list-container">
+                                </optgroup>
+                        </select>
+                    </div>
 
-                <div class="col-span-2">
-                    <label class="filter-label">بحث شامل (الجهة / الموضوع)</label>
-                    <input type="text" id="f-search" class="f-input" placeholder="اكتب للبحث..." oninput="applyFilters()">
-                </div>
+                    <div>
+                        <label class="f-label">الجهة الوارد منها</label>
+                        <input type="text" id="f-source" class="f-input" placeholder="اكتب اسم الجهة...">
+                    </div>
 
-                <div>
-                    <label class="filter-label">من تاريخ</label>
-                    <input type="date" id="f-start" class="f-input" onchange="applyFilters()">
-                </div>
-                <div>
-                    <label class="filter-label">إلى تاريخ</label>
-                    <input type="date" id="f-end" class="f-input" onchange="applyFilters()">
-                </div>
+                    <div>
+                        <label class="f-label">بحث عام</label>
+                        <input type="text" id="f-search" class="f-input" placeholder="موضوع / رقم...">
+                    </div>
 
-                <div class="col-span-2">
-                    <label class="filter-label">ترتيب العرض</label>
-                    <select id="f-sort" class="f-input" onchange="applyFilters()">
-                        <option value="newest">الأحدث أولاً</option>
-                        <option value="oldest">الأقدم أولاً</option>
-                        <option value="entity">أبجدي حسب الجهة</option>
-                    </select>
+                    <div>
+                        <label class="f-label">من تاريخ</label>
+                        <input type="date" id="f-start" class="f-input">
+                    </div>
+                    <div>
+                        <label class="f-label">إلى تاريخ</label>
+                        <input type="date" id="f-end" class="f-input">
+                    </div>
+
+                    <div class="col-span-2 mt-2">
+                        <button onclick="applyFilters()" class="btn-search w-full">
+                            <i data-lucide="search" class="w-4 h-4"></i> تنفيذ الفلتر
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="stats-wrapper">
-            <div class="stats-big-row">
-                <div class="stat-btn big active" onclick="setStatusFilter('')" id="btn-stat-total">
-                    <span class="stat-num c-total" id="c-total">0</span>
-                    <span class="stat-lbl">الإجمالي</span>
-                </div>
-                <div class="stat-btn big" onclick="setStatusFilter('متأخر')" id="btn-stat-late">
-                    <span class="stat-num c-late" id="c-late">0</span>
-                    <span class="stat-lbl">متأخر</span>
-                </div>
+            <div class="stat-card active" onclick="setStatusFilter('')" id="btn-total">
+                <span class="st-num c-total" id="c-total">0</span>
+                <span class="st-lbl">الإجمالي</span>
             </div>
-            <div class="stats-small-row">
-                <div class="stat-btn" onclick="setStatusFilter('جديد')" id="btn-stat-new">
-                    <span class="stat-num c-new" id="c-new">0</span>
-                    <span class="stat-lbl">جديد</span>
-                </div>
-                <div class="stat-btn" onclick="setStatusFilter('بانتظار الاعتماد')" id="btn-stat-pending">
-                    <span class="stat-num c-pending" id="c-pending">0</span>
-                    <span class="stat-lbl">بانتظار الاعتماد</span>
-                </div>
-                <div class="stat-btn" onclick="setStatusFilter('تم الاعتماد')" id="btn-stat-approved">
-                    <span class="stat-num c-approved" id="c-approved">0</span>
-                    <span class="stat-lbl">تم الاعتماد</span>
-                </div>
-                <div class="stat-btn" onclick="setStatusFilter('بحاجة الي متابعة')" id="btn-stat-followup">
-                    <span class="stat-num c-followup" id="c-followup">0</span>
-                    <span class="stat-lbl">متابعة</span>
-                </div>
+            <div class="stat-card" onclick="setStatusFilter('متأخر')" id="btn-late">
+                <span class="st-num c-late" id="c-late">0</span>
+                <span class="st-lbl">متأخر</span>
+            </div>
+            <div class="stat-card" onclick="setStatusFilter('جديد')" id="btn-new">
+                <span class="st-num c-new" id="c-new">0</span>
+                <span class="st-lbl">جديد</span>
+            </div>
+            <div class="stat-card" onclick="setStatusFilter('بانتظار الاعتماد')" id="btn-pending">
+                <span class="st-num c-pending" id="c-pending">0</span>
+                <span class="st-lbl">بانتظار الاعتماد</span>
+            </div>
+            <div class="stat-card" onclick="setStatusFilter('تم الاعتماد')" id="btn-approved">
+                <span class="st-num c-approved" id="c-approved">0</span>
+                <span class="st-lbl">تم الاعتماد</span>
+            </div>
+            <div class="stat-card" onclick="setStatusFilter('بحاجة الي متابعة')" id="btn-followup">
+                <span class="st-num c-followup" id="c-followup">0</span>
+                <span class="st-lbl">للمتابعة</span>
             </div>
         </div>
 
-        <div class="px-2 lg:px-0">
-            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2 text-sm">
-                سجل المهام <span class="text-[10px] bg-[#0f766e] text-white px-2 py-0.5 rounded-full" id="task-count">0</span>
-            </h3>
-            <div id="tasks-container">
-                <div class="text-center py-12"><span class="inline-block animate-spin text-[#0f766e]"><i data-lucide="loader-2" class="w-8 h-8"></i></span><p class="text-slate-400 text-xs mt-2">جاري تحميل البيانات...</p></div>
+        <div class="tasks-container" id="tasks-container">
+            <div class="col-span-full text-center py-12">
+                <span class="inline-block animate-spin text-[#0f766e]"><i data-lucide="loader-2" class="w-8 h-8"></i></span>
+                <p class="text-slate-400 text-xs mt-2">جاري تحميل البيانات...</p>
             </div>
         </div>
     </div>
@@ -242,14 +255,14 @@
     <script>
         lucide.createIcons();
         let allTasks = [];
-        let allEmployeesData = []; // Store full employee objects {name, jobTitle, ...}
+        let allEmployeesData = [];
         let currentStatusFilter = '';
 
         document.addEventListener('DOMContentLoaded', async () => {
             const user = auth.checkAuth();
             if (!user) return;
 
-            // Set Date Filter to Current Month
+            // Set Date Filter to Current Month (Auto)
             const date = new Date();
             const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).toISOString().split('T')[0];
             const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().split('T')[0];
@@ -262,27 +275,27 @@
         async function loadData(username) {
             try {
                 const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
-                // Requesting 'Admin' role data to get everything
+                // Request 'Admin' role to get ALL data
                 const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'getAllData', role: 'مدير', name: username }) });
                 const data = await res.json();
 
                 if (data.success) {
                     allTasks = data.tasks || [];
                     
-                    // 1. Get Employees from Backend Stats (Best Source)
+                    // Populate Employees from Backend Stats
                     if (data.stats && data.stats.employees) {
-                        allEmployeesData = data.stats.employees; // {name, jobTitle, ...}
+                        allEmployeesData = data.stats.employees; 
                         populateEmpDropdowns();
                     }
 
-                    updateStatsCounts();
-                    applyFilters(); 
+                    updateStatsCounts(); // Update top numbers
+                    applyFilters();      // Render cards
                 } else {
-                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 text-xs">لا توجد بيانات</div>`;
+                    document.getElementById('tasks-container').innerHTML = `<div class="col-span-full text-center py-10 text-red-500 text-xs">لا توجد بيانات</div>`;
                 }
             } catch (e) {
                 console.error(e);
-                document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 text-xs">خطأ في الاتصال</div>`;
+                document.getElementById('tasks-container').innerHTML = `<div class="col-span-full text-center py-10 text-red-500 text-xs">خطأ في الاتصال</div>`;
             }
         }
 
@@ -290,41 +303,50 @@
             const select = document.getElementById('emp-list-container');
             select.innerHTML = '';
             
-            // Sort alphabetically
+            // Sort by name
             allEmployeesData.sort((a, b) => a.name.localeCompare(b.name));
 
             allEmployeesData.forEach(emp => {
                 const opt = document.createElement('option');
                 opt.value = emp.name;
                 opt.textContent = emp.name;
+                // Add Job Title as attribute if needed for advanced filtering
+                opt.setAttribute('data-job', emp.jobTitle || '');
                 select.appendChild(opt);
             });
         }
 
         function setStatusFilter(status) {
             currentStatusFilter = status;
-            document.querySelectorAll('.stat-btn').forEach(btn => btn.classList.remove('active'));
             
-            if(status === '') document.getElementById('btn-stat-total').classList.add('active');
-            else if(status === 'متأخر') document.getElementById('btn-stat-late').classList.add('active');
-            else if(status === 'جديد') document.getElementById('btn-stat-new').classList.add('active');
-            else if(status === 'بانتظار الاعتماد') document.getElementById('btn-stat-pending').classList.add('active');
-            else if(status === 'تم الاعتماد') document.getElementById('btn-stat-approved').classList.add('active');
-            else if(status === 'بحاجة الي متابعة') document.getElementById('btn-stat-followup').classList.add('active');
+            // Update Active State
+            document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
+            
+            if(status === '') document.getElementById('btn-total').classList.add('active');
+            else if(status === 'متأخر') document.getElementById('btn-late').classList.add('active');
+            else if(status === 'جديد') document.getElementById('btn-new').classList.add('active');
+            else if(status === 'بانتظار الاعتماد') document.getElementById('btn-pending').classList.add('active');
+            else if(status === 'تم الاعتماد') document.getElementById('btn-approved').classList.add('active');
+            else if(status === 'بحاجة الي متابعة') document.getElementById('btn-followup').classList.add('active');
 
             applyFilters();
         }
 
         function updateStatsCounts() {
             let s = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
+            
+            // Calculate stats based on current FILTERED selection (except status)
+            // Or typically based on ALL tasks within date/employee range?
+            // Let's stick to ALL loaded tasks for the global counters to give context
+            
             allTasks.forEach(t => {
                 s.total++;
-                const status = (t.status || '').trim();
-                if (status.includes('جديد')) s.new++;
-                else if (status.includes('بانتظار')) s.pending++;
-                else if (status.includes('تم الاعتماد')) s.approved++;
-                else if (status.includes('متابعة')) s.followup++;
-                else if (status.includes('متأخر')) s.late++;
+                const st = (t.status || '').trim();
+                if (st.includes('جديد')) s.new++;
+                else if (st.includes('بانتظار')) s.pending++;
+                else if (st.includes('تم الاعتماد')) s.approved++;
+                else if (st.includes('متابعة')) s.followup++;
+                else if (st.includes('متأخر')) s.late++;
             });
 
             document.getElementById('c-total').innerText = s.total;
@@ -337,43 +359,42 @@
 
         function applyFilters() {
             const empVal = document.getElementById('f-emp').value;
+            const sourceVal = document.getElementById('f-source').value.toLowerCase();
             const searchVal = document.getElementById('f-search').value.toLowerCase();
             const startVal = document.getElementById('f-start').value;
             const endVal = document.getElementById('f-end').value;
-            const sortVal = document.getElementById('f-sort').value;
 
             const filtered = allTasks.filter(t => {
-                // 1. Status Filter
+                // 1. Status (from clickable stats)
                 if (currentStatusFilter && !(t.status || '').includes(currentStatusFilter)) return false;
 
-                // 2. Employee Groups Logic (using Job Title from Backend Data)
+                // 2. Employee Logic (Group or Exact)
                 if (empVal) {
                     if (empVal === 'group_tech' || empVal === 'group_admin') {
-                        // Find employee object to check job title
                         const empObj = allEmployeesData.find(e => e.name === t.assignee);
-                        if (!empObj) return false; // If not assigned or not found in list
-
-                        const jobTitle = (empObj.jobTitle || '').toLowerCase();
-                        const isTech = jobTitle.includes('فني') || jobTitle.includes('طبي') || jobTitle.includes('صيدلي');
+                        if (!empObj) return false;
                         
-                        if (empVal === 'group_tech' && !isTech) return false;
-                        if (empVal === 'group_admin' && isTech) return false; // If admin group, exclude tech
+                        const job = (empObj.jobTitle || '').trim();
+                        // Explicit Check
+                        if (empVal === 'group_tech' && job !== 'مراجع فني') return false;
+                        if (empVal === 'group_admin' && job !== 'مراجع مالي وإداري') return false;
                     } else {
-                        // Specific Employee
                         if (t.assignee !== empVal) return false;
                     }
                 }
 
-                // 3. Search
+                // 3. Source Filter
+                if (sourceVal && !(t.source || '').toLowerCase().includes(sourceVal)) return false;
+
+                // 4. General Search (Subject / ID)
                 if (searchVal && !(
-                    (t.source || '').toLowerCase().includes(searchVal) || 
                     (t.subject || '').toLowerCase().includes(searchVal) || 
                     (String(t.id)).includes(searchVal)
                 )) return false;
 
-                // 4. Date Range
+                // 5. Date Range
                 if (startVal || endVal) {
-                    const parts = (t.date || '').split('/');
+                    const parts = (t.date || '').split('/'); // DD/MM/YYYY
                     if (parts.length === 3) {
                         const isoDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
                         if (startVal && isoDate < startVal) return false;
@@ -382,14 +403,6 @@
                 }
 
                 return true;
-            });
-
-            // Sorting
-            filtered.sort((a, b) => {
-                if (sortVal === 'newest') return b.id - a.id;
-                if (sortVal === 'oldest') return a.id - b.id;
-                if (sortVal === 'entity') return (a.source || '').localeCompare(b.source || '');
-                return 0;
             });
 
             renderTasks(filtered);
@@ -405,33 +418,37 @@
 
             container.innerHTML = tasks.map(t => {
                 const s = (t.status || '').trim();
-                let cardClass = 'theme-new';
-                let stLabel = s || 'جديد';
+                let cardTheme = 'card-new';
+                let badgeClass = 'badge-new';
 
-                if (s.includes('بانتظار')) { cardClass = 'theme-pending'; }
-                else if (s.includes('تم الاعتماد')) { cardClass = 'theme-approved'; }
-                else if (s.includes('متابعة')) { cardClass = 'theme-followup'; }
-                else if (s.includes('متأخر')) { cardClass = 'theme-late'; }
+                if (s.includes('بانتظار')) { cardTheme = 'card-pending'; badgeClass = 'badge-pending'; }
+                else if (s.includes('تم الاعتماد')) { cardTheme = 'card-approved'; badgeClass = 'badge-approved'; }
+                else if (s.includes('متابعة')) { cardTheme = 'card-followup'; badgeClass = 'badge-followup'; }
+                else if (s.includes('متأخر')) { cardTheme = 'card-late'; badgeClass = 'badge-late'; }
 
                 return `
-                <div class="task-card ${cardClass}">
-                    <div class="card-header">
+                <div class="task-card ${cardTheme}">
+                    <div class="t-header">
                         <div class="t-id"># ${t.id}</div>
-                        <span class="t-status">${stLabel}</span>
+                        <span class="t-status ${badgeClass}">${s || 'جديد'}</span>
                     </div>
 
                     <h3 class="t-subject">${t.subject}</h3>
                     
-                    <div class="mb-3">
-                        <div class="t-meta-row">
-                            <div class="t-meta-item"><i data-lucide="calendar" class="t-icon"></i> ${t.date || '-'}</div>
-                            <div class="t-meta-item"><i data-lucide="building-2" class="t-icon"></i> ${t.source || 'غير محدد'}</div>
+                    <div class="t-details">
+                        <div class="t-row">
+                            <i data-lucide="calendar" class="t-icon"></i>
+                            <span class="t-val">${t.date || '-'}</span>
+                        </div>
+                        <div class="t-row">
+                            <i data-lucide="building-2" class="t-icon"></i>
+                            <span class="t-val">${t.source || 'غير محدد'}</span>
                         </div>
                     </div>
 
                     <div class="t-assignee">
                         <i data-lucide="user-check" class="w-4 h-4"></i>
-                        <span>${t.assignee || 'غير موزع'}</span>
+                        <span>${t.assignee || '<span class="text-red-400">غير موزع</span>'}</span>
                     </div>
                 </div>`;
             }).join('');
@@ -441,13 +458,12 @@
 
         function resetFilters() {
             document.getElementById('f-emp').value = '';
+            document.getElementById('f-source').value = '';
             document.getElementById('f-search').value = '';
-            // Reset dates to current month
+            // Reset Date to current month
             const date = new Date();
-            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).toISOString().split('T')[0];
-            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().split('T')[0];
-            document.getElementById('f-start').value = firstDay;
-            document.getElementById('f-end').value = lastDay;
+            document.getElementById('f-start').value = new Date(date.getFullYear(), date.getMonth(), 1).toISOString().split('T')[0];
+            document.getElementById('f-end').value = new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().split('T')[0];
             
             setStatusFilter('');
         }
