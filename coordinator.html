@@ -9,9 +9,9 @@
     
     <title>توزيع المهام | IAG</title>
     
-    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon.png">
     <link rel="shortcut icon" href="assets/icons/favicon.png">
-    <link rel="apple-touch-icon" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -23,137 +23,138 @@
         /* --- Colors Variables --- */
         :root {
             --primary: #0f766e;
-            /* Status Colors */
-            --c-total: #334155;      /* Slate 700 */
-            --c-new: #475569;        /* Slate 600 */
-            --c-pending: #16a34a;    /* Green 600 */
-            --c-approved: #059669;   /* Emerald 600 (Updated Lighter Green) */
-            --c-followup: #4b5563;   /* Gray 600 (Updated from Blue) */
-            --c-late: #dc2626;       /* Red 600 */
+            --secondary: #134e4a;
+            /* Status Colors (Text) */
+            --c-total: #334155;
+            --c-new: #475569;
+            --c-pending: #16a34a;
+            --c-approved: #064e3b;
+            --c-followup: #2563eb;
+            --c-late: #dc2626;
         }
 
-        /* --- Header --- */
+        /* --- Header (Dark Teal Area) --- */
         .main-header {
-            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            color: white; padding: 1rem 1.5rem 2rem;
-            border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
-            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.25);
+            background: #115e59; /* Darker Teal matching image */
+            color: white; padding: 1rem 1.5rem 3.5rem;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
-        .dept-title { font-size: 1.1rem; font-weight: 800; line-height: 1.2; }
-        .dept-subtitle { font-size: 0.75rem; opacity: 0.9; }
+        .dept-title { font-size: 1.3rem; font-weight: 800; }
+        .dept-subtitle { font-size: 0.85rem; opacity: 0.9; font-weight: 600; }
 
-        /* --- Filter Container --- */
+        /* --- Filter Box (The White Area) --- */
         .filter-container {
-            margin: -1.5rem 1rem 1rem; position: relative; z-index: 20;
+            margin: -3rem 1rem 1rem; position: relative; z-index: 20;
             background: white; border-radius: 12px; padding: 1rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;
         }
-        .filter-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         
         @media (min-width: 1024px) {
-            .filter-grid { grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr; align-items: end; }
-            .filter-container { max-width: 1200px; margin-left: auto; margin-right: auto; }
+            .filter-container { max-width: 1200px; margin-left: auto; margin-right: auto; padding: 1.5rem; }
         }
 
-        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 2px; display: block; }
+        /* Form Elements Styling */
+        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; text-align: right; }
+        
         .f-input {
-            width: 100%; padding: 0 10px; border: 1px solid #e2e8f0; border-radius: 8px;
-            font-size: 0.8rem; outline: none; background: #f9fafb; transition: 0.2s; height: 38px;
+            width: 100%; height: 42px; padding: 0 12px; 
+            border: 1px solid #cbd5e1; border-radius: 8px;
+            font-size: 0.9rem; outline: none; background: #fff; 
+            transition: all 0.2s; color: #1e293b;
         }
-        .f-input:focus { border-color: #0f766e; background: white; }
+        .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+        .f-input::placeholder { color: #94a3b8; font-size: 0.85rem; }
 
-        .btn-view {
-            background: #0f766e; color: white; border: none; border-radius: 8px; height: 38px;
-            font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
+        /* Search Input Special Style */
+        .search-input {
+            background-color: #f8fafc; border-color: #e2e8f0;
         }
-        .btn-view:active { transform: scale(0.98); }
+
+        /* Buttons matching the image */
+        .btn-teal {
+            background: #0f766e; color: white; border: none; border-radius: 8px; height: 42px;
+            font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+        }
+        .btn-teal:hover { background: #115e59; }
+        
+        .btn-print {
+            background: #e2e8f0; color: #475569; border: none; border-radius: 8px; height: 42px;
+            font-weight: 700; cursor: pointer; transition: 0.2s; width: 100%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-print:hover { background: #cbd5e1; }
 
         /* --- Stats Layout --- */
         .stats-wrapper {
             padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto;
-            display: flex; flex-direction: column; gap: 10px;
+            display: flex; flex-direction: column; gap: 12px;
         }
         
-        .stats-row-big {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-        }
+        /* Big Cards */
+        .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .stat-card-big {
-            background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px;
-            text-align: center; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center;
-            height: 80px;
+            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px;
+            text-align: center; cursor: pointer; transition: 0.2s; height: 90px;
+            display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); ring: 2px solid var(--primary); }
-        .stat-card-big .num { font-size: 1.8rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-        .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
+        .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15); }
+        .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 5px; }
+        .stat-card-big .lbl { font-size: 0.9rem; font-weight: 700; color: #64748b; }
 
-        .stats-row-small {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
-        }
+        /* Small Cards */
+        .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .stat-card-small {
-            background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px;
-            text-align: center; cursor: pointer; transition: 0.2s;
-            display: flex; flex-direction: column; justify-content: center; min-height: 70px;
+            background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px;
+            text-align: center; cursor: pointer; transition: 0.2s; min-height: 75px;
+            display: flex; flex-direction: column; justify-content: center;
         }
-        @media (max-width: 380px) { .stats-row-small { grid-template-columns: repeat(2, 1fr); } }
+        .stat-card-small.active { background: #f0fdfa; border-color: var(--primary); }
+        .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+        .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; line-height: 1.2; }
 
-        .stat-card-small.active { background: #f0fdfa; border-color: var(--primary); ring: 2px solid var(--primary); }
-        .stat-card-small .num { font-size: 1.2rem; font-weight: 800; line-height: 1; }
-        .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; line-height: 1.1; margin-top: 2px; }
+        /* Colors */
+        .txt-total { color: var(--primary); } .txt-late { color: var(--c-late); }
+        .txt-new { color: var(--c-new); } .txt-pending { color: var(--c-pending); }
+        .txt-approved { color: var(--c-approved); } .txt-followup { color: var(--c-followup); }
 
-        /* Specific Colors */
-        .sc-total { color: var(--c-total); }
-        .sc-late { color: var(--c-late); }
-        .sc-new { color: var(--c-new); }
-        .sc-pending { color: var(--c-pending); }
-        .sc-approved { color: var(--c-approved); }
-        .sc-followup { color: var(--c-followup); }
-
-        /* --- Cards Grid --- */
-        .cards-container {
-            padding: 0 1rem 5rem; display: grid; gap: 10px;
-            max-width: 1200px; margin: 0 auto;
-        }
+        /* --- Task Cards --- */
+        .cards-container { padding: 0 1rem 5rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; }
         @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
 
         .task-card {
             background: white; border-radius: 12px; overflow: hidden; position: relative;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e5e7eb;
-            padding: 12px; transition: transform 0.2s; display: flex; flex-direction: column;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;
+            padding: 0; transition: transform 0.2s; display: flex; flex-direction: column;
         }
         
-        .card-border { position: absolute; right: 0; top: 0; bottom: 0; width: 4px; }
-        
-        /* Consistent Colors */
-        .st-new .card-border { background: var(--c-new); }
-        .st-pending .card-border { background: var(--c-pending); }
-        .st-approved .card-border { background: var(--c-approved); }
-        .st-followup .card-border { background: var(--c-followup); }
-        .st-late .card-border { background: var(--c-late); }
+        .card-stripe { padding: 8px 15px; color: white; font-weight: 700; font-size: 0.75rem; display: flex; justify-content: space-between; align-items: center; }
+        .bg-new { background-color: var(--c-new); } .bg-pending { background-color: var(--c-pending); }
+        .bg-approved { background-color: var(--c-approved); } .bg-followup { background-color: var(--c-followup); }
+        .bg-late { background-color: var(--c-late); }
 
-        /* Updated Approved Color in Header */
-        .st-approved .card-header { background: #059669; } 
-
-        .tc-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
-        .tc-id { font-family: monospace; font-size: 0.75rem; color: #64748b; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
-        .tc-status { font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: #f3f4f6; }
-        
-        .tc-subject { font-size: 0.9rem; font-weight: 700; color: #1f2937; margin-bottom: 8px; line-height: 1.4; }
-        .tc-meta { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #4b5563; margin-bottom: 4px; }
+        .card-body { padding: 15px; flex: 1; }
+        .tc-subject { font-size: 0.95rem; font-weight: 800; color: #1e293b; margin-bottom: 12px; line-height: 1.5; }
+        .tc-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #475569; margin-bottom: 6px; }
         .tc-icon { width: 14px; height: 14px; color: var(--primary); opacity: 0.8; }
-        
-        .tc-assignee { 
-            margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e5e7eb;
-            font-size: 0.75rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 5px;
+        .tc-val { font-weight: 700; color: #1e293b; }
+
+        .tc-footer { padding: 10px 15px; border-top: 1px solid #f1f5f9; background: #f8fafc; display: flex; gap: 10px; }
+        .btn-card {
+            flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            cursor: pointer; border: 1px solid #e2e8f0; background: white; color: #475569; transition: 0.2s;
         }
+        .btn-card:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
+        .btn-attach { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
 
         /* --- Side Menu --- */
         .side-menu {
-            position: fixed; top: 0; right: -240px; width: 240px; height: 100%;
+            position: fixed; top: 0; right: -250px; width: 250px; height: 100%;
             background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1);
         }
@@ -171,35 +172,45 @@
         }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
         .modal-box {
-            background: white; width: 90%; max-width: 500px; max-height: 85vh;
+            background: white; width: 95%; max-width: 600px; max-height: 90vh;
             border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column;
         }
-        .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f9fafb; }
-        .modal-body { padding: 1rem; }
-        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .full-width { grid-column: span 2; }
-        .data-label { font-size: 0.7rem; color: #6b7280; font-weight: 700; margin-bottom: 2px; }
-        .data-val { font-size: 0.9rem; color: #111827; font-weight: 600; }
+        .modal-header { padding: 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+        .modal-body { padding: 1.5rem; }
+        .data-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; }
+        .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; margin-bottom: 2px; }
+        .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
 
         /* Loading */
-        .loader-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #9ca3af; }
+        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
+        
+        /* Grid System for Filters matching the image */
+        .filter-row-top { margin-bottom: 12px; }
+        .filter-row-bottom { display: grid; grid-template-columns: 3fr 3fr 1.5fr 1.5fr 1fr 1.5fr; gap: 8px; align-items: end; }
+        
+        /* Responsive adjustments for filter row */
+        @media (max-width: 1024px) {
+            .filter-row-bottom { grid-template-columns: 1fr 1fr; }
+            .btn-group { grid-column: 1 / -1; display: flex; gap: 8px; }
+        }
     </style>
 </head>
 <body>
 
     <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
     <aside class="side-menu" id="side-menu">
-        <div class="p-5 bg-teal-50 border-b border-teal-100 text-center">
-            <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-2">
-                <i data-lucide="user" class="w-6 h-6 text-teal-700"></i>
+        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-14 h-14 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+                <i data-lucide="user" class="w-7 h-7 text-teal-700"></i>
             </div>
             <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
             <p class="text-xs text-teal-600" id="menu-role">...</p>
         </div>
-        <nav class="flex-1 p-3 space-y-1">
+        <nav class="flex-1 p-4 space-y-2">
             <a href="index.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="home" class="w-4 h-4"></i> الرئيسية</a>
             <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Dashboard</a>
-            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
+            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسقين</a>
             <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
             <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
         </nav>
@@ -212,26 +223,27 @@
 
     <header class="main-header">
         <div class="max-w-[1200px] mx-auto flex justify-between items-center">
-            <button onclick="toggleMenu()" class="p-1 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
+            <button onclick="toggleMenu()" class="text-white"><i data-lucide="menu" class="w-7 h-7"></i></button>
             <div class="text-center">
-                <h1 class="font-bold text-base">إدارة المراجعة الداخلية والحوكمة</h1>
-                <p class="text-xs text-teal-100 opacity-80 font-semibold">Internal Audit & Governance Department</p>
-                <p class="text-xs text-teal-200 mt-0.5 font-bold">المنسق</p>
+                <h1 class="dept-title">إدارة المراجعة الداخلية</h1>
+                <p class="dept-subtitle">مكتب التنسيق</p>
             </div>
-            <button onclick="window.location.href='notifications.html'" class="p-1 text-white relative">
+            <button onclick="window.location.href='notifications.html'" class="text-white relative">
                 <i data-lucide="bell" class="w-6 h-6"></i>
-                <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-teal-700"></span>
+                <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
             </button>
         </div>
     </header>
 
     <div class="filter-container">
-        <div class="filter-grid">
-            <div class="f-group col-span-2 md:col-span-5 mb-1">
-                <input type="text" id="f-search" class="f-input" placeholder="بحث باسم المهمة، الرقم، أو الموضوع..." oninput="applyFilters()">
-            </div>
+        
+        <div class="filter-row-top">
+            <input type="text" id="f-search" class="f-input search-input" placeholder="بحث باسم المهمة، الرقم، أو الموضوع..." oninput="applyFilters()">
+        </div>
 
-            <div class="f-group col-span-2 md:col-span-1">
+        <div class="filter-row-bottom">
+            
+            <div>
                 <label class="f-label">الموظف المسؤول</label>
                 <select id="f-emp" class="f-input" onchange="applyFilters()">
                     <option value="">عرض الكل</option>
@@ -243,54 +255,58 @@
                 </select>
             </div>
 
-            <div class="f-group col-span-2 md:col-span-1">
+            <div>
                 <label class="f-label">الجهة الوارد منها</label>
                 <select id="f-source" class="f-input" onchange="applyFilters()">
                     <option value="">كل الجهات</option>
                 </select>
             </div>
 
-            <div class="f-group">
+            <div>
                 <label class="f-label">من</label>
                 <input type="date" id="f-start" class="f-input" onchange="applyFilters()">
             </div>
-            <div class="f-group">
+
+            <div>
                 <label class="f-label">إلى</label>
                 <input type="date" id="f-end" class="f-input" onchange="applyFilters()">
             </div>
 
-            <div class="f-group col-span-2 md:col-span-1 flex gap-2 items-end">
-                <button onclick="applyFilters()" class="flex-1 bg-teal-700 text-white p-2 rounded-lg font-bold text-xs flex items-center justify-center gap-1 h-[38px]">
-                    <i data-lucide="filter" class="w-4 h-4"></i> عرض
+            <div class="btn-group flex gap-2 w-full">
+                <button onclick="applyFilters()" class="btn-teal flex-grow">
+                    <i data-lucide="filter" class="w-4 h-4"></i> عرض النتائج
                 </button>
-                <button onclick="window.print()" class="w-1/3 bg-gray-200 text-gray-700 p-2 rounded-lg font-bold text-xs flex items-center justify-center gap-1 h-[38px]">
-                    <i data-lucide="printer" class="w-4 h-4"></i>
+                <button onclick="window.print()" class="btn-print w-14">
+                    <i data-lucide="printer" class="w-5 h-5"></i>
                 </button>
             </div>
+
         </div>
     </div>
 
     <div class="stats-wrapper">
         <div class="stats-row-big">
             <div class="stat-card-big active" onclick="filterStatus('')" id="st-total">
-                <span class="num sc-total" id="c-total">0</span><span class="lbl">الإجمالي</span>
+                <span class="num txt-total" id="c-total">0</span>
+                <span class="lbl">الإجمالي</span>
             </div>
             <div class="stat-card-big" onclick="filterStatus('متأخر')" id="st-late">
-                <span class="num sc-late" id="c-late">0</span><span class="lbl">متأخر</span>
+                <span class="num txt-late" id="c-late">0</span>
+                <span class="lbl">متأخر</span>
             </div>
         </div>
         <div class="stats-row-small">
             <div class="stat-card-small" onclick="filterStatus('جديد')" id="st-new">
-                <span class="num sc-new" id="c-new">0</span><span class="lbl">جديد</span>
+                <span class="num txt-new" id="c-new">0</span><span class="lbl">جديد</span>
             </div>
             <div class="stat-card-small" onclick="filterStatus('بانتظار الاعتماد')" id="st-pending">
-                <span class="num sc-pending" id="c-pending">0</span><span class="lbl">بانتظار الاعتماد</span>
+                <span class="num txt-pending" id="c-pending">0</span><span class="lbl">بانتظار الاعتماد</span>
             </div>
             <div class="stat-card-small" onclick="filterStatus('تم الاعتماد والأرشفة')" id="st-approved">
-                <span class="num text-emerald-700" id="c-approved">0</span><span class="lbl">تم الاعتماد والأرشفة</span>
+                <span class="num txt-approved" id="c-approved">0</span><span class="lbl">تم الاعتماد والأرشفة</span>
             </div>
             <div class="stat-card-small" onclick="filterStatus('بحاجة الي متابعة')" id="st-followup">
-                <span class="num text-gray-600" id="c-followup">0</span><span class="lbl">بحاجة الي متابعة</span>
+                <span class="num txt-followup" id="c-followup">0</span><span class="lbl">بحاجة الي متابعة</span>
             </div>
         </div>
     </div>
@@ -312,8 +328,7 @@
                 <button onclick="closeModal()" class="p-2 bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <div class="modal-body">
-                <div class="data-grid" id="m-content">
-                    </div>
+                <div class="data-grid" id="m-content"></div>
             </div>
         </div>
     </div>
@@ -345,31 +360,23 @@
         let currentStatusFilter = '';
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Check files
-            if (typeof auth === 'undefined' || typeof CONFIG === 'undefined') {
-                document.body.innerHTML = '<div style="text-align:center; padding:50px; color:red; font-weight:bold;">خطأ: ملفات النظام (js) مفقودة. تأكد من وجود auth.js و config.js</div>';
-                return;
-            }
-
+            if (typeof auth === 'undefined') return;
             const user = auth.checkAuth();
             if (!user) return;
 
             document.getElementById('menu-user').textContent = user.name;
             document.getElementById('menu-role').textContent = user.role;
 
-            // سيب الفلتر فاضي لعرض كل المعاملات
+            // --- NO DEFAULT FILTER ---
+            // Leave dates empty to show ALL data initially
             document.getElementById('f-start').value = '';
             document.getElementById('f-end').value = '';
 
             await loadData(user.name);
-            
-            // Live Search
-            document.getElementById('main-search').addEventListener('input', applyFilters);
+            document.getElementById('f-search').addEventListener('input', applyFilters);
         });
 
-        function toggleMenu() {
-            document.body.classList.toggle('menu-open');
-        }
+        function toggleMenu() { document.body.classList.toggle('menu-open'); }
 
         async function loadData(username) {
             try {
@@ -385,14 +392,14 @@
                     if(data.stats && data.stats.employees) allEmployees = data.stats.employees;
                     
                     populateDropdowns();
+                    // Initial load with empty filters (shows all)
                     updateStats();
                     applyFilters();
                 } else {
-                    document.getElementById('tasks-list').innerHTML = `<div class="loader-box">لا توجد بيانات</div>`;
+                    document.getElementById('tasks-list').innerHTML = `<div class="col-span-full py-12 text-center text-gray-400">لا توجد بيانات</div>`;
                 }
             } catch (e) {
-                console.error(e);
-                document.getElementById('tasks-list').innerHTML = `<div class="loader-box text-red-500">خطأ في الاتصال بالسيرفر</div>`;
+                document.getElementById('tasks-list').innerHTML = `<div class="col-span-full py-12 text-center text-red-500">خطأ في الاتصال</div>`;
             }
         }
 
@@ -425,7 +432,6 @@
                 if(key) activeId = map[key];
             }
             document.getElementById(activeId).classList.add('active');
-
             applyFilters();
         }
 
@@ -437,16 +443,10 @@
             const end = document.getElementById('f-end').value;
 
             const filtered = allTasks.filter(t => {
-                // Status Filter
                 if(currentStatusFilter && !(t.status||'').includes(currentStatusFilter)) return false;
-                
-                // Search Filter
                 if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
-                
-                // Source Filter
                 if(src && t.source !== src) return false;
 
-                // Employee Group Logic
                 if(emp) {
                     if(emp.startsWith('group_')) {
                         const eObj = allEmployees.find(x => x.name === t.assignee);
@@ -456,24 +456,18 @@
                     } else if(t.assignee !== emp) return false;
                 }
 
-                // Date Filter - يشتغل لو المستخدم حط تاريخ، لو فاضي يعرض الكل
-                if(t.date) {
-                    if(start || end) {
-                        const d = parseDateToISO(t.date);
-                        if(start && d < start) return false;
-                        if(end && d > end) return false;
-                    }
+                if(start && end && t.date) {
+                    const isoDate = parseDateToISO(t.date);
+                    if(isoDate && (isoDate < start || isoDate > end)) return false;
                 }
-
                 return true;
             });
 
-            updateStatsContext(); // Recalculate numbers based on filters
+            updateStatsContext();
             renderTasks(filtered);
         }
 
         function updateStatsContext() {
-            // Count based on filters EXCEPT Status (Context)
             const emp = document.getElementById('f-emp').value;
             const src = document.getElementById('f-source').value;
             const search = document.getElementById('f-search').value.toLowerCase();
@@ -484,12 +478,9 @@
                 if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
                 if(src && t.source !== src) return false;
                 
-                if(t.date) {
-                    if(start || end) {
-                        const d = parseDateToISO(t.date);
-                        if(start && d < start) return false;
-                        if(end && d > end) return false;
-                    }
+                if(start && end && t.date) {
+                    const isoDate = parseDateToISO(t.date);
+                    if(isoDate && (isoDate < start || isoDate > end)) return false;
                 }
 
                 if(emp) {
@@ -548,7 +539,6 @@
                         <span class="ch-id">#${t.id}</span>
                         <span>${stLabel}</span>
                     </div>
-
                     <div class="card-body">
                         <h3 class="tc-subject">${t.subject}</h3>
                         <div class="tc-row">
@@ -560,7 +550,6 @@
                         </div>
                         ${t.delay ? `<div class="mt-2 text-xs font-bold text-red-600 bg-red-50 p-1 rounded inline-block">⚠️ متأخر ${t.delay} يوم</div>` : ''}
                     </div>
-
                     <div class="tc-footer">
                         <button onclick="openModal('${t.id}')" class="btn-card">
                             <i data-lucide="eye" class="w-4 h-4"></i> التفاصيل
@@ -588,10 +577,8 @@
                 <div class="data-item"><span class="data-label">تاريخ الإنجاز</span><p class="data-val">${t.completionDate ? formatArabicDate(t.completionDate) : '-'}</p></div>
                 <div class="data-item"><span class="data-label">الموظف</span><p class="data-val text-teal-700">${t.assignee}</p></div>
                 <div class="data-item"><span class="data-label">الحالة</span><p class="data-val">${t.status}</p></div>
-                <div class="full-width"><span class="data-label">نوع المعاملة</span><p class="data-val">${t.docType || '-'}</p></div>
-                <div class="data-item"><span class="data-label">رقم القضية</span><p class="data-val">${t.caseNumber || '-'}</p></div>
-                <div class="data-item"><span class="data-label">الأهمية</span><p class="data-val">${t.importance || '-'}</p></div>
-                ${t.notes ? `<div class="full-width bg-yellow-50 p-2 rounded"><span class="data-label text-yellow-700">ملاحظات</span><p class="data-val text-sm">${t.notes}</p></div>` : ''}
+                ${t.caseNumber ? `<div class="data-item"><span class="data-label">رقم القضية</span><p class="data-val">${t.caseNumber}</p></div>` : ''}
+                ${t.notes ? `<div class="full-width bg-yellow-50 p-2 rounded border border-yellow-200"><span class="data-label text-yellow-700">ملاحظات</span><p class="data-val text-sm">${t.notes}</p></div>` : ''}
             `;
             document.getElementById('m-content').innerHTML = html;
             document.getElementById('detail-modal').classList.add('open');
@@ -599,15 +586,11 @@
 
         function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
-        // --- Helper: Convert DD/MM/YYYY to YYYY-MM-DD for Comparison ---
         function parseDateToISO(dateStr) {
             if(!dateStr) return null;
-            // Check if already ISO
             if(dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
-            
             const parts = dateStr.split('/');
             if(parts.length === 3) {
-                // Assuming DD/MM/YYYY
                 const day = parts[0].padStart(2,'0');
                 const month = parts[1].padStart(2,'0');
                 const year = parts[2];
