@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>مكتب التنسيق | نظام الحوكمة</title>
+    <title>توزيع المهام | نظام الحوكمة</title>
     
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
@@ -21,8 +21,8 @@
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             padding: 1rem 1.5rem 6rem;
             color: white;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
             position: relative; z-index: 10;
             box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
         }
@@ -35,18 +35,19 @@
 
         /* Stats Bar */
         .stats-bar {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-            margin: -5rem 1rem 1rem; position: relative; z-index: 20;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: -5rem 1rem 1.5rem; position: relative; z-index: 20;
         }
         .stat-box {
-            background: white; padding: 15px; border-radius: 16px;
-            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); text-align: center;
-            border: 1px solid #e2e8f0;
+            background: white; padding: 15px; border-radius: 20px;
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.08); text-align: center;
+            border: 1px solid #e2e8f0; transition: transform 0.2s;
         }
-        .stat-num { font-size: 1.8rem; font-weight: 800; color: #1e293b; display: block; }
+        .stat-box:hover { transform: translateY(-2px); }
+        .stat-num { font-size: 1.8rem; font-weight: 800; color: #1e293b; display: block; line-height: 1; margin-bottom: 5px; }
         .stat-label { font-size: 0.75rem; font-weight: 700; color: #64748b; }
         .stat-icon-bg {
-            width: 30px; height: 30px; border-radius: 50%; margin: 0 auto 5px;
+            width: 32px; height: 32px; border-radius: 10px; margin: 0 auto 8px;
             display: flex; align-items: center; justify-content: center;
         }
 
@@ -54,7 +55,7 @@
         .filters-container {
             background: white; border-radius: 20px; padding: 1.5rem;
             margin: 0 1rem 1.5rem; position: relative; z-index: 15;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;
         }
 
         .filter-input {
@@ -63,32 +64,27 @@
         }
         .filter-input:focus { border-color: #0f766e; background: white; }
 
-        /* The Diamond Task Card Style */
+        /* --- THE MASTER CARD DESIGN --- */
         .task-card {
-            background: white;
-            border-radius: 16px; /* Rounded 2XL style equivalent */
-            border: 1px solid #e2e8f0;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-            position: relative;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-            transition: all 0.2s;
+            background: white; border-radius: 16px; border: 1px solid #e2e8f0;
+            padding: 1.25rem; margin-bottom: 1rem; position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;
         }
         .task-card:hover { transform: translateY(-3px); border-color: #0f766e; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
 
-        /* Assign Section (Inside Card) */
-        .assign-section {
-            background: #f0fdfa; border: 1px dashed #99f6e4; border-radius: 12px;
-            padding: 10px; margin-top: 12px; display: flex; flex-direction: column; gap: 8px;
+        /* Footer / Actions */
+        .card-footer {
+            background: #f8fafc; border-radius: 12px; padding: 10px; margin-top: 12px; border: 1px solid #f1f5f9;
         }
-        .assign-select { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; font-size: 0.85rem; outline: none; }
+        .assign-select { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; font-size: 0.85rem; outline: none; margin-bottom: 8px; }
         .btn-save-assign {
-            width: 100%; background: #0f766e; color: white; padding: 8px;
-            border-radius: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;
+            width: 100%; background: #0f766e; color: white; padding: 9px;
+            border-radius: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; font-size: 0.8rem;
         }
         .btn-save-assign:hover { background: #115e59; }
 
         /* Status Colors */
+        .st-badge { font-size: 0.65rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; display: inline-block; }
         .st-new         { background: #ffffff; color: #334155; border: 1px solid #e2e8f0; }
         .st-pending     { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
         .st-approved    { background: #15803d; color: white;   border: 1px solid #14532d; }
@@ -160,12 +156,12 @@
 
         <div class="stats-bar">
             <div class="stat-box border-b-4 border-blue-500">
-                <div class="stat-icon-bg bg-blue-100"><i data-lucide="file-cog" class="w-4 h-4 text-blue-600"></i></div>
+                <div class="stat-icon-bg bg-blue-50"><i data-lucide="file-cog" class="w-5 h-5 text-blue-600"></i></div>
                 <span class="stat-num" id="count-admin">0</span>
                 <span class="stat-label">إداري ومالي</span>
             </div>
             <div class="stat-box border-b-4 border-purple-500">
-                <div class="stat-icon-bg bg-purple-100"><i data-lucide="stethoscope" class="w-4 h-4 text-purple-600"></i></div>
+                <div class="stat-icon-bg bg-purple-50"><i data-lucide="stethoscope" class="w-5 h-5 text-purple-600"></i></div>
                 <span class="stat-num" id="count-tech">0</span>
                 <span class="stat-label">فني وطبي</span>
             </div>
@@ -184,14 +180,12 @@
                     <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">الموظف المسؤول</label>
                     <select id="f-emp" class="filter-input">
                         <option value="">كل الموظفين</option>
-                    </select>
+                        </select>
                 </div>
-
                 <div>
                     <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">الجهة / المصدر</label>
                     <input type="text" id="f-source" class="filter-input" placeholder="بحث...">
                 </div>
-                
                 <div>
                     <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">الحالة</label>
                     <select id="f-status" class="filter-input">
@@ -203,7 +197,6 @@
                         <option value="متأخر">🔴 متأخر</option>
                     </select>
                 </div>
-
                 <div>
                     <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">السنة</label>
                     <select id="f-year" class="filter-input">
@@ -212,19 +205,7 @@
                         <option value="2025">2025</option>
                         <option value="2026">2026</option>
                         <option value="2027">2027</option>
-                        <option value="2028">2028</option>
                     </select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3 mt-3 border-t pt-3 border-slate-100">
-                <div>
-                    <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">الفترة من</label>
-                    <input type="date" id="f-date-start" class="filter-input px-1">
-                </div>
-                <div>
-                    <label class="text-[11px] text-slate-500 font-bold mb-1.5 block">إلى</label>
-                    <input type="date" id="f-date-end" class="filter-input px-1">
                 </div>
             </div>
             
@@ -266,75 +247,66 @@
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allTasks = [];
         
-        // ⚠️ هام: قائمة الموظفين (لضمان ظهورها في الفلتر)
-        // يمكنك تعديل هذه الأسماء حسب الشيت الحقيقي
-        const DEPARTMENT_STAFF = [
-            "د. مصطفى أحمد حمزة",
-            "د. سهى مصطفى محمد",
-            "د. ريهام إبراهيم دسوقي",
-            "أ. منار جمال السيد",
-            "أ. عمرو رشاد",
-            "أ. محمود نور الدين",
-            "أ. إيمان عبد اللطيف",
-            "أ. علا سيد مفتاح",
-            "أ. نيفين مكرم حنين",
-            "أ. نسمه نادي",
-            "أ. أسماء محمود"
-        ];
-
-        const statusStyles = {
-            'جديد': 'st-new',
-            'بانتظار الاعتماد': 'st-pending',
-            'تم الاعتماد والأرشفة': 'st-approved',
-            'بحاجة الي متابعة': 'st-followup',
-            'متأخر': 'st-late'
-        };
+        let allTasks = [];
+        let allEmployees = [];
 
         document.addEventListener('DOMContentLoaded', async () => {
             const user = auth.checkAuth();
             if (!user) return;
             
-            if(!['coordinator', 'منسق', 'admin', 'مدير'].includes(user.role)) {
-                 window.location.href = 'distribution.html';
-                 return;
-            }
-
-            const firstName = user.name.split(' ')[0];
+            const firstName = user.name ? user.name.split(' ')[0] : '...';
             document.getElementById('mobile-welcome-name').textContent = firstName;
             document.getElementById('f-year').value = new Date().getFullYear();
 
-            // 1. ملء قائمة الفلتر
-            const selectFilter = document.getElementById('f-emp');
-            DEPARTMENT_STAFF.forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                selectFilter.appendChild(opt);
-            });
+            // 🔥 1. جلب قائمة الموظفين (للفلتر + الدروب داون) 🔥
+            try {
+                const empRes = await auth.callAPI('getEmployees');
+                if(empRes.success && empRes.data) {
+                    allEmployees = empRes.data; // الأسماء من الشيت مباشرة
+                    populateEmployeeFilter(allEmployees);
+                }
+            } catch (err) { console.error("Error fetching employees", err); }
 
-            // 2. جلب البيانات
-            const res = await auth.callAPI('getAllData', {
-                role: 'coordinator',
-                name: user.name,
-                startDate: '2024-01-01'
-            });
+            // 🔥 2. جلب المهام 🔥
+            try {
+                const res = await auth.callAPI('getAllData', {
+                    role: 'coordinator',
+                    name: user.name,
+                    startDate: '2024-01-01'
+                });
 
-            if (res.success) {
-                allTasks = res.tasks;
-                calculateStats();
-                applyFilters();
-            } else {
-                document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 font-bold">عفواً، حدث خطأ في التحميل</div>`;
+                if (res.success && res.tasks) {
+                    allTasks = res.tasks;
+                    calculateStats(allTasks);
+                    applyFilters(); // عرض الداتا
+                } else {
+                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 font-bold">لا توجد بيانات متاحة</div>`;
+                }
+            } catch (error) {
+                console.error("Task Error:", error);
+                document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 font-bold">خطأ في الاتصال بالسيرفر</div>`;
             }
         });
 
-        function calculateStats() {
+        // ملء فلتر البحث العلوي
+        function populateEmployeeFilter(employees) {
+            const select = document.getElementById('f-emp');
+            select.innerHTML = '<option value="">كل الموظفين</option>';
+            employees.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+        }
+
+        // حساب الإحصائيات (مالي/إداري vs فني)
+        function calculateStats(tasks) {
             let adminCount = 0;
             let techCount = 0;
-
-            allTasks.forEach(t => {
+            tasks.forEach(t => {
+                // منطق بسيط: لو الموضوع فيه كلمات مالية/إدارية
                 const txt = (t.subject + " " + t.source).toLowerCase();
                 if(txt.includes('مالي') || txt.includes('حسابات') || txt.includes('إداري') || txt.includes('شؤون') || txt.includes('مخزن')) {
                     adminCount++;
@@ -342,9 +314,8 @@
                     techCount++;
                 }
             });
-
-            document.getElementById('count-admin').textContent = adminCount;
-            document.getElementById('count-tech').textContent = techCount;
+            animateValue('count-admin', adminCount);
+            animateValue('count-tech', techCount);
         }
 
         function applyFilters() {
@@ -352,16 +323,13 @@
             const statusVal = document.getElementById('f-status').value;
             const yearVal = document.getElementById('f-year').value;
             const empVal = document.getElementById('f-emp').value;
-            const dateStart = document.getElementById('f-date-start').value;
-            const dateEnd = document.getElementById('f-date-end').value;
+            // const dateStart... (اختياري لو حابب تفعله)
 
             const filtered = allTasks.filter(t => {
-                if (sourceVal && !t.source.toLowerCase().includes(sourceVal)) return false;
-                if (statusVal && t.status !== statusVal) return false;
-                if (yearVal && !t.date.startsWith(yearVal)) return false;
+                if (sourceVal && !(t.source + t.subject).toLowerCase().includes(sourceVal)) return false;
+                if (statusVal && !t.status.includes(statusVal)) return false;
+                if (yearVal && !t.date.includes(yearVal)) return false;
                 if (empVal && (!t.assignee || !t.assignee.includes(empVal))) return false;
-                if (dateStart && t.date < dateStart) return false;
-                if (dateEnd && t.date > dateEnd) return false;
                 return true;
             });
 
@@ -385,25 +353,35 @@
             }
 
             // تجهيز قائمة الموظفين (للدروب داون داخل الكارت)
-            let empOptions = '<option value="">-- غير محدد --</option>';
-            DEPARTMENT_STAFF.forEach(emp => {
-                empOptions += `<option value="${emp}">${emp}</option>`;
+            // هنستخدم القائمة اللي جبناها من الـ API
+            let empOptionsHTML = '<option value="">-- غير محدد --</option>';
+            allEmployees.forEach(empName => {
+                empOptionsHTML += `<option value="${empName}">${empName}</option>`;
             });
 
             container.innerHTML = tasks.map(t => {
-                const styleClass = statusStyles[t.status] || 'bg-gray-100 text-gray-600 border-gray-200';
-                const year = t.date ? t.date.split('-')[0] : '';
-                const hasLegal = t.caseNumber && t.caseNumber.trim() !== '';
+                // تحديد ألوان الحالة
+                let statusClass = 'st-new';
+                const s = t.status || '';
+                if(s.includes('تم') || s.includes('منتهي')) statusClass = 'st-approved';
+                else if(s.includes('متأخر')) statusClass = 'st-late';
+                else if(s.includes('انتظار') || s.includes('جاري')) statusClass = 'st-pending';
+
+                // بيانات إضافية
+                const year = t.date ? t.date.split('/')[2] : ''; 
+                // لاحظ: التاريخ بيجي من جوجل بتنسيق DD/MM/YYYY غالباً
+                const hasLegal = t.caseNumber && t.caseNumber.toString().trim() !== '';
                 const hasAttachment = t.attachment && t.attachment.trim() !== '';
 
                 // تحديد الموظف الحالي في القائمة
                 const currentAssignee = t.assignee || "";
-                const finalOptions = empOptions.replace(`value="${currentAssignee}"`, `value="${currentAssignee}" selected`);
+                // بنعمل Replace عشان نحط 'selected' عند الموظف الحالي
+                const finalOptions = empOptionsHTML.replace(`value="${currentAssignee}"`, `value="${currentAssignee}" selected`);
 
                 return `
                 <div class="task-card group">
                     <div class="flex justify-between items-start mb-3">
-                        <span class="status-badge ${styleClass}">${t.status}</span>
+                        <span class="st-badge ${statusClass}">${t.status || 'جديد'}</span>
                         <span class="text-[11px] font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded border border-slate-200 font-mono tracking-wider">
                             #${t.id} <span class="text-slate-300 mx-1">|</span> ${year}
                         </span>
@@ -412,7 +390,7 @@
                     <h3 class="font-bold text-slate-800 text-sm mb-2 leading-relaxed">${t.subject}</h3>
                     
                     <div class="flex items-center gap-2 text-xs text-slate-500 mb-4">
-                        <i data-lucide="building-2" class="w-3 h-3 text-slate-400"></i>
+                        <i data-lucide="building-2" class="w-3.5 h-3.5 text-slate-400"></i>
                         <span>${t.source}</span>
                     </div>
 
@@ -422,7 +400,7 @@
                         <div class="w-px h-6 bg-orange-200"></div>
                         <div class="flex flex-col"><span class="text-[9px] text-orange-400 font-bold">السنة</span><span class="text-xs font-bold text-orange-700 font-mono">${t.caseYear || '-'}</span></div>
                     </div>` : ''}
-                    
+
                     ${hasAttachment ? `
                     <div class="mb-3">
                         <a href="${t.attachment}" target="_blank" class="w-full bg-white border border-slate-200 text-slate-600 py-2 rounded-xl text-xs font-bold hover:bg-slate-50 transition flex items-center justify-center gap-1.5">
@@ -430,7 +408,7 @@
                         </a>
                     </div>` : ''}
 
-                    <div class="assign-section">
+                    <div class="card-footer">
                         <label class="block text-[10px] font-bold text-slate-500 mb-1 flex items-center gap-1">
                             <i data-lucide="user-plus" class="w-3 h-3"></i> الموظف المسؤول:
                         </label>
@@ -448,41 +426,64 @@
             lucide.createIcons();
         }
 
+        // دالة تحديث التكليف (Reassign)
         async function assignTask(id) {
             const select = document.getElementById(`sel-${id}`);
             const newEmp = select.value;
-            const btn = select.nextElementSibling;
+            const btn = select.nextElementSibling; // الزرار اللي تحته
 
-            if (!newEmp) return alert("يرجى اختيار موظف أولاً");
+            if (!newEmp) return alert("يرجى اختيار موظف من القائمة");
 
-            const originalText = btn.innerHTML;
-            btn.innerHTML = `<span class="animate-spin">⌛</span> جاري الحفظ...`;
+            // حفظ شكل الزرار الأصلي
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<span class="animate-spin text-white">⌛</span> جاري...`;
             btn.disabled = true;
 
             try {
+                // استدعاء الباك إند
                 const res = await auth.callAPI('reassignTask', { taskId: id, newEmployee: newEmp });
+                
                 if (res.success) {
-                    btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> تم التكليف`;
-                    btn.style.backgroundColor = '#15803d'; 
-                    setTimeout(() => location.reload(), 1500);
+                    btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> تم بنجاح`;
+                    btn.style.backgroundColor = '#15803d'; // أخضر غامق
+                    
+                    // تحديث الداتا محلياً عشان التغيير يظهر فوراً
+                    const taskIndex = allTasks.findIndex(t => t.id == id);
+                    if(taskIndex > -1) allTasks[taskIndex].assignee = newEmp;
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.disabled = false;
+                        btn.style.backgroundColor = ''; // رجوع للون الأصلي
+                    }, 2000);
                 } else {
-                    throw new Error(res.error);
+                    alert("خطأ: " + (res.error || "فشل التحديث"));
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
                 }
             } catch (e) {
-                alert("خطأ: " + e.message);
-                btn.innerHTML = originalText;
+                console.error(e);
+                alert("خطأ في الاتصال");
+                btn.innerHTML = originalHTML;
                 btn.disabled = false;
             }
         }
 
-        function resetFilters() {
-            document.getElementById('f-source').value = '';
-            document.getElementById('f-status').value = '';
-            document.getElementById('f-year').value = new Date().getFullYear();
-            document.getElementById('f-emp').value = '';
-            document.getElementById('f-date-start').value = '';
-            document.getElementById('f-date-end').value = '';
-            applyFilters();
+        // تحريك الأرقام
+        function animateValue(id, end) {
+            const obj = document.getElementById(id);
+            if(!obj) return;
+            let start = 0;
+            const duration = 1000;
+            if (end === 0) { obj.innerHTML = 0; return; }
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * end);
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
         }
     </script>
 </body>
