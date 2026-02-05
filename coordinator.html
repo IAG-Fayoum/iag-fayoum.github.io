@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>إدارة الحوكمة | المنسق</title>
+    <title>توزيع المهام | إدارة الحوكمة</title>
     
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
@@ -12,93 +12,92 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; padding-bottom: 80px; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; padding-bottom: 80px; }
         
-        /* --- Header --- */
+        /* --- 1. Header Identity --- */
         .header-bg {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            padding: 1.5rem 1.5rem 2rem; /* Reduced padding since stats moved down */
+            padding: 1.5rem 1.5rem 6rem;
             color: white;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
             position: relative; z-index: 10;
-            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
-            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px -10px rgba(15, 118, 110, 0.5);
         }
 
-        /* --- Filters (The Controller) --- */
-        .filters-section {
-            padding: 0 1rem; margin-bottom: 1.5rem;
+        /* --- 2. Stats Layout --- */
+        .stats-wrapper { margin: -5rem 1rem 1.5rem; position: relative; z-index: 20; }
+        
+        .stats-big-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;
         }
-        .filters-box {
-            background: white; border-radius: 16px; padding: 1.25rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;
+        .stats-small-row {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
         }
-        .filter-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
-        .filter-input {
-            width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px;
-            font-size: 0.8rem; outline: none; background-color: #f8fafc; transition: 0.2s;
-        }
-        .filter-input:focus { border-color: #0f766e; background: white; }
-
-        /* --- Clickable Stats Bar --- */
-        .stats-section {
-            padding: 0 1rem; margin-bottom: 1.5rem;
-            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;
-        }
-        .stats-section::-webkit-scrollbar { height: 4px; }
-        .stats-section::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-
+        
+        /* Stat Cards */
         .stat-btn {
-            min-width: 100px; flex: 1;
-            background: white; border-radius: 14px; padding: 10px;
-            border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            background: white; border-radius: 16px; padding: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+            text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
         }
-        .stat-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .stat-btn.active { border-color: #0f766e; background-color: #f0fdfa; ring: 2px solid #0f766e; }
-        
-        .stat-num { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-        .stat-lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
+        .stat-btn:active { transform: scale(0.95); }
+        .stat-btn.active { ring: 2px solid #0f766e; background-color: #f0fdfa; }
 
-        /* Color Themes for Stats */
-        .theme-total .stat-num { color: #0f766e; }
-        .theme-late .stat-num { color: #dc2626; }
-        .theme-new .stat-num { color: #475569; }
-        .theme-pending .stat-num { color: #0284c7; } /* Blue */
-        .theme-approved .stat-num { color: #15803d; } /* Dark Green */
-        .theme-followup .stat-num { color: #ea580c; } /* Orange/White logic later */
-
-        /* --- Task Cards (Colored Backgrounds) --- */
-        .tasks-section { padding: 0 1rem 5rem; }
+        .stat-btn.big { padding: 16px; height: 90px; }
+        .big .stat-num { font-size: 2.2rem; }
         
+        .stat-num { font-weight: 800; line-height: 1; }
+        .stat-lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; margin-top: 4px; }
+        
+        /* Colors */
+        .c-total { color: #0f766e; }
+        .c-late { color: #dc2626; }
+        .c-new { color: #475569; }
+        .c-pending { color: #16a34a; }
+        .c-approved { color: #064e3b; }
+        .c-followup { color: #2563eb; }
+
+        /* --- 3. Filters --- */
+        .filters-container {
+            background: white; border-radius: 16px; padding: 1.25rem;
+            margin: 0 1rem 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;
+        }
+        .filter-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .f-input {
+            width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #e2e8f0;
+            border-radius: 10px; font-size: 0.8rem; outline: none; transition: 0.2s;
+        }
+        .f-input:focus { border-color: #0f766e; background: white; }
+        .filter-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
+        .col-span-2 { grid-column: span 2; }
+
+        /* --- 4. Task Cards --- */
         .task-card {
             border-radius: 16px; border: 1px solid transparent;
             padding: 1rem; margin-bottom: 1rem; position: relative;
             box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: all 0.2s;
-            background: white; /* Default fallback */
+            background: white;
         }
-        .task-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .task-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); }
 
-        /* Card Status Themes */
-        .card-new { background: #ffffff; border-color: #e2e8f0; border-right: 4px solid #94a3b8; }
-        .card-pending { background: #f0f9ff; border-color: #bae6fd; border-right: 4px solid #0ea5e9; } /* Light Blue */
-        .card-approved { background: #f0fdf4; border-color: #bbf7d0; border-right: 4px solid #16a34a; } /* Light Green */
-        .card-followup { background: #fff7ed; border-color: #ffedd5; border-right: 4px solid #f97316; } /* Light Orange */
-        .card-late { background: #fef2f2; border-color: #fecaca; border-right: 4px solid #dc2626; } /* Light Red */
+        /* Themes */
+        .theme-new { background: #ffffff; border: 1px solid #e2e8f0; border-right: 5px solid #94a3b8; }
+        .theme-pending { background: #f0fdf4; border: 1px solid #bbf7d0; border-right: 5px solid #22c55e; }
+        .theme-approved { background: #ecfdf5; border: 1px solid #059669; border-right: 5px solid #064e3b; }
+        .theme-followup { background: #eff6ff; border: 1px solid #bfdbfe; border-right: 5px solid #2563eb; }
+        .theme-late { background: #fef2f2; border: 1px solid #fecaca; border-right: 5px solid #dc2626; }
 
-        /* Card Typography */
-        .t-subject { font-size: 0.9rem; font-weight: 700; color: #1e293b; margin-bottom: 8px; line-height: 1.4; }
-        .t-meta { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #475569; margin-bottom: 4px; }
-        .t-meta i { width: 14px; height: 14px; opacity: 0.7; }
-        .t-badge { 
-            font-size: 0.65rem; padding: 2px 8px; border-radius: 6px; font-weight: 700; 
-            background: white; border: 1px solid rgba(0,0,0,0.1); display: inline-block;
-        }
+        .t-id { font-family: monospace; font-size: 0.75rem; color: #64748b; background: rgba(255,255,255,0.5); padding: 2px 6px; border-radius: 4px; }
+        .t-status { font-size: 0.65rem; font-weight: 800; padding: 4px 8px; border-radius: 20px; }
+        .t-subject { font-size: 0.95rem; font-weight: 700; color: #1e293b; line-height: 1.4; margin-bottom: 12px; }
+        
+        .t-meta-row { display: flex; align-items: center; gap: 15px; font-size: 0.75rem; color: #475569; margin-bottom: 6px; }
+        .t-icon { width: 14px; height: 14px; opacity: 0.8; color: #0f766e; }
 
         /* Nav */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; padding: 10px; z-index: 50; display: flex; justify-content: space-around; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; padding: 8px; z-index: 50; display: flex; justify-content: space-around; }
         .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #94a3b8; gap: 4px; text-decoration: none; }
         .nav-item.active { color: #0f766e; font-weight: bold; }
 
@@ -129,101 +128,104 @@
 
     <div class="main-content">
         <div class="header-bg lg:hidden">
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center mb-2">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
                         <img src="assets/icons/favicon.png" class="w-6 h-6 object-contain">
                     </div>
                     <div>
-                        <p class="text-teal-100 text-[10px]">إدارة الحوكمة والمراجعة</p>
-                        <h1 class="font-bold text-lg text-white" id="user-name">...</h1>
+                        <p class="text-teal-100 text-[10px]">إدارة المراجعة الداخلية</p>
+                        <h1 class="font-bold text-lg text-white">توزيع المهام</h1>
                     </div>
                 </div>
                 <button onclick="auth.logout()" class="bg-white/20 p-2 rounded-xl text-white"><i data-lucide="log-out" class="w-5 h-5"></i></button>
             </div>
         </div>
 
-        <div class="filters-section">
-            <div class="filters-box">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                        <i data-lucide="filter" class="w-4 h-4 text-[#0f766e]"></i> تصفية البيانات
-                    </h3>
-                    <button onclick="resetFilters()" class="text-[10px] bg-red-50 text-red-600 px-2 py-1 rounded hover:bg-red-100 font-bold">إعادة تعيين</button>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div>
-                        <label class="filter-label">الموظف المسؤول</label>
-                        <select id="f-emp" class="filter-input" onchange="applyFilters()">
-                            <option value="">كل الموظفين</option>
-                            <optgroup label="مجموعات العمل">
-                                <option value="group_admin">👨‍💼 جميع المالي والإداري</option>
-                                <option value="group_tech">👨‍⚕️ جميع الفني والطبي</option>
+        <div class="filters-container" style="margin-top: -3rem; position: relative; z-index: 30;">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                    <i data-lucide="sliders-horizontal" class="w-4 h-4 text-[#0f766e]"></i> أدوات الفرز
+                </h3>
+                <button onclick="resetFilters()" class="text-[10px] bg-red-50 text-red-600 px-2 py-1 rounded hover:bg-red-100 font-bold">إعادة تعيين</button>
+            </div>
+            
+            <div class="filter-grid">
+                <div class="col-span-2">
+                    <label class="filter-label">تصفية حسب الموظف / التخصص</label>
+                    <select id="f-emp" class="f-input" onchange="applyFilters()">
+                        <option value="">عرض الكل</option>
+                        <optgroup label="المجموعات">
+                            <option value="group_tech">👨‍⚕️ جميع الفني والطبي</option>
+                            <option value="group_admin">👨‍💼 جميع المالي والإداري</option>
+                        </optgroup>
+                        <optgroup label="الموظفين" id="emp-list-container">
                             </optgroup>
-                            <optgroup label="قائمة الأسماء" id="emp-list-container">
-                                </optgroup>
-                        </select>
-                    </div>
+                    </select>
+                </div>
 
-                    <div>
-                        <label class="filter-label">بحث شامل (الجهة / الموضوع)</label>
-                        <input type="text" id="f-search" class="filter-input" placeholder="اكتب اسم الجهة..." oninput="applyFilters()">
-                    </div>
+                <div class="col-span-2">
+                    <label class="filter-label">بحث شامل (الجهة / الموضوع)</label>
+                    <input type="text" id="f-search" class="f-input" placeholder="اكتب للبحث..." oninput="applyFilters()">
+                </div>
 
-                    <div class="flex gap-2">
-                        <div class="flex-1">
-                            <label class="filter-label">من</label>
-                            <input type="date" id="f-start" class="filter-input" onchange="applyFilters()">
-                        </div>
-                        <div class="flex-1">
-                            <label class="filter-label">إلى</label>
-                            <input type="date" id="f-end" class="filter-input" onchange="applyFilters()">
-                        </div>
-                    </div>
+                <div>
+                    <label class="filter-label">من تاريخ</label>
+                    <input type="date" id="f-start" class="f-input" onchange="applyFilters()">
+                </div>
+                <div>
+                    <label class="filter-label">إلى تاريخ</label>
+                    <input type="date" id="f-end" class="f-input" onchange="applyFilters()">
+                </div>
 
-                    <div>
-                        <label class="filter-label">ترتيب العرض</label>
-                        <select id="f-sort" class="filter-input" onchange="applyFilters()">
-                            <option value="newest">الأحدث أولاً</option>
-                            <option value="oldest">الأقدم أولاً</option>
-                            <option value="source">حسب الجهة (أبجدي)</option>
-                        </select>
-                    </div>
+                <div class="col-span-2">
+                    <label class="filter-label">ترتيب العرض</label>
+                    <select id="f-sort" class="f-input" onchange="applyFilters()">
+                        <option value="newest">الأحدث أولاً</option>
+                        <option value="oldest">الأقدم أولاً</option>
+                        <option value="entity">أبجدي حسب الجهة</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <div class="stats-section" id="stats-bar">
-            <div class="stat-btn theme-total active" onclick="setStatusFilter('')" id="btn-stat-total">
-                <span class="stat-num" id="c-total">0</span>
-                <span class="stat-lbl">الإجمالي</span>
+        <div class="stats-wrapper">
+            <div class="stats-big-row">
+                <div class="stat-btn big active" onclick="setStatusFilter('')" id="btn-stat-total">
+                    <span class="stat-num c-total" id="c-total">0</span>
+                    <span class="stat-lbl">الإجمالي</span>
+                </div>
+                <div class="stat-btn big" onclick="setStatusFilter('متأخر')" id="btn-stat-late">
+                    <span class="stat-num c-late" id="c-late">0</span>
+                    <span class="stat-lbl">متأخر</span>
+                </div>
             </div>
-            <div class="stat-btn theme-late" onclick="setStatusFilter('متأخر')" id="btn-stat-late">
-                <span class="stat-num" id="c-late">0</span>
-                <span class="stat-lbl">متأخر</span>
-            </div>
-            <div class="stat-btn theme-new" onclick="setStatusFilter('جديد')" id="btn-stat-new">
-                <span class="stat-num" id="c-new">0</span>
-                <span class="stat-lbl">جديد</span>
-            </div>
-            <div class="stat-btn theme-pending" onclick="setStatusFilter('بانتظار الاعتماد')" id="btn-stat-pending">
-                <span class="stat-num" id="c-pending">0</span>
-                <span class="stat-lbl">انتظار اعتماد</span>
-            </div>
-            <div class="stat-btn theme-approved" onclick="setStatusFilter('تم الاعتماد')" id="btn-stat-approved">
-                <span class="stat-num" id="c-approved">0</span>
-                <span class="stat-lbl">تم الاعتماد</span>
-            </div>
-            <div class="stat-btn theme-followup" onclick="setStatusFilter('بحاجة الي متابعة')" id="btn-stat-followup">
-                <span class="stat-num" id="c-followup">0</span>
-                <span class="stat-lbl">متابعة</span>
+            <div class="stats-small-row">
+                <div class="stat-btn" onclick="setStatusFilter('جديد')" id="btn-stat-new">
+                    <span class="stat-num c-new" id="c-new">0</span>
+                    <span class="stat-lbl">جديد</span>
+                </div>
+                <div class="stat-btn" onclick="setStatusFilter('بانتظار الاعتماد')" id="btn-stat-pending">
+                    <span class="stat-num c-pending" id="c-pending">0</span>
+                    <span class="stat-lbl">بانتظار الاعتماد</span>
+                </div>
+                <div class="stat-btn" onclick="setStatusFilter('تم الاعتماد')" id="btn-stat-approved">
+                    <span class="stat-num c-approved" id="c-approved">0</span>
+                    <span class="stat-lbl">تم الاعتماد</span>
+                </div>
+                <div class="stat-btn" onclick="setStatusFilter('بحاجة الي متابعة')" id="btn-stat-followup">
+                    <span class="stat-num c-followup" id="c-followup">0</span>
+                    <span class="stat-lbl">متابعة</span>
+                </div>
             </div>
         </div>
 
-        <div class="tasks-section">
+        <div class="px-2 lg:px-0">
+            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2 text-sm">
+                سجل المهام <span class="text-[10px] bg-[#0f766e] text-white px-2 py-0.5 rounded-full" id="task-count">0</span>
+            </h3>
             <div id="tasks-container">
-                <div class="text-center py-12"><span class="inline-block animate-spin text-[#0f766e]"><i data-lucide="loader-2" class="w-8 h-8"></i></span><p class="text-slate-400 text-xs mt-2">جاري التحميل...</p></div>
+                <div class="text-center py-12"><span class="inline-block animate-spin text-[#0f766e]"><i data-lucide="loader-2" class="w-8 h-8"></i></span><p class="text-slate-400 text-xs mt-2">جاري تحميل البيانات...</p></div>
             </div>
         </div>
     </div>
@@ -240,17 +242,12 @@
     <script>
         lucide.createIcons();
         let allTasks = [];
-        let activeEmployees = [];
-        let currentStatusFilter = ''; // To track stats click
-
-        // تصنيف الموظفين (لغرض الفلتر)
-        const adminKeywords = ["أ.", "محمود", "إيمان", "علا", "نيفين", "نسمة", "أسماء", "مالي", "إداري"];
-        const techKeywords = ["د.", "فني", "صيدلي", "طبيب", "تمريض"];
+        let allEmployeesData = []; // Store full employee objects {name, jobTitle, ...}
+        let currentStatusFilter = '';
 
         document.addEventListener('DOMContentLoaded', async () => {
             const user = auth.checkAuth();
             if (!user) return;
-            document.getElementById('user-name').textContent = user.name.split(' ')[0];
 
             // Set Date Filter to Current Month
             const date = new Date();
@@ -259,29 +256,10 @@
             document.getElementById('f-start').value = firstDay;
             document.getElementById('f-end').value = lastDay;
 
-            await loadEmployees();
-            await loadTasks(user.name);
+            await loadData(user.name);
         });
 
-        async function loadEmployees() {
-            try {
-                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'getEmployees' }) });
-                const data = await res.json();
-                if(data.success && data.data) {
-                    activeEmployees = data.data;
-                    const container = document.getElementById('emp-list-container');
-                    activeEmployees.sort().forEach(emp => {
-                        const opt = document.createElement('option');
-                        opt.value = emp;
-                        opt.textContent = emp;
-                        container.appendChild(opt);
-                    });
-                }
-            } catch(e) {}
-        }
-
-        async function loadTasks(username) {
+        async function loadData(username) {
             try {
                 const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
                 // Requesting 'Admin' role data to get everything
@@ -290,6 +268,13 @@
 
                 if (data.success) {
                     allTasks = data.tasks || [];
+                    
+                    // 1. Get Employees from Backend Stats (Best Source)
+                    if (data.stats && data.stats.employees) {
+                        allEmployeesData = data.stats.employees; // {name, jobTitle, ...}
+                        populateEmpDropdowns();
+                    }
+
                     updateStatsCounts();
                     applyFilters(); 
                 } else {
@@ -301,13 +286,25 @@
             }
         }
 
-        // --- Functions ---
+        function populateEmpDropdowns() {
+            const select = document.getElementById('emp-list-container');
+            select.innerHTML = '';
+            
+            // Sort alphabetically
+            allEmployeesData.sort((a, b) => a.name.localeCompare(b.name));
+
+            allEmployeesData.forEach(emp => {
+                const opt = document.createElement('option');
+                opt.value = emp.name;
+                opt.textContent = emp.name;
+                select.appendChild(opt);
+            });
+        }
 
         function setStatusFilter(status) {
             currentStatusFilter = status;
-            
-            // UI Update for Buttons
             document.querySelectorAll('.stat-btn').forEach(btn => btn.classList.remove('active'));
+            
             if(status === '') document.getElementById('btn-stat-total').classList.add('active');
             else if(status === 'متأخر') document.getElementById('btn-stat-late').classList.add('active');
             else if(status === 'جديد') document.getElementById('btn-stat-new').classList.add('active');
@@ -346,26 +343,28 @@
             const sortVal = document.getElementById('f-sort').value;
 
             const filtered = allTasks.filter(t => {
-                // 1. Status Filter (from Stats Bar)
+                // 1. Status Filter
                 if (currentStatusFilter && !(t.status || '').includes(currentStatusFilter)) return false;
 
-                // 2. Employee Group Logic
+                // 2. Employee Groups Logic (using Job Title from Backend Data)
                 if (empVal) {
-                    if (empVal === 'group_admin') {
-                        // Check if name contains admin keywords
-                        const isAdm = adminKeywords.some(k => (t.assignee || '').includes(k));
-                        if (!isAdm) return false;
-                    } else if (empVal === 'group_tech') {
-                        // Check if name contains tech keywords
-                        const isTech = techKeywords.some(k => (t.assignee || '').includes(k));
-                        if (!isTech) return false;
+                    if (empVal === 'group_tech' || empVal === 'group_admin') {
+                        // Find employee object to check job title
+                        const empObj = allEmployeesData.find(e => e.name === t.assignee);
+                        if (!empObj) return false; // If not assigned or not found in list
+
+                        const jobTitle = (empObj.jobTitle || '').toLowerCase();
+                        const isTech = jobTitle.includes('فني') || jobTitle.includes('طبي') || jobTitle.includes('صيدلي');
+                        
+                        if (empVal === 'group_tech' && !isTech) return false;
+                        if (empVal === 'group_admin' && isTech) return false; // If admin group, exclude tech
                     } else {
-                        // Exact match
+                        // Specific Employee
                         if (t.assignee !== empVal) return false;
                     }
                 }
 
-                // 3. Search (Source, Subject, ID)
+                // 3. Search
                 if (searchVal && !(
                     (t.source || '').toLowerCase().includes(searchVal) || 
                     (t.subject || '').toLowerCase().includes(searchVal) || 
@@ -374,7 +373,6 @@
 
                 // 4. Date Range
                 if (startVal || endVal) {
-                    // Convert API date (DD/MM/YYYY) to YYYY-MM-DD
                     const parts = (t.date || '').split('/');
                     if (parts.length === 3) {
                         const isoDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
@@ -390,7 +388,7 @@
             filtered.sort((a, b) => {
                 if (sortVal === 'newest') return b.id - a.id;
                 if (sortVal === 'oldest') return a.id - b.id;
-                if (sortVal === 'source') return (a.source || '').localeCompare(b.source || '');
+                if (sortVal === 'entity') return (a.source || '').localeCompare(b.source || '');
                 return 0;
             });
 
@@ -407,29 +405,33 @@
 
             container.innerHTML = tasks.map(t => {
                 const s = (t.status || '').trim();
-                let cardClass = 'card-new';
+                let cardClass = 'theme-new';
                 let stLabel = s || 'جديد';
 
-                if (s.includes('بانتظار')) { cardClass = 'card-pending'; }
-                else if (s.includes('تم الاعتماد')) { cardClass = 'card-approved'; }
-                else if (s.includes('متابعة')) { cardClass = 'card-followup'; }
-                else if (s.includes('متأخر')) { cardClass = 'card-late'; }
+                if (s.includes('بانتظار')) { cardClass = 'theme-pending'; }
+                else if (s.includes('تم الاعتماد')) { cardClass = 'theme-approved'; }
+                else if (s.includes('متابعة')) { cardClass = 'theme-followup'; }
+                else if (s.includes('متأخر')) { cardClass = 'theme-late'; }
 
                 return `
                 <div class="task-card ${cardClass}">
                     <div class="card-header">
-                        <span class="t-badge shadow-sm">${stLabel}</span>
-                        <div class="date-badge">
-                            <i data-lucide="calendar" class="w-3 h-3"></i> ${t.date || '-'}
-                            <span class="text-slate-300 mx-1">|</span> # ${t.id}
-                        </div>
+                        <div class="t-id"># ${t.id}</div>
+                        <span class="t-status">${stLabel}</span>
                     </div>
 
                     <h3 class="t-subject">${t.subject}</h3>
                     
                     <div class="mb-3">
-                        <div class="t-meta"><i data-lucide="building-2"></i> <strong>الجهة:</strong> ${t.source || 'غير محدد'}</div>
-                        <div class="t-meta"><i data-lucide="user"></i> <strong>المكلف:</strong> ${t.assignee || '<span class="text-red-400">غير موزع</span>'}</div>
+                        <div class="t-meta-row">
+                            <div class="t-meta-item"><i data-lucide="calendar" class="t-icon"></i> ${t.date || '-'}</div>
+                            <div class="t-meta-item"><i data-lucide="building-2" class="t-icon"></i> ${t.source || 'غير محدد'}</div>
+                        </div>
+                    </div>
+
+                    <div class="t-assignee">
+                        <i data-lucide="user-check" class="w-4 h-4"></i>
+                        <span>${t.assignee || 'غير موزع'}</span>
                     </div>
                 </div>`;
             }).join('');
@@ -440,9 +442,14 @@
         function resetFilters() {
             document.getElementById('f-emp').value = '';
             document.getElementById('f-search').value = '';
-            document.getElementById('f-start').value = '';
-            document.getElementById('f-end').value = '';
-            setStatusFilter(''); // Reset stats
+            // Reset dates to current month
+            const date = new Date();
+            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).toISOString().split('T')[0];
+            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().split('T')[0];
+            document.getElementById('f-start').value = firstDay;
+            document.getElementById('f-end').value = lastDay;
+            
+            setStatusFilter('');
         }
     </script>
 </body>
