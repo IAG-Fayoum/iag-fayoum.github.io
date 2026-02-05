@@ -20,21 +20,24 @@
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         
+        /* --- Colors Variables --- */
         :root {
             --primary: #0f766e;
+            --secondary: #134e4a;
+            /* Status Colors (Text) */
             --c-total: #334155;
-            --c-new: #3b82f6;        
-            --c-pending: #16a34a;    
-            --c-approved: #059669;   
-            --c-followup: #6b7280;   
-            --c-late: #dc2626;       
+            --c-new: #3b82f6;        /* أزرق */
+            --c-pending: #16a34a;    /* أخضر */
+            --c-approved: #047857;   /* أخضر زيتي (تم التغميق قليلاً) */
+            --c-followup: #6b7280;   /* رصاصي */
+            --c-late: #dc2626;       /* أحمر */
         }
 
-        /* --- Header --- */
+        /* --- Header (Dark Teal Area) --- */
         .main-header {
             background: #115e59;
-            color: white; padding: 1rem 1.5rem 3rem; /* مساحة أقل */
-            border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
+            color: white; padding: 1rem 1.5rem 3.5rem;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
             box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
@@ -42,95 +45,84 @@
         .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
-        /* --- Smart Filter Grid --- */
+        /* --- Filter Box --- */
         .filter-container {
-            margin: -2.5rem 1rem 1rem; position: relative; z-index: 20;
-            background: white; border-radius: 16px; padding: 1rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;
+            margin: -3rem 1rem 1rem; position: relative; z-index: 20;
+            background: white; border-radius: 12px; padding: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;
         }
         
-        /* The Layout Magic */
-        .smart-grid {
-            display: flex; flex-direction: column; gap: 10px;
-        }
-        
-        .search-row { width: 100%; }
-        
-        .filters-row {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; /* Mobile: 2x2 */
-        }
-
         @media (min-width: 1024px) {
             .filter-container { max-width: 1200px; margin-left: auto; margin-right: auto; padding: 1.5rem; }
-            .filters-row {
-                grid-template-columns: 2fr 2fr 1fr 1fr auto; /* Desktop: Line */
-                align-items: end;
-            }
         }
 
-        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 3px; display: block; }
+        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; text-align: right; }
         
         .f-input {
             width: 100%; height: 40px; padding: 0 12px; 
-            border: 1px solid #cbd5e1; border-radius: 10px;
+            border: 1px solid #cbd5e1; border-radius: 8px;
             font-size: 0.85rem; outline: none; background: #fff; 
             transition: all 0.2s; color: #1e293b;
         }
         .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
-        
-        .search-input { background-color: #f8fafc; border-color: #e2e8f0; padding-right: 35px; }
-        .search-icon { position: absolute; right: 12px; top: 12px; color: #94a3b8; width: 18px; height: 18px; }
+        .f-input::placeholder { color: #94a3b8; font-size: 0.8rem; }
 
+        .search-input { background-color: #f8fafc; border-color: #e2e8f0; }
+
+        /* Print Button */
         .btn-print {
-            background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;
-            border-radius: 10px; height: 40px; width: 100%; min-width: 45px;
-            font-weight: 700; cursor: pointer; transition: 0.2s;
+            background: #e2e8f0; color: #475569; border: none; border-radius: 8px; height: 40px;
+            font-weight: 700; cursor: pointer; transition: 0.2s; width: 100%;
             display: flex; align-items: center; justify-content: center;
         }
-        .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
+        .btn-print:hover { background: #cbd5e1; }
 
-        /* --- Stats --- */
+        /* --- Stats Layout --- */
         .stats-wrapper {
             padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto;
-            display: flex; flex-direction: column; gap: 10px;
+            display: flex; flex-direction: column; gap: 12px;
         }
-        .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-
+        
+        .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .stat-card-big {
-            background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px;
-            text-align: center; cursor: pointer; transition: 0.2s; height: 85px;
-            display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px;
+            text-align: center; cursor: pointer; transition: 0.2s; height: 90px;
+            display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); box-shadow: 0 4px 15px rgba(15, 118, 110, 0.15); }
-        .stat-card-big .num { font-size: 1.8rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
-        .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
+        .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15); }
+        .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 5px; }
+        .stat-card-big .lbl { font-size: 0.9rem; font-weight: 700; color: #64748b; }
 
+        .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .stat-card-small {
-            background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 5px;
-            text-align: center; cursor: pointer; transition: 0.2s; min-height: 70px;
+            background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px;
+            text-align: center; cursor: pointer; transition: 0.2s; min-height: 75px;
             display: flex; flex-direction: column; justify-content: center;
         }
         .stat-card-small.active { background: #f0fdfa; border-color: var(--primary); }
-        .stat-card-small .num { font-size: 1.3rem; font-weight: 800; line-height: 1; }
-        .stat-card-small .lbl { font-size: 0.6rem; font-weight: 700; color: #64748b; line-height: 1.1; margin-top: 2px; }
+        .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+        .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; line-height: 1.2; }
 
-        .txt-total { color: var(--primary); } .txt-late { color: var(--c-late); }
-        .txt-new { color: var(--c-new); } .txt-pending { color: var(--c-pending); }
-        .txt-approved { color: var(--c-approved); } .txt-followup { color: var(--c-followup); }
+        /* Colors matching variables */
+        .txt-total { color: var(--primary); } 
+        .txt-late { color: var(--c-late); }
+        .txt-new { color: var(--c-new); } 
+        .txt-pending { color: var(--c-pending); }
+        .txt-approved { color: var(--c-approved); } 
+        .txt-followup { color: var(--c-followup); }
 
-        /* --- Cards Grid --- */
+        /* --- Task Cards --- */
         .cards-container { padding: 0 1rem 5rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; }
         @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
 
         .task-card {
-            background: white; border-radius: 16px; overflow: hidden; position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;
+            background: white; border-radius: 12px; overflow: hidden; position: relative;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;
             padding: 0; transition: transform 0.2s; display: flex; flex-direction: column;
         }
-        .card-stripe { padding: 8px 15px; color: white; font-weight: 700; font-size: 0.75rem; display: flex; justify-content: space-between; align-items: center; }
         
+        .card-stripe { padding: 8px 15px; color: white; font-weight: 700; font-size: 0.75rem; display: flex; justify-content: space-between; align-items: center; }
         .bg-new { background-color: var(--c-new); } 
         .bg-pending { background-color: var(--c-pending); }
         .bg-approved { background-color: var(--c-approved); } 
@@ -152,20 +144,47 @@
         .btn-card:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
         .btn-attach { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
 
-        /* Side Menu & Modal & Loader (Unchanged) */
-        .side-menu { position: fixed; top: 0; right: -250px; width: 250px; height: 100%; background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
-        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        /* --- Side Menu --- */
+        .side-menu {
+            position: fixed; top: 0; right: -250px; width: 250px; height: 100%;
+            background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+        }
+        .side-menu-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .menu-open .side-menu { right: 0; }
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200;
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px);
+        }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
-        .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
+        .modal-box {
+            background: white; width: 95%; max-width: 600px; max-height: 90vh;
+            border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column;
+        }
         .modal-header { padding: 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
         .modal-body { padding: 1.5rem; }
         .data-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
         .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; }
         .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; margin-bottom: 2px; }
         .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
+
+        /* Loading */
         .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
+        
+        /* Grid System for Filters */
+        .filter-row-top { margin-bottom: 12px; }
+        .filter-row-bottom { display: grid; grid-template-columns: 3fr 3fr 1.5fr 1.5fr 0.5fr; gap: 8px; align-items: end; }
+        
+        @media (max-width: 1024px) {
+            .filter-row-bottom { grid-template-columns: 1fr 1fr; }
+            .btn-group { grid-column: 1 / -1; display: flex; gap: 8px; }
+        }
 
         /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
@@ -177,14 +196,14 @@
 
     <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
     <aside class="side-menu" id="side-menu">
-        <div class="p-5 bg-teal-50 border-b border-teal-100 text-center">
-            <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-2">
-                <i data-lucide="user" class="w-6 h-6 text-teal-700"></i>
+        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-14 h-14 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+                <i data-lucide="user" class="w-7 h-7 text-teal-700"></i>
             </div>
             <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
             <p class="text-xs text-teal-600" id="menu-role">...</p>
         </div>
-        <nav class="flex-1 p-3 space-y-1">
+        <nav class="flex-1 p-4 space-y-2">
             <a href="index.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="home" class="w-4 h-4"></i> الرئيسية</a>
             <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Dashboard</a>
             <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
@@ -214,51 +233,45 @@
     </header>
 
     <div class="filter-container">
-        <div class="smart-grid">
-            
-            <div class="search-row relative">
-                <input type="text" id="f-search" class="f-input search-input" placeholder="بحث شامل (رقم، جهة، موضوع)..." oninput="applyFilters()">
-                <i data-lucide="search" class="search-icon"></i>
+        <div class="filter-row-top">
+            <input type="text" id="f-search" class="f-input search-input" placeholder="بحث باسم المهمة، الرقم، أو الموضوع..." oninput="applyFilters()">
+        </div>
+
+        <div class="filter-row-bottom">
+            <div>
+                <label class="f-label">الموظف المسؤول</label>
+                <select id="f-emp" class="f-input" onchange="applyFilters()">
+                    <option value="">عرض الكل</option>
+                    <optgroup label="المجموعات">
+                        <option value="group_tech">👨‍⚕️ الفريق الفني</option>
+                        <option value="group_admin">👨‍💼 الفريق الإداري</option>
+                    </optgroup>
+                    <optgroup label="قائمة الموظفين" id="emp-options"></optgroup>
+                </select>
             </div>
 
-            <div class="filters-row">
-                
-                <div>
-                    <label class="f-label">الموظف</label>
-                    <select id="f-emp" class="f-input" onchange="applyFilters()">
-                        <option value="">الكل</option>
-                        <optgroup label="المجموعات">
-                            <option value="group_tech">👨‍⚕️ الفني</option>
-                            <option value="group_admin">👨‍💼 الإداري</option>
-                        </optgroup>
-                        <optgroup label="الموظفين" id="emp-options"></optgroup>
-                    </select>
-                </div>
+            <div>
+                <label class="f-label">الجهة الوارد منها</label>
+                <select id="f-source" class="f-input" onchange="applyFilters()">
+                    <option value="">كل الجهات</option>
+                </select>
+            </div>
 
-                <div>
-                    <label class="f-label">الجهة</label>
-                    <select id="f-source" class="f-input" onchange="applyFilters()">
-                        <option value="">الكل</option>
-                    </select>
-                </div>
+            <div>
+                <label class="f-label">من</label>
+                <input type="date" id="f-start" class="f-input" onchange="applyFilters()">
+            </div>
 
-                <div>
-                    <label class="f-label">من</label>
-                    <input type="date" id="f-start" class="f-input" onchange="applyFilters()">
-                </div>
+            <div>
+                <label class="f-label">إلى</label>
+                <input type="date" id="f-end" class="f-input" onchange="applyFilters()">
+            </div>
 
-                <div>
-                    <label class="f-label">إلى</label>
-                    <input type="date" id="f-end" class="f-input" onchange="applyFilters()">
-                </div>
-
-                <div>
-                    <label class="f-label text-transparent">.</label>
-                    <button onclick="window.print()" class="btn-print" title="طباعة">
-                        <i data-lucide="printer" class="w-5 h-5"></i>
-                    </button>
-                </div>
-
+            <div class="btn-group">
+                <label class="f-label text-transparent">.</label>
+                <button onclick="window.print()" class="btn-print" title="طباعة">
+                    <i data-lucide="printer" class="w-5 h-5"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -336,11 +349,17 @@
             document.getElementById('menu-user').textContent = user.name;
             document.getElementById('menu-role').textContent = user.role;
 
-            // NO Default Date - Show All Data
-            document.getElementById('f-start').value = '';
-            document.getElementById('f-end').value = '';
+            // Default: Current Month
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const lastDay = new Date(y, now.getMonth() + 1, 0).getDate();
+
+            document.getElementById('f-start').value = `${y}-${m}-01`;
+            document.getElementById('f-end').value = `${y}-${m}-${lastDay}`;
 
             await loadData(user.name);
+            document.getElementById('f-search').addEventListener('input', applyFilters);
         });
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
@@ -359,6 +378,7 @@
                     if(data.stats && data.stats.employees) allEmployees = data.stats.employees;
                     
                     populateDropdowns();
+                    // Initial load -> Filter applied
                     updateStats();
                     applyFilters();
                 } else {
