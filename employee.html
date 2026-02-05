@@ -2,458 +2,545 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>مهامي | نظام الحوكمة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    
+    <title>صفحتي | IAG Employee</title>
     
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; padding-bottom: 80px; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         
-        /* Custom Colors & Shadows */
-        .header-bg {
-            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
+        :root {
+            --primary: #0f766e;
+            --c-total: #334155;
+            --c-new: #3b82f6;        
+            --c-pending: #16a34a;    
+            --c-approved: #047857;   /* لون أغمق حسب الطلب */
+            --c-followup: #6b7280;   
+            --c-late: #dc2626;       
         }
-        
-        /* Toast Notifications */
-        .toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 0.9rem;
-            display: flex; align-items: center; gap: 8px; z-index: 9999;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            animation: slideDown 0.3s ease forwards;
-            opacity: 0;
-        }
-        @keyframes slideDown { from { top: -20px; opacity: 0; } to { top: 20px; opacity: 1; } }
-        .toast-success { background: #065f46; color: white; border: 1px solid #34d399; }
-        .toast-error { background: #991b1b; color: white; border: 1px solid #fca5a5; }
 
-        /* Action Buttons */
-        .status-select {
-            padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px;
-            font-size: 0.8rem; outline: none; background: white; width: 100%; transition: 0.2s;
-            appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat; background-position: left 10px center; background-size: 10px;
-            padding-left: 25px;
+        /* --- Header --- */
+        .main-header {
+            background: #115e59;
+            color: white; padding: 1rem 1.5rem 4rem;
+            border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
+            position: relative; z-index: 10;
+            padding-top: max(1rem, env(safe-area-inset-top));
         }
-        .status-select:focus { border-color: #0f766e; box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.1); }
-        
-        .btn-update {
-            background: #0f766e; color: white; padding: 8px 16px; border-radius: 8px;
-            font-size: 0.75rem; font-weight: 700; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;
-            white-space: nowrap;
+        .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
+        .page-badge { 
+            background: rgba(255,255,255,0.15); padding: 2px 12px; border-radius: 20px; 
+            font-size: 0.8rem; font-weight: 700; margin-top: 8px; display: inline-block;
+            backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2);
         }
-        .btn-update:hover { background: #115e59; transform: translateY(-1px); }
+
+        /* --- Employee Info Card --- */
+        .emp-info-card {
+            background: white; border-radius: 16px; padding: 1.25rem;
+            margin: -3rem 1rem 1rem; position: relative; z-index: 20;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e5e7eb;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .info-row { display: flex; align-items: center; gap: 10px; color: #4b5563; font-size: 0.9rem; }
+        .info-icon { color: var(--primary); width: 18px; height: 18px; }
+        .info-val { font-weight: 700; color: #1f2937; }
+
+        /* --- Stats Grid (2 Rows) --- */
+        .stats-wrapper { padding: 0 1rem 1rem; display: flex; flex-direction: column; gap: 10px; }
+        .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         
-        /* Task Cards */
+        /* Responsive for small stats */
+        @media (max-width: 767px) { .stats-row-small { grid-template-columns: repeat(2, 1fr); } }
+
+        .stat-card-big {
+            background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px;
+            text-align: center; display: flex; flex-direction: column; justify-content: center;
+            height: 90px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .stat-card-small {
+            background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px;
+            text-align: center; display: flex; flex-direction: column; justify-content: center;
+            min-height: 70px;
+        }
+        .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+        .stat-card-big .stat-num { font-size: 2rem; }
+        .stat-lbl { font-size: 0.75rem; font-weight: 700; color: #64748b; }
+
+        /* Status Text Colors */
+        .txt-total { color: var(--c-total); } .txt-new { color: var(--c-new); }
+        .txt-pending { color: var(--c-pending); } .txt-approved { color: var(--c-approved); }
+        .txt-followup { color: var(--c-followup); } .txt-late { color: var(--c-late); }
+
+        /* --- Tabs System --- */
+        .tabs-container { padding: 0 1rem 1rem; position: sticky; top: 0; z-index: 30; background: #f3f4f6; padding-top: 10px; }
+        .tabs-header { 
+            display: flex; background: white; padding: 4px; border-radius: 12px; 
+            border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .tab-btn {
+            flex: 1; padding: 8px; text-align: center; border-radius: 8px; font-weight: 700; font-size: 0.85rem;
+            color: #64748b; transition: 0.2s; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(15, 118, 110, 0.2); }
+        
+        .tab-content { display: none; padding: 0 1rem 5rem; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+
+        /* --- Filters (Inside Tabs) --- */
+        .tab-filters { 
+            background: white; padding: 10px; border-radius: 12px; border: 1px solid #e5e7eb;
+            margin-bottom: 1rem; display: flex; flex-direction: column; gap: 8px;
+        }
+        .filter-row { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
+        .f-select, .f-input {
+            width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px;
+            font-size: 0.85rem; outline: none; background: #f9fafb;
+        }
+
+        /* --- Task Cards --- */
         .task-card {
-            background: white; border-radius: 16px; border: 1px solid #e2e8f0;
-            padding: 1.25rem; margin-bottom: 1rem; position: relative;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;
+            background: white; border-radius: 12px; overflow: hidden; margin-bottom: 1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb;
         }
-        .task-card:hover { transform: translateY(-3px); border-color: #0f766e; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
-
-        /* Quick Actions */
-        .quick-btn {
-            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px;
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            font-size: 0.7rem; font-weight: 700; color: #64748b; transition: 0.2s;
-        }
-        .quick-btn:hover { border-color: #0f766e; color: #0f766e; background: #f0fdfa; }
-        .quick-btn i { width: 18px; height: 18px; }
-
-        /* Status Badges */
-        .st-badge { font-size: 0.65rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; display: inline-block; }
-        .st-new { background: #ffffff; color: #334155; border: 1px solid #e2e8f0; }
-        .st-pending { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-        .st-approved { background: #15803d; color: white; border: 1px solid #14532d; }
-        .st-late { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-
-        /* Sidebar Desktop */
-        @media (min-width: 1024px) {
-            body { padding-right: 260px; padding-bottom: 0; }
-            .mobile-header { display: none; }
-            .bottom-nav { display: none; }
-        }
-        .sidebar {
-            position: fixed; right: 0; top: 0; height: 100vh; width: 260px;
-            background: white; border-left: 1px solid #e2e8f0; z-index: 50;
-            display: none; flex-direction: column;
-        }
-        @media (min-width: 1024px) { .sidebar { display: flex; } }
+        .card-header { padding: 8px 12px; color: white; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.75rem; }
         
-        .nav-item {
-            display: flex; align-items: center; gap: 10px; padding: 12px 20px;
-            color: #64748b; font-weight: 600; text-decoration: none; transition: 0.2s; margin-bottom: 4px;
+        /* Status Backgrounds */
+        .bg-new { background-color: #3b82f6; }
+        .bg-pending { background-color: #22c55e; }
+        .bg-approved { background-color: #047857; }
+        .bg-followup { background-color: #6b7280; }
+        .bg-late { background-color: #dc2626; }
+
+        .card-body { padding: 12px; }
+        .card-subject { font-weight: 700; color: #1f2937; margin-bottom: 8px; font-size: 0.95rem; }
+        .card-meta { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #4b5563; margin-bottom: 4px; }
+        .card-icon { width: 14px; height: 14px; color: var(--primary); }
+        
+        .card-footer { padding: 10px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; }
+        .btn-card {
+            flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+            cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #4b5563;
         }
-        .nav-item:hover { background: #f0fdfa; color: #0f766e; }
-        .nav-item.active { background: linear-gradient(135deg, #0f766e, #115e59); color: white; border-radius: 8px; }
+        .btn-card:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* --- Report Cards --- */
+        .report-card {
+            background: white; border-radius: 12px; padding: 12px; margin-bottom: 1rem;
+            border-right: 4px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+        .border-tech { border-color: #60a5fa; }
+        .border-fin { border-color: #4ade80; }
+        .border-comp { border-color: #fbbf24; }
+
+        /* --- Notification Cards --- */
+        .notif-card {
+            padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid transparent;
+            display: flex; flex-direction: column; gap: 4px; position: relative;
+        }
+        .n-new { background: #eff6ff; border-color: #bfdbfe; }
+        .n-reassign { background: #fffbeb; border-color: #fde68a; }
+        .n-alert { background: #fff7ed; border-color: #fed7aa; }
+        .n-time { font-size: 0.7rem; color: #64748b; align-self: flex-end; }
+
+        /* --- Modal & Side Menu & Nav (Standard) --- */
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+        .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
+        .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+        .modal-body { padding: 1.5rem; }
+        .data-row { display: flex; flex-direction: column; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 8px; }
+        .data-lbl { font-size: 0.7rem; color: #64748b; font-weight: 700; }
+        .data-val { font-size: 0.9rem; font-weight: 600; color: #1f2937; }
+
+        .loader-box { text-align: center; padding: 4rem; color: #94a3b8; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+        .nav-btn.active { color: var(--primary); } .nav-btn i { width: 22px; height: 22px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar p-4">
-        <div class="flex items-center gap-3 px-2 mb-8">
-            <div class="w-10 h-10 bg-teal-50 rounded-full flex items-center justify-center">
-                <img src="assets/icons/favicon.png" class="w-6 h-6 object-contain">
+    <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
+    <aside class="side-menu" id="side-menu">
+        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+                <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
             </div>
-            <div>
-                <h1 class="font-bold text-slate-800 text-lg">نظام الحوكمة</h1>
-                <p class="text-[10px] text-slate-500">بوابة الموظف</p>
-            </div>
+            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
+            <p class="text-xs text-teal-600" id="menu-role">...</p>
         </div>
-        <nav class="flex-1">
-            <a href="index.html" class="nav-item rounded-lg"><i data-lucide="home" class="w-5 h-5"></i> الرئيسية</a>
-            <a href="distribution.html" class="nav-item rounded-lg"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات</a>
-            <a href="employee.html" class="nav-item active rounded-lg"><i data-lucide="briefcase" class="w-5 h-5"></i> مهامي</a>
-            <a href="forms.html" class="nav-item rounded-lg"><i data-lucide="file-text" class="w-5 h-5"></i> النماذج</a>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="index.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="home" class="w-4 h-4"></i> الرئيسية</a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Dashboard</a>
+            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
         </nav>
-        <div class="mt-auto border-t border-slate-100 pt-4">
-            <div class="px-2 mb-2">
-                <p class="text-xs text-slate-400 font-bold">تسجيل دخول باسم</p>
-                <p class="text-sm font-bold text-slate-800 truncate" id="sidebar-user">...</p>
-            </div>
-            <button onclick="logout()" class="nav-item w-full text-red-500 hover:bg-red-50 hover:text-red-600 rounded-lg">
+        <div class="p-4 border-t">
+            <button onclick="auth.logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
                 <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
             </button>
         </div>
     </aside>
 
-    <div class="header-bg lg:hidden p-4 pb-16 text-white rounded-b-[30px] mb-[-30px] relative z-10">
-        <div class="flex justify-between items-center mb-4">
-            <div class="flex items-center gap-3">
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    <img src="assets/icons/favicon.png" class="w-6 h-6 object-contain">
-                </div>
-                <div>
-                    <p class="text-teal-100 text-xs font-bold" id="greeting">أهلاً بك،</p>
-                    <h1 class="font-bold text-lg" id="mobile-user">...</h1>
-                </div>
+    <header class="main-header">
+        <div class="max-w-[1200px] mx-auto flex justify-between items-center">
+            <button onclick="toggleMenu()" class="p-2 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
+            <div class="text-center">
+                <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
+                <p class="dept-subtitle">Internal Audit & Governance Dept</p>
+                <div class="flex justify-center"><span class="page-badge">صفحتي</span></div>
             </div>
-            <button onclick="logout()" class="bg-white/20 p-2 rounded-xl hover:bg-red-500/50 transition">
-                <i data-lucide="log-out" class="w-5 h-5"></i>
+            <button onclick="switchTab('notifs')" class="p-2 text-white relative">
+                <i data-lucide="bell" class="w-6 h-6"></i>
+                <span id="notif-badge" class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700 hidden"></span>
             </button>
+        </div>
+    </header>
+
+    <div class="emp-info-card">
+        <div class="info-row">
+            <i data-lucide="user" class="info-icon"></i>
+            <span class="info-val" id="emp-name">...</span>
+        </div>
+        <div class="info-row">
+            <i data-lucide="briefcase" class="info-icon"></i>
+            <span class="info-val" id="emp-job">...</span>
+        </div>
+        <div class="info-row">
+            <i data-lucide="mail" class="info-icon"></i>
+            <span class="info-val text-xs" id="emp-email">...</span>
         </div>
     </div>
 
-    <main class="container mx-auto px-4 lg:py-8 pt-12 pb-24">
-        
-        <div class="grid grid-cols-3 gap-3 mb-6 relative z-20">
-            <div class="bg-white p-3 rounded-xl border border-teal-100 shadow-sm text-center">
-                <div class="text-teal-600 mb-1 flex justify-center"><i data-lucide="clipboard-list" class="w-5 h-5"></i></div>
-                <h3 class="text-xl font-black text-slate-800" id="s-total">0</h3>
-                <p class="text-[10px] text-slate-500 font-bold">إجمالي المهام</p>
+    <div class="stats-wrapper">
+        <div class="stats-row-big">
+            <div class="stat-card-big"><span class="stat-num txt-total" id="st-total">0</span><span class="stat-lbl">الإجمالي</span></div>
+            <div class="stat-card-big"><span class="stat-num txt-late" id="st-late">0</span><span class="stat-lbl">متأخر</span></div>
+        </div>
+        <div class="stats-row-small">
+            <div class="stat-card-small"><span class="stat-num txt-new" id="st-new">0</span><span class="stat-lbl">جديد</span></div>
+            <div class="stat-card-small"><span class="stat-num txt-pending" id="st-pending">0</span><span class="stat-lbl">بانتظار الاعتماد</span></div>
+            <div class="stat-card-small"><span class="stat-num txt-approved" id="st-approved">0</span><span class="stat-lbl">تم الاعتماد والأرشفة</span></div>
+            <div class="stat-card-small"><span class="stat-num txt-followup" id="st-followup">0</span><span class="stat-lbl">بحاجة للمتابعة</span></div>
+        </div>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs-header">
+            <div class="tab-btn active" onclick="switchTab('tasks')" id="btn-tasks">
+                <i data-lucide="clipboard-list" class="w-4 h-4"></i> معاملاتي
             </div>
-            <div class="bg-white p-3 rounded-xl border border-yellow-100 shadow-sm text-center">
-                <div class="text-yellow-600 mb-1 flex justify-center"><i data-lucide="clock" class="w-5 h-5"></i></div>
-                <h3 class="text-xl font-black text-slate-800" id="s-pending">0</h3>
-                <p class="text-[10px] text-slate-500 font-bold">قيد العمل</p>
+            <div class="tab-btn" onclick="switchTab('reports')" id="btn-reports">
+                <i data-lucide="file-text" class="w-4 h-4"></i> تقاريري
             </div>
-            <div class="bg-white p-3 rounded-xl border border-green-100 shadow-sm text-center">
-                <div class="text-green-600 mb-1 flex justify-center"><i data-lucide="check-circle-2" class="w-5 h-5"></i></div>
-                <h3 class="text-xl font-black text-slate-800" id="s-completed">0</h3>
-                <p class="text-[10px] text-slate-500 font-bold">تم الإنجاز</p>
+            <div class="tab-btn" onclick="switchTab('notifs')" id="btn-notifs">
+                <i data-lucide="bell" class="w-4 h-4"></i> إشعاراتي
             </div>
         </div>
+    </div>
 
-        <div class="grid grid-cols-4 gap-2 mb-6">
-            <button class="quick-btn" onclick="filterTasks('all')">
-                <i data-lucide="layers"></i> الكل
-            </button>
-            <button class="quick-btn" onclick="filterTasks('pending')">
-                <i data-lucide="loader"></i> جاري
-            </button>
-            <button class="quick-btn" onclick="filterTasks('completed')">
-                <i data-lucide="check-circle"></i> منتهي
-            </button>
-            <button class="quick-btn" onclick="filterTasks('late')">
-                <i data-lucide="alert-circle"></i> متأخر
-            </button>
-        </div>
-
-        <div class="mb-4">
-            <div class="relative">
-                <input type="text" id="task-search" placeholder="بحث في مهامي..." class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:border-teal-600 outline-none shadow-sm text-sm">
-                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3.5"></i>
+    <div id="tab-tasks" class="tab-content active">
+        <div class="tab-filters">
+            <div class="filter-row">
+                <select id="f-status" class="f-select" onchange="filterTasks()">
+                    <option value="">الكل</option>
+                    <option value="جديد">جديد</option>
+                    <option value="بانتظار">بانتظار الاعتماد</option>
+                    <option value="تم">تم الاعتماد</option>
+                    <option value="متابعة">بحاجة للمتابعة</option>
+                    <option value="متأخر">متأخر</option>
+                </select>
+                <input type="text" id="f-search-tasks" class="f-input" placeholder="بحث..." oninput="filterTasks()">
             </div>
         </div>
+        <div id="tasks-list">
+            <div class="loader-box"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto"></i></div>
+        </div>
+    </div>
 
-        <div>
-            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                قائمة المهام <span class="text-xs bg-[#0f766e] text-white px-2 py-0.5 rounded-full" id="task-count">0</span>
-            </h3>
-            
-            <div id="tasks-container" class="space-y-4">
-                <div class="text-center py-12">
-                    <span class="inline-block animate-spin text-[#0f766e]"><i data-lucide="loader-2" class="w-8 h-8"></i></span>
-                    <p class="text-sm text-slate-400 mt-2">جاري جلب مهامك...</p>
-                </div>
+    <div id="tab-reports" class="tab-content">
+        <div class="tab-filters">
+            <div class="filter-row">
+                <select id="f-type" class="f-select" onchange="filterReports()">
+                    <option value="">كل الأنواع</option>
+                    <option value="المرور الفني">المرور الفني</option>
+                    <option value="المرور المالي">المرور المالي</option>
+                    <option value="فحص الشكوى">فحص الشكوى</option>
+                </select>
+                <input type="text" id="f-search-reports" class="f-input" placeholder="بحث..." oninput="filterReports()">
             </div>
         </div>
+        <div id="reports-list"></div>
+    </div>
 
-    </main>
+    <div id="tab-notifs" class="tab-content">
+        <div id="notifs-list">
+            <p class="text-center text-gray-400 py-4">لا توجد إشعارات جديدة</p>
+        </div>
+    </div>
 
-    <nav class="bottom-nav lg:hidden fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around py-2 z-50">
-        <a href="index.html" class="flex flex-col items-center text-[10px] text-slate-400 gap-1 p-2">
-            <i data-lucide="home" class="w-5 h-5"></i> الرئيسية
-        </a>
-        <a href="distribution.html" class="flex flex-col items-center text-[10px] text-slate-400 gap-1 p-2">
-            <i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات
-        </a>
-        <a href="employee.html" class="flex flex-col items-center text-[10px] text-[#0f766e] font-bold gap-1 p-2">
-            <i data-lucide="briefcase" class="w-5 h-5"></i> مهامي
-        </a>
-        <a href="forms.html" class="flex flex-col items-center text-[10px] text-slate-400 gap-1 p-2">
-            <i data-lucide="file-text" class="w-5 h-5"></i> النماذج
-        </a>
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="font-bold text-lg text-gray-800">تفاصيل المعاملة</h3>
+                <button onclick="closeModal()" class="p-2 rounded-full hover:bg-gray-100"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="modal-body" id="modal-content"></div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-btn"><i data-lucide="home"></i> الرئيسية</a>
+        <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
+        <a href="coordinator.html" class="nav-btn"><i data-lucide="users"></i> المنسق</a>
+        <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
+        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
     </nav>
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let myTasks = [];
-        let currentUser = null;
+        let allData = { tasks: [], reports: [] };
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            // 1. التحقق من المستخدم
-            currentUser = auth.checkAuth();
-            if (!currentUser) return;
-
-            // 2. تحديث الواجهة
-            const firstName = currentUser.name.split(' ')[0];
-            document.getElementById('mobile-user').textContent = firstName;
-            document.getElementById('sidebar-user').textContent = currentUser.name;
-            setGreeting();
-
-            // 3. جلب المهام
-            await loadMyTasks();
-
-            // 4. تفعيل البحث
-            document.getElementById('task-search').addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                const filtered = myTasks.filter(t => (t.subject + t.source + t.id).toLowerCase().includes(term));
-                renderTasks(filtered);
-            });
-        });
-
-        function setGreeting() {
-            const hour = new Date().getHours();
-            const greeting = hour < 12 ? 'صباح الخير،' : 'مساء الخير،';
-            document.getElementById('greeting').textContent = greeting;
+        // --- PWA Service Worker ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('SW Registered'))
+                .catch(err => console.error('SW Error', err));
         }
 
-        async function loadMyTasks() {
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (typeof auth === 'undefined' || !auth.checkAuth()) {
+                window.location.href = 'index.html'; return;
+            }
+            const user = auth.checkAuth();
+            
+            // Set Info
+            document.getElementById('emp-name').textContent = user.name;
+            document.getElementById('emp-job').textContent = user.jobTitle;
+            document.getElementById('emp-email').textContent = user.email;
+            document.getElementById('menu-user').textContent = user.name;
+            document.getElementById('menu-role').textContent = user.role;
+
+            // Load Data
+            await loadEmployeeData(user.name);
+            
+            // Request Notification Permission
+            if (Notification.permission === 'default') Notification.requestPermission();
+        });
+
+        function toggleMenu() { document.body.classList.toggle('menu-open'); }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+
+        async function loadEmployeeData(name) {
             try {
-                // استخدام API_URL من config.js
-                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
-                
-                // طلب البيانات (نطلب الكل ثم نفلتر محلياً أو نطلب المفلتر لو الـ API بيدعم)
-                // هنا هنطلب الكل ونفلتر عشان نضمن الدقة
-                const response = await fetch(API_URL, {
+                const res = await fetch(CONFIG.API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         action: 'getAllData',
-                        role: 'employee',
-                        name: currentUser.name
+                        role: 'موظف',
+                        name: name,
+                        startDate: null,
+                        endDate: null
                     })
                 });
-                
-                const data = await response.json();
-                
+                const data = await res.json();
+
                 if (data.success) {
-                    // فلترة المهام الخاصة بالمستخدم فقط
-                    // استخدام includes عشان لو الاسم مركب أو فيه مسافات
-                    myTasks = (data.tasks || []).filter(t => t.assignee && t.assignee.includes(currentUser.name));
+                    allData.tasks = data.tasks || [];
+                    allData.reports = data.reports || [];
                     
-                    calculateStats();
-                    renderTasks(myTasks);
-                } else {
-                    document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 font-bold">لا توجد بيانات</div>`;
+                    updateStats(data.stats.totals);
+                    renderTasks(allData.tasks);
+                    renderReports(allData.reports);
+                    renderNotifications(allData.tasks); // Simulating notifications from tasks
                 }
-            } catch (error) {
-                console.error(error);
-                document.getElementById('tasks-container').innerHTML = `<div class="text-center py-10 text-red-500 font-bold">خطأ في الاتصال</div>`;
+            } catch (e) {
+                console.error(e);
             }
         }
 
-        function calculateStats() {
-            const total = myTasks.length;
-            const pending = myTasks.filter(t => t.status.includes('تنفيذ') || t.status.includes('جديد') || t.status.includes('جاري')).length;
-            const completed = myTasks.filter(t => t.status.includes('مكتمل') || t.status.includes('تم')).length;
-
-            animateValue('s-total', total);
-            animateValue('s-pending', pending);
-            animateValue('s-completed', completed);
-        }
-
-        function filterTasks(type) {
-            let filtered = [];
-            if (type === 'all') filtered = myTasks;
-            else if (type === 'pending') filtered = myTasks.filter(t => t.status.includes('تنفيذ') || t.status.includes('جديد') || t.status.includes('جاري'));
-            else if (type === 'completed') filtered = myTasks.filter(t => t.status.includes('مكتمل') || t.status.includes('تم'));
-            else if (type === 'late') filtered = myTasks.filter(t => t.status.includes('متأخر'));
-            
-            renderTasks(filtered);
+        function updateStats(s) {
+            document.getElementById('st-total').innerText = s.total;
+            document.getElementById('st-new').innerText = s.new;
+            document.getElementById('st-pending').innerText = s.pending;
+            document.getElementById('st-approved').innerText = s.completed;
+            document.getElementById('st-followup').innerText = s.followup || 0; // Backend may return it as inProgress
+            document.getElementById('st-late').innerText = s.overdue;
         }
 
         function renderTasks(tasks) {
-            const container = document.getElementById('tasks-container');
-            document.getElementById('task-count').textContent = tasks.length;
-
-            if (tasks.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12 opacity-60">
-                        <div class="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i data-lucide="check-circle" class="w-8 h-8 text-gray-400"></i>
-                        </div>
-                        <p class="text-sm font-bold text-gray-500">لا توجد مهام حالياً</p>
-                    </div>`;
-                lucide.createIcons();
+            const container = document.getElementById('tasks-list');
+            if(tasks.length === 0) {
+                container.innerHTML = '<div class="text-center py-8 text-gray-400">لا توجد معاملات</div>';
                 return;
             }
-
+            
             container.innerHTML = tasks.map(t => {
-                // Badge Logic
-                let stClass = 'st-new';
-                if(t.status.includes('تم') || t.status.includes('مكتمل')) stClass = 'st-approved';
-                else if(t.status.includes('متأخر')) stClass = 'st-late';
-                else if(t.status.includes('جاري')) stClass = 'st-pending';
+                let statusClass = 'bg-gray-500';
+                if(t.status.includes('جديد')) statusClass = 'bg-new';
+                else if(t.status.includes('بانتظار')) statusClass = 'bg-pending';
+                else if(t.status.includes('تم')) statusClass = 'bg-approved';
+                else if(t.status.includes('متابعة')) statusClass = 'bg-followup';
+                else if(t.status.includes('متأخر')) statusClass = 'bg-late';
 
-                const year = t.date ? t.date.split('/')[2] : '';
-                const hasLegal = (t.caseNumber && t.caseNumber != '') ? true : false;
-                const hasAttachment = (t.attachment && t.attachment != '') ? true : false;
-
-                // Determine selected status for dropdown
-                const isCompleted = t.status.includes('تم') || t.status.includes('مكتمل');
-                
                 return `
-                <div class="task-card group">
-                    <div class="flex justify-between items-start mb-3">
-                        <span class="st-badge ${stClass}">${t.status || 'جديد'}</span>
-                        <span class="text-[11px] font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded border border-slate-200 font-mono tracking-wider">
-                            #${t.id} <span class="text-slate-300 mx-1">|</span> ${year}
-                        </span>
+                <div class="task-card">
+                    <div class="card-header ${statusClass}">
+                        <span>#${t.id}</span>
+                        <span>${t.status}</span>
                     </div>
-
-                    <h3 class="font-bold text-slate-800 text-sm mb-2 leading-relaxed">${t.subject}</h3>
-                    <div class="flex items-center gap-2 text-xs text-slate-500 mb-4">
-                        <i data-lucide="building-2" class="w-3.5 h-3.5 text-slate-400"></i>
-                        <span>${t.source || t.entity}</span>
+                    <div class="card-body">
+                        <h3 class="card-subject">${t.subject}</h3>
+                        <div class="card-meta"><i data-lucide="building-2" class="card-icon"></i> ${t.source}</div>
+                        <div class="card-meta"><i data-lucide="calendar" class="card-icon"></i> ${t.date}</div>
+                        ${t.deadline ? `<div class="card-meta text-red-600 font-bold"><i data-lucide="alert-circle" class="card-icon text-red-600"></i> ${t.deadline}</div>` : ''}
                     </div>
-
-                    ${hasLegal ? `
-                    <div class="bg-orange-50 border border-orange-100 rounded-lg p-2.5 mb-4 flex items-center gap-4">
-                        <div class="flex flex-col"><span class="text-[9px] text-orange-400 font-bold">رقم القضية</span><span class="text-xs font-bold text-orange-700">${t.caseNumber}</span></div>
-                        <div class="w-px h-6 bg-orange-200"></div>
-                        <div class="flex flex-col"><span class="text-[9px] text-orange-400 font-bold">السنة</span><span class="text-xs font-bold text-orange-700">${t.caseYear}</span></div>
-                    </div>` : ''}
-
-                    <div class="flex gap-2 pt-3 border-t border-dashed border-slate-200">
-                        ${hasAttachment ? `
-                        <a href="${t.attachment}" target="_blank" class="flex-1 bg-white border border-slate-200 text-slate-600 py-2 rounded-lg text-xs font-bold text-center hover:bg-slate-50 transition flex items-center justify-center gap-1">
-                            <i data-lucide="paperclip" class="w-3.5 h-3.5"></i> المرفق
-                        </a>` : ''}
-                        
-                        <div class="flex-1 flex gap-2">
-                            <select id="status-${t.id}" class="status-select bg-slate-50">
-                                <option value="قيد التنفيذ" ${!isCompleted ? 'selected' : ''}>قيد التنفيذ</option>
-                                <option value="تم الإنجاز" ${isCompleted ? 'selected' : ''}>تم الإنجاز</option>
-                            </select>
-                            <button onclick="updateStatus('${t.id}')" class="btn-update shadow-sm">
-                                <i data-lucide="save" class="w-3 h-3"></i> تحديث
-                            </button>
-                        </div>
+                    <div class="card-footer">
+                        <button onclick="openModal('${t.id}')" class="btn-card"><i data-lucide="eye" class="w-4 h-4"></i> التفاصيل</button>
+                        ${t.attachment ? `<button onclick="window.open('${t.attachment}')" class="btn-card"><i data-lucide="paperclip" class="w-4 h-4"></i> المرفق</button>` : ''}
+                        ${t.report ? `<button onclick="window.open('${t.report}')" class="btn-card text-teal-700"><i data-lucide="file-check" class="w-4 h-4"></i> التقرير</button>` : ''}
                     </div>
                 </div>`;
             }).join('');
+            lucide.createIcons();
+        }
+
+        function filterTasks() {
+            const status = document.getElementById('f-status').value;
+            const search = document.getElementById('f-search-tasks').value.toLowerCase();
             
-            lucide.createIcons();
+            const filtered = allData.tasks.filter(t => {
+                if (status && !t.status.includes(status)) return false;
+                if (search && !(t.subject + t.id + t.source).toLowerCase().includes(search)) return false;
+                return true;
+            });
+            renderTasks(filtered);
         }
 
-        async function updateStatus(id) {
-            const newStatus = document.getElementById(`status-${id}`).value;
-            const btn = document.querySelector(`#status-${id} + button`); // الزرار اللي جنب ال select
-            const originalHTML = btn.innerHTML;
-
-            // UI Feedback
-            btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>`;
-            lucide.createIcons();
-
-            try {
-                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'updateTaskStatus', // تأكد إن الباك إند بيدعم الـ action ده
-                        taskId: id,
-                        newStatus: newStatus,
-                        user: currentUser.name
-                    })
-                });
-                
-                const result = await response.json();
-
-                if (result.success) {
-                    showToast('تم تحديث الحالة بنجاح', 'success');
-                    // تحديث محلي
-                    const task = myTasks.find(t => t.id == id);
-                    if (task) task.status = newStatus;
-                    
-                    btn.innerHTML = `<i data-lucide="check" class="w-3 h-3"></i>`;
-                    btn.classList.add('bg-green-600');
-                    setTimeout(() => {
-                        btn.innerHTML = originalHTML;
-                        btn.disabled = false;
-                        btn.classList.remove('bg-green-600');
-                        calculateStats(); // تحديث العدادات
-                        renderTasks(myTasks); // إعادة الرسم (عشان اللون يتغير)
-                    }, 1500);
-                } else {
-                    throw new Error(result.error);
-                }
-            } catch (error) {
-                showToast('فشل التحديث: ' + error.message, 'error');
-                btn.innerHTML = originalHTML;
-                btn.disabled = false;
+        function renderReports(reports) {
+            const container = document.getElementById('reports-list');
+            if(reports.length === 0) {
+                container.innerHTML = '<div class="text-center py-8 text-gray-400">لا توجد تقارير</div>';
+                return;
             }
-        }
 
-        function showToast(msg, type) {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type === 'success' ? 'toast-success' : 'toast-error'}`;
-            toast.innerHTML = type === 'success' ? 
-                `<i data-lucide="check-circle" class="w-4 h-4"></i> ${msg}` : 
-                `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${msg}`;
-            document.body.appendChild(toast);
+            container.innerHTML = reports.map(r => {
+                let borderClass = 'border-gray-300';
+                if(r.type.includes('فني')) borderClass = 'border-blue-400';
+                else if(r.type.includes('مالي')) borderClass = 'border-green-400';
+                else if(r.type.includes('شكوى')) borderClass = 'border-amber-400';
+
+                return `
+                <div class="report-card ${borderClass}">
+                    <div class="flex justify-between font-bold text-gray-800 mb-2">
+                        <span>${r.type}</span>
+                        <span class="text-xs bg-gray-100 px-2 py-1 rounded">${r.date}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2"><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${r.entity}</p>
+                    <div class="flex gap-2 mt-3">
+                        ${r.docLink ? `<a href="${r.docLink}" target="_blank" class="flex-1 bg-blue-50 text-blue-700 text-center py-1 rounded text-xs font-bold border border-blue-200">Google Doc</a>` : ''}
+                        ${r.pdfLink ? `<a href="${r.pdfLink}" target="_blank" class="flex-1 bg-red-50 text-red-700 text-center py-1 rounded text-xs font-bold border border-red-200">PDF</a>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
             lucide.createIcons();
-            setTimeout(() => toast.remove(), 3000);
         }
 
-        function animateValue(id, end) {
-            const obj = document.getElementById(id);
-            if(!obj) return;
-            let start = 0;
-            if (end === 0) { obj.innerHTML = 0; return; }
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / 1000, 1);
-                obj.innerHTML = Math.floor(progress * end);
-                if (progress < 1) window.requestAnimationFrame(step);
-            };
-            window.requestAnimationFrame(step);
+        function filterReports() {
+            const type = document.getElementById('f-type').value;
+            const search = document.getElementById('f-search-reports').value.toLowerCase();
+            
+            const filtered = allData.reports.filter(r => {
+                if (type && !r.type.includes(type)) return false;
+                if (search && !(r.entity + r.type).toLowerCase().includes(search)) return false;
+                return true;
+            });
+            renderReports(filtered);
         }
 
-        function logout() {
-            auth.logout();
+        function renderNotifications(tasks) {
+            const container = document.getElementById('notifs-list');
+            // Simulating notifications from new tasks
+            const notifs = tasks.filter(t => t.status.includes('جديد') || t.status.includes('متابعة')).slice(0, 10);
+            
+            if(notifs.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-400 py-4">لا توجد إشعارات جديدة</p>';
+                return;
+            }
+
+            document.getElementById('notif-badge').classList.remove('hidden');
+            document.getElementById('notif-badge').innerText = notifs.length;
+
+            container.innerHTML = notifs.map(t => {
+                let typeClass = 'n-new';
+                let title = 'تكليف جديد';
+                if(t.status.includes('متابعة')) { typeClass = 'n-alert'; title = 'تذكير متابعة'; }
+
+                return `
+                <div class="notif-card ${typeClass}">
+                    <div class="font-bold text-gray-800 flex justify-between">
+                        <span>${title}</span>
+                        <span class="text-xs font-normal bg-white px-1 rounded border">${t.id}</span>
+                    </div>
+                    <p class="text-sm text-gray-600">${t.subject}</p>
+                    <button onclick="openModal('${t.id}')" class="text-teal-700 text-xs font-bold text-left mt-1">عرض المعاملة</button>
+                </div>`;
+            }).join('');
         }
+
+        function openModal(id) {
+            const t = allData.tasks.find(x => x.id == id);
+            if(!t) return;
+            
+            const html = `
+                <div class="data-row"><span class="data-lbl">رقم المعاملة</span><span class="data-val">#${t.id}</span></div>
+                <div class="data-row"><span class="data-lbl">الموضوع</span><span class="data-val">${t.subject}</span></div>
+                <div class="data-row"><span class="data-lbl">الجهة الواردة</span><span class="data-val">${t.source}</span></div>
+                <div class="data-row"><span class="data-lbl">محل التنفيذ</span><span class="data-val">${t.entity}</span></div>
+                <div class="data-row"><span class="data-lbl">تاريخ الوارد</span><span class="data-val">${t.date}</span></div>
+                <div class="data-row"><span class="data-lbl">الموعد النهائي</span><span class="data-val text-red-600">${t.deadline || '-'}</span></div>
+                <div class="data-row"><span class="data-lbl">الحالة</span><span class="data-val">${t.status}</span></div>
+                ${t.notes ? `<div class="bg-yellow-50 p-2 rounded text-sm text-yellow-800 border border-yellow-200 mt-2">${t.notes}</div>` : ''}
+                <div class="flex gap-2 mt-4 pt-2 border-t">
+                    ${t.attachment ? `<a href="${t.attachment}" target="_blank" class="flex-1 bg-blue-600 text-white text-center py-2 rounded font-bold">المرفق</a>` : ''}
+                    ${t.report ? `<a href="${t.report}" target="_blank" class="flex-1 bg-teal-600 text-white text-center py-2 rounded font-bold">التقرير</a>` : ''}
+                </div>
+            `;
+            document.getElementById('modal-content').innerHTML = html;
+            document.getElementById('detail-modal').classList.add('open');
+        }
+
+        function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
     </script>
 </body>
 </html>
