@@ -5,283 +5,279 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f766e">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <title>توزيع المهام | IAG</title>
-    
-    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
-    <link rel="shortcut icon" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
         
+        /* --- Colors & Variables --- */
         :root {
             --primary: #0f766e;
-            --c-new: #64748b;        /* رمادي */
-            --c-pending: #84cc16;    /* ليموني */
-            --c-approved: #064e3b;   /* زيتي */
-            --c-followup: #0ea5e9;   /* سماوي */
-            --c-late: #dc2626;       /* أحمر */
-            --c-total: #1e293b;      /* كحلي */
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --blue: #2563eb;
         }
 
-        /* --- Header --- */
-        .main-header {
+        /* --- Header & Nav --- */
+        .app-header {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            color: white; padding: 1rem 1.5rem 2.5rem; /* مساحة أقل */
-            border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
-            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.25);
-            position: relative; z-index: 10;
-            padding-top: max(1rem, env(safe-area-inset-top));
-        }
-
-        /* --- Compact Filter Bar --- */
-        .filter-container {
-            margin: -2rem 1rem 1rem; position: relative; z-index: 20;
-            background: white; border-radius: 12px; padding: 0.8rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e5e7eb;
+            color: white; padding: 1rem; padding-top: max(1rem, env(safe-area-inset-top));
+            position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
         }
         
-        /* Grid Layout: Compact */
-        .filter-grid { display: grid; gap: 8px; }
-        /* Mobile: 3 Rows */
-        .filter-row-1 { display: grid; grid-template-columns: 1fr; }
-        .filter-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .filter-row-3 { display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 8px; align-items: end; } /* Date, Date, Button */
-
-        @media (min-width: 1024px) {
-            .filter-container { max-width: 1200px; margin-left: auto; margin-right: auto; }
-            /* Desktop: Single Row */
-            .filter-grid { display: flex; align-items: end; gap: 10px; }
-            .filter-row-1, .filter-row-2, .filter-row-3 { display: contents; }
-            .f-input { width: 100%; min-width: 150px; }
-        }
-
-        .f-label { font-size: 0.65rem; font-weight: 700; color: #64748b; margin-bottom: 2px; display: block; }
-        .f-input {
-            width: 100%; padding: 0 8px; border: 1px solid #e2e8f0; border-radius: 8px;
-            font-size: 0.8rem; outline: none; background: #f9fafb; transition: 0.2s; height: 36px;
-        }
-        .f-input:focus { border-color: #0f766e; background: white; }
-
-        /* Compact Action Button */
-        .btn-action {
-            background: #0f766e; color: white; border: none; border-radius: 8px; height: 36px; width: 100%;
-            font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .btn-action:active { transform: scale(0.95); }
-        .btn-print { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
-
-        /* --- Stats Layout --- */
-        .stats-wrapper {
-            padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto;
-            display: flex; flex-direction: column; gap: 8px;
-        }
-        .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-
-        .stat-card-big {
-            background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px;
-            text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: center; height: 70px;
-        }
-        .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); ring: 2px solid var(--primary); }
-        .stat-card-big .num { font-size: 1.6rem; font-weight: 800; line-height: 1; }
-        .stat-card-big .lbl { font-size: 0.75rem; font-weight: 700; color: #64748b; }
-
-        .stat-card-small {
-            background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 4px;
-            text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: center; min-height: 60px;
-        }
-        .stat-card-small.active { background: #f0fdfa; border-color: var(--primary); ring: 2px solid var(--primary); }
-        .stat-card-small .num { font-size: 1.1rem; font-weight: 800; line-height: 1; }
-        .stat-card-small .lbl { font-size: 0.55rem; font-weight: 700; color: #64748b; line-height: 1.1; margin-top: 2px; }
-
-        .txt-total { color: var(--c-total); } .txt-late { color: var(--c-late); }
-        .txt-new { color: var(--c-new); } .txt-pending { color: var(--c-pending); }
-        .txt-approved { color: var(--c-approved); } .txt-followup { color: var(--c-followup); }
-
-        /* --- Cards Grid --- */
-        .cards-container {
-            padding: 0 1rem 5rem; display: grid; gap: 10px;
-            max-width: 1200px; margin: 0 auto;
-        }
-        @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
-
-        .task-card {
-            background: white; border-radius: 12px; overflow: hidden; position: relative;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e5e7eb;
-            padding: 12px; transition: transform 0.2s; display: flex; flex-direction: column;
-        }
-        .card-stripe { padding: 6px 12px; color: white; font-weight: 700; font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; margin: -12px -12px 8px; }
-        
-        .bg-new { background-color: var(--c-new); } .bg-pending { background-color: var(--c-pending); }
-        .bg-approved { background-color: var(--c-approved); } .bg-followup { background-color: var(--c-followup); }
-        .bg-late { background-color: var(--c-late); }
-
-        .tc-subject { font-size: 0.9rem; font-weight: 800; color: #1e293b; margin-bottom: 8px; line-height: 1.4; flex: 1; }
-        .tc-row { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #475569; margin-bottom: 4px; }
-        .tc-icon { width: 14px; height: 14px; color: var(--primary); opacity: 0.8; }
-        
-        .tc-footer { margin-top: 8px; display: flex; gap: 8px; }
-        .btn-card {
-            flex: 1; padding: 6px; border-radius: 6px; font-size: 0.75rem; font-weight: 700;
-            display: flex; align-items: center; justify-content: center; gap: 4px;
-            cursor: pointer; border: 1px solid #e5e7eb; background: #f9fafb; color: #4b5563;
-        }
-        .btn-card:hover { border-color: var(--primary); color: var(--primary); }
-
-        /* --- Side Menu (Compact 240px) --- */
-        .side-menu {
-            position: fixed; top: 0; right: -240px; width: 240px; height: 100%;
-            background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1);
-        }
+        /* Side Menu (Hamburger) */
         .side-menu-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99;
             opacity: 0; pointer-events: none; transition: 0.3s;
         }
+        .side-menu {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+        }
         .menu-open .side-menu { right: 0; }
         .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
 
-        /* --- Modal (No Scroll, Grid) --- */
+        /* --- Search & Filters --- */
+        .search-area {
+            background: white; padding: 1rem; border-bottom: 1px solid #e5e7eb;
+            position: sticky; top: 70px; z-index: 40;
+        }
+        .main-search {
+            width: 100%; padding: 12px 45px 12px 15px; border-radius: 12px;
+            background: #f9fafb; border: 1px solid #e5e7eb; outline: none;
+            font-size: 0.95rem; font-weight: 600; transition: 0.2s;
+        }
+        .main-search:focus { background: white; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+        
+        .filters-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+            padding: 10px 1rem; background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+        }
+        .f-input {
+            width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #d1d5db;
+            font-size: 0.8rem; outline: none; background: white;
+        }
+
+        /* --- Stats Bar --- */
+        .stats-scroller {
+            display: flex; gap: 10px; overflow-x: auto; padding: 1rem;
+            scroll-behavior: smooth;
+        }
+        .stats-scroller::-webkit-scrollbar { display: none; }
+        .stat-chip {
+            min-width: 100px; background: white; border: 1px solid #e5e7eb;
+            border-radius: 12px; padding: 10px; text-align: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: 0.2s; cursor: pointer;
+        }
+        .stat-chip.active { background: var(--primary); border-color: var(--primary); }
+        .stat-chip.active * { color: white !important; }
+        .stat-val { font-size: 1.25rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+        .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #6b7280; }
+
+        /* --- Task Card 2.0 (The Elegant Design) --- */
+        .cards-list { padding: 0 1rem 6rem; display: grid; gap: 1rem; }
+        @media (min-width: 768px) { .cards-list { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1280px) { .cards-list { grid-template-columns: repeat(3, 1fr); } }
+
+        .card {
+            background: white; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #e5e7eb;
+            transition: transform 0.2s; display: flex; flex-direction: column;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+
+        /* Colored Header */
+        .card-header {
+            padding: 10px 15px; color: white; display: flex; justify-content: space-between; align-items: center;
+        }
+        .ch-id { font-family: monospace; font-weight: 800; font-size: 0.85rem; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 6px; }
+        .ch-status { font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+
+        /* Status Colors */
+        .st-new .card-header { background: #64748b; } /* رمادي/أزرق */
+        .st-pending .card-header { background: #16a34a; } /* أخضر فاتح/وسط */
+        .st-approved .card-header { background: #064e3b; } /* أخضر زيتي غامق */
+        .st-followup .card-header { background: #2563eb; } /* أزرق */
+        .st-late .card-header { background: #dc2626; } /* أحمر */
+
+        .card-body { padding: 15px; flex: 1; }
+        .card-title { font-size: 1rem; font-weight: 800; color: #1f2937; margin-bottom: 12px; line-height: 1.4; }
+        
+        .info-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 0.8rem; color: #4b5563; }
+        .info-row i { width: 16px; height: 16px; color: var(--primary); opacity: 0.8; }
+        
+        .timer-badge { 
+            display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; 
+            border-radius: 6px; font-size: 0.7rem; font-weight: 700; margin-top: 8px;
+        }
+        .timer-ok { background: #ecfdf5; color: #047857; }
+        .timer-warn { background: #fffbeb; color: #b45309; }
+        .timer-late { background: #fef2f2; color: #b91c1c; }
+
+        .card-footer {
+            padding: 10px 15px; border-top: 1px solid #f3f4f6; background: #f9fafb;
+            display: flex; gap: 10px;
+        }
+        .btn-card {
+            flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            cursor: pointer; transition: 0.2s; border: 1px solid transparent;
+        }
+        .btn-detail { background: white; border-color: #d1d5db; color: #374151; }
+        .btn-detail:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-attach { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+
+        /* --- Modal --- */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200;
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px);
         }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
         .modal-box {
-            background: white; width: 95%; max-width: 600px;
-            /* Auto height to fit content without scroll if possible */
-            max-height: 95vh; overflow-y: auto; 
-            border-radius: 16px; display: flex; flex-direction: column;
+            background: white; width: 95%; max-width: 600px; max-height: 90vh;
+            border-radius: 20px; overflow-y: auto; display: flex; flex-direction: column;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
         }
-        .modal-header { padding: 10px 15px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f9fafb; }
-        .modal-body { padding: 15px; }
-        /* Grid for Modal Data - Compact */
-        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .modal-header {
+            padding: 1.5rem; border-bottom: 1px solid #e5e7eb;
+            display: flex; justify-content: space-between; align-items: start;
+        }
+        .modal-body { padding: 1.5rem; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .data-item { display: flex; flex-direction: column; gap: 2px; }
+        .data-label { font-size: 0.7rem; color: #6b7280; font-weight: 700; }
+        .data-val { font-size: 0.9rem; color: #111827; font-weight: 600; }
         .full-width { grid-column: span 2; }
-        .data-box { background: #f8fafc; padding: 6px 10px; border-radius: 8px; border: 1px solid #f1f5f9; }
-        .data-lbl { font-size: 0.65rem; color: #64748b; font-weight: 700; display: block; margin-bottom: 1px; }
-        .data-val { font-size: 0.85rem; color: #0f172a; font-weight: 600; line-height: 1.2; }
 
-        /* Loading */
-        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
+        /* --- Bottom Nav --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: white;
+            border-top: 1px solid #e5e7eb; display: flex; justify-content: space-around;
+            padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom));
+        }
+        .nav-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #9ca3af; text-decoration: none; font-size: 0.65rem; font-weight: 600;
+            width: 60px;
+        }
+        .nav-btn.active { color: var(--primary); }
+        .nav-btn i { width: 22px; height: 22px; }
+
+        /* --- Printing --- */
+        @media print {
+            .app-header, .search-area, .filters-grid, .stats-scroller, .bottom-nav, .card-footer { display: none !important; }
+            body { background: white; }
+            .cards-list { display: block; }
+            .card { break-inside: avoid; border: 1px solid #000; margin-bottom: 20px; box-shadow: none; }
+        }
     </style>
 </head>
 <body>
 
     <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
     <aside class="side-menu" id="side-menu">
-        <div class="p-5 bg-teal-50 border-b border-teal-100 text-center">
-            <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-2">
-                <i data-lucide="user" class="w-6 h-6 text-teal-700"></i>
+        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+                <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
             </div>
-            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
+            <h3 class="font-bold text-teal-900" id="menu-user">...</h3>
             <p class="text-xs text-teal-600" id="menu-role">...</p>
         </div>
-        <nav class="flex-1 p-3 space-y-1">
-            <a href="index.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="home" class="w-4 h-4"></i> الرئيسية</a>
-            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> Dashboard</a>
-            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسقين</a>
-            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
-            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold"><i data-lucide="home" class="w-5 h-5"></i> الرئيسية</a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> Dashboard</a>
+            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-xl bg-teal-600 text-white font-bold"><i data-lucide="users" class="w-5 h-5"></i> المنسقين</a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold"><i data-lucide="file-text" class="w-5 h-5"></i> النماذج</a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold"><i data-lucide="bell" class="w-5 h-5"></i> الإشعارات</a>
         </nav>
         <div class="p-4 border-t">
-            <button onclick="auth.logout()" class="w-full flex items-center justify-center gap-2 p-2 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
-                <i data-lucide="log-out" class="w-4 h-4"></i> خروج
+            <button onclick="auth.logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-xl">
+                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
             </button>
         </div>
     </aside>
 
-    <header class="main-header">
-        <div class="max-w-[1200px] mx-auto flex justify-between items-center">
-            <button onclick="toggleMenu()" class="p-1 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
+    <header class="app-header">
+        <div class="flex justify-between items-center">
+            <button onclick="toggleMenu()" class="p-2 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
             <div class="text-center">
-                <h1 class="font-bold text-lg">إدارة المراجعة الداخلية</h1>
+                <h1 class="font-bold text-lg">إدارة الحوكمة</h1>
                 <p class="text-xs text-teal-100 opacity-90">مكتب التنسيق</p>
             </div>
-            <button onclick="window.location.href='notifications.html'" class="p-1 text-white relative">
+            <button onclick="window.location.href='notifications.html'" class="p-2 text-white relative">
                 <i data-lucide="bell" class="w-6 h-6"></i>
-                <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-teal-700"></span>
+                <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
             </button>
         </div>
     </header>
 
-    <div class="filter-container">
-        <div class="filter-grid">
-            <div class="filter-row-1">
-                <input type="text" id="f-search" class="f-input" placeholder="بحث شامل..." oninput="applyFilters()">
-            </div>
-            <div class="filter-row-2">
-                <div>
-                    <label class="f-label">الموظف</label>
-                    <select id="f-emp" class="f-input" onchange="applyFilters()">
-                        <option value="">الكل</option>
-                        <optgroup label="المجموعات">
-                            <option value="group_tech">👨‍⚕️ الفني</option>
-                            <option value="group_admin">👨‍💼 الإداري</option>
-                        </optgroup>
-                        <optgroup label="الموظفين" id="emp-options"></optgroup>
-                    </select>
-                </div>
-                <div>
-                    <label class="f-label">الجهة</label>
-                    <select id="f-source" class="f-input" onchange="applyFilters()">
-                        <option value="">الكل</option>
-                    </select>
-                </div>
-            </div>
-            <div class="filter-row-3">
-                <div>
-                    <label class="f-label">من</label>
-                    <input type="date" id="f-start" class="f-input" onchange="applyFilters()">
-                </div>
-                <div>
-                    <label class="f-label">إلى</label>
-                    <input type="date" id="f-end" class="f-input" onchange="applyFilters()">
-                </div>
-                <div>
-                    <button onclick="applyFilters()" class="btn-action">
-                        <i data-lucide="search" class="w-5 h-5"></i>
-                    </button>
-                </div>
-            </div>
+    <div class="search-area">
+        <div class="relative">
+            <input type="text" id="main-search" class="main-search" placeholder="بحث باسم المهمة، الرقم، أو الموضوع...">
+            <i data-lucide="search" class="absolute right-4 top-3.5 w-5 h-5 text-gray-400"></i>
         </div>
     </div>
 
-    <div class="stats-wrapper">
-        <div class="stats-row-big">
-            <div class="stat-card-big active" onclick="filterStatus('')" id="st-total">
-                <span class="num txt-total" id="c-total">0</span><span class="lbl">الإجمالي</span>
-            </div>
-            <div class="stat-card-big" onclick="filterStatus('متأخر')" id="st-late">
-                <span class="num txt-late" id="c-late">0</span><span class="lbl">متأخر</span>
-            </div>
-        </div>
-        <div class="stats-row-small">
-            <div class="stat-card-small" onclick="filterStatus('جديد')" id="st-new">
-                <span class="num txt-new" id="c-new">0</span><span class="lbl">جديد</span>
-            </div>
-            <div class="stat-card-small" onclick="filterStatus('بانتظار الاعتماد')" id="st-pending">
-                <span class="num txt-pending" id="c-pending">0</span><span class="lbl">بانتظار الاعتماد</span>
-            </div>
-            <div class="stat-card-small" onclick="filterStatus('تم الاعتماد والأرشفة')" id="st-approved">
-                <span class="num txt-approved" id="c-approved">0</span><span class="lbl">تم الاعتماد والأرشفة</span>
-            </div>
-            <div class="stat-card-small" onclick="filterStatus('بحاجة الي متابعة')" id="st-followup">
-                <span class="num txt-followup" id="c-followup">0</span><span class="lbl">بحاجة الي متابعة</span>
-            </div>
+    <div class="filters-grid">
+        <select id="f-emp" class="f-input" onchange="applyFilters()">
+            <option value="">كل الموظفين</option>
+            <optgroup label="المجموعات">
+                <option value="group_tech">👨‍⚕️ الفريق الفني</option>
+                <option value="group_admin">👨‍💼 الفريق الإداري</option>
+            </optgroup>
+            <optgroup label="الأسماء" id="emp-list"></optgroup>
+        </select>
+        
+        <select id="f-source" class="f-input" onchange="applyFilters()">
+            <option value="">كل الجهات</option>
+        </select>
+
+        <input type="date" id="f-start" class="f-input" onchange="applyFilters()">
+        <input type="date" id="f-end" class="f-input" onchange="applyFilters()">
+        
+        <div class="col-span-2 flex gap-2 mt-2">
+            <button onclick="applyFilters()" class="flex-1 bg-teal-700 text-white p-2 rounded-lg font-bold text-xs flex items-center justify-center gap-2">
+                <i data-lucide="filter" class="w-4 h-4"></i> عرض النتائج
+            </button>
+            <button onclick="window.print()" class="w-1/3 bg-gray-200 text-gray-700 p-2 rounded-lg font-bold text-xs flex items-center justify-center gap-2">
+                <i data-lucide="printer" class="w-4 h-4"></i> طباعة
+            </button>
         </div>
     </div>
 
-    <div class="cards-container" id="tasks-list">
-        <div class="loader-box">
-            <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i>
+    <div class="stats-scroller">
+        <div class="stat-chip active" onclick="filterStatus('')" id="st-total">
+            <span class="stat-val text-gray-800" id="c-total">0</span><span class="stat-lbl">الإجمالي</span>
+        </div>
+        <div class="stat-chip" onclick="filterStatus('جديد')" id="st-new">
+            <span class="stat-val text-blue-600" id="c-new">0</span><span class="stat-lbl">جديد</span>
+        </div>
+        <div class="stat-chip" onclick="filterStatus('بانتظار')" id="st-pending">
+            <span class="stat-val text-green-600" id="c-pending">0</span><span class="stat-lbl">للاعتماد</span>
+        </div>
+        <div class="stat-chip" onclick="filterStatus('تم')" id="st-approved">
+            <span class="stat-val text-emerald-800" id="c-approved">0</span><span class="stat-lbl">معتمد</span>
+        </div>
+        <div class="stat-chip" onclick="filterStatus('متابعة')" id="st-followup">
+            <span class="stat-val text-blue-800" id="c-followup">0</span><span class="stat-lbl">للمتابعة</span>
+        </div>
+        <div class="stat-chip" onclick="filterStatus('متأخر')" id="st-late">
+            <span class="stat-val text-red-600" id="c-late">0</span><span class="stat-lbl">متأخر</span>
+        </div>
+    </div>
+
+    <div class="cards-list" id="tasks-container">
+        <div class="col-span-full py-12 text-center text-gray-400">
+            <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2"></i>
             <p>جاري تحميل البيانات...</p>
         </div>
     </div>
@@ -290,10 +286,10 @@
         <div class="modal-box">
             <div class="modal-header">
                 <div>
-                    <h3 class="font-bold text-base text-gray-900">تفاصيل المعاملة</h3>
-                    <p class="text-xs text-gray-500 font-mono" id="m-id">#...</p>
+                    <h3 class="font-bold text-lg text-gray-900">تفاصيل المعاملة</h3>
+                    <p class="text-xs text-gray-500" id="m-id">#...</p>
                 </div>
-                <button onclick="closeModal()" class="p-1 bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeModal()" class="p-2 bg-gray-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <div class="modal-body">
                 <div class="data-grid" id="m-content">
@@ -302,22 +298,12 @@
         </div>
     </div>
 
-    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around py-2 z-50 lg:hidden">
-        <a href="index.html" class="flex flex-col items-center gap-1 text-gray-400 text-[10px] w-12">
-            <i data-lucide="home" class="w-5 h-5"></i> الرئيسية
-        </a>
-        <a href="distribution.html" class="flex flex-col items-center gap-1 text-gray-400 text-[10px] w-12">
-            <i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات
-        </a>
-        <a href="coordinator.html" class="flex flex-col items-center gap-1 text-teal-700 font-bold text-[10px] w-12">
-            <i data-lucide="users" class="w-5 h-5"></i> المنسق
-        </a>
-        <a href="forms.html" class="flex flex-col items-center gap-1 text-gray-400 text-[10px] w-12">
-            <i data-lucide="file-text" class="w-5 h-5"></i>
-        </a>
-        <a href="notifications.html" class="flex flex-col items-center gap-1 text-gray-400 text-[10px] w-12">
-            <i data-lucide="bell" class="w-5 h-5"></i>
-        </a>
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-btn"><i data-lucide="home"></i>الرئيسية</a>
+        <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i>المؤشرات</a>
+        <a href="coordinator.html" class="nav-btn active"><i data-lucide="users"></i>المنسقين</a>
+        <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i>النماذج</a>
+        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i>الإشعارات</a>
     </nav>
 
     <script src="assets/js/config.js"></script>
@@ -329,38 +315,45 @@
         let currentStatusFilter = '';
 
         document.addEventListener('DOMContentLoaded', async () => {
-            if (typeof auth === 'undefined') return;
             const user = auth.checkAuth();
             if (!user) return;
 
             document.getElementById('menu-user').textContent = user.name;
             document.getElementById('menu-role').textContent = user.role;
 
-            // --- DATE FIX: Current Month Default ---
-            // This now correctly sets YYYY-MM-DD for any browser
-            const now = new Date();
-            const toInputDate = (d) => {
-                const y = d.getFullYear();
-                const m = String(d.getMonth() + 1).padStart(2, '0');
-                const day = String(d.getDate()).padStart(2, '0');
-                return `${y}-${m}-${day}`;
-            };
-
-            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            // ضبط التواريخ: من أول السنة الحالية لآخرها
+            const date = new Date();
+            const firstDay = new Date(date.getFullYear(), 0, 1); // 1 Jan
+            const lastDay = new Date(date.getFullYear(), 11, 31); // 31 Dec
             
-            document.getElementById('f-start').value = toInputDate(firstDay);
-            document.getElementById('f-end').value = toInputDate(lastDay);
+            document.getElementById('f-start').valueAsDate = firstDay;
+            document.getElementById('f-end').valueAsDate = lastDay;
 
             await loadData(user.name);
-            document.getElementById('f-search').addEventListener('input', applyFilters);
+            
+            // Live Search
+            document.getElementById('main-search').addEventListener('input', applyFilters);
         });
 
-        function toggleMenu() { document.body.classList.toggle('menu-open'); }
+        function toggleMenu() {
+            const menu = document.getElementById('side-menu');
+            const overlay = document.getElementById('menu-overlay');
+            if (document.body.classList.contains('menu-open')) {
+                document.body.classList.remove('menu-open');
+                menu.style.right = '-280px';
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
+            } else {
+                document.body.classList.add('menu-open');
+                menu.style.right = '0';
+                overlay.style.opacity = '1';
+                overlay.style.pointerEvents = 'auto';
+            }
+        }
 
         async function loadData(username) {
             try {
-                const API_URL = CONFIG.API_URL;
+                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
                 const res = await fetch(API_URL, { 
                     method: 'POST', 
                     body: JSON.stringify({ action: 'getAllData', role: 'مدير', name: username }) 
@@ -372,17 +365,18 @@
                     if(data.stats && data.stats.employees) allEmployees = data.stats.employees;
                     
                     populateDropdowns();
-                    applyFilters(); // Initial render with current month filter
+                    updateStats();
+                    applyFilters();
                 } else {
-                    document.getElementById('tasks-list').innerHTML = `<div class="loader-box">لا توجد بيانات</div>`;
+                    document.getElementById('tasks-container').innerHTML = `<div class="col-span-full py-12 text-center text-gray-400">لا توجد بيانات</div>`;
                 }
             } catch (e) {
-                document.getElementById('tasks-list').innerHTML = `<div class="loader-box text-red-500">خطأ في الاتصال</div>`;
+                document.getElementById('tasks-container').innerHTML = `<div class="col-span-full py-12 text-center text-red-500">خطأ في الاتصال</div>`;
             }
         }
 
         function populateDropdowns() {
-            const empSelect = document.getElementById('emp-options');
+            const empSelect = document.getElementById('emp-list');
             empSelect.innerHTML = '';
             allEmployees.sort((a,b) => a.name.localeCompare(b.name)).forEach(e => {
                 const opt = document.createElement('option');
@@ -401,14 +395,12 @@
 
         function filterStatus(status) {
             currentStatusFilter = status;
-            document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.stat-chip').forEach(el => el.classList.remove('active'));
             
             const map = {'': 'st-total', 'جديد': 'st-new', 'بانتظار': 'st-pending', 'تم': 'st-approved', 'متابعة': 'st-followup', 'متأخر': 'st-late'};
             let activeId = 'st-total';
-            if(status) {
-                const key = Object.keys(map).find(k => status.includes(k));
-                if(key) activeId = map[key];
-            }
+            if(status) activeId = Object.keys(map).find(k => status.includes(k)) ? map[Object.keys(map).find(k => status.includes(k))] : 'st-total';
+            
             document.getElementById(activeId).classList.add('active');
             applyFilters();
         }
@@ -416,119 +408,79 @@
         function applyFilters() {
             const emp = document.getElementById('f-emp').value;
             const src = document.getElementById('f-source').value;
-            const search = document.getElementById('f-search').value.toLowerCase();
+            const search = document.getElementById('main-search').value.toLowerCase();
             const start = document.getElementById('f-start').value;
             const end = document.getElementById('f-end').value;
 
             const filtered = allTasks.filter(t => {
+                // Status
                 if(currentStatusFilter && !(t.status||'').includes(currentStatusFilter)) return false;
+                
+                // Search
                 if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
+                
+                // Source
                 if(src && t.source !== src) return false;
 
+                // Employee Group Logic
                 if(emp) {
-                    if(emp.startsWith('group_')) {
+                    if(emp === 'group_tech') {
                         const eObj = allEmployees.find(x => x.name === t.assignee);
-                        const isTech = eObj && (eObj.jobTitle||'').match(/فني|طبي|صيدلي/);
-                        if(emp === 'group_tech' && !isTech) return false;
-                        if(emp === 'group_admin' && isTech) return false;
-                    } else if(t.assignee !== emp) return false;
-                }
-
-                // DATE FIX: Compare ISO strings
-                if(start && end && t.date) {
-                    const isoDate = parseDateToISO(t.date); // Convert DD/MM/YYYY -> YYYY-MM-DD
-                    if(isoDate) {
-                        if(isoDate < start || isoDate > end) return false;
+                        if(!eObj || !(eObj.jobTitle||'').match(/فني|طبي|صيدلي/)) return false;
+                    } else if(emp === 'group_admin') {
+                        const eObj = allEmployees.find(x => x.name === t.assignee);
+                        if(!eObj || (eObj.jobTitle||'').match(/فني|طبي|صيدلي/)) return false;
+                    } else {
+                        if(t.assignee !== emp) return false;
                     }
                 }
+
+                // Date
+                if(start && end && t.date) {
+                    const d = parseDateSafe(t.date); // Using helper
+                    if(d < start || d > end) return false;
+                }
+
                 return true;
             });
 
-            updateStatsContext();
+            updateVisibleStats(filtered); // Update numbers based on filters
             renderTasks(filtered);
         }
 
-        function updateStatsContext() {
-            // Count based on filters EXCEPT Status (Context)
-            const emp = document.getElementById('f-emp').value;
-            const src = document.getElementById('f-source').value;
-            const search = document.getElementById('f-search').value.toLowerCase();
-            const start = document.getElementById('f-start').value;
-            const end = document.getElementById('f-end').value;
-
-            const contextData = allTasks.filter(t => {
-                if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
-                if(src && t.source !== src) return false;
-                
-                if(start && end && t.date) {
-                    const isoDate = parseDateToISO(t.date);
-                    if(isoDate && (isoDate < start || isoDate > end)) return false;
-                }
-
-                if(emp) {
-                    if(emp.startsWith('group_')) {
-                        const eObj = allEmployees.find(x => x.name === t.assignee);
-                        const isTech = eObj && (eObj.jobTitle||'').match(/فني|طبي|صيدلي/);
-                        if(emp === 'group_tech' && !isTech) return false;
-                        if(emp === 'group_admin' && isTech) return false;
-                    } else if(t.assignee !== emp) return false;
-                }
-                return true;
-            });
-
-            let c = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
-            contextData.forEach(t => {
-                c.total++;
-                const s = (t.status||'');
-                if(s.includes('جديد')) c.new++;
-                else if(s.includes('بانتظار')) c.pending++;
-                else if(s.includes('تم')) c.approved++;
-                else if(s.includes('متابعة')) c.followup++;
-                else if(s.includes('متأخر')) c.late++;
-            });
-
-            document.getElementById('c-total').textContent = c.total;
-            document.getElementById('c-new').textContent = c.new;
-            document.getElementById('c-pending').textContent = c.pending;
-            document.getElementById('c-approved').textContent = c.approved;
-            document.getElementById('c-followup').textContent = c.followup;
-            document.getElementById('c-late').textContent = c.late;
-        }
-
         function renderTasks(tasks) {
-            const container = document.getElementById('tasks-list');
+            const container = document.getElementById('tasks-container');
             if(tasks.length === 0) {
                 container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">لا توجد نتائج مطابقة</div>`;
                 return;
             }
 
             container.innerHTML = tasks.map(t => {
-                let bgClass = 'bg-new';
-                let stLabel = t.status;
-                
-                if(t.status.includes('بانتظار')) bgClass = 'bg-pending';
-                else if(t.status.includes('تم')) bgClass = 'bg-approved';
-                else if(t.status.includes('متابعة')) bgClass = 'bg-followup';
-                else if(t.status.includes('متأخر')) bgClass = 'bg-late';
+                // Determine Styles
+                let stClass = 'st-new', stIcon = 'circle', stLabel = t.status;
+                if(t.status.includes('بانتظار')) { stClass = 'st-pending'; stIcon = 'clock'; }
+                else if(t.status.includes('تم')) { stClass = 'st-approved'; stIcon = 'check-circle'; }
+                else if(t.status.includes('متابعة')) { stClass = 'st-followup'; stIcon = 'eye'; }
+                else if(t.status.includes('متأخر')) { stClass = 'st-late'; stIcon = 'alert-circle'; }
+
+                const formattedDate = formatArabicDate(t.date);
 
                 return `
-                <div class="task-card">
-                    <div class="card-stripe ${bgClass}">
+                <div class="card ${stClass}">
+                    <div class="card-header">
                         <span class="ch-id">#${t.id}</span>
-                        <span>${stLabel}</span>
+                        <span class="ch-status"><i data-lucide="${stIcon}" class="w-3 h-3"></i> ${stLabel}</span>
                     </div>
                     <div class="card-body">
-                        <h3 class="tc-subject">${t.subject}</h3>
-                        <div class="tc-row">
-                            <span class="flex items-center"><i data-lucide="building-2" class="tc-icon"></i>&nbsp;${t.source || 'غير محدد'}</span>
-                        </div>
-                        <div class="tc-row">
-                            <span class="flex items-center"><i data-lucide="calendar" class="tc-icon"></i>&nbsp;${formatArabicDate(t.date)}</span>
-                            <span class="tc-val flex items-center text-teal-700">${t.assignee || 'غير موزع'}<i data-lucide="user" class="tc-icon ml-1"></i></span>
-                        </div>
+                        <h3 class="card-title">${t.subject}</h3>
+                        <div class="info-row"><i data-lucide="building-2"></i> <span>${t.source || 'غير محدد'}</span></div>
+                        <div class="info-row"><i data-lucide="user"></i> <span>${t.assignee || 'غير موزع'}</span></div>
+                        <div class="info-row"><i data-lucide="calendar"></i> <span>${formattedDate}</span></div>
+                        
+                        ${t.delay ? `<div class="timer-badge timer-late"><i data-lucide="alert-triangle" class="w-3 h-3"></i> متأخر ${t.delay} يوم</div>` : ''}
                     </div>
-                    <div class="tc-footer">
-                        <button onclick="openModal('${t.id}')" class="btn-card">
+                    <div class="card-footer">
+                        <button onclick="openModal('${t.id}')" class="btn-card btn-detail">
                             <i data-lucide="eye" class="w-4 h-4"></i> التفاصيل
                         </button>
                         ${t.attachment ? `<button onclick="window.open('${t.attachment}')" class="btn-card btn-attach"><i data-lucide="paperclip" class="w-4 h-4"></i> المرفق</button>` : ''}
@@ -541,53 +493,67 @@
         function openModal(id) {
             const t = allTasks.find(x => x.id == id);
             if(!t) return;
+
             document.getElementById('m-id').textContent = '#' + t.id;
-            
-            const fields = [
-                { l: 'الموضوع', v: t.subject, full: true },
-                { l: 'الجهة الواردة', v: t.source },
-                { l: 'محل التنفيذ', v: t.entity },
-                { l: 'تاريخ الوارد', v: formatArabicDate(t.date) },
-                { l: 'تاريخ التكليف', v: formatArabicDate(t.assignDate) },
-                { l: 'الموعد النهائي', v: formatArabicDate(t.deadline) },
-                { l: 'الموظف', v: t.assignee },
-                { l: 'الحالة', v: t.status },
-                { l: 'نوع المعاملة', v: t.docType },
-                { l: 'الأهمية', v: t.importance }
-            ];
-
-            let html = '';
-            fields.forEach(f => {
-                const cls = f.full ? 'data-box full-width' : 'data-box';
-                if(f.v && f.v !== '-') html += `<div class="${cls}"><span class="data-lbl">${f.l}</span><span class="data-val">${f.v}</span></div>`;
-            });
-            
-            if(t.notes) html += `<div class="data-box full-width bg-yellow-50 border-yellow-200"><span class="data-lbl text-yellow-700">ملاحظات</span><span class="data-val text-gray-800">${t.notes}</span></div>`;
-
+            const html = `
+                <div class="full-width"><span class="data-label">الموضوع</span><p class="data-val">${t.subject}</p></div>
+                <div class="data-item"><span class="data-label">الجهة الواردة</span><p class="data-val">${t.source}</p></div>
+                <div class="data-item"><span class="data-label">محل التنفيذ</span><p class="data-val">${t.entity}</p></div>
+                <div class="data-item"><span class="data-label">تاريخ التكليف</span><p class="data-val">${formatArabicDate(t.assignDate || t.date)}</p></div>
+                <div class="data-item"><span class="data-label">تاريخ الإنجاز</span><p class="data-val">${t.completionDate ? formatArabicDate(t.completionDate) : '-'}</p></div>
+                <div class="data-item"><span class="data-label">الموظف</span><p class="data-val text-teal-700">${t.assignee}</p></div>
+                <div class="data-item"><span class="data-label">الحالة</span><p class="data-val">${t.status}</p></div>
+                <div class="full-width"><span class="data-label">نوع المعاملة</span><p class="data-val">${t.docType || '-'}</p></div>
+                ${t.notes ? `<div class="full-width bg-yellow-50 p-2 rounded"><span class="data-label">ملاحظات</span><p class="data-val">${t.notes}</p></div>` : ''}
+            `;
             document.getElementById('m-content').innerHTML = html;
             document.getElementById('detail-modal').classList.add('open');
         }
 
         function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
-        // --- Helper: Date Parser (Fix for 2026 issue) ---
-        function parseDateToISO(dateStr) {
-            if(!dateStr) return null;
-            // Handle DD/MM/YYYY
-            const parts = dateStr.split('/');
-            if(parts.length === 3) {
-                const day = parts[0].padStart(2,'0');
-                const month = parts[1].padStart(2,'0');
-                const year = parts[2];
-                return `${year}-${month}-${day}`;
-            }
-            return null;
+        // --- Helpers ---
+        
+        function updateStats() {
+            // Recalculate based on current data
+            let c = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
+            allTasks.forEach(t => {
+                c.total++;
+                const s = (t.status||'');
+                if(s.includes('جديد')) c.new++;
+                else if(s.includes('بانتظار')) c.pending++;
+                else if(s.includes('تم')) c.approved++;
+                else if(s.includes('متابعة')) c.followup++;
+                else if(s.includes('متأخر')) c.late++;
+            });
+            
+            document.getElementById('c-total').textContent = c.total;
+            document.getElementById('c-new').textContent = c.new;
+            document.getElementById('c-pending').textContent = c.pending;
+            document.getElementById('c-approved').textContent = c.approved;
+            document.getElementById('c-followup').textContent = c.followup;
+            document.getElementById('c-late').textContent = c.late;
         }
 
+        function updateVisibleStats(filtered) {
+            // Optional: Update numbers based on filter, currently using global stats as standard
+        }
+
+        // تحويل التاريخ من DD/MM/YYYY إلى YYYY-MM-DD للمقارنة
+        function parseDateSafe(dateStr) {
+            if(!dateStr) return '';
+            const parts = dateStr.split('/');
+            if(parts.length === 3) return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+            return dateStr; // Already ISO?
+        }
+
+        // تنسيق التاريخ للعرض (05 فبراير 2026)
         function formatArabicDate(dateStr) {
             if(!dateStr) return '-';
+            // Try parse DD/MM/YYYY
             const parts = dateStr.split('/');
             if(parts.length !== 3) return dateStr;
+            
             const date = new Date(parts[2], parts[1]-1, parts[0]);
             return date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
         }
