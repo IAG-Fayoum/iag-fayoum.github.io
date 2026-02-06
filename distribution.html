@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         
         /* --- Colors Variables --- */
         :root {
@@ -39,12 +39,14 @@
             padding-top: max(1rem, env(safe-area-inset-top));
         }
         
+        /* ترتيب الهيدر: القائمة يمين - الرجوع يسار */
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; }
+        
+        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .header-btn:hover { background: rgba(255,255,255,0.2); }
         .back-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); }
 
-        /* مسار التنقل (Breadcrumbs) - تم التعديل */
+        /* مسار التنقل */
         .breadcrumbs { 
             display: flex; align-items: center; justify-content: center; gap: 6px; 
             font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9;
@@ -164,11 +166,22 @@
         }
         .btn-details:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
 
-        /* --- Modal & Menu --- */
-        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        /* --- Side Menu (RTL Corrected) --- */
+        /* السايد بار يخرج من اليمين */
+        .side-menu { 
+            position: fixed; top: 0; right: -260px; /* مخفي يمين الشاشة */
+            width: 260px; height: 100%; background: white; z-index: 100; 
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; flex-direction: column; 
+            box-shadow: -5px 0 25px rgba(0,0,0,0.1); 
+        }
         .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
         
+        /* عند الفتح، الـ right يصبح 0 */
+        .menu-open .side-menu { right: 0; } 
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+        
+        /* --- Modal --- */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
         .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
@@ -177,6 +190,7 @@
 
         .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
 
+        /* --- Bottom Nav --- */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); } .nav-btn i { width: 22px; height: 22px; }
@@ -209,25 +223,28 @@
     <header class="main-header">
         <div class="max-w-[1200px] mx-auto">
             <div class="header-top">
-                <button onclick="goBack()" class="back-btn text-white" title="رجوع">
-                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                </button>
                 <div class="flex gap-3">
-                    <button onclick="window.location.href='notifications.html'" class="text-white relative">
+                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                </div>
+
+                <div class="text-center">
+                    <div class="breadcrumbs mb-1">
+                        <a href="coordinator.html">الرئيسية</a> <i data-lucide="chevron-left" class="w-3 h-3"></i>
+                        <span class="font-bold">مؤشرات الأداء</span>
+                    </div>
+                    <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
+                    <p class="dept-subtitle">Internal Audit & Governance Department</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="window.location.href='notifications.html'" class="header-btn relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
                         <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
                     </button>
-                    <button onclick="toggleMenu()" class="text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                    <button onclick="goBack()" class="header-btn back-btn" title="رجوع">
+                        <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                    </button>
                 </div>
-            </div>
-            
-            <div class="text-center">
-                <div class="breadcrumbs mb-1">
-                    <a href="coordinator.html">الرئيسية</a> <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
-                    <strong>مؤشرات الأداء</strong>
-                </div>
-                <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
-                <p class="dept-subtitle">Internal Audit & Governance Department</p>
             </div>
         </div>
     </header>
@@ -273,7 +290,7 @@
             <div>
                 <label class="f-label">المجموعة</label>
                 <select id="f-group" class="f-input" onchange="filterLeaderboard()">
-                    <option value="">عرض الكل</option>
+                    <option value="">كل الموظفين</option>
                     <option value="admin">مراجع مالي وإداري</option>
                     <option value="tech">مراجع فني</option>
                 </select>
@@ -337,7 +354,6 @@
             window.location.href = lastPage;
         }
 
-        // --- وظيفة الخروج الصحيحة ---
         function logout() {
             localStorage.removeItem('iag_user');
             localStorage.removeItem('iag_last_page');
@@ -369,8 +385,9 @@
 
                 if (data.success) {
                     allEmployees = data.employees || [];
-                    renderGlobalStats(data.stats); 
-                    filterLeaderboard(); // الفلترة الصارمة
+                    // لا نرسم الـ Global Stats فوراً هنا
+                    // بل نستدعي دالة الفلترة لتقوم هي بالحساب والرسم بناءً على الفلاتر
+                    filterLeaderboard(); 
                 } else {
                     container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">${data.error || 'لا توجد بيانات'}</div>`;
                 }
@@ -383,38 +400,55 @@
         function filterLeaderboard() {
             const group = document.getElementById('f-group').value;
             
-            // --- الفلترة الصارمة (Strict Filtering) ---
+            // 1. فلترة الموظفين (صارمة)
             const filteredEmployees = allEmployees.filter(e => {
-                // ملاحظة: الباك إند يرسل أحياناً 'dept' بدل 'jobTitle' في داش بورد
-                // سنتأكد من فحص كلا الحقلين احتياطياً، مع تنظيف المسافات
-                const title = (e.dept || e.jobTitle || '').trim(); 
+                const title = (e.dept || e.jobTitle || '').trim(); // المسمى الوظيفي
                 
-                // 1. قاعدة صارمة: فقط مراجع فني أو مراجع مالي وإداري
+                // استبعاد أي مسمى غير الاثنين المطلوبين
                 if (title !== 'مراجع فني' && title !== 'مراجع مالي وإداري') {
-                    return false; // استبعاد أي مسمى آخر فوراً
+                    return false;
                 }
 
-                // 2. فلتر القائمة المنسدلة
-                if (group === 'tech') {
-                    return title === 'مراجع فني';
-                } else if (group === 'admin') {
-                    return title === 'مراجع مالي وإداري';
-                }
+                // تطبيق فلتر القائمة
+                if (group === 'tech') return title === 'مراجع فني';
+                if (group === 'admin') return title === 'مراجع مالي وإداري';
                 
-                // إذا كان "الكل"، سيظهر الاثنان فقط (لأننا استبعدنا الباقي في الخطوة 1)
-                return true;
+                return true; // الكل (بعد الاستبعاد)
             });
 
+            // 2. إعادة حساب الأرقام العلوية (Stats) بناءً على الموظفين الظاهرين فقط
+            recalculateStats(filteredEmployees);
+
+            // 3. رسم البطاقات
             renderLeaderboard(filteredEmployees);
         }
 
-        function renderGlobalStats(stats) {
+        function recalculateStats(employees) {
+            let stats = { total: 0, completed: 0, pending: 0, overdue: 0, new: 0, inProgress: 0 };
+
+            employees.forEach(emp => {
+                stats.total += emp.total || 0;
+                stats.completed += emp.completed || 0;
+                stats.pending += emp.pending || 0;
+                stats.overdue += emp.overdue || 0;
+                
+                // محاولة حساب "جديد" و "متابعة" من مصفوفة المهام إن وجدت
+                if(emp.tasks && emp.tasks.length > 0) {
+                    emp.tasks.forEach(t => {
+                        const s = (t.status || '').toLowerCase();
+                        if(s.includes('جديد')) stats.new++;
+                        if(s.includes('متابعة')) stats.inProgress++;
+                    });
+                }
+            });
+
+            // تحديث واجهة الأرقام
             const html = `
                 <div class="stat-card"><span class="stat-num c-total">${stats.total}</span><span class="stat-lbl">الإجمالي</span></div>
-                <div class="stat-card"><span class="stat-num c-new">${stats.new || 0}</span><span class="stat-lbl">جديد</span></div>
+                <div class="stat-card"><span class="stat-num c-new">${stats.new}</span><span class="stat-lbl">جديد</span></div>
                 <div class="stat-card"><span class="stat-num c-pending">${stats.pending}</span><span class="stat-lbl">بانتظار الاعتماد</span></div>
                 <div class="stat-card"><span class="stat-num c-approved">${stats.completed}</span><span class="stat-lbl">تم الاعتماد والأرشفة</span></div>
-                <div class="stat-card"><span class="stat-num c-followup">${stats.inProgress || 0}</span><span class="stat-lbl">بحاجة للمتابعة</span></div>
+                <div class="stat-card"><span class="stat-num c-followup">${stats.inProgress}</span><span class="stat-lbl">بحاجة للمتابعة</span></div>
                 <div class="stat-card"><span class="stat-num c-late">${stats.overdue}</span><span class="stat-lbl">متأخر</span></div>
             `;
             document.getElementById('stats-container').innerHTML = html;
@@ -423,10 +457,11 @@
         function renderLeaderboard(employees) {
             const container = document.getElementById('leaderboard-list');
             if (!employees || employees.length === 0) {
-                container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">لا توجد بيانات للفترة المحددة</div>`;
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">لا توجد بيانات للعرض</div>`;
                 return;
             }
 
+            // الترتيب حسب نسبة الإنجاز
             employees.sort((a, b) => {
                 if (b.rate !== a.rate) return b.rate - a.rate;
                 return b.total - a.total;
@@ -447,6 +482,7 @@
                 if (emp.rate >= 90) { progressColor = 'bg-emerald-500'; textColor = 'text-emerald-600'; }
                 else if (emp.rate >= 70) { progressColor = 'bg-yellow-500'; textColor = 'text-yellow-600'; }
 
+                // توزيع الجهات
                 const distMap = {};
                 if(emp.tasks) {
                     emp.tasks.forEach(t => {
@@ -466,6 +502,15 @@
                             <span class="entity-count">${count}</span>
                         </div>`;
                 });
+
+                // حساب فرعي لـ "جديد" و "متابعة" لهذا الموظف
+                let subNew = 0, subFollow = 0;
+                if(emp.tasks) {
+                    emp.tasks.forEach(t => {
+                        if((t.status||'').includes('جديد')) subNew++;
+                        if((t.status||'').includes('متابعة')) subFollow++;
+                    });
+                }
 
                 html += `
                 <div class="emp-card">
