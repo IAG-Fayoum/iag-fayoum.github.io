@@ -25,13 +25,13 @@
     
     body {
       min-height: 100vh;
-      background: #f0fdfa;
+      background-color: #f8fafc; /* لون خلفية نقي بدون نقش */
       display: flex;
       flex-direction: column;
       overscroll-behavior-y: none;
     }
 
-    /* الهيدر الفخم */
+    /* الهيدر الفخم (كما هو) */
     .header-bg {
       background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
       position: relative;
@@ -43,6 +43,7 @@
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
+      /* باترن الهيدر فقط - تم الإبقاء عليه لجماله */
       background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
 
@@ -55,7 +56,7 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
-    /* الفوتر */
+    /* الفوتر (كما هو) */
     .footer-bg {
       background: #0f172a;
       color: white;
@@ -81,7 +82,7 @@
     .form-input {
       width: 100%;
       padding: 12px 16px;
-      padding-right: 44px; /* مساحة للأيقونة */
+      padding-right: 44px;
       border: 2px solid #e2e8f0;
       border-radius: 12px;
       background: #f8fafc;
@@ -110,7 +111,7 @@
 
     .form-input:focus ~ .input-icon { color: #0f766e; }
 
-    /* الأزرار */
+    /* زر الدخول */
     .btn-login {
       width: 100%;
       background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
@@ -125,31 +126,39 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      border: none;
+      cursor: pointer;
     }
     
     .btn-login:active { transform: scale(0.98); }
 
-    .btn-work-forms {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
+    /* زر نماذج العمل (التصميم الجديد الثابت) */
+    .btn-work-forms-static {
+      width: 100%;
+      margin-top: 12px;
       background: white;
-      color: #0f766e;
-      padding: 10px 20px;
-      border-radius: 50px;
+      color: #334155;
+      border: 2px solid #e2e8f0;
+      padding: 12px;
+      border-radius: 12px;
       font-weight: 700;
-      font-size: 0.85rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      transition: 0.2s;
-      z-index: 50;
+      transition: all 0.2s;
+      cursor: pointer;
       text-decoration: none;
-      border: 1px solid #e2e8f0;
     }
-    
-    .btn-work-forms:hover { transform: translateY(-2px); }
+
+    .btn-work-forms-static:hover {
+      border-color: #0f766e;
+      background: #f0fdfa;
+      color: #0f766e;
+    }
+
+    .btn-work-forms-static:active { transform: scale(0.98); }
 
     .error-box {
       background: #fef2f2;
@@ -165,7 +174,7 @@
       margin-bottom: 1rem;
     }
 
-    /* --- Navigation Screen Buttons (New) --- */
+    /* أزرار التنقل (للشاشة الجديدة) */
     .btn-nav {
       width: 100%;
       background: white;
@@ -211,6 +220,8 @@
     .btn-logout:hover { background: #fecaca; border-color: #dc2626; }
 
     .hidden { display: none !important; }
+    .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -229,7 +240,7 @@
 
   <div class="flex-grow flex items-start justify-center px-4 mb-8">
     
-    <div id="login-card" class="login-card">
+    <div id="login-card" class="login-card fade-in">
       <div class="text-center mb-6">
         <h2 class="text-xl font-bold text-slate-800">تسجيل الدخول</h2>
         <p class="text-slate-500 text-xs mt-1">الوصول حصري للموظفين المصرح لهم</p>
@@ -255,12 +266,15 @@
           <span>دخول للنظام</span>
           <i data-lucide="arrow-left" class="w-5 h-5"></i>
         </button>
-      </form>
 
-      <div class="mt-6 text-center border-t border-slate-100 pt-4">
-        <p class="text-[10px] text-slate-400">نظام آمن ومحمي v8.0</p>
+        <a href="forms.html" class="btn-work-forms-static">
+          <span>نماذج العمل</span>
+          <i data-lucide="file-text" class="w-5 h-5 text-teal-600"></i>
+        </a>
+
+      </form>
+      
       </div>
-    </div>
 
     <div id="navigation-screen" class="login-card hidden">
       <div class="text-center mb-6">
@@ -322,11 +336,6 @@
     </div>
   </footer>
 
-  <a href="forms.html" class="btn-work-forms">
-    <span>نماذج العمل</span>
-    <i data-lucide="file-text" class="w-4 h-4"></i>
-  </a>
-
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
   <script>
@@ -339,7 +348,8 @@
     }
 
     function logout() {
-      localStorage.removeItem('user');
+      localStorage.removeItem('iag_user'); // تأكد من حذف المفتاح الصحيح
+      localStorage.removeItem('user');     // احتياطي
       localStorage.removeItem('lastPage');
       window.location.reload();
     }
@@ -371,13 +381,13 @@
       if (mobileInput) setTimeout(() => mobileInput.focus(), 100);
 
       // Check LocalStorage
-      const userStr = localStorage.getItem('user');
+      const userStr = localStorage.getItem('iag_user'); // استخدام المفتاح الموحد
       if (userStr) {
         try {
           const user = JSON.parse(userStr);
           showNavigationScreen(user);
         } catch(e) {
-          localStorage.removeItem('user');
+          localStorage.removeItem('iag_user');
         }
       }
     });
@@ -433,7 +443,8 @@
             loginTime: new Date().toISOString()
           };
 
-          localStorage.setItem('user', JSON.stringify(userData));
+          // توحيد مفتاح التخزين
+          localStorage.setItem('iag_user', JSON.stringify(userData));
           showNavigationScreen(userData);
 
         } catch (error) {
