@@ -16,10 +16,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         :root { --primary: #0f766e; }
 
-        /* --- Header --- */
+        /* HEADER */
         .main-header {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             color: white; padding: 1rem 1.5rem 2.5rem;
@@ -37,7 +37,7 @@
         .dept-title { font-size: 1.1rem; font-weight: 800; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.9; text-align: center; direction: ltr; font-family: sans-serif; }
 
-        /* --- Filters --- */
+        /* FILTERS */
         .filter-container {
             margin: -1.5rem 1rem 1rem; position: relative; z-index: 20;
             background: white; border-radius: 16px; padding: 1rem;
@@ -47,7 +47,7 @@
         .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
         .f-input { width: 100%; height: 40px; padding: 0 8px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none; background: #fff; }
 
-        /* --- Tabs --- */
+        /* TABS */
         .tabs-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; }
         .tabs-container {
             display: flex; background: #e2e8f0; border-radius: 12px; padding: 4px;
@@ -59,7 +59,7 @@
         }
         .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* --- Stats Cards --- */
+        /* STATS GRID */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 1rem; }
         @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
 
@@ -71,12 +71,12 @@
         .stat-num { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
         .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
-        /* Colors */
+        /* COLORS */
         .c-total { color: #334155; } .c-late { color: #dc2626; }
         .c-new { color: #3b82f6; } .c-pending { color: #16a34a; }
         .c-approved { color: #047857; } .c-followup { color: #6b7280; }
 
-        /* --- Employee Card --- */
+        /* EMPLOYEE CARD */
         .cards-list { display: grid; gap: 12px; grid-template-columns: 1fr; }
         @media (min-width: 768px) { .cards-list { grid-template-columns: repeat(2, 1fr); } }
 
@@ -100,13 +100,13 @@
         .emp-name { font-size: 0.95rem; font-weight: 800; color: #1e293b; }
         .emp-dept { font-size: 0.7rem; color: #64748b; }
 
-        /* Progress Bar Styles */
+        /* PROGRESS BAR */
         .progress-wrapper { margin-top: 8px; padding: 0 4px; }
         .progress-labels { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 2px; font-weight: 700; color: #64748b; }
         .progress-track { width: 100%; height: 6px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
         .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
 
-        /* Stats Grid in Card */
+        /* STATS INSIDE CARD */
         .emp-stats-grid { display: flex; flex-direction: column; gap: 6px; padding: 1rem; }
         .es-row-lg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .es-box-lg { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; text-align: center; }
@@ -125,7 +125,7 @@
             display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
         }
 
-        /* --- Source List Style --- */
+        /* SOURCE LIST ITEM */
         .source-item { 
             background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px;
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
@@ -137,7 +137,7 @@
         .si-num { font-size: 1.1rem; font-weight: 800; color: #0f766e; line-height: 1; }
         .si-pct { font-size: 0.65rem; color: #64748b; font-weight: 600; }
 
-        /* --- Side Menu (Right) --- */
+        /* SIDE MENU (RIGHT) */
         .side-menu { 
             position: fixed; top: 0; right: -260px; width: 260px; height: 100%; 
             background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -147,14 +147,14 @@
         .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
 
-        /* --- Modal --- */
+        /* MODAL */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
         .modal-box { background: white; width: 95%; max-width: 500px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
         .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
         .modal-body { padding: 1.5rem; }
 
-        /* --- Bottom Nav --- */
+        /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
@@ -190,24 +190,26 @@
     <header class="main-header">
         <div class="max-w-[1200px] mx-auto">
             <div class="header-top">
-                <div class="flex gap-3">
-                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
-                </div>
-                <div class="text-center">
-                    <div class="breadcrumbs mb-1">
-                        <a href="coordinator.html">الرئيسية</a> 
-                        <i data-lucide="chevron-left" class="w-3 h-3"></i>
-                        <span class="font-bold">مؤشرات الأداء</span>
-                    </div>
-                    <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
-                    <p class="dept-subtitle">Internal Audit & Governance Department</p>
-                </div>
+                <button onclick="goBack()" class="header-btn text-white" title="رجوع">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </button>
                 <div class="flex gap-3">
                     <button onclick="window.location.href='notifications.html'" class="header-btn relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
-                        <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
+                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
                     </button>
+                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
                 </div>
+            </div>
+            
+            <div class="text-center">
+                <div class="breadcrumbs mb-1">
+                    <span>الرئيسية</span>
+                    <i data-lucide="chevron-left" class="w-3 h-3"></i>
+                    <span class="font-bold">مؤشرات الأداء</span>
+                </div>
+                <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
+                <p class="dept-subtitle">Internal Audit & Governance Department</p>
             </div>
         </div>
     </header>
@@ -323,7 +325,7 @@
         });
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
-        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+        function logout() { localStorage.removeItem('iag_user'); localStorage.removeItem('iag_last_page'); window.location.href = 'index.html'; }
         function goBack() { window.location.href = 'coordinator.html'; }
         function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
@@ -372,6 +374,15 @@
             });
         }
 
+        // --- Helper: Normalize Arabic ---
+        function normalizeArabic(text) {
+            if (!text) return "";
+            return text.toString().trim()
+                .replace(/[أإآ]/g, 'ا')
+                .replace(/ة/g, 'ه')
+                .replace(/ى/g, 'ي');
+        }
+
         // --- TAB 1: EMPLOYEES + PERCENTAGE ---
         function renderEmployeeAnalysis() {
             const employees = getFilteredEmployees();
@@ -411,7 +422,6 @@
                     else if(st.includes('متابعة')) subStats.foll++;
                 });
 
-                // حساب النسبة
                 const completionRate = emp.total > 0 ? Math.round((emp.completed / emp.total) * 100) : 0;
                 let barColor = 'bg-red-500';
                 if(completionRate >= 70) barColor = 'bg-yellow-500';
@@ -464,10 +474,12 @@
             employees.forEach(e => {
                 if(e.tasks) e.tasks.forEach(t => {
                     total++;
-                    const src = (t['الجهة'] || t.source || t.entity || '').toString().toLowerCase();
-                    if(src.includes('نيابة')) sources['نيابة']++;
-                    else if(src.includes('قانونية')) sources['قانونية']++;
-                    else if(src.includes('وكيل')) sources['وكيل']++;
+                    const rawSrc = t.source || t['الجهة'] || ''; // Fixed Logic
+                    const src = normalizeArabic(rawSrc);
+
+                    if(src.includes(normalizeArabic('نيابة')) || src.includes(normalizeArabic('إدارية'))) sources['نيابة']++;
+                    else if(src.includes(normalizeArabic('قانونية')) || src.includes(normalizeArabic('شئون قانونية'))) sources['قانونية']++;
+                    else if(src.includes(normalizeArabic('وكيل'))) sources['وكيل']++;
                     else sources['أخرى']++;
                 });
             });
@@ -507,27 +519,67 @@
 
             const employees = getFilteredEmployees();
             
-            // 1. حساب الإجمالي لهذه الجهة (عشان نحسب النسبة)
             let totalForSource = 0;
             employees.forEach(emp => {
                 if(emp.tasks) emp.tasks.forEach(t => {
-                    const src = (t['الجهة'] || t.source || t.entity || '').toString().toLowerCase();
+                    const rawSrc = t.source || t['الجهة'] || ''; // Fixed Logic
+                    const src = normalizeArabic(rawSrc);
+                    
                     let match = false;
-                    if(currentSourceFilter === 'أخرى') { if(!src.includes('نيابة') && !src.includes('قانونية') && !src.includes('وكيل')) match = true; }
-                    else if(src.includes(currentSourceFilter)) { match = true; }
+                    const nNyaba = normalizeArabic('نيابة');
+                    const nEdaria = normalizeArabic('إدارية');
+                    const nQanoon = normalizeArabic('قانونية');
+                    const nShoon = normalizeArabic('شئون قانونية');
+                    const nWakeel = normalizeArabic('وكيل');
+
+                    if(currentSourceFilter === 'أخرى') { 
+                        if(!src.includes(nNyaba) && !src.includes(nEdaria) && 
+                           !src.includes(nQanoon) && !src.includes(nShoon) && 
+                           !src.includes(nWakeel)) match = true; 
+                    }
+                    else if (currentSourceFilter === 'نيابة') {
+                        if(src.includes(nNyaba) || src.includes(nEdaria)) match = true;
+                    }
+                    else if (currentSourceFilter === 'قانونية') {
+                        if(src.includes(nQanoon) || src.includes(nShoon)) match = true;
+                    }
+                    else if(src.includes(normalizeArabic(currentSourceFilter))) { 
+                        match = true; 
+                    }
+                    
                     if(match) totalForSource++;
                 });
             });
 
-            // 2. عرض القائمة مع النسبة
             let listHtml = '';
             employees.forEach(emp => {
                 let count = 0;
                 if(emp.tasks) emp.tasks.forEach(t => {
-                    const src = (t['الجهة'] || t.source || t.entity || '').toString().toLowerCase();
+                    const rawSrc = t.source || t['الجهة'] || ''; // Fixed Logic
+                    const src = normalizeArabic(rawSrc);
+                    
                     let match = false;
-                    if(currentSourceFilter === 'أخرى') { if(!src.includes('نيابة') && !src.includes('قانونية') && !src.includes('وكيل')) match = true; }
-                    else if(src.includes(currentSourceFilter)) { match = true; }
+                    const nNyaba = normalizeArabic('نيابة');
+                    const nEdaria = normalizeArabic('إدارية');
+                    const nQanoon = normalizeArabic('قانونية');
+                    const nShoon = normalizeArabic('شئون قانونية');
+                    const nWakeel = normalizeArabic('وكيل');
+
+                    if(currentSourceFilter === 'أخرى') { 
+                        if(!src.includes(nNyaba) && !src.includes(nEdaria) && 
+                           !src.includes(nQanoon) && !src.includes(nShoon) && 
+                           !src.includes(nWakeel)) match = true; 
+                    }
+                    else if (currentSourceFilter === 'نيابة') {
+                        if(src.includes(nNyaba) || src.includes(nEdaria)) match = true;
+                    }
+                    else if (currentSourceFilter === 'قانونية') {
+                        if(src.includes(nQanoon) || src.includes(nShoon)) match = true;
+                    }
+                    else if(src.includes(normalizeArabic(currentSourceFilter))) { 
+                        match = true; 
+                    }
+                    
                     if(match) count++;
                 });
 
