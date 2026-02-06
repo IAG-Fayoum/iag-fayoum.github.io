@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f766e">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
     
     <title>لوحة التحكم | IAG Admin</title>
     
@@ -41,6 +43,7 @@
             border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
             box-shadow: 0 4px 20px rgba(15, 118, 110, 0.25);
             position: relative; z-index: 10;
+            padding-top: max(1rem, env(safe-area-inset-top));
         }
         .page-badge { 
             background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; 
@@ -161,6 +164,7 @@
             <a href="admin.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> لوحة التحكم</a>
             <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
             <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
         </nav>
         <div class="p-4 border-t">
             <button onclick="auth.logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
