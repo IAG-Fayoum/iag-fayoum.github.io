@@ -19,13 +19,8 @@
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         
-        /* --- Colors Variables --- */
         :root {
             --primary: #0f766e;
-            --secondary: #134e4a;
-            
-            /* Status Colors */
-            --c-total: #334155;
             --c-new: #3b82f6;        
             --c-pending: #16a34a;    
             --c-approved: #047857;   
@@ -42,8 +37,8 @@
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .back-btn { background: rgba(255,255,255,0.2); border-radius: 50%; padding: 8px; backdrop-filter: blur(4px); transition: 0.2s; }
+        /* Header Flex Container - Adjusted for User Request */
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
         
         .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
@@ -60,7 +55,7 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;
         }
         
-        .filter-grid { display: flex; flex-direction: column; gap: 10px; }
+        .filter-grid { display: flex; flex-direction: column; gap: 12px; }
         
         @media (min-width: 1024px) {
             .filter-container { max-width: 1200px; margin-left: auto; margin-right: auto; padding: 1.5rem; }
@@ -70,25 +65,31 @@
             .filter-item-btn { flex: 0 0 auto; }
         }
 
-        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
+        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
+        
+        /* Search Input Fix */
+        .search-wrapper { position: relative; }
         .f-input {
-            width: 100%; height: 42px; padding: 0 12px; 
+            width: 100%; height: 44px; 
             border: 1px solid #cbd5e1; border-radius: 10px;
             font-size: 0.9rem; outline: none; background: #fff; 
             transition: all 0.2s; color: #1e293b;
         }
-        .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
-        .search-input { background-color: #f8fafc; border-color: #e2e8f0; }
+        /* Fix padding for RTL: Icon is Right (right-3), so Text needs padding-right (pr-10) */
+        .search-input { padding-left: 12px; padding-right: 40px; background-color: #f8fafc; border-color: #e2e8f0; }
+        .search-icon { position: absolute; right: 12px; top: 12px; width: 18px; height: 18px; color: #94a3b8; pointer-events: none; }
+
+        .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); background: white; }
 
         .btn-print {
             background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;
-            border-radius: 10px; height: 42px; width: 42px;
+            border-radius: 10px; height: 44px; width: 44px;
             font-weight: 700; cursor: pointer; transition: 0.2s;
             display: flex; align-items: center; justify-content: center;
         }
         .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
 
-        /* --- Stats Layout --- */
+        /* --- Stats --- */
         .stats-wrapper {
             padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto;
             display: flex; flex-direction: column; gap: 10px;
@@ -116,15 +117,15 @@
         .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; line-height: 1.1; }
 
         /* Colors */
-        .txt-total { color: var(--c-total); } .txt-late { color: var(--c-late); }
-        .txt-new { color: var(--c-new); } .txt-pending { color: var(--c-pending); }
-        .txt-approved { color: var(--c-approved); } .txt-followup { color: var(--c-followup); }
+        .txt-total { color: #334155; } .txt-late { color: #dc2626; }
+        .txt-new { color: #3b82f6; } .txt-pending { color: #16a34a; }
+        .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
 
         /* --- Cards Grid System --- */
         .cards-container { 
             padding: 0 1rem 5rem; display: grid; gap: 12px; 
             max-width: 1200px; margin: 0 auto; 
-            grid-template-columns: 1fr; /* Mobile default */
+            grid-template-columns: 1fr;
         }
         @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
@@ -142,11 +143,11 @@
             display: flex; justify-content: space-between; align-items: center; 
         }
         
-        .bg-new { background-color: var(--c-new); } 
-        .bg-pending { background-color: var(--c-pending); }
-        .bg-approved { background-color: var(--c-approved); } 
-        .bg-followup { background-color: var(--c-followup); }
-        .bg-late { background-color: var(--c-late); }
+        .bg-new { background-color: #3b82f6; } 
+        .bg-pending { background-color: #16a34a; }
+        .bg-approved { background-color: #047857; } 
+        .bg-followup { background-color: #6b7280; }
+        .bg-late { background-color: #dc2626; }
 
         .card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .tc-subject { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.5; }
@@ -165,34 +166,19 @@
         .btn-card:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
         .btn-attach { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
 
-        /* --- Loading & Empty States --- */
+        /* --- Loading & Empty --- */
         .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
         .error-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #dc2626; background: #fef2f2; border-radius: 12px; border: 1px dashed #fecaca; }
         .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; background: white; border-radius: 12px; border: 1px dashed #e2e8f0; }
 
-        /* --- Side Menu --- */
-        .side-menu {
-            position: fixed; top: 0; right: -260px; width: 260px; height: 100%;
-            background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1);
-        }
-        .side-menu-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99;
-            opacity: 0; pointer-events: none; transition: 0.3s;
-        }
-        .menu-open .side-menu { right: 0; }
-        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
-
-        /* --- Modal --- */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200;
-            display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px);
-        }
+        /* --- Menu & Modal --- */
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
-        .modal-box {
-            background: white; width: 95%; max-width: 600px; max-height: 90vh;
-            border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column;
-        }
+        .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
         .modal-header { padding: 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
         .modal-body { padding: 1.5rem; }
         
@@ -203,9 +189,7 @@
         /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
-        .nav-btn.active { color: var(--primary); } .nav-btn i { width: 22px; height: 22px; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-btn.active { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -234,25 +218,19 @@
     </aside>
 
     <header class="main-header">
-        <div class="max-w-[1200px] mx-auto">
-            <div class="header-top">
-                <button onclick="goBack()" class="back-btn text-white" title="رجوع">
-                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                </button>
-                <div class="flex gap-3">
-                    <button onclick="window.location.href='notifications.html'" class="text-white relative">
-                        <i data-lucide="bell" class="w-6 h-6"></i>
-                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
-                    </button>
-                    <button onclick="toggleMenu()" class="text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
-                </div>
-            </div>
+        <div class="max-w-[1200px] mx-auto header-content">
+            <button onclick="toggleMenu()" class="p-2 text-white hover:bg-teal-700 rounded-full transition"><i data-lucide="menu" class="w-6 h-6"></i></button>
             
             <div class="text-center">
                 <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
                 <p class="dept-subtitle">Internal Audit & Governance Dept</p>
                 <div class="flex justify-center mt-1"><span class="page-label">المنسق</span></div>
             </div>
+
+            <button onclick="window.location.href='notifications.html'" class="p-2 text-white relative hover:bg-teal-700 rounded-full transition">
+                <i data-lucide="bell" class="w-6 h-6"></i>
+                <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
+            </button>
         </div>
     </header>
 
@@ -261,40 +239,41 @@
             
             <div class="filter-item-search">
                 <label class="f-label">بحث شامل</label>
-                <div class="relative">
-                    <input type="text" id="f-search" class="f-input search-input pl-10" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
-                    <i data-lucide="search" class="absolute right-3 top-3 w-4 h-4 text-gray-400"></i>
+                <div class="search-wrapper">
+                    <input type="text" id="f-search" class="f-input search-input" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
+                    <i data-lucide="search" class="search-icon"></i>
                 </div>
             </div>
 
             <div class="filter-item">
                 <label class="f-label">الموظف المسؤول</label>
-                <select id="f-emp" class="f-input" onchange="applyFilters()">
+                <select id="f-emp" class="f-input px-2" onchange="applyFilters()">
                     <option value="">عرض الكل</option>
+                    <option value="ALL_ADMIN" class="font-bold bg-teal-50 text-teal-800">-- كل الفريق الإداري والمالي --</option>
+                    <option value="ALL_TECH" class="font-bold bg-blue-50 text-blue-800">-- كل الفريق الفني والطبي --</option>
                     <optgroup label="الفريق الإداري والمالي" id="grp-admin"></optgroup>
                     <optgroup label="الفريق الفني والطبي" id="grp-tech"></optgroup>
-                    <optgroup label="أخرى" id="grp-other"></optgroup>
                 </select>
             </div>
 
             <div class="filter-item">
                 <label class="f-label">الجهة الوارد منها</label>
-                <select id="f-source" class="f-input" onchange="applyFilters()">
+                <select id="f-source" class="f-input px-2" onchange="applyFilters()">
                     <option value="">كل الجهات</option>
                 </select>
             </div>
 
             <div class="filter-item">
-                <label class="f-label">من</label>
-                <input type="date" id="f-start" class="f-input" onchange="applyFilters()">
+                <label class="f-label">من تاريخ</label>
+                <input type="date" id="f-start" class="f-input px-2" onchange="applyFilters()">
             </div>
             <div class="filter-item">
-                <label class="f-label">إلى</label>
-                <input type="date" id="f-end" class="f-input" onchange="applyFilters()">
+                <label class="f-label">إلى تاريخ</label>
+                <input type="date" id="f-end" class="f-input px-2" onchange="applyFilters()">
             </div>
 
             <div class="filter-item-btn">
-                <label class="f-label text-transparent">.</label>
+                <label class="f-label text-transparent hidden lg:block">.</label>
                 <button onclick="window.print()" class="btn-print" title="طباعة">
                     <i data-lucide="printer" class="w-5 h-5"></i>
                 </button>
@@ -350,7 +329,7 @@
         </div>
     </div>
 
-    <nav class="bottom-nav">
+    <nav class="bottom-nav lg:hidden">
         <a href="index.html" class="nav-btn"><i data-lucide="home"></i> الرئيسية</a>
         <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
         <a href="coordinator.html" class="nav-btn active"><i data-lucide="users"></i> المنسق</a>
@@ -364,6 +343,8 @@
         lucide.createIcons();
         let allTasks = [];
         let allEmployees = [];
+        let adminList = []; // أسماء الفريق الإداري
+        let techList = [];  // أسماء الفريق الفني
         let currentStatusFilter = '';
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -387,11 +368,6 @@
         });
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
-        
-        function goBack() {
-            const lastPage = localStorage.getItem('iag_last_page') || 'index.html';
-            window.location.href = lastPage;
-        }
 
         async function loadData(username) {
             const container = document.getElementById('tasks-list');
@@ -427,29 +403,29 @@
         }
 
         function populateDropdowns() {
-            // Group Employees
             const grpAdmin = document.getElementById('grp-admin');
             const grpTech = document.getElementById('grp-tech');
-            const grpOther = document.getElementById('grp-other');
             
-            grpAdmin.innerHTML = ''; grpTech.innerHTML = ''; grpOther.innerHTML = '';
+            grpAdmin.innerHTML = ''; grpTech.innerHTML = '';
+            adminList = []; techList = [];
 
             allEmployees.sort((a,b) => a.name.localeCompare(b.name)).forEach(e => {
                 const opt = document.createElement('option');
                 opt.value = e.name; opt.textContent = e.name;
                 
-                // Heuristic Classification
+                // Smart Classification logic
                 const title = (e.jobTitle || '').toLowerCase();
                 if (title.match(/طبيب|صيدلي|فني|تمريض|مراقب|مفتش/)) {
+                    techList.push(e.name);
                     grpTech.appendChild(opt);
-                } else if (title.match(/إداري|مالي|قانوني|مراجعة|كاتب/)) {
-                    grpAdmin.appendChild(opt);
                 } else {
-                    grpOther.appendChild(opt);
+                    // Default everyone else to Admin/Finance
+                    adminList.push(e.name);
+                    grpAdmin.appendChild(opt);
                 }
             });
 
-            // Sources
+            // Populate Sources
             const srcSelect = document.getElementById('f-source');
             const sources = new Set(allTasks.map(t => t.source).filter(s => s));
             Array.from(sources).sort().forEach(s => {
@@ -474,18 +450,34 @@
         }
 
         function applyFilters() {
-            const emp = document.getElementById('f-emp').value;
+            const empVal = document.getElementById('f-emp').value;
             const src = document.getElementById('f-source').value;
             const search = document.getElementById('f-search').value.toLowerCase();
             const start = document.getElementById('f-start').value;
             const end = document.getElementById('f-end').value;
 
             const filtered = allTasks.filter(t => {
+                // Status Filter
                 if(currentStatusFilter && !(t.status||'').includes(currentStatusFilter)) return false;
+                
+                // Search
                 if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
+                
+                // Source
                 if(src && t.source !== src) return false;
-                if(emp && t.assignee !== emp) return false;
+                
+                // Smart Employee Filter
+                if (empVal) {
+                    if (empVal === 'ALL_ADMIN') {
+                        if (!adminList.includes(t.assignee)) return false;
+                    } else if (empVal === 'ALL_TECH') {
+                        if (!techList.includes(t.assignee)) return false;
+                    } else {
+                        if (t.assignee !== empVal) return false;
+                    }
+                }
 
+                // Date
                 if(start && end && t.date) {
                     const isoDate = parseDateToISO(t.date);
                     if(isoDate && (isoDate < start || isoDate > end)) return false;
@@ -493,13 +485,14 @@
                 return true;
             });
 
-            updateStatsContext();
+            updateStatsContext(filtered); // Update counts based on filtered view? No, usually based on global filters except status.
+            // Let's keep stats based on global filters (ignoring status) to allow clicking stats to switch
             renderTasks(filtered);
         }
 
-        function updateStatsContext() {
-            // Stats logic mirroring backend logic for consistency
-            const emp = document.getElementById('f-emp').value;
+        function updateStatsContext(currentFiltered) {
+            // For accurate stats, we should recalculate based on non-status filters
+            const empVal = document.getElementById('f-emp').value;
             const src = document.getElementById('f-source').value;
             const search = document.getElementById('f-search').value.toLowerCase();
             const start = document.getElementById('f-start').value;
@@ -508,7 +501,12 @@
             const contextData = allTasks.filter(t => {
                 if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
                 if(src && t.source !== src) return false;
-                if(emp && t.assignee !== emp) return false;
+                
+                if (empVal) {
+                    if (empVal === 'ALL_ADMIN') { if (!adminList.includes(t.assignee)) return false; }
+                    else if (empVal === 'ALL_TECH') { if (!techList.includes(t.assignee)) return false; }
+                    else { if (t.assignee !== empVal) return false; }
+                }
                 
                 if(start && end && t.date) {
                     const isoDate = parseDateToISO(t.date);
@@ -536,7 +534,7 @@
             document.getElementById('c-late').textContent = c.late;
         }
 
-        function updateStats() { updateStatsContext(); }
+        function updateStats() { applyFilters(); } // Trigger initial recalc
 
         function renderTasks(tasks) {
             const container = document.getElementById('tasks-list');
