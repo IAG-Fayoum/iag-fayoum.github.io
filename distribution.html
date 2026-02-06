@@ -19,12 +19,9 @@
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         
-        /* --- Colors Variables --- */
         :root {
             --primary: #0f766e;
             --secondary: #134e4a;
-            
-            /* Status Colors */
             --c-total: #334155; --c-new: #3b82f6; --c-pending: #16a34a;
             --c-approved: #047857; --c-followup: #6b7280; --c-late: #dc2626;
         }
@@ -39,13 +36,11 @@
             padding-top: max(1rem, env(safe-area-inset-top));
         }
         
-        /* ترتيب الهيدر: القائمة يمين - الإشعارات يسار - (تم حذف سهم الرجوع) */
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        
         .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .header-btn:hover { background: rgba(255,255,255,0.2); }
+        .back-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); }
 
-        /* مسار التنقل */
         .breadcrumbs { 
             display: flex; align-items: center; justify-content: center; gap: 6px; 
             font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9;
@@ -76,22 +71,21 @@
         }
         .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
 
-        /* --- Stats Cards --- */
+        /* --- Stats Cards (Global) --- */
         .stats-grid {
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
             padding: 0 1rem 1.5rem; max-width: 1200px; margin: 0 auto;
         }
-        @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (min-width: 1024px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
+        @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
 
         .stat-card {
-            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px;
+            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px;
             text-align: center; display: flex; flex-direction: column; justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); min-height: 85px; transition: transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); min-height: 80px; transition: transform 0.2s;
         }
         .stat-card:hover { transform: translateY(-2px); }
-        .stat-num { font-size: 1.6rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-        .stat-lbl { font-size: 0.75rem; font-weight: 700; color: #64748b; }
+        .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+        .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
         .c-total { color: var(--c-total); } .c-new { color: var(--c-new); }
         .c-pending { color: var(--c-pending); } .c-approved { color: var(--c-approved); }
@@ -104,7 +98,6 @@
             grid-template-columns: 1fr;
         }
         @media (min-width: 768px) { .leaderboard-container { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1280px) { .leaderboard-container { grid-template-columns: repeat(3, 1fr); } }
 
         .emp-card {
             background: white; border-radius: 16px; overflow: hidden;
@@ -140,14 +133,35 @@
         .progress-bar { height: 100%; border-radius: 4px; transition: width 1s ease-in-out; }
         .rate-text { font-size: 0.8rem; font-weight: 700; margin-top: 4px; display: flex; justify-content: space-between; }
 
-        .emp-body { padding: 1.25rem; flex: 1; }
+        /* --- New Employee Card Layout (Requested) --- */
+        .emp-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; gap: 1rem; }
         
-        .mini-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; text-align: center; margin-bottom: 1rem; }
-        .ms-box { background: #f8fafc; border-radius: 8px; padding: 6px 2px; border: 1px solid #f1f5f9; }
-        .ms-val { font-size: 0.9rem; font-weight: 800; line-height: 1; }
-        .ms-lbl { font-size: 0.6rem; color: #64748b; }
+        .emp-stats-grid { display: flex; flex-direction: column; gap: 8px; }
+        
+        /* Row 1: Big Stats (Total & Late) */
+        .es-row-lg { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; 
+        }
+        .es-box-lg { 
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; 
+            padding: 10px; text-align: center; 
+        }
+        .es-val-lg { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+        .es-lbl-lg { font-size: 0.75rem; font-weight: 700; color: #64748b; }
 
-        .entity-list { margin-top: 1rem; }
+        /* Row 2: Small Stats (4 columns) */
+        .es-row-sm { 
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; 
+        }
+        .es-box-sm { 
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; 
+            padding: 6px 2px; text-align: center; 
+        }
+        .es-val-sm { font-size: 1rem; font-weight: 800; line-height: 1; }
+        .es-lbl-sm { font-size: 0.6rem; color: #94a3b8; font-weight: 600; margin-top: 2px; }
+
+        /* --- Entity List --- */
+        .entity-list { border-top: 1px solid #f1f5f9; padding-top: 1rem; }
         .entity-item { 
             display: flex; justify-content: space-between; align-items: center; 
             font-size: 0.75rem; padding: 6px 0; border-bottom: 1px solid #f1f5f9; 
@@ -167,7 +181,7 @@
 
         /* --- Side Menu (RTL Corrected) --- */
         .side-menu { 
-            position: fixed; top: 0; right: -260px; /* مخفي يمين الشاشة */
+            position: fixed; top: 0; right: -260px; /* Hidden Right */
             width: 260px; height: 100%; background: white; z-index: 100; 
             transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
             display: flex; flex-direction: column; 
@@ -239,7 +253,7 @@
                         <i data-lucide="bell" class="w-6 h-6"></i>
                         <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
                     </button>
-                </div>
+                    </div>
             </div>
         </div>
     </header>
@@ -375,6 +389,7 @@
 
                 if (data.success) {
                     allEmployees = data.employees || [];
+                    // نستدعي الفلتر مباشرة ليقوم هو بحساب وتحديث الكروت العلوية (عشان تتطابق)
                     filterLeaderboard(); 
                 } else {
                     container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">${data.error || 'لا توجد بيانات'}</div>`;
@@ -398,14 +413,15 @@
                 if (group === 'tech') return title === 'مراجع فني';
                 if (group === 'admin') return title === 'مراجع مالي وإداري';
                 
-                return true;
+                return true; 
             });
 
-            recalculateStats(filteredEmployees);
+            recalculateStats(filteredEmployees); // توحيد الأرقام
             renderLeaderboard(filteredEmployees);
         }
 
         function recalculateStats(employees) {
+            // نجمع من الموظفين المفلترين فقط لضمان التطابق
             let stats = { total: 0, completed: 0, pending: 0, overdue: 0, new: 0, inProgress: 0 };
 
             employees.forEach(emp => {
@@ -423,13 +439,21 @@
                 }
             });
 
+            // هنا الكروت العلوية: 6 كروت
+            // حسب طلبك:
+            // الصف الأول: الاجمالي - متاخر
+            // الصف الثاني: جديد - انتظار - معتمد - متابعة
+            // لكن التصميم العام في الـ CSS هنا Grid 2x3 أو 6x1، سنلتزم بالـ Grid الموجود في الـ style
+            
+            // سأقوم برسمهم بالترتيب المنطقي في الـ Grid
             const html = `
                 <div class="stat-card"><span class="stat-num c-total">${stats.total}</span><span class="stat-lbl">الإجمالي</span></div>
+                <div class="stat-card"><span class="stat-num c-late">${stats.overdue}</span><span class="stat-lbl">متأخر</span></div>
+                
                 <div class="stat-card"><span class="stat-num c-new">${stats.new}</span><span class="stat-lbl">جديد</span></div>
                 <div class="stat-card"><span class="stat-num c-pending">${stats.pending}</span><span class="stat-lbl">بانتظار الاعتماد</span></div>
                 <div class="stat-card"><span class="stat-num c-approved">${stats.completed}</span><span class="stat-lbl">تم الاعتماد والأرشفة</span></div>
                 <div class="stat-card"><span class="stat-num c-followup">${stats.inProgress}</span><span class="stat-lbl">بحاجة للمتابعة</span></div>
-                <div class="stat-card"><span class="stat-num c-late">${stats.overdue}</span><span class="stat-lbl">متأخر</span></div>
             `;
             document.getElementById('stats-container').innerHTML = html;
         }
@@ -461,11 +485,9 @@
                 if (emp.rate >= 90) { progressColor = 'bg-emerald-500'; textColor = 'text-emerald-600'; }
                 else if (emp.rate >= 70) { progressColor = 'bg-yellow-500'; textColor = 'text-yellow-600'; }
 
-                // --- إصلاح اسم الجهة ---
                 const distMap = {};
                 if(emp.tasks) {
                     emp.tasks.forEach(t => {
-                        // هنا نتحقق من كل الاحتمالات: 'الجهة' (عربي) أو 'source' أو 'entity'
                         const src = t['الجهة'] || t.source || t.entity || 'جهة غير محددة';
                         distMap[src] = (distMap[src] || 0) + 1;
                     });
@@ -483,6 +505,16 @@
                         </div>`;
                 });
 
+                // حساب فرعي لـ "جديد" و "متابعة" لهذا الموظف
+                let subNew = 0, subFollow = 0;
+                if(emp.tasks) {
+                    emp.tasks.forEach(t => {
+                        if((t.status||'').includes('جديد')) subNew++;
+                        if((t.status||'').includes('متابعة')) subFollow++;
+                    });
+                }
+
+                // --- التعديل هنا: شكل الكارت الداخلي (سطرين) ---
                 html += `
                 <div class="emp-card">
                     <div class="rank-badge ${rankClass}">${rankIcon}</div>
@@ -502,11 +534,36 @@
                     </div>
 
                     <div class="emp-body">
-                        <div class="mini-stats">
-                            <div class="ms-box"><div class="ms-val text-gray-700">${emp.total}</div><div class="ms-lbl">الكل</div></div>
-                            <div class="ms-box"><div class="ms-val text-emerald-600">${emp.completed}</div><div class="ms-lbl">منجز</div></div>
-                            <div class="ms-box"><div class="ms-val text-blue-600">${emp.pending}</div><div class="ms-lbl">جاري</div></div>
-                            <div class="ms-box"><div class="ms-val text-red-600">${emp.overdue}</div><div class="ms-lbl">متأخر</div></div>
+                        <div class="emp-stats-grid">
+                            <div class="es-row-lg">
+                                <div class="es-box-lg">
+                                    <div class="es-val-lg text-gray-700">${emp.total}</div>
+                                    <div class="es-lbl-lg">الكل</div>
+                                </div>
+                                <div class="es-box-lg">
+                                    <div class="es-val-lg text-red-600">${emp.overdue}</div>
+                                    <div class="es-lbl-lg">متأخر</div>
+                                </div>
+                            </div>
+                            
+                            <div class="es-row-sm">
+                                <div class="es-box-sm">
+                                    <div class="es-val-sm text-blue-600">${subNew}</div>
+                                    <div class="es-lbl-sm">جديد</div>
+                                </div>
+                                <div class="es-box-sm">
+                                    <div class="es-val-sm text-green-600">${emp.pending}</div>
+                                    <div class="es-lbl-sm">بانتظار</div>
+                                </div>
+                                <div class="es-box-sm">
+                                    <div class="es-val-sm text-emerald-700">${emp.completed}</div>
+                                    <div class="es-lbl-sm">معتمد</div>
+                                </div>
+                                <div class="es-box-sm">
+                                    <div class="es-val-sm text-gray-600">${subFollow}</div>
+                                    <div class="es-lbl-sm">متابعة</div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="entity-list">
