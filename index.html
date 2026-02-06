@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* --- Original Styles --- */
+        /* --- Original Design Styles --- */
         body { 
             font-family: 'Cairo', sans-serif; 
             background-color: #f8fafc; 
@@ -49,6 +49,7 @@
             border-color: #0f766e;
             box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
             outline: none;
+            background-color: #fff;
         }
 
         .btn-primary {
@@ -57,7 +58,17 @@
         }
         .btn-primary:active { transform: scale(0.98); }
 
-        /* Navigation Buttons Style (Matching Original) */
+        /* Floating Forms Button */
+        .forms-btn {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: white; color: #0f766e; padding: 10px 24px; border-radius: 50px;
+            font-weight: 700; font-size: 0.9rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px;
+            transition: all 0.2s; z-index: 50; text-decoration: none;
+        }
+        .forms-btn:hover { transform: translateX(-50%) translateY(-3px); box-shadow: 0 8px 25px rgba(15, 118, 110, 0.15); border-color: #ccfbf1; }
+
+        /* Navigation Buttons (Matching Design) */
         .nav-btn {
             background: white;
             border: 1px solid #e2e8f0;
@@ -71,16 +82,6 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
         .nav-btn:active { transform: scale(0.98); }
-        
-        /* Floating Button */
-        .forms-btn {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: white; color: #0f766e; padding: 10px 24px; border-radius: 50px;
-            font-weight: 700; font-size: 0.9rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px;
-            transition: all 0.2s; z-index: 50; text-decoration: none;
-        }
-        .forms-btn:hover { transform: translateX(-50%) translateY(-3px); box-shadow: 0 8px 25px rgba(15, 118, 110, 0.15); border-color: #ccfbf1; }
 
         .loader {
             border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #0f766e;
@@ -157,6 +158,10 @@
                 <i data-lucide="log-out" class="w-5 h-5"></i>
                 تسجيل الخروج
             </button>
+            
+            <div class="mt-4 text-center">
+                <p class="text-[10px] text-gray-400 font-semibold">جميع الحقوق محفوظة © 2026</p>
+            </div>
         </div>
 
     </div>
@@ -246,7 +251,7 @@
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('nav-view').classList.remove('hidden');
             
-            // Format Name (First 2 names)
+            // Format Name
             const shortName = user.name.split(' ').slice(0, 2).join(' ');
             document.getElementById('user-name').textContent = 'مرحباً د. ' + shortName;
             document.getElementById('user-role').textContent = user.jobTitle || user.role;
@@ -254,6 +259,8 @@
             const container = document.getElementById('nav-buttons');
             let html = '';
 
+            // Buttons Logic
+            
             // 1. Employee Page (Everyone)
             html += createBtn('employee.html', 'صفحتي الشخصية', 'user', 'text-teal-700');
 
