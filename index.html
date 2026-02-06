@@ -25,13 +25,13 @@
     
     body {
       min-height: 100vh;
-      background-color: #f8fafc; /* خلفية سادة نقية */
+      background-color: #f0fdfa;
       display: flex;
       flex-direction: column;
       overscroll-behavior-y: none;
     }
 
-    /* الهيدر (لون متدرج فقط بدون نقوش) */
+    /* الهيدر */
     .header-bg {
       background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
       position: relative;
@@ -39,8 +39,6 @@
       box-shadow: 0 4px 20px rgba(15, 118, 110, 0.25);
     }
     
-    /* تم حذف الجزء الخاص بالنقوش (::before) من هنا */
-
     .logo-circle {
       background: white;
       border-radius: 50%;
@@ -58,7 +56,7 @@
       margin-top: auto;
     }
 
-    /* كارت تسجيل الدخول */
+    /* كارت تسجيل الدخول والقائمة */
     .login-card {
       background: white;
       border-radius: 24px;
@@ -105,7 +103,7 @@
 
     .form-input:focus ~ .input-icon { color: #0f766e; }
 
-    /* زر الدخول */
+    /* الأزرار */
     .btn-login {
       width: 100%;
       background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
@@ -126,7 +124,7 @@
     
     .btn-login:active { transform: scale(0.98); }
 
-    /* زر نماذج العمل (التصميم الثابت) */
+    /* زر نماذج العمل (الثابت في شاشة الدخول) */
     .btn-work-forms-static {
       width: 100%;
       margin-top: 12px;
@@ -168,7 +166,7 @@
       margin-bottom: 1rem;
     }
 
-    /* أزرار التنقل */
+    /* أزرار التنقل (في القائمة الرئيسية) */
     .btn-nav {
       width: 100%;
       background: white;
@@ -278,31 +276,8 @@
         <p class="text-xs text-slate-500 mt-1 font-bold" id="welcome-role">-</p>
       </div>
 
-      <div class="space-y-3">
-        <button onclick="goToPage('employee.html')" class="btn-nav">
-          <i data-lucide="user" class="w-5 h-5 text-teal-600"></i>
-          <span>صفحتي الشخصية</span>
-          <i data-lucide="chevron-left" class="w-4 h-4 mr-auto text-slate-400"></i>
-        </button>
-
-        <button id="btn-admin" onclick="goToPage('admin.html')" class="btn-nav hidden">
-          <i data-lucide="layout-dashboard" class="w-5 h-5 text-purple-600"></i>
-          <span>لوحة التحكم</span>
-          <i data-lucide="chevron-left" class="w-4 h-4 mr-auto text-slate-400"></i>
-        </button>
-
-        <button id="btn-coordinator" onclick="goToPage('coordinator.html')" class="btn-nav hidden">
-          <i data-lucide="clipboard-list" class="w-5 h-5 text-blue-600"></i>
-          <span>صفحة المنسق</span>
-          <i data-lucide="chevron-left" class="w-4 h-4 mr-auto text-slate-400"></i>
-        </button>
-
-        <button onclick="goToPage('distribution.html')" class="btn-nav">
-          <i data-lucide="bar-chart-3" class="w-5 h-5 text-orange-600"></i>
-          <span>مؤشرات الأداء</span>
-          <i data-lucide="chevron-left" class="w-4 h-4 mr-auto text-slate-400"></i>
-        </button>
-      </div>
+      <div class="space-y-3" id="nav-buttons">
+        </div>
 
       <button onclick="logout()" class="btn-logout mt-6">
         <i data-lucide="log-out" class="w-4 h-4"></i>
@@ -334,47 +309,12 @@
   <script>
     lucide.createIcons();
 
-    // --- Navigation Functions ---
-    function goToPage(page) {
-      localStorage.setItem('lastPage', page);
-      window.location.href = page;
-    }
-
-    function logout() {
-      localStorage.removeItem('iag_user'); // تأكد من حذف المفتاح الصحيح
-      localStorage.removeItem('user');     // احتياطي
-      localStorage.removeItem('lastPage');
-      window.location.reload();
-    }
-
-    function showNavigationScreen(user) {
-      // Hide Login, Show Nav
-      document.getElementById('login-card').classList.add('hidden');
-      document.getElementById('navigation-screen').classList.remove('hidden');
-      
-      // Update Info
-      document.getElementById('welcome-name').textContent = `مرحباً ${user.name.split(' ')[0]}`;
-      document.getElementById('welcome-role').textContent = user.jobTitle || user.role;
-      
-      // Show Buttons based on Role
-      if (user.role === 'مدير' || user.role === 'Admin') {
-        document.getElementById('btn-admin').classList.remove('hidden');
-        document.getElementById('btn-coordinator').classList.remove('hidden');
-      } else if (user.role === 'منسق') {
-        document.getElementById('btn-coordinator').classList.remove('hidden');
-      }
-      
-      lucide.createIcons();
-    }
-
-    // --- On Load Check ---
+    // 1. Check Login
     window.addEventListener('load', () => {
-      // Focus Input
       const mobileInput = document.getElementById('mobile-input');
       if (mobileInput) setTimeout(() => mobileInput.focus(), 100);
 
-      // Check LocalStorage
-      const userStr = localStorage.getItem('iag_user'); // استخدام المفتاح الموحد
+      const userStr = localStorage.getItem('iag_user');
       if (userStr) {
         try {
           const user = JSON.parse(userStr);
@@ -385,7 +325,7 @@
       }
     });
 
-    // --- Login Logic ---
+    // 2. Login Logic
     const loginForm = document.getElementById('login-form');
     const loginBtn = document.getElementById('login-btn');
     const errorMsg = document.getElementById('error-msg');
@@ -414,7 +354,7 @@
           return;
         }
 
-        // Loading State
+        // Loading
         const originalBtn = loginBtn.innerHTML;
         loginBtn.innerHTML = '<span class="animate-pulse">جاري التحقق...</span>';
         loginBtn.disabled = true;
@@ -426,7 +366,6 @@
             throw new Error(result.error || 'بيانات غير صحيحة');
           }
 
-          // Success Logic
           const userData = {
             name: result.name,
             email: result.email,
@@ -436,7 +375,6 @@
             loginTime: new Date().toISOString()
           };
 
-          // توحيد مفتاح التخزين
           localStorage.setItem('iag_user', JSON.stringify(userData));
           showNavigationScreen(userData);
 
@@ -444,12 +382,70 @@
           errorText.textContent = error.message === 'Failed to fetch' ? 'خطأ في الاتصال بالخادم' : error.message;
           errorMsg.classList.remove('hidden');
 
-          // Reset Button
           loginBtn.innerHTML = originalBtn;
           loginBtn.disabled = false;
           lucide.createIcons();
         }
       });
+    }
+
+    // 3. Navigation Screen Logic (Updated)
+    function showNavigationScreen(user) {
+      document.getElementById('login-card').classList.add('hidden');
+      document.getElementById('navigation-screen').classList.remove('hidden');
+      
+      // الترحيب (بدون د.)
+      const shortName = user.name.split(' ').slice(0, 2).join(' ');
+      document.getElementById('welcome-name').textContent = `مرحباً ${shortName}`;
+      document.getElementById('welcome-role').textContent = user.jobTitle || user.role;
+      
+      const container = document.getElementById('nav-buttons');
+      let html = '';
+
+      // --- 1. صفحة الموظف (فقط للموظف العادي - تختفي للمنسق/المدير/الأدمن) ---
+      if (user.role !== 'منسق' && user.role !== 'مدير' && user.role !== 'Admin') {
+        html += createBtn('employee.html', 'صفحتي الشخصية', 'user', 'text-teal-600');
+      }
+
+      // --- 2. صفحة المدير (للمدير والأدمن) ---
+      if (user.role === 'مدير' || user.role === 'Admin') {
+        html += createBtn('admin.html', 'لوحة التحكم', 'layout-dashboard', 'text-purple-600');
+      }
+
+      // --- 3. صفحة المنسق (للمنسق والمدير والأدمن) ---
+      if (user.role === 'منسق' || user.role === 'مدير' || user.role === 'Admin') {
+        html += createBtn('coordinator.html', 'صفحة المنسق', 'clipboard-list', 'text-blue-600');
+      }
+
+      // --- 4. المؤشرات (للجميع) ---
+      html += createBtn('distribution.html', 'مؤشرات الأداء', 'bar-chart-3', 'text-orange-600');
+
+      // --- 5. نماذج العمل (للجميع - زر إضافي في القائمة) ---
+      html += createBtn('forms.html', 'نماذج العمل', 'file-text', 'text-indigo-600');
+
+      container.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function createBtn(url, title, icon, colorClass) {
+      return `
+      <button onclick="goToPage('${url}')" class="btn-nav">
+        <i data-lucide="${icon}" class="w-5 h-5 ${colorClass}"></i>
+        <span>${title}</span>
+        <i data-lucide="chevron-left" class="w-4 h-4 mr-auto text-slate-400"></i>
+      </button>
+      `;
+    }
+
+    function goToPage(page) {
+      localStorage.setItem('iag_last_page', page);
+      window.location.href = page;
+    }
+
+    function logout() {
+      localStorage.removeItem('iag_user');
+      localStorage.removeItem('iag_last_page');
+      window.location.reload();
     }
   </script>
 </body>
