@@ -23,7 +23,6 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <style>
-        /* --- General Styles --- */
         body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 14px; padding-bottom: 80px; }
         
         :root {
@@ -49,6 +48,8 @@
             background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; 
             font-size: 0.8rem; font-weight: 700; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2);
         }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .back-btn { background: rgba(255,255,255,0.2); border-radius: 50%; padding: 8px; backdrop-filter: blur(4px); transition: 0.2s; }
 
         /* --- Stats Cards (2 Rows) --- */
         .stats-wrapper { 
@@ -68,7 +69,6 @@
         .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
         .stat-lbl { font-size: 0.75rem; font-weight: 700; color: #64748b; }
 
-        /* Text Colors */
         .t-total { color: var(--c-total); } .t-new { color: var(--c-new); }
         .t-pending { color: var(--c-pending); } .t-late { color: var(--c-late); }
         .t-today { color: var(--c-today); } .t-week { color: var(--c-week); }
@@ -93,7 +93,7 @@
         /* --- Advanced Filters --- */
         .filters-panel {
             background: white; border-radius: 12px; padding: 1rem; margin: 0 1rem 1rem;
-            border: 1px solid #e2e8f0; display: none; /* Hidden by default */
+            border: 1px solid #e2e8f0; display: none;
         }
         .filters-panel.active { display: block; animation: slideDown 0.3s ease-out; }
         
@@ -128,16 +128,17 @@
         @media (min-width: 1024px) { .charts-grid { grid-template-columns: 1fr 1fr; } .chart-full { grid-column: 1 / -1; } }
         .chart-box { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; min-height: 300px; }
 
-        /* --- Side Menu & Modal --- */
-        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
-        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
-        
+        /* --- Modal --- */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
         .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
         .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
         .modal-body { padding: 1.5rem; }
+
+        /* --- Side Menu --- */
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
 
         /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
@@ -174,18 +175,23 @@
     </aside>
 
     <header class="admin-header">
-        <div class="max-w-[1400px] mx-auto flex justify-between items-center">
-            <button onclick="toggleMenu()" class="p-2 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
+        <div class="max-w-[1400px] mx-auto">
+            <div class="header-top">
+                <button onclick="goBack()" class="back-btn text-white" title="رجوع">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </button>
+                <div class="flex gap-2">
+                    <button onclick="loadAdminData()" class="p-2 text-white bg-white/20 rounded-full hover:bg-white/30"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
+                    <button onclick="window.location.href='notifications.html'" class="p-2 text-white relative">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                        <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
+                    </button>
+                    <button onclick="toggleMenu()" class="p-2 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                </div>
+            </div>
             <div class="text-center">
                 <h1 class="font-bold text-lg">إدارة المراجعة الداخلية</h1>
                 <span class="page-badge">لوحة تحكم المدير</span>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="loadAdminData()" class="p-2 text-white bg-white/20 rounded-full hover:bg-white/30"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
-                <button onclick="window.location.href='notifications.html'" class="p-2 text-white relative">
-                    <i data-lucide="bell" class="w-6 h-6"></i>
-                    <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
-                </button>
             </div>
         </div>
     </header>
@@ -217,21 +223,22 @@
 
         <div id="filters-panel" class="filters-panel">
             <div class="filter-grid">
-                <input type="date" id="f-start" class="f-input" placeholder="من تاريخ">
-                <input type="date" id="f-end" class="f-input" placeholder="إلى تاريخ">
+                <input type="date" id="f-start" class="f-input">
+                <input type="date" id="f-end" class="f-input">
                 <select id="f-emp" class="f-input"><option value="">كل الموظفين</option></select>
                 <select id="f-source" class="f-input"><option value="">كل الجهات</option></select>
                 <select id="f-status" class="f-input">
                     <option value="">كل الحالات</option>
                     <option value="جديد">جديد</option>
-                    <option value="متأخر">متأخر</option>
+                    <option value="بانتظار">بانتظار الاعتماد</option>
                     <option value="تم">تم الاعتماد</option>
+                    <option value="متأخر">متأخر</option>
                 </select>
                 <select id="f-type" class="f-input">
                     <option value="">كل الأنواع</option>
                     <option value="المرور الفني">مرور فني</option>
                     <option value="المرور المالي">مرور مالي</option>
-                    <option value="شكوى">شكوى</option>
+                    <option value="فحص شكوى">فحص شكوى</option>
                 </select>
             </div>
             <div class="flex gap-2">
@@ -314,10 +321,6 @@
                 <div><label class="f-label">تاريخ الوارد</label><input type="date" name="date" class="f-input" required></div>
                 <div><label class="f-label">الموعد النهائي</label><input type="date" name="deadline" class="f-input"></div>
             </div>
-            <div class="flex items-center gap-2 mt-4 bg-yellow-50 p-3 rounded border border-yellow-200">
-                <input type="checkbox" checked class="w-4 h-4">
-                <span class="text-xs font-bold text-yellow-800">إرسال إشعار للموظف وإيميل رسمي</span>
-            </div>
             <button type="submit" class="w-full bg-teal-600 text-white py-3 rounded-lg font-bold mt-4">حفظ وإرسال</button>
         </form>
     </template>
@@ -332,6 +335,12 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -343,7 +352,6 @@
         let allData = { tasks: [], employees: [] };
         let dataTable;
 
-        // --- Init ---
         document.addEventListener('DOMContentLoaded', async () => {
             if (typeof auth === 'undefined' || !auth.checkAuth()) { window.location.href = 'index.html'; return; }
             const user = auth.checkAuth();
@@ -362,6 +370,11 @@
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
         function toggleFilters() { document.getElementById('filters-panel').classList.toggle('active'); }
         
+        function goBack() {
+            const lastPage = localStorage.getItem('iag_last_page') || 'index.html';
+            window.location.href = lastPage;
+        }
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
@@ -385,7 +398,7 @@
                     populateEmployees(data.stats.employees);
                     renderCharts(data);
                     
-                    // Populate Filter Dropdowns
+                    // Populate Filters
                     const emps = data.stats.employees.map(e => `<option>${e.name}</option>`).join('');
                     document.getElementById('f-emp').innerHTML = '<option value="">كل الموظفين</option>' + emps;
                 }
@@ -401,7 +414,8 @@
             document.getElementById('st-pending').innerText = s.pending;
             document.getElementById('st-late').innerText = s.overdue;
             document.getElementById('st-approved').innerText = s.completed;
-            // Additional mock logic for daily/weekly stats if not provided by backend
+            
+            // Period stats (mock logic if not from backend)
             document.getElementById('st-today').innerText = Math.floor(Math.random() * 5); 
             document.getElementById('st-week').innerText = Math.floor(Math.random() * 15);
             document.getElementById('st-month').innerText = Math.floor(Math.random() * 40);
@@ -412,6 +426,8 @@
             dataTable = $('#tasksTable').DataTable({
                 responsive: true,
                 language: { url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/ar.json' },
+                dom: 'Bfrtip',
+                buttons: ['excelHtml5', 'print'],
                 columns: [
                     { data: 'id' },
                     { data: 'subject' },
@@ -457,7 +473,6 @@
 
         // --- Charts ---
         function renderCharts(data) {
-            // Simplified Charts for Admin
             new Chart(document.getElementById('chart1'), {
                 type: 'bar',
                 data: {
@@ -489,7 +504,6 @@
                 body.innerHTML = '';
                 body.appendChild(tpl);
                 
-                // Populate Employee Select
                 const select = body.querySelector('.emp-select');
                 allData.stats.employees.forEach(e => {
                     const opt = document.createElement('option');
@@ -497,19 +511,16 @@
                     select.appendChild(opt);
                 });
                 
-                // Form Submit Handler
                 body.querySelector('form').onsubmit = async (e) => {
                     e.preventDefault();
-                    // Call API to Add Task
                     Swal.fire({ title: 'جاري الحفظ...', didOpen: () => Swal.showLoading() });
-                    // ... API Logic Here ...
+                    // Mock API call
                     setTimeout(() => {
                         Swal.fire('تم!', 'تمت إضافة المعاملة بنجاح', 'success');
                         closeModal();
                     }, 1000);
                 };
             }
-            // Add other cases (edit, delete, etc.) here
         }
 
         function closeModal() { document.getElementById('main-modal').classList.remove('open'); }
@@ -525,7 +536,6 @@
                 confirmButtonText: 'نعم، احذفها'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Call API
                     Swal.fire('تم الحذف!', 'تم حذف المعاملة.', 'success');
                 }
             });
