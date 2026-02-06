@@ -9,6 +9,7 @@
     <link rel="manifest" href="manifest.json">
     
     <title>مؤشرات الأداء | IAG System</title>
+    
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,11 +17,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        /* --- تنسيقات عامة --- */
         body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
-        
-        :root { --primary: #0f766e; }
+        :root { --primary: #0f766e; --secondary: #134e4a; }
 
-        /* --- Header --- */
+        /* --- الألوان (لتوحيد التصميم) --- */
+        .c-total { color: #334155; } 
+        .c-new { color: #3b82f6; } 
+        .c-pending { color: #16a34a; }
+        .c-approved { color: #047857; } 
+        .c-followup { color: #6b7280; } 
+        .c-late { color: #dc2626; }
+
+        /* --- الهيدر (Header) --- */
         .main-header {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             color: white; padding: 1rem 1.5rem 2rem;
@@ -30,15 +39,16 @@
             padding-top: max(1rem, env(safe-area-inset-top));
         }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        
+        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .header-btn:hover { background: rgba(255,255,255,0.2); }
+
         .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; opacity: 0.9; }
         .breadcrumbs a { color: #ccfbf1; text-decoration: none; opacity: 0.8; transition: 0.2s; }
-        .breadcrumbs strong { font-weight: 700; color: white; }
-
+        .breadcrumbs a:hover { color: white; opacity: 1; }
         .dept-title { font-size: 1.1rem; font-weight: 800; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.9; text-align: center; direction: ltr; font-family: sans-serif; }
 
-        /* --- Filters --- */
+        /* --- الفلاتر (Filters) --- */
         .filter-container {
             margin: -1.5rem 1rem 1rem; position: relative; z-index: 20;
             background: white; border-radius: 16px; padding: 1rem;
@@ -48,7 +58,7 @@
         .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
         .f-input { width: 100%; height: 40px; padding: 0 8px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none; background: #fff; }
 
-        /* --- Tabs --- */
+        /* --- نظام التبويبات (Tabs) --- */
         .tabs-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; }
         .tabs-container {
             display: flex; background: #e2e8f0; border-radius: 12px; padding: 4px;
@@ -60,27 +70,23 @@
         }
         .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* --- Stats Cards --- */
+        /* --- كروت الإحصائيات العلوية --- */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 1rem; }
         @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
 
         .stat-card {
             background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px;
-            text-align: center; cursor: pointer; transition: 0.2s;
+            text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: center;
         }
         .stat-card.active { border-color: var(--primary); background: #f0fdfa; ring: 2px solid var(--primary); }
-        .stat-num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+        .stat-num { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
         .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
-        /* --- Colors --- */
-        .c-total { color: #334155; } .c-late { color: #dc2626; }
-        .c-new { color: #3b82f6; } .c-pending { color: #16a34a; }
-        .c-approved { color: #047857; } .c-followup { color: #6b7280; }
-
-        /* --- Leaderboard & Cards --- */
+        /* --- قائمة الكروت (List) --- */
         .cards-list { display: grid; gap: 12px; grid-template-columns: 1fr; padding-bottom: 5rem; }
         @media (min-width: 768px) { .cards-list { grid-template-columns: repeat(2, 1fr); } }
 
+        /* --- تصميم كارت الموظف --- */
         .emp-card {
             background: white; border-radius: 16px; overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.03); border: 1px solid #e5e7eb;
@@ -91,7 +97,8 @@
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-weight: 800; color: white; z-index: 5; font-size: 0.9rem;
         }
-        .rank-1 { background: #fbbf24; } .rank-2 { background: #94a3b8; } .rank-3 { background: #d97706; } .rank-other { background: #f1f5f9; color: #64748b; }
+        .rank-1 { background: #fbbf24; } .rank-2 { background: #94a3b8; } 
+        .rank-3 { background: #d97706; } .rank-other { background: #f1f5f9; color: #64748b; }
 
         .emp-header { padding: 1rem; text-align: center; border-bottom: 1px dashed #e2e8f0; background: #fafafa; }
         .emp-avatar {
@@ -101,12 +108,16 @@
         .emp-name { font-size: 0.95rem; font-weight: 800; color: #1e293b; }
         .emp-dept { font-size: 0.7rem; color: #64748b; }
 
+        /* شبكة أرقام الموظف (التقسيمة الجديدة) */
         .emp-stats-grid { display: flex; flex-direction: column; gap: 6px; padding: 1rem; }
+        
+        /* السطر الأول: كبير */
         .es-row-lg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .es-box-lg { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; text-align: center; }
-        .es-val-lg { font-size: 1.2rem; font-weight: 800; line-height: 1; }
+        .es-val-lg { font-size: 1.3rem; font-weight: 800; line-height: 1; }
         .es-lbl-lg { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
+        /* السطر الثاني: صغير */
         .es-row-sm { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
         .es-box-sm { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px; text-align: center; }
         .es-val-sm { font-size: 0.9rem; font-weight: 800; }
@@ -119,23 +130,30 @@
             display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
         }
 
-        /* --- Modal --- */
+        /* --- القائمة الجانبية (Right Side Menu) --- */
+        .side-menu { 
+            position: fixed; top: 0; right: -260px; width: 260px; height: 100%; 
+            background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); 
+        }
+        .menu-open .side-menu { right: 0; }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+
+        /* --- المودال (Modal) --- */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
         .modal-box { background: white; width: 95%; max-width: 500px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
         .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
         .modal-body { padding: 1.5rem; }
 
-        /* --- Side Menu (Right) --- */
-        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
-        .menu-open .side-menu { right: 0; }
-        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
-
-        .hidden { display: none !important; }
+        /* --- الشريط السفلي (Bottom Nav) --- */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
+
+        .hidden { display: none !important; }
+        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
     </style>
 </head>
 <body>
@@ -166,8 +184,9 @@
         <div class="max-w-[1200px] mx-auto">
             <div class="header-top">
                 <div class="flex gap-3">
-                    <button onclick="toggleMenu()" class="p-2 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
                 </div>
+
                 <div class="text-center">
                     <div class="breadcrumbs mb-1">
                         <a href="coordinator.html">الرئيسية</a> 
@@ -177,8 +196,9 @@
                     <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
                     <p class="dept-subtitle">Internal Audit & Governance Department</p>
                 </div>
+
                 <div class="flex gap-3">
-                    <button onclick="window.location.href='notifications.html'" class="p-2 text-white relative">
+                    <button onclick="window.location.href='notifications.html'" class="header-btn relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
                         <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
                     </button>
@@ -202,15 +222,12 @@
         </div>
 
         <div id="view-employees">
-            <div class="stats-grid" id="stats-emp"></div>
-            <div class="cards-list" id="list-emp">
-                <div class="col-span-full text-center py-8 text-gray-400">جاري التحميل...</div>
+            <div class="stats-grid" id="stats-emp"></div> <div class="cards-list" id="list-emp"> <div class="loader-box">جاري التحميل...</div>
             </div>
         </div>
 
         <div id="view-sources" class="hidden">
-            <div class="stats-grid" id="stats-src"></div>
-            <div class="text-center mb-4"><span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full" id="src-filter-label">اضغط على جهة لعرض التفاصيل</span></div>
+            <div class="stats-grid" id="stats-src"></div> <div class="text-center mb-4"><span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full" id="src-filter-label">اضغط على جهة لعرض التفاصيل</span></div>
             <div class="cards-list" id="list-src">
                 <div class="col-span-full text-center py-8 text-gray-400">اختر جهة من الأعلى لعرض التفاصيل</div>
             </div>
@@ -241,7 +258,7 @@
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allData = []; // Store raw employee data
+        let allData = []; // تخزين البيانات الخام
         let currentTab = 'employees';
         let currentSourceFilter = null;
 
@@ -256,7 +273,6 @@
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
         function logout() { localStorage.clear(); window.location.href = 'index.html'; }
-        function goBack() { window.location.href = 'coordinator.html'; }
         function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
         async function loadData() {
@@ -271,7 +287,7 @@
                 const data = await res.json();
                 if (data.success) {
                     allData = data.employees || [];
-                    switchTab(); // Refresh current view
+                    switchTab(); // تحديث العرض الحالي
                 }
             } catch (e) { console.error(e); }
         }
@@ -284,7 +300,7 @@
             document.getElementById('view-sources').classList.toggle('hidden', tab !== 'sources');
             
             if(tab === 'sources') {
-                currentSourceFilter = null; // Reset selection
+                currentSourceFilter = null;
                 renderSourceAnalysis();
             } else {
                 renderEmployeeAnalysis();
@@ -293,22 +309,25 @@
 
         function switchTab() { setTab(currentTab); }
 
+        // دالة الفلترة الصارمة (للتوحيد في كل مكان)
         function getFilteredEmployees() {
             const group = document.getElementById('f-group').value;
             return allData.filter(e => {
                 const title = (e.dept || e.jobTitle || '').trim();
+                // استبعاد أي مسمى غير المسموح به
                 if (title !== 'مراجع فني' && title !== 'مراجع مالي وإداري') return false;
+                // تطبيق فلتر القائمة
                 if (group === 'tech') return title === 'مراجع فني';
                 if (group === 'admin') return title === 'مراجع مالي وإداري';
                 return true;
             });
         }
 
-        // --- TAB 1: EMPLOYEE ANALYSIS ---
+        // --- TAB 1: تحليل الموظفين ---
         function renderEmployeeAnalysis() {
             const employees = getFilteredEmployees();
             
-            // Calculate Stats
+            // حساب الإحصائيات المجمعة (عشان تطابق الكروت اللي تحت)
             let s = { total:0, late:0, new:0, pending:0, approved:0, followup:0 };
             employees.forEach(e => {
                 s.total += e.total||0; s.late += e.overdue||0;
@@ -321,7 +340,7 @@
                 });
             });
 
-            // Render Stats
+            // رسم الكروت العلوية
             document.getElementById('stats-emp').innerHTML = `
                 <div class="stat-card"><div class="stat-num c-total">${s.total}</div><div class="stat-lbl">الإجمالي</div></div>
                 <div class="stat-card"><div class="stat-num c-late">${s.late}</div><div class="stat-lbl">متأخر</div></div>
@@ -331,12 +350,13 @@
                 <div class="stat-card"><div class="stat-num c-followup">${s.followup}</div><div class="stat-lbl">متابعة</div></div>
             `;
 
-            // Render Cards
+            // رسم قائمة الموظفين
             const list = document.getElementById('list-emp');
             if(employees.length === 0) { list.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400">لا توجد بيانات</div>'; return; }
             
             list.innerHTML = employees.sort((a,b) => b.rate - a.rate).map((emp, i) => {
                 let rankCls = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
+                // حسابات فرعية للكارت
                 let subStats = { new:0, pending:0, app:0, foll:0 };
                 if(emp.tasks) emp.tasks.forEach(t => {
                     const st = (t.status||'');
@@ -373,7 +393,7 @@
             }).join('');
         }
 
-        // --- TAB 2: SOURCE ANALYSIS ---
+        // --- TAB 2: تحليل الجهات ---
         function renderSourceAnalysis() {
             const employees = getFilteredEmployees();
             let sources = { 'نيابة':0, 'قانونية':0, 'وكيل':0, 'أخرى':0 };
@@ -382,7 +402,7 @@
             employees.forEach(e => {
                 if(e.tasks) e.tasks.forEach(t => {
                     total++;
-                    const src = (t.source || t.entity || '').toString().toLowerCase(); // قراءة العمود
+                    const src = (t['الجهة'] || t.source || t.entity || '').toString().toLowerCase();
                     if(src.includes('نيابة')) sources['نيابة']++;
                     else if(src.includes('قانونية')) sources['قانونية']++;
                     else if(src.includes('وكيل')) sources['وكيل']++;
@@ -390,7 +410,7 @@
                 });
             });
 
-            // Render 4 Cards
+            // رسم 4 كروت + الإجمالي
             const keys = ['نيابة', 'قانونية', 'وكيل', 'أخرى'];
             const labels = ['النيابة الإدارية', 'الشؤون القانونية', 'مكتب الوكيل', 'جهات أخرى'];
             
@@ -403,7 +423,7 @@
                     <div class="stat-lbl">${labels[i]}</div>
                 </div>`;
             });
-            // Total Card (Wide)
+            // كارت عريض للإجمالي
             html = `<div class="stat-card col-span-2 bg-teal-50 border-teal-200"><div class="stat-num text-teal-900">${total}</div><div class="stat-lbl">إجمالي الوارد</div></div>` + html;
             
             document.getElementById('stats-src').innerHTML = html;
@@ -412,7 +432,7 @@
 
         function filterBySource(key) {
             currentSourceFilter = key;
-            renderSourceAnalysis(); // Re-render to update active class
+            renderSourceAnalysis();
         }
 
         function renderSourceList() {
@@ -430,17 +450,15 @@
 
             employees.forEach(emp => {
                 let count = 0;
-                let taskIds = [];
                 if(emp.tasks) emp.tasks.forEach(t => {
-                    const src = (t.source || t.entity || '').toString().toLowerCase();
+                    const src = (t['الجهة'] || t.source || t.entity || '').toString().toLowerCase();
                     let match = false;
                     if(currentSourceFilter === 'أخرى') {
                         if(!src.includes('نيابة') && !src.includes('قانونية') && !src.includes('وكيل')) match = true;
                     } else if(src.includes(currentSourceFilter)) {
                         match = true;
                     }
-
-                    if(match) { count++; taskIds.push(t); }
+                    if(match) count++;
                 });
 
                 if(count > 0) {
@@ -464,7 +482,7 @@
             document.getElementById('list-src').innerHTML = listHtml || '<div class="col-span-full text-center py-4 text-gray-400">لا يوجد موظفين لديهم ملفات من هذه الجهة</div>';
         }
 
-        // --- MODAL FIXED (6 Stats) ---
+        // --- المودال (التفاصيل) ---
         function openModal(empName) {
             const emp = allData.find(e => e.name === empName);
             if (!emp) return;
@@ -472,7 +490,7 @@
             document.getElementById('m-title').textContent = emp.name;
             document.getElementById('m-subtitle').textContent = emp.dept;
 
-            // Recalculate Sub Stats for Modal
+            // حسابات للمودال (نفس منطق الكارت)
             let subStats = { new:0, pending:0, app:0, foll:0 };
             let tasksHtml = '';
             
@@ -495,14 +513,14 @@
                     else if(st.includes('متأخر')) badge = 'bg-red-100 text-red-700';
                     else if(st.includes('جديد')) badge = 'bg-blue-100 text-blue-700';
 
-                    tasksHtml += `<tr><td class="p-2 font-bold text-gray-700">${t.source||'-'}</td><td class="p-2 truncate max-w-[150px]">${t.subject}</td><td class="p-2"><span class="px-2 py-1 rounded ${badge}">${t.status}</span></td></tr>`;
+                    tasksHtml += `<tr><td class="p-2 font-bold text-gray-700">${t['الجهة']||t.source||'-'}</td><td class="p-2 truncate max-w-[150px]">${t.subject}</td><td class="p-2"><span class="px-2 py-1 rounded ${badge}">${t.status}</span></td></tr>`;
                 });
                 tasksHtml += '</tbody></table></div>';
             } else {
                 tasksHtml = '<p class="text-center py-4 text-gray-400">لا توجد تفاصيل</p>';
             }
 
-            // HTML Structure for 6 Stats (Matched with Card)
+            // الشكل الجديد للمودال (6 إحصائيات)
             document.getElementById('m-content').innerHTML = `
                 <div class="flex flex-col gap-2 mb-4">
                     <div class="grid grid-cols-2 gap-2">
