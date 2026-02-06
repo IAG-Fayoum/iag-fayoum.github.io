@@ -39,12 +39,11 @@
             padding-top: max(1rem, env(safe-area-inset-top));
         }
         
-        /* ترتيب الهيدر: القائمة يمين - الرجوع يسار */
+        /* ترتيب الهيدر: القائمة يمين - الإشعارات يسار - (تم حذف سهم الرجوع) */
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         
         .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .header-btn:hover { background: rgba(255,255,255,0.2); }
-        .back-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); }
 
         /* مسار التنقل */
         .breadcrumbs { 
@@ -167,7 +166,6 @@
         .btn-details:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
 
         /* --- Side Menu (RTL Corrected) --- */
-        /* السايد بار يخرج من اليمين */
         .side-menu { 
             position: fixed; top: 0; right: -260px; /* مخفي يمين الشاشة */
             width: 260px; height: 100%; background: white; z-index: 100; 
@@ -177,7 +175,6 @@
         }
         .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         
-        /* عند الفتح، الـ right يصبح 0 */
         .menu-open .side-menu { right: 0; } 
         .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
         
@@ -229,7 +226,8 @@
 
                 <div class="text-center">
                     <div class="breadcrumbs mb-1">
-                        <a href="coordinator.html">الرئيسية</a> <i data-lucide="chevron-left" class="w-3 h-3"></i>
+                        <a href="coordinator.html">الرئيسية</a> 
+                        <i data-lucide="chevron-left" class="w-3 h-3"></i>
                         <span class="font-bold">مؤشرات الأداء</span>
                     </div>
                     <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
@@ -240,9 +238,6 @@
                     <button onclick="window.location.href='notifications.html'" class="header-btn relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
                         <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
-                    </button>
-                    <button onclick="goBack()" class="header-btn back-btn" title="رجوع">
-                        <i data-lucide="arrow-left" class="w-6 h-6"></i>
                     </button>
                 </div>
             </div>
@@ -349,11 +344,6 @@
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
         
-        function goBack() {
-            const lastPage = localStorage.getItem('iag_last_page') || 'coordinator.html';
-            window.location.href = lastPage;
-        }
-
         function logout() {
             localStorage.removeItem('iag_user');
             localStorage.removeItem('iag_last_page');
@@ -385,8 +375,6 @@
 
                 if (data.success) {
                     allEmployees = data.employees || [];
-                    // لا نرسم الـ Global Stats فوراً هنا
-                    // بل نستدعي دالة الفلترة لتقوم هي بالحساب والرسم بناءً على الفلاتر
                     filterLeaderboard(); 
                 } else {
                     container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">${data.error || 'لا توجد بيانات'}</div>`;
@@ -400,26 +388,20 @@
         function filterLeaderboard() {
             const group = document.getElementById('f-group').value;
             
-            // 1. فلترة الموظفين (صارمة)
             const filteredEmployees = allEmployees.filter(e => {
-                const title = (e.dept || e.jobTitle || '').trim(); // المسمى الوظيفي
+                const title = (e.dept || e.jobTitle || '').trim();
                 
-                // استبعاد أي مسمى غير الاثنين المطلوبين
                 if (title !== 'مراجع فني' && title !== 'مراجع مالي وإداري') {
                     return false;
                 }
 
-                // تطبيق فلتر القائمة
                 if (group === 'tech') return title === 'مراجع فني';
                 if (group === 'admin') return title === 'مراجع مالي وإداري';
                 
-                return true; // الكل (بعد الاستبعاد)
+                return true;
             });
 
-            // 2. إعادة حساب الأرقام العلوية (Stats) بناءً على الموظفين الظاهرين فقط
             recalculateStats(filteredEmployees);
-
-            // 3. رسم البطاقات
             renderLeaderboard(filteredEmployees);
         }
 
@@ -432,7 +414,6 @@
                 stats.pending += emp.pending || 0;
                 stats.overdue += emp.overdue || 0;
                 
-                // محاولة حساب "جديد" و "متابعة" من مصفوفة المهام إن وجدت
                 if(emp.tasks && emp.tasks.length > 0) {
                     emp.tasks.forEach(t => {
                         const s = (t.status || '').toLowerCase();
@@ -442,7 +423,6 @@
                 }
             });
 
-            // تحديث واجهة الأرقام
             const html = `
                 <div class="stat-card"><span class="stat-num c-total">${stats.total}</span><span class="stat-lbl">الإجمالي</span></div>
                 <div class="stat-card"><span class="stat-num c-new">${stats.new}</span><span class="stat-lbl">جديد</span></div>
@@ -461,7 +441,6 @@
                 return;
             }
 
-            // الترتيب حسب نسبة الإنجاز
             employees.sort((a, b) => {
                 if (b.rate !== a.rate) return b.rate - a.rate;
                 return b.total - a.total;
@@ -482,11 +461,12 @@
                 if (emp.rate >= 90) { progressColor = 'bg-emerald-500'; textColor = 'text-emerald-600'; }
                 else if (emp.rate >= 70) { progressColor = 'bg-yellow-500'; textColor = 'text-yellow-600'; }
 
-                // توزيع الجهات
+                // --- إصلاح اسم الجهة ---
                 const distMap = {};
                 if(emp.tasks) {
                     emp.tasks.forEach(t => {
-                        const src = t.source || 'جهة غير محددة';
+                        // هنا نتحقق من كل الاحتمالات: 'الجهة' (عربي) أو 'source' أو 'entity'
+                        const src = t['الجهة'] || t.source || t.entity || 'جهة غير محددة';
                         distMap[src] = (distMap[src] || 0) + 1;
                     });
                 }
@@ -502,15 +482,6 @@
                             <span class="entity-count">${count}</span>
                         </div>`;
                 });
-
-                // حساب فرعي لـ "جديد" و "متابعة" لهذا الموظف
-                let subNew = 0, subFollow = 0;
-                if(emp.tasks) {
-                    emp.tasks.forEach(t => {
-                        if((t.status||'').includes('جديد')) subNew++;
-                        if((t.status||'').includes('متابعة')) subFollow++;
-                    });
-                }
 
                 html += `
                 <div class="emp-card">
@@ -579,7 +550,7 @@
                         <tbody class="divide-y divide-gray-100">
                             ${emp.tasks.map(t => `
                                 <tr>
-                                    <td class="p-2 font-bold text-gray-700">${t.source || '-'}</td>
+                                    <td class="p-2 font-bold text-gray-700">${t['الجهة'] || t.source || t.entity || '-'}</td>
                                     <td class="p-2 text-gray-600 truncate max-w-[150px]">${t.subject}</td>
                                     <td class="p-2 text-gray-500">${t.date}</td>
                                     <td class="p-2"><span class="px-2 py-1 rounded text-[10px] font-bold ${getStatusColor(t.status)}">${t.status}</span></td>
