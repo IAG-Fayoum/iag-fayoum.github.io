@@ -33,11 +33,20 @@
             padding-top: max(1rem, env(safe-area-inset-top));
         }
         
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         
         .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; }
         .header-btn:hover { background: rgba(255,255,255,0.2); }
         .back-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); }
+
+        /* مسار التنقل (Breadcrumbs) */
+        .breadcrumbs { 
+            display: flex; align-items: center; justify-content: center; gap: 6px; 
+            font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9;
+        }
+        .breadcrumbs a { opacity: 0.7; transition: 0.2s; text-decoration: none; }
+        .breadcrumbs a:hover { opacity: 1; color: white; }
+        .breadcrumbs span { font-weight: 700; color: white; }
 
         .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
@@ -190,6 +199,12 @@
                 </div>
 
                 <div class="text-center">
+                    <div class="breadcrumbs">
+                        <a href="index.html">الرئيسية</a>
+                        <i data-lucide="chevron-left" class="w-3 h-3"></i>
+                        <span>صفحة المنسق</span>
+                    </div>
+
                     <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
                     <p class="dept-subtitle">Internal Audit & Governance Dept</p>
                     <div class="flex justify-center mt-1"><span class="page-label">المنسق</span></div>
@@ -338,9 +353,9 @@
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
         
         function logout() {
-            localStorage.removeItem('iag_user'); // مسح المستخدم
-            localStorage.removeItem('iag_last_page'); // مسح آخر صفحة
-            window.location.href = 'index.html'; // توجيه لصفحة الدخول
+            localStorage.removeItem('iag_user');
+            localStorage.removeItem('iag_last_page');
+            window.location.href = 'index.html';
         }
 
         async function loadData(username) {
