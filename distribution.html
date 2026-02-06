@@ -9,7 +9,6 @@
     <link rel="manifest" href="manifest.json">
     
     <title>مؤشرات الأداء | IAG System</title>
-    
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,23 +16,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* --- تنسيقات عامة --- */
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
-        :root { --primary: #0f766e; --secondary: #134e4a; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        :root { --primary: #0f766e; }
 
-        /* --- الألوان (لتوحيد التصميم) --- */
-        .c-total { color: #334155; } 
-        .c-new { color: #3b82f6; } 
-        .c-pending { color: #16a34a; }
-        .c-approved { color: #047857; } 
-        .c-followup { color: #6b7280; } 
-        .c-late { color: #dc2626; }
-
-        /* --- الهيدر (Header) --- */
+        /* --- Header --- */
         .main-header {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            color: white; padding: 1rem 1.5rem 2rem;
-            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            color: white; padding: 1rem 1.5rem 2.5rem;
+            border-bottom-left-radius: 25px; border-bottom-right-radius: 25px;
             box-shadow: 0 4px 20px rgba(15, 118, 110, 0.25);
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
@@ -44,11 +34,10 @@
 
         .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; opacity: 0.9; }
         .breadcrumbs a { color: #ccfbf1; text-decoration: none; opacity: 0.8; transition: 0.2s; }
-        .breadcrumbs a:hover { color: white; opacity: 1; }
         .dept-title { font-size: 1.1rem; font-weight: 800; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.9; text-align: center; direction: ltr; font-family: sans-serif; }
 
-        /* --- الفلاتر (Filters) --- */
+        /* --- Filters --- */
         .filter-container {
             margin: -1.5rem 1rem 1rem; position: relative; z-index: 20;
             background: white; border-radius: 16px; padding: 1rem;
@@ -58,7 +47,7 @@
         .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
         .f-input { width: 100%; height: 40px; padding: 0 8px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none; background: #fff; }
 
-        /* --- نظام التبويبات (Tabs) --- */
+        /* --- Tabs --- */
         .tabs-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; }
         .tabs-container {
             display: flex; background: #e2e8f0; border-radius: 12px; padding: 4px;
@@ -70,7 +59,7 @@
         }
         .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* --- كروت الإحصائيات العلوية --- */
+        /* --- Stats Cards --- */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 1rem; }
         @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
 
@@ -82,11 +71,15 @@
         .stat-num { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
         .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
-        /* --- قائمة الكروت (List) --- */
-        .cards-list { display: grid; gap: 12px; grid-template-columns: 1fr; padding-bottom: 5rem; }
+        /* Colors */
+        .c-total { color: #334155; } .c-late { color: #dc2626; }
+        .c-new { color: #3b82f6; } .c-pending { color: #16a34a; }
+        .c-approved { color: #047857; } .c-followup { color: #6b7280; }
+
+        /* --- Employee Card --- */
+        .cards-list { display: grid; gap: 12px; grid-template-columns: 1fr; }
         @media (min-width: 768px) { .cards-list { grid-template-columns: repeat(2, 1fr); } }
 
-        /* --- تصميم كارت الموظف --- */
         .emp-card {
             background: white; border-radius: 16px; overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.03); border: 1px solid #e5e7eb;
@@ -97,8 +90,7 @@
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-weight: 800; color: white; z-index: 5; font-size: 0.9rem;
         }
-        .rank-1 { background: #fbbf24; } .rank-2 { background: #94a3b8; } 
-        .rank-3 { background: #d97706; } .rank-other { background: #f1f5f9; color: #64748b; }
+        .rank-1 { background: #fbbf24; } .rank-2 { background: #94a3b8; } .rank-3 { background: #d97706; } .rank-other { background: #f1f5f9; color: #64748b; }
 
         .emp-header { padding: 1rem; text-align: center; border-bottom: 1px dashed #e2e8f0; background: #fafafa; }
         .emp-avatar {
@@ -108,16 +100,19 @@
         .emp-name { font-size: 0.95rem; font-weight: 800; color: #1e293b; }
         .emp-dept { font-size: 0.7rem; color: #64748b; }
 
-        /* شبكة أرقام الموظف (التقسيمة الجديدة) */
+        /* Progress Bar Styles */
+        .progress-wrapper { margin-top: 8px; padding: 0 4px; }
+        .progress-labels { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 2px; font-weight: 700; color: #64748b; }
+        .progress-track { width: 100%; height: 6px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+
+        /* Stats Grid in Card */
         .emp-stats-grid { display: flex; flex-direction: column; gap: 6px; padding: 1rem; }
-        
-        /* السطر الأول: كبير */
         .es-row-lg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .es-box-lg { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; text-align: center; }
         .es-val-lg { font-size: 1.3rem; font-weight: 800; line-height: 1; }
         .es-lbl-lg { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
-        /* السطر الثاني: صغير */
         .es-row-sm { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
         .es-box-sm { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px; text-align: center; }
         .es-val-sm { font-size: 0.9rem; font-weight: 800; }
@@ -130,7 +125,19 @@
             display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
         }
 
-        /* --- القائمة الجانبية (Right Side Menu) --- */
+        /* --- Source List Style --- */
+        .source-item { 
+            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+        }
+        .si-info { display: flex; align-items: center; gap: 10px; }
+        .si-avatar { width: 36px; height: 36px; background: #f0fdfa; color: #0f766e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; }
+        .si-name { font-weight: 700; color: #334155; font-size: 0.9rem; }
+        .si-count-box { text-align: center; }
+        .si-num { font-size: 1.1rem; font-weight: 800; color: #0f766e; line-height: 1; }
+        .si-pct { font-size: 0.65rem; color: #64748b; font-weight: 600; }
+
+        /* --- Side Menu (Right) --- */
         .side-menu { 
             position: fixed; top: 0; right: -260px; width: 260px; height: 100%; 
             background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -140,14 +147,14 @@
         .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
 
-        /* --- المودال (Modal) --- */
+        /* --- Modal --- */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
         .modal-box { background: white; width: 95%; max-width: 500px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
         .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
         .modal-body { padding: 1.5rem; }
 
-        /* --- الشريط السفلي (Bottom Nav) --- */
+        /* --- Bottom Nav --- */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
@@ -186,7 +193,6 @@
                 <div class="flex gap-3">
                     <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
                 </div>
-
                 <div class="text-center">
                     <div class="breadcrumbs mb-1">
                         <a href="coordinator.html">الرئيسية</a> 
@@ -196,7 +202,6 @@
                     <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
                     <p class="dept-subtitle">Internal Audit & Governance Department</p>
                 </div>
-
                 <div class="flex gap-3">
                     <button onclick="window.location.href='notifications.html'" class="header-btn relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
@@ -209,9 +214,52 @@
 
     <div class="filter-container">
         <div class="filters-row">
-            <div><label class="f-label">السنة</label><select id="f-year" class="f-input" onchange="loadData()"><option value="2026" selected>2026</option><option value="2025">2025</option></select></div>
-            <div><label class="f-label">الفترة</label><select id="f-period" class="f-input" onchange="loadData()"><option value="">الكل</option><optgroup label="ربع سنوي"><option value="Q1">Q1</option><option value="Q2">Q2</option><option value="Q3">Q3</option><option value="Q4">Q4</option></optgroup><optgroup label="شهري"><option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option></optgroup></select></div>
-            <div><label class="f-label">المجموعة</label><select id="f-group" class="f-input" onchange="switchTab()"><option value="">الكل</option><option value="admin">مالي وإداري</option><option value="tech">فني وطبي</option></select></div>
+            <div>
+                <label class="f-label">السنة</label>
+                <select id="f-year" class="f-input" onchange="loadData()">
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026" selected>2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                    <option value="2029">2029</option>
+                    <option value="2030">2030</option>
+                </select>
+            </div>
+            <div>
+                <label class="f-label">الفترة</label>
+                <select id="f-period" class="f-input" onchange="loadData()">
+                    <option value="">الكل</option>
+                    <optgroup label="ربع سنوي">
+                        <option value="Q1">الربع الأول</option>
+                        <option value="Q2">الربع الثاني</option>
+                        <option value="Q3">الربع الثالث</option>
+                        <option value="Q4">الربع الرابع</option>
+                    </optgroup>
+                    <optgroup label="شهري">
+                        <option value="1">يناير</option>
+                        <option value="2">فبراير</option>
+                        <option value="3">مارس</option>
+                        <option value="4">أبريل</option>
+                        <option value="5">مايو</option>
+                        <option value="6">يونيو</option>
+                        <option value="7">يوليو</option>
+                        <option value="8">أغسطس</option>
+                        <option value="9">سبتمبر</option>
+                        <option value="10">أكتوبر</option>
+                        <option value="11">نوفمبر</option>
+                        <option value="12">ديسمبر</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div>
+                <label class="f-label">المجموعة</label>
+                <select id="f-group" class="f-input" onchange="switchTab()">
+                    <option value="">الكل</option>
+                    <option value="admin">مالي وإداري</option>
+                    <option value="tech">فني وطبي</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -222,12 +270,15 @@
         </div>
 
         <div id="view-employees">
-            <div class="stats-grid" id="stats-emp"></div> <div class="cards-list" id="list-emp"> <div class="loader-box">جاري التحميل...</div>
+            <div class="stats-grid" id="stats-emp"></div>
+            <div class="cards-list" id="list-emp">
+                <div class="loader-box">جاري التحميل...</div>
             </div>
         </div>
 
         <div id="view-sources" class="hidden">
-            <div class="stats-grid" id="stats-src"></div> <div class="text-center mb-4"><span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full" id="src-filter-label">اضغط على جهة لعرض التفاصيل</span></div>
+            <div class="stats-grid" id="stats-src"></div>
+            <div class="text-center mb-4"><span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full" id="src-filter-label">اضغط على جهة لعرض التفاصيل</span></div>
             <div class="cards-list" id="list-src">
                 <div class="col-span-full text-center py-8 text-gray-400">اختر جهة من الأعلى لعرض التفاصيل</div>
             </div>
@@ -258,7 +309,7 @@
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allData = []; // تخزين البيانات الخام
+        let allData = [];
         let currentTab = 'employees';
         let currentSourceFilter = null;
 
@@ -273,6 +324,7 @@
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
         function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+        function goBack() { window.location.href = 'coordinator.html'; }
         function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
         async function loadData() {
@@ -287,7 +339,7 @@
                 const data = await res.json();
                 if (data.success) {
                     allData = data.employees || [];
-                    switchTab(); // تحديث العرض الحالي
+                    switchTab();
                 }
             } catch (e) { console.error(e); }
         }
@@ -309,25 +361,21 @@
 
         function switchTab() { setTab(currentTab); }
 
-        // دالة الفلترة الصارمة (للتوحيد في كل مكان)
         function getFilteredEmployees() {
             const group = document.getElementById('f-group').value;
             return allData.filter(e => {
                 const title = (e.dept || e.jobTitle || '').trim();
-                // استبعاد أي مسمى غير المسموح به
                 if (title !== 'مراجع فني' && title !== 'مراجع مالي وإداري') return false;
-                // تطبيق فلتر القائمة
                 if (group === 'tech') return title === 'مراجع فني';
                 if (group === 'admin') return title === 'مراجع مالي وإداري';
                 return true;
             });
         }
 
-        // --- TAB 1: تحليل الموظفين ---
+        // --- TAB 1: EMPLOYEES + PERCENTAGE ---
         function renderEmployeeAnalysis() {
             const employees = getFilteredEmployees();
             
-            // حساب الإحصائيات المجمعة (عشان تطابق الكروت اللي تحت)
             let s = { total:0, late:0, new:0, pending:0, approved:0, followup:0 };
             employees.forEach(e => {
                 s.total += e.total||0; s.late += e.overdue||0;
@@ -340,7 +388,6 @@
                 });
             });
 
-            // رسم الكروت العلوية
             document.getElementById('stats-emp').innerHTML = `
                 <div class="stat-card"><div class="stat-num c-total">${s.total}</div><div class="stat-lbl">الإجمالي</div></div>
                 <div class="stat-card"><div class="stat-num c-late">${s.late}</div><div class="stat-lbl">متأخر</div></div>
@@ -350,13 +397,11 @@
                 <div class="stat-card"><div class="stat-num c-followup">${s.followup}</div><div class="stat-lbl">متابعة</div></div>
             `;
 
-            // رسم قائمة الموظفين
             const list = document.getElementById('list-emp');
             if(employees.length === 0) { list.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400">لا توجد بيانات</div>'; return; }
             
             list.innerHTML = employees.sort((a,b) => b.rate - a.rate).map((emp, i) => {
                 let rankCls = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
-                // حسابات فرعية للكارت
                 let subStats = { new:0, pending:0, app:0, foll:0 };
                 if(emp.tasks) emp.tasks.forEach(t => {
                     const st = (t.status||'');
@@ -366,6 +411,12 @@
                     else if(st.includes('متابعة')) subStats.foll++;
                 });
 
+                // حساب النسبة
+                const completionRate = emp.total > 0 ? Math.round((emp.completed / emp.total) * 100) : 0;
+                let barColor = 'bg-red-500';
+                if(completionRate >= 70) barColor = 'bg-yellow-500';
+                if(completionRate >= 90) barColor = 'bg-emerald-500';
+
                 return `
                 <div class="emp-card">
                     <div class="rank-badge ${rankCls}">${i+1}</div>
@@ -373,7 +424,18 @@
                         <div class="emp-avatar">${emp.name.slice(0,2)}</div>
                         <div class="emp-name">${emp.name}</div>
                         <div class="emp-dept">${emp.dept}</div>
+                        
+                        <div class="progress-wrapper">
+                            <div class="progress-labels">
+                                <span>معدل الإنجاز</span>
+                                <span>${completionRate}%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill ${barColor}" style="width: ${completionRate}%"></div>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="emp-stats-grid">
                         <div class="es-row-lg">
                             <div class="es-box-lg"><div class="es-val-lg c-total">${emp.total}</div><div class="es-lbl-lg">الكل</div></div>
@@ -393,7 +455,7 @@
             }).join('');
         }
 
-        // --- TAB 2: تحليل الجهات ---
+        // --- TAB 2: SOURCE ANALYSIS + PERCENTAGE ---
         function renderSourceAnalysis() {
             const employees = getFilteredEmployees();
             let sources = { 'نيابة':0, 'قانونية':0, 'وكيل':0, 'أخرى':0 };
@@ -410,7 +472,6 @@
                 });
             });
 
-            // رسم 4 كروت + الإجمالي
             const keys = ['نيابة', 'قانونية', 'وكيل', 'أخرى'];
             const labels = ['النيابة الإدارية', 'الشؤون القانونية', 'مكتب الوكيل', 'جهات أخرى'];
             
@@ -423,7 +484,6 @@
                     <div class="stat-lbl">${labels[i]}</div>
                 </div>`;
             });
-            // كارت عريض للإجمالي
             html = `<div class="stat-card col-span-2 bg-teal-50 border-teal-200"><div class="stat-num text-teal-900">${total}</div><div class="stat-lbl">إجمالي الوارد</div></div>` + html;
             
             document.getElementById('stats-src').innerHTML = html;
@@ -446,34 +506,42 @@
             document.getElementById('src-filter-label').textContent = `توزيع ملفات: ${labelMap[currentSourceFilter]}`;
 
             const employees = getFilteredEmployees();
-            let listHtml = '';
+            
+            // 1. حساب الإجمالي لهذه الجهة (عشان نحسب النسبة)
+            let totalForSource = 0;
+            employees.forEach(emp => {
+                if(emp.tasks) emp.tasks.forEach(t => {
+                    const src = (t['الجهة'] || t.source || t.entity || '').toString().toLowerCase();
+                    let match = false;
+                    if(currentSourceFilter === 'أخرى') { if(!src.includes('نيابة') && !src.includes('قانونية') && !src.includes('وكيل')) match = true; }
+                    else if(src.includes(currentSourceFilter)) { match = true; }
+                    if(match) totalForSource++;
+                });
+            });
 
+            // 2. عرض القائمة مع النسبة
+            let listHtml = '';
             employees.forEach(emp => {
                 let count = 0;
                 if(emp.tasks) emp.tasks.forEach(t => {
                     const src = (t['الجهة'] || t.source || t.entity || '').toString().toLowerCase();
                     let match = false;
-                    if(currentSourceFilter === 'أخرى') {
-                        if(!src.includes('نيابة') && !src.includes('قانونية') && !src.includes('وكيل')) match = true;
-                    } else if(src.includes(currentSourceFilter)) {
-                        match = true;
-                    }
+                    if(currentSourceFilter === 'أخرى') { if(!src.includes('نيابة') && !src.includes('قانونية') && !src.includes('وكيل')) match = true; }
+                    else if(src.includes(currentSourceFilter)) { match = true; }
                     if(match) count++;
                 });
 
                 if(count > 0) {
+                    const pct = totalForSource > 0 ? Math.round((count / totalForSource) * 100) : 0;
                     listHtml += `
-                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-teal-50 text-teal-700 flex items-center justify-center font-bold">${emp.name.slice(0,2)}</div>
-                            <div>
-                                <div class="font-bold text-gray-800">${emp.name}</div>
-                                <div class="text-xs text-gray-500">${emp.dept}</div>
-                            </div>
+                    <div class="source-item">
+                        <div class="si-info">
+                            <div class="si-avatar">${emp.name.slice(0,2)}</div>
+                            <div class="si-name">${emp.name}</div>
                         </div>
-                        <div class="text-center">
-                            <div class="text-xl font-bold text-teal-600">${count}</div>
-                            <div class="text-[10px] text-gray-400">معاملة</div>
+                        <div class="si-count-box">
+                            <div class="si-num">${count}</div>
+                            <div class="si-pct">${pct}%</div>
                         </div>
                     </div>`;
                 }
@@ -482,7 +550,7 @@
             document.getElementById('list-src').innerHTML = listHtml || '<div class="col-span-full text-center py-4 text-gray-400">لا يوجد موظفين لديهم ملفات من هذه الجهة</div>';
         }
 
-        // --- المودال (التفاصيل) ---
+        // --- MODAL ---
         function openModal(empName) {
             const emp = allData.find(e => e.name === empName);
             if (!emp) return;
@@ -490,7 +558,6 @@
             document.getElementById('m-title').textContent = emp.name;
             document.getElementById('m-subtitle').textContent = emp.dept;
 
-            // حسابات للمودال (نفس منطق الكارت)
             let subStats = { new:0, pending:0, app:0, foll:0 };
             let tasksHtml = '';
             
@@ -520,7 +587,6 @@
                 tasksHtml = '<p class="text-center py-4 text-gray-400">لا توجد تفاصيل</p>';
             }
 
-            // الشكل الجديد للمودال (6 إحصائيات)
             document.getElementById('m-content').innerHTML = `
                 <div class="flex flex-col gap-2 mb-4">
                     <div class="grid grid-cols-2 gap-2">
