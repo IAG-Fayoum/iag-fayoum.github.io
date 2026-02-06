@@ -7,12 +7,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="application-name" content="Governance">
-    <link rel="manifest" href="manifest.json">
     
     <title>بوابة الدخول | IAG System</title>
     
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     <link rel="apple-touch-icon" href="assets/icons/favicon.png">
+    <link rel="manifest" href="manifest.json">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -33,6 +33,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         
+        /* Glass Effect */
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -59,8 +60,10 @@
         .nav-btn {
             transition: all 0.2s ease;
             border: 1px solid transparent;
+            cursor: pointer;
         }
         .nav-btn:active { transform: scale(0.98); }
+        .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         
         .loader {
             border: 3px solid #f3f3f3;
@@ -68,7 +71,6 @@
             border-top: 3px solid #0f766e;
             width: 20px;
             height: 20px;
-            -webkit-animation: spin 1s linear infinite; /* Safari */
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -100,7 +102,7 @@
                     <label class="block text-sm font-bold text-gray-600 mb-2">رقم الموبايل</label>
                     <div class="relative">
                         <i data-lucide="phone" class="absolute right-3 top-3 w-5 h-5 text-gray-400"></i>
-                        <input type="tel" id="mobile" class="input-field w-full pr-10 pl-4 py-3 rounded-xl bg-gray-50 text-gray-800 font-bold" placeholder="01xxxxxxxxx" required pattern="[0-9]{11}">
+                        <input type="tel" id="mobile" class="input-field w-full pr-10 pl-4 py-3 rounded-xl bg-gray-50 text-gray-800 font-bold text-left ltr" placeholder="01xxxxxxxxx" required pattern="[0-9]{11}" dir="ltr">
                     </div>
                 </div>
 
@@ -108,7 +110,7 @@
                     <label class="block text-sm font-bold text-gray-600 mb-2">رمز الدخول (PIN)</label>
                     <div class="relative">
                         <i data-lucide="lock" class="absolute right-3 top-3 w-5 h-5 text-gray-400"></i>
-                        <input type="password" id="pin" class="input-field w-full pr-10 pl-4 py-3 rounded-xl bg-gray-50 text-gray-800 font-bold" placeholder="****" required>
+                        <input type="password" id="pin" class="input-field w-full pr-10 pl-4 py-3 rounded-xl bg-gray-50 text-gray-800 font-bold text-center tracking-widest" placeholder="****" required>
                     </div>
                 </div>
 
@@ -124,7 +126,7 @@
             </form>
             
             <div class="mt-6 text-center">
-                <p class="text-xs text-gray-400">الإصدار 8.0 - SECURE</p>
+                <p class="text-xs text-gray-400">Governance System v8.0</p>
             </div>
         </div>
 
@@ -183,8 +185,10 @@
             errorMsg.classList.add('hidden');
 
             try {
-                // Determine API URL (Handle if config.js is missing for first run)
-                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : 'YOUR_APPS_SCRIPT_URL_HERE'; // Fallback needs manual replacement if config fails
+                // Determine API URL
+                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : ''; 
+                
+                if(!API_URL) throw new Error("خطأ في إعدادات النظام (Config Missing)");
 
                 const response = await fetch(API_URL, {
                     method: 'POST',
@@ -200,6 +204,7 @@
                         role: result.role,
                         email: result.email,
                         jobTitle: result.jobTitle,
+                        mobile: result.mobile,
                         loginTime: new Date().toISOString()
                     };
                     localStorage.setItem('iag_user', JSON.stringify(userData));
@@ -226,7 +231,7 @@
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('nav-view').classList.remove('hidden');
             
-            document.getElementById('user-name').textContent = 'مرحباً د. ' + user.name;
+            document.getElementById('user-name').textContent = 'مرحباً د. ' + user.name.split(' ').slice(0, 2).join(' ');
             document.getElementById('user-role').textContent = user.jobTitle || user.role;
 
             const container = document.getElementById('nav-buttons');
@@ -256,7 +261,7 @@
             return `
             <a href="${url}" onclick="saveLastPage('${url}')" class="nav-btn w-full p-4 rounded-xl shadow-sm flex items-center justify-between group ${classes}">
                 <div class="flex items-center gap-3">
-                    <div class="p-2 bg-white rounded-lg shadow-sm">
+                    <div class="p-2 bg-white/50 rounded-lg shadow-sm">
                         <i data-lucide="${icon}" class="w-5 h-5"></i>
                     </div>
                     <span class="font-bold text-sm">${title}</span>
