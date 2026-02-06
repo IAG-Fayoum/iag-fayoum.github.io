@@ -12,7 +12,6 @@
   
   <link rel="icon" type="image/png" href="assets/icons/favicon.png">
   <link rel="apple-touch-icon" href="assets/icons/favicon.png">
-  <link rel="manifest" href="manifest.json">
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -29,119 +28,149 @@
       overscroll-behavior-y: none;
     }
 
-    /* الهيدر */
-    .header-bg {
+    /* الهيدر الفخم */
+    .header-hero {
       background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(15, 118, 110, 0.25);
-    }
-    
-    /* زر العودة */
-    .btn-back-header {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(4px);
-      padding: 8px;
-      border-radius: 50%;
+      padding-top: 2rem;
+      padding-bottom: 4rem;
+      text-align: center;
       color: white;
-      transition: 0.2s;
-      z-index: 50;
-      cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .btn-back-header:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: scale(1.05);
+      border-bottom-left-radius: 30px;
+      border-bottom-right-radius: 30px;
+      box-shadow: 0 4px 20px rgba(15, 118, 110, 0.15);
+      position: relative;
     }
 
     .logo-circle {
+      width: 80px;
+      height: 80px;
       background: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin: 0 auto 1rem;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+      border: 3px solid rgba(255,255,255,0.3);
+      overflow: hidden;
     }
 
     /* الكروت */
+    .cards-wrapper {
+      max-width: 600px;
+      margin: -3rem auto 2rem;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 10;
+      display: grid;
+      gap: 1rem;
+    }
+
     .form-card {
       background: white;
       border: 1px solid #e2e8f0;
       border-radius: 16px;
-      padding: 16px;
+      padding: 1.25rem;
       display: flex;
       align-items: center;
-      gap: 16px;
-      transition: all 0.2s;
+      gap: 1rem;
       text-decoration: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
     }
-    
+
     .form-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(15, 118, 110, 0.1);
       border-color: #0f766e;
     }
 
     .icon-box {
-      width: 48px;
-      height: 48px;
+      width: 50px;
+      height: 50px;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-weight: bold;
+      flex-shrink: 0;
     }
+    
+    .bg-teal { background: #e6f7f5; color: #0f766e; }
+    .bg-rose { background: #ffe4e6; color: #e11d48; }
+    .bg-amber { background: #fef3c7; color: #f59e0b; }
+    .bg-blue { background: #dbeafe; color: #3b82f6; }
+    .bg-violet { background: #ede9fe; color: #8b5cf6; }
 
-    /* ألوان الأيقونات */
-    .bg-teal { background: linear-gradient(135deg, #2dd4bf, #0f766e); }
-    .bg-blue { background: linear-gradient(135deg, #60a5fa, #2563eb); }
-    .bg-violet { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
-    .bg-orange { background: linear-gradient(135deg, #fb923c, #ea580c); }
-    .bg-rose { background: linear-gradient(135deg, #fb7185, #e11d48); }
-
-    /* الفوتر */
-    .footer-bg {
-      background: #0f172a;
-      color: white;
-      padding: 2rem 0;
+    /* زر العودة */
+    .footer-action {
       margin-top: auto;
+      text-align: center;
+      padding: 2rem;
     }
-    .en-font { font-family: system-ui, -apple-system, sans-serif; letter-spacing: 0.5px; }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: white;
+      color: #64748b;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 50px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-back:hover {
+      border-color: #0f766e;
+      color: #0f766e;
+      background: #f0fdfa;
+    }
   </style>
 </head>
 <body>
 
-  <header class="header-bg pt-8 pb-16 px-4 text-center">
-    
-    <button onclick="goBack()" class="btn-back-header" title="عودة">
-      <i data-lucide="arrow-right" class="w-6 h-6"></i>
-    </button>
-
-    <div class="mx-auto mb-4 logo-circle w-24 h-24 border-4 border-white/20">
-      <img src="assets/icons/favicon.png" class="w-14 h-14 object-contain" alt="Logo">
+  <div class="header-hero">
+    <div class="logo-circle">
+      <img src="assets/icons/favicon.png" onerror="this.style.display='none'" class="w-14 h-14 object-contain" alt="Logo">
     </div>
-    <h1 class="text-2xl font-bold text-white mb-1 drop-shadow-md">
-      نماذج العمل الموحدة
-    </h1>
-    <p class="text-teal-100 text-sm font-medium opacity-90">
-      اختر النموذج المناسب للمهمة
-    </p>
-  </header>
+    <h1 class="text-2xl font-bold mb-1">النماذج الإلكترونية</h1>
+    <p class="text-teal-100 text-sm opacity-90">اختر النموذج المطلوب لفتحه مباشرة</p>
+  </div>
 
-  <div class="flex-grow px-4 py-6 -mt-8 relative z-10 max-w-lg mx-auto w-full space-y-3">
-    
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLScJzJ5YgqZqJ5YgqZqJ5YgqZqJ5YgqZqJ5YgqZqJ5YgqZq/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-teal"><i data-lucide="clipboard-check" class="w-6 h-6"></i></div>
+  <div class="cards-wrapper">
+
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeJhAdpfoQAs6wqMDUD12N_H4YnL0Xv9KITCj2pHGCaKSyhJA/viewform" target="_blank" class="form-card group">
+      <div class="icon-box bg-teal"><i data-lucide="inbox" class="w-6 h-6"></i></div>
       <div class="flex-1">
-        <h3 class="font-bold text-gray-800 text-sm">مأمورية مراجعة (عام)</h3>
-        <p class="text-xs text-gray-500 mt-1">نموذج تقرير المراجعة الدورية</p>
+        <h3 class="font-bold text-gray-800 text-sm">سجل الصادر والوارد</h3>
+        <p class="text-xs text-gray-500 mt-1">تسجيل المعاملات والمكاتبات</p>
       </div>
-      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-teal-600 transition-colors"></i>
+      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-[#0f766e] transition-colors"></i>
+    </a>
+
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeLbdP8tzEyNFaVI53h0jfHMp3j9uJL-mLors14rIjuUQaGIg/viewform" target="_blank" class="form-card group">
+      <div class="icon-box bg-rose"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
+      <div class="flex-1">
+        <h3 class="font-bold text-gray-800 text-sm">فحص الشكاوى</h3>
+        <p class="text-xs text-gray-500 mt-1">منظومة الشكاوى والتحقيقات</p>
+      </div>
+      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-[#e11d48] transition-colors"></i>
+    </a>
+
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfe94k6Im0Y4IODqw3UCLAczVQYdKivnyZ2s8SiCAU4uTwwpA/viewform" target="_blank" class="form-card group">
+      <div class="icon-box bg-amber"><i data-lucide="calculator" class="w-6 h-6"></i></div>
+      <div class="flex-1">
+        <h3 class="font-bold text-gray-800 text-sm">المرور المالي والإداري</h3>
+        <p class="text-xs text-gray-500 mt-1">مراجعة الحسابات والمخزون</p>
+      </div>
+      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-[#f59e0b] transition-colors"></i>
     </a>
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSePbkn17cO2EFDUm4-7A4Le560ep6Zce9-QlyTdP7MEG_eAew/viewform" target="_blank" class="form-card group">
@@ -150,60 +179,40 @@
         <h3 class="font-bold text-gray-800 text-sm">فني وحدات الرعاية</h3>
         <p class="text-xs text-gray-500 mt-1">تفتيش الوحدات الصحية</p>
       </div>
-      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors"></i>
+      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-[#3b82f6] transition-colors"></i>
     </a>
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSedsoD3zW51Lwd7VanPQ1hVMB3OTmmaorOATiMieTXjaOBbRw/viewform" target="_blank" class="form-card group">
       <div class="icon-box bg-violet"><i data-lucide="building-2" class="w-6 h-6"></i></div>
       <div class="flex-1">
         <h3 class="font-bold text-gray-800 text-sm">مرور فني مستشفيات</h3>
-        <p class="text-xs text-gray-500 mt-1">متابعة المستشفيات العامة والمركزية</p>
+        <p class="text-xs text-gray-500 mt-1">المرور الفني على المستشفيات</p>
       </div>
-      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-violet-600 transition-colors"></i>
-    </a>
-
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfpK-Xy3WqZqJ5YgqZqJ5YgqZqJ5YgqZqJ5YgqZqJ5YgqZq/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-orange"><i data-lucide="file-spreadsheet" class="w-6 h-6"></i></div>
-      <div class="flex-1">
-        <h3 class="font-bold text-gray-800 text-sm">الجرد المخزني</h3>
-        <p class="text-xs text-gray-500 mt-1">نماذج الجرد السنوي والمفاجئ</p>
-      </div>
-      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-orange-600 transition-colors"></i>
-    </a>
-
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfpK-Xy3WqZqJ5YgqZqJ5YgqZqJ5YgqZqJ5YgqZqJ5YgqZq/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-rose"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
-      <div class="flex-1">
-        <h3 class="font-bold text-gray-800 text-sm">بلاغ مخالفة عاجل</h3>
-        <p class="text-xs text-gray-500 mt-1">الإبلاغ عن مخالفات جسيمة فورية</p>
-      </div>
-      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-rose-600 transition-colors"></i>
+      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-[#8b5cf6] transition-colors"></i>
     </a>
 
   </div>
 
-  <footer class="footer-bg">
-    <div class="container mx-auto px-4 flex flex-col items-center justify-center gap-3">
-      <div class="logo-circle w-12 h-12 bg-white p-2">
-        <img src="assets/icons/favicon.png" class="w-full h-full object-contain" alt="Logo">
-      </div>
-      <div class="text-sm opacity-90 font-light text-center">
-        <p class="font-bold text-white mb-1 text-sm">إدارة الحوكمة والمراجعة الداخلية</p>
-        <p class="text-[10px] text-slate-500">© 2025 جميع الحقوق محفوظة</p>
-      </div>
-    </div>
-  </footer>
+  <div class="footer-action">
+    <a href="#" onclick="goBack(event)" class="btn-back">
+      <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      <span>العودة</span>
+    </a>
+    <p class="text-[10px] text-gray-400 mt-4">إدارة المراجعة الداخلية والحوكمة © 2025</p>
+  </div>
 
   <script>
     lucide.createIcons();
 
-    function goBack() {
+    function goBack(e) {
+        if(e) e.preventDefault();
+        
         // التحقق من حالة تسجيل الدخول
         const user = localStorage.getItem('iag_user');
         const lastPage = localStorage.getItem('iag_last_page');
 
         if (user && lastPage) {
-            // لو مسجل دخول -> يرجع لآخر صفحة كان فيها
+            // لو مسجل دخول -> يرجع لآخر صفحة كان فيها (منسق/مؤشرات/موظف)
             window.location.href = lastPage;
         } else {
             // لو زائر أو غير مسجل -> يرجع لصفحة الدخول
@@ -211,5 +220,6 @@
         }
     }
   </script>
+
 </body>
 </html>
