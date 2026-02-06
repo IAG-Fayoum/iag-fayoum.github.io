@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Governance">
@@ -31,7 +30,6 @@
       overscroll-behavior-y: none;
     }
 
-    /* الهيدر */
     .header-bg {
       background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
       position: relative;
@@ -48,7 +46,6 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
-    /* الفوتر */
     .footer-bg {
       background: #0f172a;
       color: white;
@@ -56,7 +53,6 @@
       margin-top: auto;
     }
 
-    /* كارت تسجيل الدخول والقائمة */
     .login-card {
       background: white;
       border-radius: 24px;
@@ -70,7 +66,6 @@
       z-index: 10;
     }
 
-    /* الحقول */
     .form-input {
       width: 100%;
       padding: 12px 16px;
@@ -103,7 +98,6 @@
 
     .form-input:focus ~ .input-icon { color: #0f766e; }
 
-    /* الأزرار */
     .btn-login {
       width: 100%;
       background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
@@ -124,7 +118,6 @@
     
     .btn-login:active { transform: scale(0.98); }
 
-    /* زر نماذج العمل (الثابت في شاشة الدخول) */
     .btn-work-forms-static {
       width: 100%;
       margin-top: 12px;
@@ -166,7 +159,6 @@
       margin-bottom: 1rem;
     }
 
-    /* أزرار التنقل (في القائمة الرئيسية) */
     .btn-nav {
       width: 100%;
       background: white;
@@ -277,7 +269,7 @@
       </div>
 
       <div class="space-y-3" id="nav-buttons">
-        </div>
+      </div>
 
       <button onclick="logout()" class="btn-logout mt-6">
         <i data-lucide="log-out" class="w-4 h-4"></i>
@@ -309,7 +301,6 @@
   <script>
     lucide.createIcons();
 
-    // 1. Check Login
     window.addEventListener('load', () => {
       const mobileInput = document.getElementById('mobile-input');
       if (mobileInput) setTimeout(() => mobileInput.focus(), 100);
@@ -325,7 +316,6 @@
       }
     });
 
-    // 2. Login Logic
     const loginForm = document.getElementById('login-form');
     const loginBtn = document.getElementById('login-btn');
     const errorMsg = document.getElementById('error-msg');
@@ -341,7 +331,6 @@
 
         errorMsg.classList.add('hidden');
 
-        // Validation
         if (mobile.length !== 11 || !/^01[0-2,5]\d{8}$/.test(mobile)) {
           errorText.textContent = 'رقم الموبايل غير صحيح';
           errorMsg.classList.remove('hidden');
@@ -354,7 +343,6 @@
           return;
         }
 
-        // Loading
         const originalBtn = loginBtn.innerHTML;
         loginBtn.innerHTML = '<span class="animate-pulse">جاري التحقق...</span>';
         loginBtn.disabled = true;
@@ -389,12 +377,10 @@
       });
     }
 
-    // 3. Navigation Screen Logic (Updated)
     function showNavigationScreen(user) {
       document.getElementById('login-card').classList.add('hidden');
       document.getElementById('navigation-screen').classList.remove('hidden');
       
-      // الترحيب (بدون د.)
       const shortName = user.name.split(' ').slice(0, 2).join(' ');
       document.getElementById('welcome-name').textContent = `مرحباً ${shortName}`;
       document.getElementById('welcome-role').textContent = user.jobTitle || user.role;
@@ -402,25 +388,20 @@
       const container = document.getElementById('nav-buttons');
       let html = '';
 
-      // --- 1. صفحة الموظف (فقط للموظف العادي - تختفي للمنسق/المدير/الأدمن) ---
       if (user.role !== 'منسق' && user.role !== 'مدير' && user.role !== 'Admin') {
         html += createBtn('employee.html', 'صفحتي الشخصية', 'user', 'text-teal-600');
       }
 
-      // --- 2. صفحة المدير (للمدير والأدمن) ---
       if (user.role === 'مدير' || user.role === 'Admin') {
         html += createBtn('admin.html', 'لوحة التحكم', 'layout-dashboard', 'text-purple-600');
       }
 
-      // --- 3. صفحة المنسق (للمنسق والمدير والأدمن) ---
       if (user.role === 'منسق' || user.role === 'مدير' || user.role === 'Admin') {
         html += createBtn('coordinator.html', 'صفحة المنسق', 'clipboard-list', 'text-blue-600');
       }
 
-      // --- 4. المؤشرات (للجميع) ---
       html += createBtn('distribution.html', 'مؤشرات الأداء', 'bar-chart-3', 'text-orange-600');
 
-      // --- 5. نماذج العمل (للجميع - زر إضافي في القائمة) ---
       html += createBtn('forms.html', 'نماذج العمل', 'file-text', 'text-indigo-600');
 
       container.innerHTML = html;
