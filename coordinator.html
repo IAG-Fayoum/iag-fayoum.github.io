@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f766e">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
+    
+    <title>المنسق | IAG System</title>
     
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
@@ -16,10 +19,18 @@
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         
+        /* --- Colors Variables --- */
         :root {
             --primary: #0f766e;
-            --c-new: #3b82f6; --c-pending: #16a34a; --c-approved: #047857;   
-            --c-followup: #6b7280; --c-late: #dc2626;       
+            --secondary: #134e4a;
+            
+            /* Status Colors */
+            --c-total: #334155;
+            --c-new: #3b82f6;        
+            --c-pending: #16a34a;    
+            --c-approved: #047857;   
+            --c-followup: #6b7280;   
+            --c-late: #dc2626;       
         }
 
         /* --- Header --- */
@@ -31,13 +42,9 @@
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
-        
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .back-btn { background: rgba(255,255,255,0.2); border-radius: 50%; padding: 8px; backdrop-filter: blur(4px); transition: 0.2s; }
         
-        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; }
-        .header-btn:hover { background: rgba(255,255,255,0.2); }
-        .back-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); }
-
         .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
         .page-label { 
@@ -46,115 +53,159 @@
             padding: 2px 10px; border-radius: 12px; 
         }
 
-        /* --- Filters --- */
+        /* --- Filter Container --- */
         .filter-container {
             margin: -2.5rem 1rem 1rem; position: relative; z-index: 20;
             background: white; border-radius: 16px; padding: 1rem;
             box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;
         }
         
-        .filter-grid { display: flex; flex-direction: column; gap: 12px; }
+        .filter-grid { display: flex; flex-direction: column; gap: 10px; }
+        
         @media (min-width: 1024px) {
-            .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; }
-            .filter-grid { flex-direction: row; align-items: flex-end; }
-            .filter-item-search { flex: 2; }
-            .filter-item { flex: 1; }
+            .filter-container { max-width: 1200px; margin-left: auto; margin-right: auto; padding: 1.5rem; }
+            .filter-grid { flex-direction: row; align-items: flex-end; flex-wrap: wrap; }
+            .filter-item-search { flex: 2; min-width: 300px; }
+            .filter-item { flex: 1; min-width: 150px; }
+            .filter-item-btn { flex: 0 0 auto; }
         }
 
-        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
+        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
         .f-input {
-            width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px;
-            font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s;
+            width: 100%; height: 42px; padding: 0 12px; 
+            border: 1px solid #cbd5e1; border-radius: 10px;
+            font-size: 0.9rem; outline: none; background: #fff; 
+            transition: all 0.2s; color: #1e293b;
         }
         .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
-
-        .search-wrapper { position: relative; }
-        .search-input { padding-right: 12px; padding-left: 40px; background-color: #f8fafc; }
-        .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; color: #94a3b8; pointer-events: none; }
+        .search-input { background-color: #f8fafc; border-color: #e2e8f0; }
 
         .btn-print {
             background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;
-            border-radius: 10px; height: 44px; width: 44px;
+            border-radius: 10px; height: 42px; width: 42px;
             font-weight: 700; cursor: pointer; transition: 0.2s;
             display: flex; align-items: center; justify-content: center;
         }
         .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
 
-        /* --- Stats --- */
-        .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+        /* --- Stats Layout --- */
+        .stats-wrapper {
+            padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto;
+            display: flex; flex-direction: column; gap: 10px;
+        }
         .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        @media (max-width: 768px) { .stats-row-small { grid-template-columns: repeat(2, 1fr); } }
 
         .stat-card-big {
             background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px;
-            text-align: center; cursor: pointer; height: 90px;
+            text-align: center; cursor: pointer; transition: 0.2s; height: 90px;
             display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); border-width: 2px; }
+        .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15); border-width: 2px; }
         .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
         .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
 
         .stat-card-small {
             background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px;
-            text-align: center; cursor: pointer; min-height: 75px;
+            text-align: center; cursor: pointer; transition: 0.2s; min-height: 75px;
             display: flex; flex-direction: column; justify-content: center;
         }
         .stat-card-small.active { background: #f0fdfa; border-color: var(--primary); border-width: 2px; }
-        .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
-        .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
+        .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+        .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; line-height: 1.1; }
 
-        .txt-total { color: #334155; } .txt-late { color: #dc2626; }
-        .txt-new { color: #3b82f6; } .txt-pending { color: #16a34a; }
-        .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
+        /* Colors */
+        .txt-total { color: var(--c-total); } .txt-late { color: var(--c-late); }
+        .txt-new { color: var(--c-new); } .txt-pending { color: var(--c-pending); }
+        .txt-approved { color: var(--c-approved); } .txt-followup { color: var(--c-followup); }
 
-        /* --- Cards List --- */
-        .cards-container { padding: 0 1rem 5rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; grid-template-columns: 1fr; }
+        /* --- Cards Grid System --- */
+        .cards-container { 
+            padding: 0 1rem 5rem; display: grid; gap: 12px; 
+            max-width: 1200px; margin: 0 auto; 
+            grid-template-columns: 1fr; /* Mobile default */
+        }
         @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
 
+        /* --- Task Card --- */
         .task-card {
-            background: white; border-radius: 14px; overflow: hidden;
+            background: white; border-radius: 14px; overflow: hidden; position: relative;
             box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb;
             display: flex; flex-direction: column; transition: transform 0.2s;
         }
-        .card-stripe { padding: 8px 12px; color: white; font-weight: 700; font-size: 0.75rem; display: flex; justify-content: space-between; }
+        .task-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.08); }
         
-        .bg-new { background-color: #3b82f6; } .bg-pending { background-color: #16a34a; }
-        .bg-approved { background-color: #047857; } .bg-followup { background-color: #6b7280; }
-        .bg-late { background-color: #dc2626; }
+        .card-stripe { 
+            padding: 8px 12px; color: white; font-weight: 700; font-size: 0.75rem; 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        
+        .bg-new { background-color: var(--c-new); } 
+        .bg-pending { background-color: var(--c-pending); }
+        .bg-approved { background-color: var(--c-approved); } 
+        .bg-followup { background-color: var(--c-followup); }
+        .bg-late { background-color: var(--c-late); }
 
         .card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .tc-subject { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.5; }
         .tc-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #475569; }
+        .tc-icon { width: 15px; height: 15px; color: var(--primary); opacity: 0.8; }
         
-        .tc-footer { padding: 10px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; margin-top: auto; }
+        .tc-footer { 
+            padding: 10px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; 
+            display: flex; gap: 8px; margin-top: auto;
+        }
         .btn-card {
             flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;
             display: flex; align-items: center; justify-content: center; gap: 6px;
-            cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569;
+            cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569; transition: 0.2s;
         }
-        
-        /* --- Menu & Modal --- */
-        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
-        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
-        
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        .btn-card:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
+        .btn-attach { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+
+        /* --- Loading & Empty States --- */
+        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
+        .error-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #dc2626; background: #fef2f2; border-radius: 12px; border: 1px dashed #fecaca; }
+        .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; background: white; border-radius: 12px; border: 1px dashed #e2e8f0; }
+
+        /* --- Side Menu --- */
+        .side-menu {
+            position: fixed; top: 0; right: -260px; width: 260px; height: 100%;
+            background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+        }
+        .side-menu-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .menu-open .side-menu { right: 0; }
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200;
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px);
+        }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
-        .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
+        .modal-box {
+            background: white; width: 95%; max-width: 600px; max-height: 90vh;
+            border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column;
+        }
         .modal-header { padding: 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
         .modal-body { padding: 1.5rem; }
+        
         .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 8px; }
-        .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
+        .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; margin-bottom: 2px; }
         .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
-
-        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
-        .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
 
         /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
-        .nav-btn.active { color: var(--primary); }
+        .nav-btn.active { color: var(--primary); } .nav-btn i { width: 22px; height: 22px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -169,13 +220,14 @@
             <p class="text-xs text-teal-600" id="menu-role">...</p>
         </div>
         <nav class="flex-1 p-4 space-y-2">
+            <a href="index.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="home" class="w-4 h-4"></i> الرئيسية</a>
             <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
             <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
             <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
             <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
         </nav>
         <div class="p-4 border-t">
-            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+            <button onclick="auth.logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
                 <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
             </button>
         </div>
@@ -184,22 +236,22 @@
     <header class="main-header">
         <div class="max-w-[1200px] mx-auto">
             <div class="header-top">
+                <button onclick="goBack()" class="back-btn text-white" title="رجوع">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </button>
                 <div class="flex gap-3">
-                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
-                </div>
-
-                <div class="text-center">
-                    <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
-                    <p class="dept-subtitle">Internal Audit & Governance Dept</p>
-                    <div class="flex justify-center mt-1"><span class="page-label">المنسق</span></div>
-                </div>
-
-                <div class="flex gap-3">
-                    <button onclick="window.location.href='notifications.html'" class="header-btn relative">
+                    <button onclick="window.location.href='notifications.html'" class="text-white relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
                         <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
                     </button>
+                    <button onclick="toggleMenu()" class="text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
                 </div>
+            </div>
+            
+            <div class="text-center">
+                <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
+                <p class="dept-subtitle">Internal Audit & Governance Dept</p>
+                <div class="flex justify-center mt-1"><span class="page-label">المنسق</span></div>
             </div>
         </div>
     </header>
@@ -209,41 +261,40 @@
             
             <div class="filter-item-search">
                 <label class="f-label">بحث شامل</label>
-                <div class="search-wrapper">
-                    <input type="text" id="f-search" class="f-input search-input" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
-                    <i data-lucide="search" class="search-icon"></i>
+                <div class="relative">
+                    <input type="text" id="f-search" class="f-input search-input pl-10" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
+                    <i data-lucide="search" class="absolute right-3 top-3 w-4 h-4 text-gray-400"></i>
                 </div>
             </div>
 
             <div class="filter-item">
                 <label class="f-label">الموظف المسؤول</label>
-                <select id="f-emp" class="f-input px-2" onchange="applyFilters()">
+                <select id="f-emp" class="f-input" onchange="applyFilters()">
                     <option value="">عرض الكل</option>
-                    <option value="ALL_ADMIN" class="font-bold bg-teal-50 text-teal-800">-- كل الفريق الإداري والمالي --</option>
-                    <option value="ALL_TECH" class="font-bold bg-blue-50 text-blue-800">-- كل الفريق الفني والطبي --</option>
                     <optgroup label="الفريق الإداري والمالي" id="grp-admin"></optgroup>
                     <optgroup label="الفريق الفني والطبي" id="grp-tech"></optgroup>
+                    <optgroup label="أخرى" id="grp-other"></optgroup>
                 </select>
             </div>
 
             <div class="filter-item">
                 <label class="f-label">الجهة الوارد منها</label>
-                <select id="f-source" class="f-input px-2" onchange="applyFilters()">
+                <select id="f-source" class="f-input" onchange="applyFilters()">
                     <option value="">كل الجهات</option>
                 </select>
             </div>
 
             <div class="filter-item">
-                <label class="f-label">من تاريخ</label>
-                <input type="date" id="f-start" class="f-input px-2" onchange="applyFilters()">
+                <label class="f-label">من</label>
+                <input type="date" id="f-start" class="f-input" onchange="applyFilters()">
             </div>
             <div class="filter-item">
-                <label class="f-label">إلى تاريخ</label>
-                <input type="date" id="f-end" class="f-input px-2" onchange="applyFilters()">
+                <label class="f-label">إلى</label>
+                <input type="date" id="f-end" class="f-input" onchange="applyFilters()">
             </div>
 
             <div class="filter-item-btn">
-                <label class="f-label text-transparent hidden lg:block">.</label>
+                <label class="f-label text-transparent">.</label>
                 <button onclick="window.print()" class="btn-print" title="طباعة">
                     <i data-lucide="printer" class="w-5 h-5"></i>
                 </button>
@@ -299,10 +350,12 @@
         </div>
     </div>
 
-    <nav class="bottom-nav lg:hidden">
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-btn"><i data-lucide="home"></i> الرئيسية</a>
         <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
         <a href="coordinator.html" class="nav-btn active"><i data-lucide="users"></i> المنسق</a>
         <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
+        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
     </nav>
 
     <script src="assets/js/config.js"></script>
@@ -311,8 +364,6 @@
         lucide.createIcons();
         let allTasks = [];
         let allEmployees = [];
-        let adminList = [];
-        let techList = [];
         let currentStatusFilter = '';
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -323,6 +374,7 @@
             document.getElementById('menu-user').textContent = user.name;
             document.getElementById('menu-role').textContent = user.role;
 
+            // Default: Current Month
             const now = new Date();
             const y = now.getFullYear();
             const m = String(now.getMonth() + 1).padStart(2, '0');
@@ -336,10 +388,9 @@
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
         
-        function logout() {
-            localStorage.removeItem('iag_user'); // مسح المستخدم
-            localStorage.removeItem('iag_last_page'); // مسح آخر صفحة
-            window.location.href = 'index.html'; // توجيه لصفحة الدخول
+        function goBack() {
+            const lastPage = localStorage.getItem('iag_last_page') || 'index.html';
+            window.location.href = lastPage;
         }
 
         async function loadData(username) {
@@ -370,32 +421,35 @@
                     lucide.createIcons();
                 }
             } catch (e) {
-                container.innerHTML = `<div class="empty-box"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2 text-red-500"></i>خطأ في الاتصال بالخادم</div>`;
+                container.innerHTML = `<div class="error-box"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2 text-red-500"></i>خطأ في الاتصال بالخادم</div>`;
                 lucide.createIcons();
             }
         }
 
         function populateDropdowns() {
+            // Group Employees
             const grpAdmin = document.getElementById('grp-admin');
             const grpTech = document.getElementById('grp-tech');
+            const grpOther = document.getElementById('grp-other');
             
-            grpAdmin.innerHTML = ''; grpTech.innerHTML = '';
-            adminList = []; techList = [];
+            grpAdmin.innerHTML = ''; grpTech.innerHTML = ''; grpOther.innerHTML = '';
 
             allEmployees.sort((a,b) => a.name.localeCompare(b.name)).forEach(e => {
                 const opt = document.createElement('option');
                 opt.value = e.name; opt.textContent = e.name;
                 
+                // Heuristic Classification
                 const title = (e.jobTitle || '').toLowerCase();
                 if (title.match(/طبيب|صيدلي|فني|تمريض|مراقب|مفتش/)) {
-                    techList.push(e.name);
                     grpTech.appendChild(opt);
-                } else {
-                    adminList.push(e.name);
+                } else if (title.match(/إداري|مالي|قانوني|مراجعة|كاتب/)) {
                     grpAdmin.appendChild(opt);
+                } else {
+                    grpOther.appendChild(opt);
                 }
             });
 
+            // Sources
             const srcSelect = document.getElementById('f-source');
             const sources = new Set(allTasks.map(t => t.source).filter(s => s));
             Array.from(sources).sort().forEach(s => {
@@ -420,7 +474,7 @@
         }
 
         function applyFilters() {
-            const empVal = document.getElementById('f-emp').value;
+            const emp = document.getElementById('f-emp').value;
             const src = document.getElementById('f-source').value;
             const search = document.getElementById('f-search').value.toLowerCase();
             const start = document.getElementById('f-start').value;
@@ -430,16 +484,7 @@
                 if(currentStatusFilter && !(t.status||'').includes(currentStatusFilter)) return false;
                 if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
                 if(src && t.source !== src) return false;
-                
-                if (empVal) {
-                    if (empVal === 'ALL_ADMIN') {
-                        if (!adminList.includes(t.assignee)) return false;
-                    } else if (empVal === 'ALL_TECH') {
-                        if (!techList.includes(t.assignee)) return false;
-                    } else {
-                        if (t.assignee !== empVal) return false;
-                    }
-                }
+                if(emp && t.assignee !== emp) return false;
 
                 if(start && end && t.date) {
                     const isoDate = parseDateToISO(t.date);
@@ -448,14 +493,13 @@
                 return true;
             });
 
-            updateStatsContext(filtered);
+            updateStatsContext();
             renderTasks(filtered);
         }
 
-        function updateStatsContext(filtered) {
-            let c = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
-            
-            const empVal = document.getElementById('f-emp').value;
+        function updateStatsContext() {
+            // Stats logic mirroring backend logic for consistency
+            const emp = document.getElementById('f-emp').value;
             const src = document.getElementById('f-source').value;
             const search = document.getElementById('f-search').value.toLowerCase();
             const start = document.getElementById('f-start').value;
@@ -464,11 +508,8 @@
             const contextData = allTasks.filter(t => {
                 if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
                 if(src && t.source !== src) return false;
-                if (empVal) {
-                    if (empVal === 'ALL_ADMIN') { if (!adminList.includes(t.assignee)) return false; }
-                    else if (empVal === 'ALL_TECH') { if (!techList.includes(t.assignee)) return false; }
-                    else { if (t.assignee !== empVal) return false; }
-                }
+                if(emp && t.assignee !== emp) return false;
+                
                 if(start && end && t.date) {
                     const isoDate = parseDateToISO(t.date);
                     if(isoDate && (isoDate < start || isoDate > end)) return false;
@@ -476,6 +517,7 @@
                 return true;
             });
 
+            let c = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
             contextData.forEach(t => {
                 c.total++;
                 const s = (t.status||'');
@@ -494,12 +536,12 @@
             document.getElementById('c-late').textContent = c.late;
         }
 
-        function updateStats() { applyFilters(); }
+        function updateStats() { updateStatsContext(); }
 
         function renderTasks(tasks) {
             const container = document.getElementById('tasks-list');
             if(tasks.length === 0) {
-                container.innerHTML = `<div class="empty-box">لا توجد نتائج مطابقة</div>`;
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">لا توجد نتائج مطابقة</div>`;
                 return;
             }
 
