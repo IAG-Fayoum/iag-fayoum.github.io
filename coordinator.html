@@ -42,6 +42,9 @@
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .back-btn { background: rgba(255,255,255,0.2); border-radius: 50%; padding: 8px; backdrop-filter: blur(4px); transition: 0.2s; }
+        
         .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
         .page-label { 
@@ -231,17 +234,25 @@
     </aside>
 
     <header class="main-header">
-        <div class="max-w-[1200px] mx-auto flex justify-between items-center">
-            <button onclick="toggleMenu()" class="p-2 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
+        <div class="max-w-[1200px] mx-auto">
+            <div class="header-top">
+                <button onclick="goBack()" class="back-btn text-white" title="رجوع">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </button>
+                <div class="flex gap-3">
+                    <button onclick="window.location.href='notifications.html'" class="text-white relative">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
+                    </button>
+                    <button onclick="toggleMenu()" class="text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                </div>
+            </div>
+            
             <div class="text-center">
                 <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
                 <p class="dept-subtitle">Internal Audit & Governance Dept</p>
                 <div class="flex justify-center mt-1"><span class="page-label">المنسق</span></div>
             </div>
-            <button onclick="window.location.href='notifications.html'" class="p-2 text-white relative">
-                <i data-lucide="bell" class="w-6 h-6"></i>
-                <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
-            </button>
         </div>
     </header>
 
@@ -339,7 +350,7 @@
         </div>
     </div>
 
-    <nav class="bottom-nav lg:hidden">
+    <nav class="bottom-nav">
         <a href="index.html" class="nav-btn"><i data-lucide="home"></i> الرئيسية</a>
         <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
         <a href="coordinator.html" class="nav-btn active"><i data-lucide="users"></i> المنسق</a>
@@ -376,6 +387,11 @@
         });
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
+        
+        function goBack() {
+            const lastPage = localStorage.getItem('iag_last_page') || 'index.html';
+            window.location.href = lastPage;
+        }
 
         async function loadData(username) {
             const container = document.getElementById('tasks-list');
