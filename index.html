@@ -1,425 +1,302 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-  
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Governance">
-  <meta name="application-name" content="Governance">
-  
-  <link rel="icon" type="image/png" href="assets/icons/favicon.png">
-  <link rel="apple-touch-icon" href="assets/icons/favicon.png">
-  <link rel="manifest" href="manifest.json">
-  
-  <title>بوابة إدارة المراجعة الداخلية والحوكمة</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
-    * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
-    .en-font { font-family: system-ui, -apple-system, sans-serif; letter-spacing: 0.5px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="application-name" content="Governance">
     
-    body {
-      min-height: 100vh;
-      background-color: #f8fafc;
-      background-image: radial-gradient(#0f766e 0.5px, transparent 0.5px), radial-gradient(#0f766e 0.5px, #f8fafc 0.5px);
-      background-size: 20px 20px;
-      background-position: 0 0, 10px 10px;
-      background-attachment: fixed;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      overflow: hidden;
-    }
-
-    .glass-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      box-shadow: 0 8px 32px rgba(15, 118, 110, 0.1);
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 400px;
-      border-radius: 24px;
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    /* Logo Animation */
-    .logo-circle {
-      position: relative;
-      z-index: 10;
-      background: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 25px -5px rgba(15, 118, 110, 0.2);
-      animation: float 6s ease-in-out infinite;
-    }
+    <title>بوابة الدخول | IAG System</title>
     
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-8px); }
-    }
-
-    /* Inputs */
-    .input-group { position: relative; margin-bottom: 1.25rem; }
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+    <link rel="apple-touch-icon" href="assets/icons/favicon.png">
+    <link rel="manifest" href="manifest.json">
     
-    .custom-input {
-      width: 100%;
-      padding: 14px 45px 14px 16px;
-      border: 2px solid #e2e8f0;
-      border-radius: 16px;
-      font-size: 1rem;
-      font-weight: 600;
-      color: #1e293b;
-      background: rgba(255, 255, 255, 0.8);
-      transition: all 0.25s ease;
-    }
-    
-    .custom-input:focus {
-      border-color: #0f766e;
-      box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
-      outline: none;
-      background: white;
-    }
-    
-    .input-icon {
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #94a3b8;
-      transition: 0.25s;
-    }
-    
-    .custom-input:focus ~ .input-icon { color: #0f766e; }
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    /* Button */
-    .btn-login {
-      width: 100%;
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      color: white;
-      padding: 14px;
-      border-radius: 16px;
-      font-weight: 700;
-      font-size: 1rem;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 15px rgba(15, 118, 110, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .btn-login:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(15, 118, 110, 0.4);
-    }
-    
-    .btn-login:active { transform: translateY(0); }
+    <style>
+        /* --- Original Styles --- */
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #f8fafc; 
+            background-image: radial-gradient(#0f766e 0.5px, transparent 0.5px), radial-gradient(#0f766e 0.5px, #f8fafc 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
 
-    /* Forms Button */
-    .forms-btn {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: white;
-      color: #0f766e;
-      padding: 10px 24px;
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      border: 1px solid #e2e8f0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s;
-      z-index: 50;
-      text-decoration: none;
-    }
-    
-    .forms-btn:hover {
-      transform: translateX(-50%) translateY(-3px);
-      box-shadow: 0 8px 25px rgba(15, 118, 110, 0.15);
-      border-color: #ccfbf1;
-    }
+        .input-field {
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        .input-field:focus {
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+            outline: none;
+        }
 
-    /* --- Navigation Screen Styles --- */
-    .btn-nav {
-      width: 100%;
-      background: white;
-      color: #334155;
-      border: 2px solid #e2e8f0;
-      padding: 14px 16px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-align: right;
-    }
+        .btn-primary {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:active { transform: scale(0.98); }
 
-    .btn-nav:hover {
-      border-color: #0f766e;
-      background: #f0fdfa;
-      transform: translateX(-4px);
-    }
+        /* Navigation Buttons Style (Matching Original) */
+        .nav-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .nav-btn:hover {
+            border-color: #0f766e;
+            background-color: #f0fdfa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .nav-btn:active { transform: scale(0.98); }
+        
+        /* Floating Button */
+        .forms-btn {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: white; color: #0f766e; padding: 10px 24px; border-radius: 50px;
+            font-weight: 700; font-size: 0.9rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px;
+            transition: all 0.2s; z-index: 50; text-decoration: none;
+        }
+        .forms-btn:hover { transform: translateX(-50%) translateY(-3px); box-shadow: 0 8px 25px rgba(15, 118, 110, 0.15); border-color: #ccfbf1; }
 
-    .btn-nav:active { transform: translateX(-2px); }
+        .loader {
+            border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #0f766e;
+            width: 20px; height: 20px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    .btn-logout {
-      width: 100%;
-      background: #fee2e2;
-      color: #b91c1c;
-      border: 2px solid #fecaca;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .btn-logout:hover { background: #fecaca; border-color: #dc2626; }
-
-    .hidden { display: none !important; }
-    .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  </style>
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .hidden { display: none !important; }
+        .ltr { direction: ltr; }
+    </style>
 </head>
-<body>
+<body class="p-4">
 
-  <div class="fixed top-0 left-0 w-full h-2 bg-gradient-to-r from-teal-500 via-emerald-600 to-teal-800 z-50"></div>
+    <div class="w-full max-w-md">
+        
+        <div class="text-center mb-8 fade-in">
+            <div class="w-24 h-24 bg-white rounded-full mx-auto flex items-center justify-center mb-4 shadow-lg border-4 border-teal-50 relative overflow-hidden">
+                <div class="absolute inset-0 bg-teal-600 opacity-10"></div>
+                <i data-lucide="shield-check" class="w-12 h-12 text-teal-700 relative z-10"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-1">إدارة المراجعة الداخلية</h1>
+            <p class="text-sm text-gray-500 font-semibold">مديرية الشؤون الصحية بالفيوم</p>
+        </div>
 
-  <div id="login-card" class="login-card glass-card fade-in">
-    
-    <div class="text-center mb-8">
-      <div class="mx-auto mb-4 logo-circle w-24 h-24 border-4 border-white">
-        <img src="assets/icons/favicon.png" class="w-16 h-16 object-contain" alt="Logo">
-      </div>
-      <h1 class="text-2xl font-black text-slate-800 tracking-tight">إدارة المراجعة الداخلية</h1>
-      <p class="text-sm text-slate-500 font-bold mt-1">نظام الحوكمة الرقمي v8.0</p>
-    </div>
+        <div id="login-view" class="glass-card rounded-2xl p-8 fade-in">
+            <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">تسجيل الدخول</h2>
+            
+            <form id="login-form" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 mb-2">رقم الموبايل</label>
+                    <div class="relative">
+                        <i data-lucide="phone" class="absolute right-3 top-3 w-5 h-5 text-gray-400"></i>
+                        <input type="tel" id="mobile" class="input-field w-full pr-10 pl-4 py-3 rounded-xl bg-gray-50 text-gray-800 font-bold text-left ltr" placeholder="01xxxxxxxxx" required pattern="[0-9]{11}" dir="ltr">
+                    </div>
+                </div>
 
-    <form id="login-form">
-      <div class="input-group">
-        <input type="tel" id="mobile-input" class="custom-input en-font" placeholder="رقم الموبايل" autocomplete="tel" maxlength="11">
-        <i data-lucide="phone" class="input-icon w-5 h-5"></i>
-      </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 mb-2">رمز الدخول (PIN)</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute right-3 top-3 w-5 h-5 text-gray-400"></i>
+                        <input type="password" id="pin" class="input-field w-full pr-10 pl-4 py-3 rounded-xl bg-gray-50 text-gray-800 font-bold text-center tracking-widest" placeholder="****" required>
+                    </div>
+                </div>
 
-      <div class="input-group">
-        <input type="password" id="pin-input" class="custom-input en-font" placeholder="رمز الدخول (PIN)" autocomplete="current-password" maxlength="4">
-        <i data-lucide="lock" class="input-icon w-5 h-5"></i>
-      </div>
+                <div id="error-msg" class="hidden bg-red-50 text-red-600 p-3 rounded-lg text-sm font-bold flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                    <span id="error-text">بيانات الدخول غير صحيحة</span>
+                </div>
 
-      <div id="error-msg" class="hidden mb-4 p-3 bg-red-50 border border-red-100 rounded-xl flex items-center gap-2 animate-pulse">
-        <i data-lucide="alert-circle" class="w-5 h-5 text-red-500"></i>
-        <span id="error-text" class="text-xs font-bold text-red-600">بيانات الدخول غير صحيحة</span>
-      </div>
+                <button type="submit" id="login-btn" class="btn-primary w-full text-white py-3.5 rounded-xl font-bold shadow-lg shadow-teal-700/20 flex items-center justify-center gap-2">
+                    <span>دخول للنظام</span>
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-[10px] text-gray-400 font-semibold">جميع الحقوق محفوظة © 2026</p>
+            </div>
+        </div>
 
-      <button type="submit" id="login-btn" class="btn-login flex justify-center items-center gap-2">
-        <span>تسجيل الدخول</span>
-        <i data-lucide="arrow-left" class="w-5 h-5"></i>
-      </button>
-    </form>
+        <div id="nav-view" class="glass-card rounded-2xl p-6 fade-in hidden">
+            <div class="text-center mb-6 pb-4 border-b border-gray-100">
+                <h2 class="text-lg font-bold text-gray-800" id="user-name">...</h2>
+                <p class="text-xs text-teal-600 font-bold mt-1" id="user-role">...</p>
+            </div>
 
-    <div class="mt-6 text-center">
-      <p class="text-[10px] text-slate-400 font-bold">جميع الحقوق محفوظة © 2026</p>
-    </div>
-  </div>
+            <div class="space-y-3" id="nav-buttons">
+                </div>
 
-  <div id="navigation-screen" class="login-card glass-card hidden fade-in">
-    
-    <div class="text-center mb-6">
-      <div class="mx-auto mb-3 logo-circle w-20 h-20 border border-gray-100">
-        <img src="assets/icons/favicon.png" class="w-14 h-14 object-contain" alt="Logo">
-      </div>
-      <h2 class="text-lg font-bold text-slate-800" id="welcome-name">مرحباً</h2>
-      <p class="text-xs text-slate-500 mt-1 font-bold" id="welcome-role">-</p>
-    </div>
-
-    <div class="space-y-3">
-      
-      <button onclick="goToPage('employee.html')" class="btn-nav">
-        <i data-lucide="user" class="w-5 h-5 text-teal-600"></i>
-        <span>صفحتي الشخصية</span>
-        <i data-lucide="chevron-left" class="w-4 h-4 mr-auto text-slate-400"></i>
-      </button>
-
-      <button id="btn-admin" onclick="goToPage('admin.html')" class="btn-nav hidden">
-        <i data-lucide="layout-dashboard" class="w-5 h-5 text-purple-600"></i>
-        <span>لوحة التحكم</span>
-        <i data-lucide="chevron-left" class="w-4 h-4 mr-auto text-slate-400"></i>
-      </button>
-
-      <button id="btn-coordinator" onclick="goToPage('coordinator.html')" class="btn-nav hidden">
-        <i data-lucide="clipboard-list" class="w-5 h-5 text-blue-600"></i>
-        <span>صفحة المنسق</span>
-        <i data-lucide="chevron-left" class="w-4 h-4 mr-auto text-slate-400"></i>
-      </button>
-
-      <button onclick="goToPage('distribution.html')" class="btn-nav">
-        <i data-lucide="bar-chart-3" class="w-5 h-5 text-orange-600"></i>
-        <span>مؤشرات الأداء</span>
-        <i data-lucide="chevron-left" class="w-4 h-4 mr-auto text-slate-400"></i>
-      </button>
+            <button onclick="logout()" class="w-full mt-6 bg-red-50 text-red-600 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-100 transition-colors border border-red-100">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+                تسجيل الخروج
+            </button>
+        </div>
 
     </div>
 
-    <button onclick="logout()" class="btn-logout mt-6">
-      <i data-lucide="log-out" class="w-4 h-4"></i>
-      <span>تسجيل الخروج</span>
-    </button>
+    <a href="forms.html" class="forms-btn">
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+        <span>نماذج العمل</span>
+    </a>
 
-  </div>
+    <script src="assets/js/config.js"></script>
+    <script>
+        lucide.createIcons();
 
-  <a href="forms.html" class="forms-btn">
-    <i data-lucide="file-text" class="w-5 h-5"></i>
-    <span>نماذج العمل</span>
-  </a>
+        // 1. Check Login on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedUser = localStorage.getItem('iag_user');
+            if (storedUser) {
+                try {
+                    const user = JSON.parse(storedUser);
+                    showNavScreen(user);
+                } catch (e) {
+                    localStorage.removeItem('iag_user');
+                }
+            }
+        });
 
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/auth.js"></script>
-  <script>
-    lucide.createIcons();
+        // 2. Login Logic
+        const loginForm = document.getElementById('login-form');
+        const loginBtn = document.getElementById('login-btn');
+        const errorMsg = document.getElementById('error-msg');
+        const errorText = document.getElementById('error-text');
 
-    // --- 1. Check Login on Load ---
-    window.addEventListener('load', () => {
-      // Focus input
-      const mobileInput = document.getElementById('mobile-input');
-      if (mobileInput) setTimeout(() => mobileInput.focus(), 100);
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const mobile = document.getElementById('mobile').value.trim();
+            const pin = document.getElementById('pin').value.trim();
+            
+            // UI Loading
+            const originalBtnContent = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<div class="loader"></div>';
+            loginBtn.disabled = true;
+            errorMsg.classList.add('hidden');
 
-      // Check LocalStorage
-      const userStr = localStorage.getItem('user');
-      if (userStr) {
-        try {
-          const user = JSON.parse(userStr);
-          showNavigationScreen(user);
-        } catch(e) {
-          localStorage.removeItem('user');
+            try {
+                const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : ''; 
+                if(!API_URL) throw new Error("خطأ في إعدادات النظام");
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'login', mobile: mobile, pin: pin })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Save User
+                    const userData = {
+                        name: result.name,
+                        role: result.role,
+                        email: result.email,
+                        jobTitle: result.jobTitle,
+                        mobile: result.mobile,
+                        loginTime: new Date().toISOString()
+                    };
+                    localStorage.setItem('iag_user', JSON.stringify(userData));
+                    
+                    // Transition
+                    showNavScreen(userData);
+                } else {
+                    throw new Error(result.error || 'بيانات الدخول غير صحيحة');
+                }
+
+            } catch (error) {
+                console.error(error);
+                errorText.textContent = error.message === 'Failed to fetch' ? 'خطأ في الاتصال بالخادم' : error.message;
+                errorMsg.classList.remove('hidden');
+            } finally {
+                loginBtn.innerHTML = originalBtnContent;
+                loginBtn.disabled = false;
+                lucide.createIcons();
+            }
+        });
+
+        // 3. Render Navigation Screen
+        function showNavScreen(user) {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('nav-view').classList.remove('hidden');
+            
+            // Format Name (First 2 names)
+            const shortName = user.name.split(' ').slice(0, 2).join(' ');
+            document.getElementById('user-name').textContent = 'مرحباً د. ' + shortName;
+            document.getElementById('user-role').textContent = user.jobTitle || user.role;
+
+            const container = document.getElementById('nav-buttons');
+            let html = '';
+
+            // 1. Employee Page (Everyone)
+            html += createBtn('employee.html', 'صفحتي الشخصية', 'user', 'text-teal-700');
+
+            // 2. Admin Page (Admin Only)
+            if (user.role === 'مدير' || user.role === 'Admin') {
+                html += createBtn('admin.html', 'لوحة التحكم (Admin)', 'layout-dashboard', 'text-purple-700');
+            }
+
+            // 3. Coordinator Page (Coordinator + Admin)
+            if (user.role === 'منسق' || user.role === 'مدير' || user.role === 'Admin') {
+                html += createBtn('coordinator.html', 'صفحة المنسق', 'clipboard-list', 'text-blue-700');
+            }
+
+            // 4. Dashboard (Everyone)
+            html += createBtn('distribution.html', 'مؤشرات الأداء', 'bar-chart-2', 'text-orange-700');
+
+            container.innerHTML = html;
+            lucide.createIcons();
         }
-      }
-    });
 
-    // --- 2. Login Logic ---
-    const loginForm = document.getElementById('login-form');
-    const loginBtn = document.getElementById('login-btn');
-    const errorMsg = document.getElementById('error-msg');
-    const errorText = document.getElementById('error-text');
-
-    if (loginForm) {
-      loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (typeof auth === 'undefined') return;
-        
-        const mobile = document.getElementById('mobile-input').value.trim();
-        const pin = document.getElementById('pin-input').value.trim();
-        
-        errorMsg.classList.add('hidden');
-        
-        // Validation
-        if (mobile.length !== 11 || !/^01[0-2,5]\d{8}$/.test(mobile)) {
-          errorText.textContent = 'رقم الموبايل غير صحيح (11 رقم)';
-          errorMsg.classList.remove('hidden');
-          return;
+        function createBtn(url, title, icon, colorClass) {
+            return `
+            <a href="${url}" onclick="saveLastPage('${url}')" class="nav-btn w-full p-4 rounded-xl flex items-center justify-between group">
+                <div class="flex items-center gap-4">
+                    <div class="p-2 bg-gray-50 rounded-lg shadow-sm group-hover:bg-white transition-colors">
+                        <i data-lucide="${icon}" class="w-5 h-5 ${colorClass}"></i>
+                    </div>
+                    <span class="font-bold text-gray-700 group-hover:text-teal-800 transition-colors">${title}</span>
+                </div>
+                <i data-lucide="chevron-left" class="w-5 h-5 text-gray-400 group-hover:text-teal-600 transition-colors"></i>
+            </a>
+            `;
         }
-        
-        if (pin.length < 4) {
-          errorText.textContent = 'تأكد من رمز الدخول';
-          errorMsg.classList.remove('hidden');
-          return;
+
+        function saveLastPage(url) {
+            localStorage.setItem('iag_last_page', url);
         }
-        
-        // Loading State
-        const originalBtn = loginBtn.innerHTML;
-        loginBtn.innerHTML = '<span class="animate-pulse">جاري التحقق...</span>';
-        loginBtn.disabled = true;
-        
-        try {
-          const result = await auth.login(mobile, pin);
-          
-          if (!result.success) {
-            throw new Error(result.error || 'بيانات الدخول غير صحيحة');
-          }
 
-          // Success Logic
-          const userData = {
-            name: result.name,
-            email: result.email,
-            jobTitle: result.jobTitle,
-            role: result.role,
-            mobile: result.mobile,
-            loginTime: new Date().toISOString()
-          };
-          
-          localStorage.setItem('user', JSON.stringify(userData));
-          showNavigationScreen(userData);
-
-        } catch (error) {
-          errorText.textContent = error.message === 'Failed to fetch' ? 'خطأ في الاتصال بالخادم' : error.message;
-          errorMsg.classList.remove('hidden');
-          
-          // Reset Button
-          loginBtn.innerHTML = originalBtn;
-          loginBtn.disabled = false;
-          lucide.createIcons();
+        function logout() {
+            localStorage.removeItem('iag_user');
+            localStorage.removeItem('iag_last_page');
+            window.location.reload();
         }
-      });
-    }
-
-    // --- 3. Navigation Helpers ---
-    function showNavigationScreen(user) {
-      // Hide Login, Show Nav
-      document.getElementById('login-card').classList.add('hidden');
-      document.getElementById('navigation-screen').classList.remove('hidden');
-      
-      // Update Info
-      document.getElementById('welcome-name').textContent = `مرحباً ${user.name.split(' ')[0]}`; // First name only
-      document.getElementById('welcome-role').textContent = user.jobTitle;
-      
-      // Role Based Buttons
-      if (user.role === 'مدير' || user.role === 'Admin') {
-        document.getElementById('btn-admin').classList.remove('hidden');
-        document.getElementById('btn-coordinator').classList.remove('hidden'); // Admin sees everything
-      } else if (user.role === 'منسق') {
-        document.getElementById('btn-coordinator').classList.remove('hidden');
-      }
-      
-      lucide.createIcons();
-    }
-
-    function goToPage(page) {
-      localStorage.setItem('lastPage', page);
-      window.location.href = page;
-    }
-
-    function logout() {
-      localStorage.removeItem('user');
-      localStorage.removeItem('lastPage');
-      window.location.reload();
-    }
-  </script>
+    </script>
 </body>
 </html>
