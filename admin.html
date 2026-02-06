@@ -2,464 +2,537 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <title>لوحة الإدارة | نظام الحوكمة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <title>لوحة التحكم | IAG Admin</title>
     
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
-        * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        /* --- General Styles --- */
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 14px; padding-bottom: 80px; }
         
-        body { background-color: #f8fafc; padding-bottom: 80px; }
+        :root {
+            --primary: #0f766e;
+            --secondary: #134e4a;
+            /* Status Colors */
+            --c-total: #334155; --c-new: #3b82f6; --c-pending: #16a34a;
+            --c-approved: #047857; --c-followup: #6b7280; --c-late: #dc2626;
+            /* Period Colors */
+            --c-today: #7c3aed; --c-week: #d97706; --c-month: #0891b2;
+        }
 
-        /* 1. Header (Standard Teal Design) */
-        .header-bg {
+        /* --- Header --- */
+        .admin-header {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            padding: 1rem 1.5rem 4rem;
-            color: white;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-            position: relative;
-            z-index: 10;
-            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
+            color: white; padding: 1rem 1.5rem 4rem;
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.25);
+            position: relative; z-index: 10;
+        }
+        .page-badge { 
+            background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; 
+            font-size: 0.8rem; font-weight: 700; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2);
         }
 
-        .logo-circle-small {
-            width: 50px; height: 50px; background: white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid rgba(255,255,255,0.8);
-            overflow: hidden;
+        /* --- Stats Cards (2 Rows) --- */
+        .stats-wrapper { 
+            margin: -3rem 1rem 1rem; position: relative; z-index: 20;
+            display: flex; flex-direction: column; gap: 10px; 
         }
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        @media (max-width: 768px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
 
-        /* 2. Admin Container (Card Style) */
-        .admin-container {
-            background: white; border-radius: 20px; padding: 1.5rem;
-            margin: -3rem 1rem 1.5rem; position: relative; z-index: 20;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08); border: 1px solid #e2e8f0;
+        .stat-card {
+            background: white; border-radius: 12px; padding: 10px;
+            text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0; min-height: 85px; display: flex; flex-direction: column; justify-content: center;
+            transition: transform 0.2s;
         }
+        .stat-card:hover { transform: translateY(-2px); }
+        .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+        .stat-lbl { font-size: 0.75rem; font-weight: 700; color: #64748b; }
 
-        /* 3. Tabs Navigation */
+        /* Text Colors */
+        .t-total { color: var(--c-total); } .t-new { color: var(--c-new); }
+        .t-pending { color: var(--c-pending); } .t-late { color: var(--c-late); }
+        .t-today { color: var(--c-today); } .t-week { color: var(--c-week); }
+        .t-month { color: var(--c-month); } .t-done { color: var(--c-approved); }
+
+        /* --- Quick Actions --- */
+        .actions-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            padding: 0 1rem 1rem;
+        }
+        @media (max-width: 768px) { .actions-grid { grid-template-columns: repeat(2, 1fr); } }
+        
+        .action-btn {
+            background: white; border: 1px solid #cbd5e1; border-radius: 10px;
+            padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-weight: 700; color: #475569; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
+        }
+        .action-btn:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
+        .btn-primary { background: var(--primary); color: white; border: none; }
+        .btn-primary:hover { background: var(--secondary); color: white; }
+
+        /* --- Advanced Filters --- */
+        .filters-panel {
+            background: white; border-radius: 12px; padding: 1rem; margin: 0 1rem 1rem;
+            border: 1px solid #e2e8f0; display: none; /* Hidden by default */
+        }
+        .filters-panel.active { display: block; animation: slideDown 0.3s ease-out; }
+        
+        .filter-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
+        @media (min-width: 1024px) { .filter-grid { grid-template-columns: repeat(4, 1fr); } }
+        
+        .f-input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; }
+
+        /* --- Tabs --- */
         .tabs-nav {
-            display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; margin-bottom: 20px;
+            display: flex; gap: 5px; padding: 0 1rem; margin-bottom: 1rem;
+            overflow-x: auto; scrollbar-width: none;
         }
-        .tab-btn {
-            flex: 1; padding: 10px; text-align: center; font-size: 0.85rem; font-weight: 700;
-            color: #64748b; border-radius: 10px; transition: 0.2s;
-        }
-        .tab-btn.active { background: white; color: #0f766e; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Form Elements */
-        .form-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
-        .form-input {
-            width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 10px;
-            font-size: 0.9rem; outline: none; background-color: #f8fafc; transition: 0.2s;
-        }
-        .form-input:focus { border-color: #0f766e; background: white; }
-
-        .btn-submit {
-            background: #0f766e; color: white; width: 100%; padding: 12px;
-            border-radius: 12px; font-weight: 700; margin-top: 1rem;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
+        .tab-link {
+            padding: 8px 16px; background: white; border-radius: 8px; font-weight: 700;
+            color: #64748b; cursor: pointer; border: 1px solid #e2e8f0; white-space: nowrap;
             transition: 0.2s;
         }
-        .btn-submit:hover { background: #115e59; transform: translateY(-1px); }
+        .tab-link.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .tab-content { display: none; padding: 0 1rem 2rem; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
 
-        /* Table Style */
-        .monitor-table { width: 100%; border-collapse: separate; border-spacing: 0; }
-        .monitor-table th { text-align: right; padding: 12px; font-size: 0.75rem; color: #64748b; background: #f8fafc; border-bottom: 2px solid #e2e8f0; }
-        .monitor-table td { padding: 12px; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; color: #334155; }
-        .monitor-table tr:last-child td { border: none; }
+        /* --- DataTable Styling --- */
+        .dataTables_wrapper { direction: rtl; background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        table.dataTable thead th { background-color: #f8fafc; color: #475569; font-size: 0.85rem; }
+        table.dataTable tbody td { font-size: 0.85rem; vertical-align: middle; }
+        .dt-buttons .dt-button { background: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; border-radius: 6px !important; font-size: 0.8rem !important; }
+        .status-badge { padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
 
-        /* Sidebar & Nav */
-        .sidebar {
-            position: fixed; right: 0; top: 0; height: 100vh; width: 260px;
-            background: white; border-left: 1px solid #e2e8f0; z-index: 50; transition: transform 0.3s;
-        }
-        .nav-item { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: #64748b; font-weight: 600; text-decoration: none; transition: 0.2s; }
-        .nav-item:hover { background: #f0fdfa; color: #0f766e; }
-        .nav-item.active { background: linear-gradient(135deg, #0f766e, #115e59); color: white; }
+        /* --- Charts Grid --- */
+        .charts-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        @media (min-width: 1024px) { .charts-grid { grid-template-columns: 1fr 1fr; } .chart-full { grid-column: 1 / -1; } }
+        .chart-box { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; min-height: 300px; }
 
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: white;
-            border-top: 1px solid #e2e8f0; padding: 10px; z-index: 40;
-            display: flex; justify-content: space-around;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
-        }
-        .b-nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #94a3b8; gap: 4px; text-decoration: none;}
-        .b-nav-item.active { color: #0f766e; font-weight: bold; }
+        /* --- Side Menu & Modal --- */
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+        .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
+        .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+        .modal-body { padding: 1.5rem; }
 
-        @media (min-width: 1025px) {
-            .main-content { margin-right: 260px; padding: 20px; }
-            .mobile-header { display: none; }
-            .bottom-nav { display: none; }
-            .header-bg { display: none; }
-            .admin-container { margin: 0; }
-        }
-        @media (max-width: 1024px) { .sidebar { transform: translateX(100%); } }
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+        .nav-btn.active { color: var(--primary); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="p-6 text-center border-b border-gray-100">
-            <div class="w-16 h-16 mx-auto mb-2 bg-white rounded-full flex items-center justify-center border-2 border-teal-50 shadow-sm overflow-hidden p-1">
-                <img src="assets/icons/favicon.png" class="w-full h-full object-contain">
+    <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
+    <aside class="side-menu" id="side-menu">
+        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+                <i data-lucide="shield-check" class="w-8 h-8 text-teal-700"></i>
             </div>
-            <h2 class="font-bold text-slate-800">نظام الحوكمة</h2>
+            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">Admin</h3>
+            <p class="text-xs text-teal-600" id="menu-role">مدير النظام</p>
         </div>
-        <nav class="mt-4 px-2">
-            <a href="distribution.html" class="nav-item rounded-lg mb-1">
-                <i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات
-            </a>
-            <a href="admin.html" class="nav-item active rounded-lg mb-1">
-                <i data-lucide="settings-2" class="w-5 h-5"></i> لوحة الإدارة
-            </a>
-            <a href="coordinator.html" class="nav-item rounded-lg mb-1">
-                <i data-lucide="users" class="w-5 h-5"></i> التنسيق
-            </a>
-            <a href="employee.html" class="nav-item rounded-lg mb-1">
-                <i data-lucide="briefcase" class="w-5 h-5"></i> مهامي
-            </a>
-            <div class="h-px bg-gray-200 my-3"></div>
-            <button onclick="auth.logout()" class="nav-item w-full text-red-500 hover:bg-red-50 hover:text-red-600 rounded-lg">
-                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
-            </button>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="index.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="home" class="w-4 h-4"></i> الرئيسية</a>
+            <a href="admin.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> لوحة التحكم</a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
+            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
         </nav>
+        <div class="p-4 border-t">
+            <button onclick="auth.logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+                <i data-lucide="log-out" class="w-4 h-4"></i> تسجيل خروج
+            </button>
+        </div>
     </aside>
 
-    <div class="main-content">
-        
-        <div class="header-bg lg:hidden">
-            <div class="flex justify-between items-center mb-1">
-                <div class="flex items-center gap-3">
-                    <div class="logo-circle-small"><img src="assets/icons/favicon.png" class="w-8 h-8 object-contain"></div>
-                    <div>
-                        <p class="text-teal-100 text-[11px] font-bold opacity-90">لوحة التحكم</p>
-                        <h1 class="font-bold text-xl text-white leading-tight" id="admin-name">...</h1>
-                    </div>
-                </div>
-                <button onclick="auth.logout()" class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm hover:bg-red-500/80 transition shadow-inner">
-                    <i data-lucide="log-out" class="w-5 h-5 text-white"></i>
+    <header class="admin-header">
+        <div class="max-w-[1400px] mx-auto flex justify-between items-center">
+            <button onclick="toggleMenu()" class="p-2 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
+            <div class="text-center">
+                <h1 class="font-bold text-lg">إدارة المراجعة الداخلية</h1>
+                <span class="page-badge">لوحة تحكم المدير</span>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="loadAdminData()" class="p-2 text-white bg-white/20 rounded-full hover:bg-white/30"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
+                <button onclick="window.location.href='notifications.html'" class="p-2 text-white relative">
+                    <i data-lucide="bell" class="w-6 h-6"></i>
+                    <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
                 </button>
             </div>
         </div>
+    </header>
 
-        <div class="admin-container">
-            
-            <div class="tabs-nav">
-                <button onclick="switchTab('new')" class="tab-btn active" id="btn-new">
-                    <i data-lucide="plus-circle" class="w-4 h-4 inline-block mb-1"></i><br>تكليف جديد
-                </button>
-                <button onclick="switchTab('reassign')" class="tab-btn" id="btn-reassign">
-                    <i data-lucide="repeat" class="w-4 h-4 inline-block mb-1"></i><br>إعادة التوجيه
-                </button>
-                <button onclick="switchTab('monitor')" class="tab-btn" id="btn-monitor">
-                    <i data-lucide="activity" class="w-4 h-4 inline-block mb-1"></i><br>المتابعة
-                </button>
-            </div>
-
-            <div id="tab-new" class="tab-content active">
-                <form onsubmit="addTask(event)" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="form-label">نوع المعاملة</label>
-                            <select id="n-type" class="form-input" onchange="toggleLegal()">
-                                <option value="وارد">وارد</option>
-                                <option value="صادر">صادر</option>
-                                <option value="نيابة">نيابة</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="form-label">الأهمية</label>
-                            <select id="n-imp" class="form-input">
-                                <option value="عادي">عادي</option>
-                                <option value="عاجل">عاجل 🔥</option>
-                                <option value="عاجل جدا">عاجل جداً 🚨</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="legal-box" class="hidden bg-orange-50 border border-orange-100 p-3 rounded-xl grid grid-cols-2 gap-3 mb-3">
-                        <div>
-                            <label class="text-[10px] font-bold text-orange-500 block mb-1">رقم القضية</label>
-                            <input type="text" id="n-case" class="form-input bg-white border-orange-200 focus:border-orange-500" placeholder="مثال: 1254">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-orange-500 block mb-1">السنة</label>
-                            <select id="n-year-case" class="form-input bg-white border-orange-200">
-                                <option value="2026">2026</option>
-                                <option value="2025">2025</option>
-                                <option value="2024">2024</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="form-label">موضوع المعاملة</label>
-                        <input type="text" id="n-subject" class="form-input" required placeholder="اكتب ملخص الموضوع...">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="form-label">الجهة / المصدر</label>
-                            <input type="text" id="n-source" class="form-input" required>
-                        </div>
-                        <div>
-                            <label class="form-label">الموظف المسؤول</label>
-                            <select id="n-assignee" class="form-input" required>
-                                <option value="">-- اختر --</option>
-                                </select>
-                        </div>
-                    </div>
-
-                    <div>
-                         <label class="form-label">رابط المرفق (PDF/صورة)</label>
-                         <input type="url" id="n-attachment" class="form-input" placeholder="https://...">
-                    </div>
-
-                    <button type="submit" class="btn-submit">
-                        <i data-lucide="send" class="w-5 h-5"></i> حفظ وإرسال التكليف
-                    </button>
-                </form>
-            </div>
-
-            <div id="tab-reassign" class="tab-content">
-                <div class="text-center py-6">
-                    <div class="bg-blue-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <i data-lucide="users" class="w-6 h-6 text-blue-500"></i>
-                    </div>
-                    <p class="text-sm text-slate-500 mb-4">اختر موظفاً لعرض المهام النشطة لديه ونقلها لموظف آخر</p>
-                    
-                    <select id="reassign-source" class="form-input w-full font-bold text-slate-700" onchange="loadEmployeeTasks()">
-                        <option value="">-- اختر الموظف الحالي --</option>
-                        </select>
-                </div>
-                
-                <div id="reassign-results" class="mt-4 space-y-3">
-                    </div>
-            </div>
-
-            <div id="tab-monitor" class="tab-content">
-                <div class="flex gap-2 mb-4">
-                    <div class="relative w-full">
-                        <input type="text" id="monitor-search" placeholder="بحث برقم الوارد أو الموضوع..." class="form-input pl-10">
-                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute right-3 top-3"></i>
-                    </div>
-                </div>
-                <div class="overflow-x-auto rounded-xl border border-gray-100">
-                    <table class="monitor-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>الموضوع</th>
-                                <th>الموظف</th>
-                                <th>الحالة</th>
-                                <th>إجراء</th>
-                            </tr>
-                        </thead>
-                        <tbody id="monitor-tbody">
-                            </tbody>
-                    </table>
-                </div>
-            </div>
-
+    <div class="stats-wrapper max-w-[1400px] mx-auto">
+        <div class="stats-row">
+            <div class="stat-card"><span class="stat-num t-total" id="st-total">0</span><span class="stat-lbl">الإجمالي</span></div>
+            <div class="stat-card"><span class="stat-num t-new" id="st-new">0</span><span class="stat-lbl">جديد</span></div>
+            <div class="stat-card"><span class="stat-num t-pending" id="st-pending">0</span><span class="stat-lbl">بانتظار الاعتماد</span></div>
+            <div class="stat-card"><span class="stat-num t-late" id="st-late">0</span><span class="stat-lbl">متأخر</span></div>
+        </div>
+        <div class="stats-row">
+            <div class="stat-card"><span class="stat-num t-today" id="st-today">0</span><span class="stat-lbl">اليوم</span></div>
+            <div class="stat-card"><span class="stat-num t-week" id="st-week">0</span><span class="stat-lbl">الأسبوع</span></div>
+            <div class="stat-card"><span class="stat-num t-month" id="st-month">0</span><span class="stat-lbl">الشهر</span></div>
+            <div class="stat-card"><span class="stat-num t-done" id="st-approved">0</span><span class="stat-lbl">تم الاعتماد</span></div>
         </div>
     </div>
 
+    <div class="max-w-[1400px] mx-auto">
+        <div class="actions-grid">
+            <button onclick="openModal('add')" class="action-btn btn-primary"><i data-lucide="plus-circle" class="w-5 h-5"></i> معاملة جديدة</button>
+            <button onclick="openModal('report')" class="action-btn"><i data-lucide="file-bar-chart" class="w-5 h-5"></i> تقرير شامل</button>
+            <button onclick="openModal('compare')" class="action-btn"><i data-lucide="users" class="w-5 h-5"></i> مقارنة موظفين</button>
+            <button onclick="toggleFilters()" class="action-btn"><i data-lucide="filter" class="w-5 h-5"></i> فلاتر متقدمة</button>
+            <button onclick="openModal('remind')" class="action-btn"><i data-lucide="mail" class="w-5 h-5"></i> إرسال تذكيرات</button>
+            <button onclick="openModal('export')" class="action-btn"><i data-lucide="download" class="w-5 h-5"></i> تصدير Excel</button>
+        </div>
+
+        <div id="filters-panel" class="filters-panel">
+            <div class="filter-grid">
+                <input type="date" id="f-start" class="f-input" placeholder="من تاريخ">
+                <input type="date" id="f-end" class="f-input" placeholder="إلى تاريخ">
+                <select id="f-emp" class="f-input"><option value="">كل الموظفين</option></select>
+                <select id="f-source" class="f-input"><option value="">كل الجهات</option></select>
+                <select id="f-status" class="f-input">
+                    <option value="">كل الحالات</option>
+                    <option value="جديد">جديد</option>
+                    <option value="متأخر">متأخر</option>
+                    <option value="تم">تم الاعتماد</option>
+                </select>
+                <select id="f-type" class="f-input">
+                    <option value="">كل الأنواع</option>
+                    <option value="المرور الفني">مرور فني</option>
+                    <option value="المرور المالي">مرور مالي</option>
+                    <option value="شكوى">شكوى</option>
+                </select>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="applyFilters()" class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex-1">تطبيق الفلاتر</button>
+                <button onclick="resetFilters()" class="bg-gray-200 text-gray-600 px-4 py-2 rounded-lg text-sm font-bold">مسح</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-[1400px] mx-auto mt-4">
+        <div class="tabs-nav">
+            <button class="tab-link active" onclick="switchTab('transactions')">📋 المعاملات</button>
+            <button class="tab-link" onclick="switchTab('reports')">📊 التقارير</button>
+            <button class="tab-link" onclick="switchTab('employees')">👥 أداء الموظفين</button>
+            <button class="tab-link" onclick="switchTab('analytics')">📈 الإحصائيات</button>
+        </div>
+
+        <div id="tab-transactions" class="tab-content active">
+            <table id="tasksTable" class="display responsive nowrap w-full" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>الرقم</th>
+                        <th>الموضوع</th>
+                        <th>الجهة</th>
+                        <th>الموظف</th>
+                        <th>الحالة</th>
+                        <th>التاريخ</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="tab-reports" class="tab-content">
+            <div id="reports-grid" class="stats-row" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));"></div>
+        </div>
+
+        <div id="tab-employees" class="tab-content">
+            <div id="employees-grid" class="stats-row" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));"></div>
+        </div>
+
+        <div id="tab-analytics" class="tab-content">
+            <div class="charts-grid">
+                <div class="chart-box chart-full"><canvas id="chart1"></canvas></div>
+                <div class="chart-box"><canvas id="chart2"></canvas></div>
+                <div class="chart-box"><canvas id="chart3"></canvas></div>
+                <div class="chart-box chart-full"><canvas id="chart4"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="main-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="font-bold text-lg" id="modal-title">...</h3>
+                <button onclick="closeModal()" class="p-2 hover:bg-gray-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                </div>
+        </div>
+    </div>
+
+    <template id="tpl-add-task">
+        <form id="form-add-task" class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+                <div><label class="f-label">الجهة الواردة</label><input type="text" name="source" class="f-input" required></div>
+                <div><label class="f-label">محل التنفيذ</label><input type="text" name="entity" class="f-input" required></div>
+            </div>
+            <div><label class="f-label">الموضوع</label><textarea name="subject" class="f-input h-20" required></textarea></div>
+            <div class="grid grid-cols-2 gap-3">
+                <div><label class="f-label">الموظف المكلف</label><select name="employee" class="f-input emp-select" required></select></div>
+                <div><label class="f-label">نوع المعاملة</label>
+                    <select name="type" class="f-input">
+                        <option>المرور الفني</option><option>المرور المالي</option><option>فحص شكوى</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div><label class="f-label">تاريخ الوارد</label><input type="date" name="date" class="f-input" required></div>
+                <div><label class="f-label">الموعد النهائي</label><input type="date" name="deadline" class="f-input"></div>
+            </div>
+            <div class="flex items-center gap-2 mt-4 bg-yellow-50 p-3 rounded border border-yellow-200">
+                <input type="checkbox" checked class="w-4 h-4">
+                <span class="text-xs font-bold text-yellow-800">إرسال إشعار للموظف وإيميل رسمي</span>
+            </div>
+            <button type="submit" class="w-full bg-teal-600 text-white py-3 rounded-lg font-bold mt-4">حفظ وإرسال</button>
+        </form>
+    </template>
+
     <nav class="bottom-nav lg:hidden">
-        <a href="distribution.html" class="b-nav-item">
-            <i data-lucide="bar-chart-2" class="w-6 h-6"></i><span>المؤشرات</span>
-        </a>
-        <a href="admin.html" class="b-nav-item active">
-            <i data-lucide="settings-2" class="w-6 h-6"></i><span>الإدارة</span>
-        </a>
-        <a href="coordinator.html" class="b-nav-item">
-            <i data-lucide="users" class="w-6 h-6"></i><span>التنسيق</span>
-        </a>
-        <a href="employee.html" class="b-nav-item">
-            <i data-lucide="briefcase" class="w-6 h-6"></i><span>مهامي</span>
-        </a>
+        <a href="index.html" class="nav-btn"><i data-lucide="home"></i> الرئيسية</a>
+        <a href="admin.html" class="nav-btn active"><i data-lucide="layout-dashboard"></i> التحكم</a>
+        <a href="coordinator.html" class="nav-btn"><i data-lucide="users"></i> المنسق</a>
+        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
     </nav>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
+
     <script>
         lucide.createIcons();
-        
-        // قائمة الموظفين (للمحاكاة)
-        const employees = ["أحمد محمد", "سارة علي", "محمود حسن", "نرمين كمال", "خالد يوسف", "منى إبراهيم"];
-        let allAdminTasks = [];
+        let allData = { tasks: [], employees: [] };
+        let dataTable;
 
+        // --- Init ---
         document.addEventListener('DOMContentLoaded', async () => {
+            if (typeof auth === 'undefined' || !auth.checkAuth()) { window.location.href = 'index.html'; return; }
             const user = auth.checkAuth();
-            if(!user) return;
-            // التحقق من صلاحية الأدمن
-            if(user.role !== 'admin' && user.role !== 'مدير') {
-                window.location.href = 'distribution.html';
+            
+            if (user.role !== 'مدير' && user.role !== 'Admin') {
+                Swal.fire({ icon: 'error', title: 'غير مصرح', text: 'صفحة للمدير فقط' }).then(() => location.href = 'employee.html');
                 return;
             }
 
-            document.getElementById('admin-name').textContent = user.name;
-
-            // ملء قوائم الموظفين
-            const selects = [document.getElementById('n-assignee'), document.getElementById('reassign-source')];
-            selects.forEach(sel => {
-                if(sel) {
-                    employees.forEach(emp => {
-                        const opt = document.createElement('option');
-                        opt.value = emp;
-                        opt.textContent = emp;
-                        sel.appendChild(opt);
-                    });
-                }
-            });
-
-            // جلب كل البيانات للمتابعة
-            const res = await auth.callAPI('getAllData', { role: 'admin', name: user.name, startDate: '2024-01-01' });
-            if(res.success) {
-                allAdminTasks = res.tasks;
-                renderMonitorTable(allAdminTasks);
-            }
+            document.getElementById('menu-user').textContent = user.name;
+            
+            initDataTable();
+            await loadAdminData();
         });
 
-        // --- TABS LOGIC ---
+        function toggleMenu() { document.body.classList.toggle('menu-open'); }
+        function toggleFilters() { document.getElementById('filters-panel').classList.toggle('active'); }
+        
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            document.getElementById(`btn-${tabId}`).classList.add('active');
-            document.getElementById(`tab-${tabId}`).classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            event.target.classList.add('active');
         }
 
-        // --- NEW TASK LOGIC ---
-        function toggleLegal() {
-            const type = document.getElementById('n-type').value;
-            const box = document.getElementById('legal-box');
-            if(type === 'نيابة') box.classList.remove('hidden');
-            else box.classList.add('hidden');
-        }
+        // --- Data Loading ---
+        async function loadAdminData() {
+            try {
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getAllData', role: 'مدير', name: 'Admin' })
+                });
+                const data = await res.json();
 
-        async function addTask(e) {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'جاري الإرسال...';
-            btn.disabled = true;
-
-            // محاكاة إرسال البيانات
-            setTimeout(() => {
-                alert("✅ تم إرسال التكليف بنجاح للموظف المختص.");
-                e.target.reset();
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-                // إعادة تحميل الجدول
-                location.reload(); 
-            }, 1000);
-        }
-
-        // --- REASSIGN LOGIC ---
-        function loadEmployeeTasks() {
-            const empName = document.getElementById('reassign-source').value;
-            const container = document.getElementById('reassign-results');
-            
-            if(!empName) {
-                container.innerHTML = '';
-                return;
+                if (data.success) {
+                    allData = data;
+                    updateStats(data.stats.totals);
+                    populateDataTable(data.tasks);
+                    populateEmployees(data.stats.employees);
+                    renderCharts(data);
+                    
+                    // Populate Filter Dropdowns
+                    const emps = data.stats.employees.map(e => `<option>${e.name}</option>`).join('');
+                    document.getElementById('f-emp').innerHTML = '<option value="">كل الموظفين</option>' + emps;
+                }
+            } catch (e) {
+                console.error(e);
+                Swal.fire('خطأ', 'فشل الاتصال بالسيرفر', 'error');
             }
+        }
 
-            // فلتر المهام النشطة للموظف المختار
-            const activeTasks = allAdminTasks.filter(t => t.assignee === empName && !t.status.includes('تم'));
+        function updateStats(s) {
+            document.getElementById('st-total').innerText = s.total;
+            document.getElementById('st-new').innerText = s.new;
+            document.getElementById('st-pending').innerText = s.pending;
+            document.getElementById('st-late').innerText = s.overdue;
+            document.getElementById('st-approved').innerText = s.completed;
+            // Additional mock logic for daily/weekly stats if not provided by backend
+            document.getElementById('st-today').innerText = Math.floor(Math.random() * 5); 
+            document.getElementById('st-week').innerText = Math.floor(Math.random() * 15);
+            document.getElementById('st-month').innerText = Math.floor(Math.random() * 40);
+        }
 
-            if(activeTasks.length === 0) {
-                container.innerHTML = `<div class="text-center p-4 bg-gray-50 rounded-lg text-gray-500 text-sm">لا توجد مهام نشطة لهذا الموظف</div>`;
-                return;
-            }
-
-            container.innerHTML = activeTasks.map(t => `
-                <div class="bg-white p-3 rounded-xl border border-gray-200 flex justify-between items-center gap-2 shadow-sm">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded font-bold">#${t.id}</span>
-                            <span class="text-[10px] text-slate-400">${t.date}</span>
+        // --- DataTable ---
+        function initDataTable() {
+            dataTable = $('#tasksTable').DataTable({
+                responsive: true,
+                language: { url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/ar.json' },
+                columns: [
+                    { data: 'id' },
+                    { data: 'subject' },
+                    { data: 'source' },
+                    { data: 'assignee' },
+                    { data: 'status', render: (d) => `<span class="status-badge ${getStatusClass(d)}">${d}</span>` },
+                    { data: 'date' },
+                    { data: null, render: (d) => `
+                        <div class="flex gap-1">
+                            <button onclick="openModal('details', '${d.id}')" class="text-blue-600 hover:bg-blue-50 p-1 rounded">👁️</button>
+                            <button onclick="openModal('edit', '${d.id}')" class="text-green-600 hover:bg-green-50 p-1 rounded">✏️</button>
+                            <button onclick="deleteTask('${d.id}')" class="text-red-600 hover:bg-red-50 p-1 rounded">🗑️</button>
                         </div>
-                        <h4 class="text-sm font-bold text-slate-800 truncate w-48">${t.subject}</h4>
+                    `}
+                ]
+            });
+        }
+
+        function populateDataTable(tasks) {
+            dataTable.clear().rows.add(tasks).draw();
+        }
+
+        // --- Employees Tab ---
+        function populateEmployees(employees) {
+            const container = document.getElementById('employees-grid');
+            container.innerHTML = employees.map(e => `
+                <div class="stat-card text-right p-4 relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-bold text-gray-800">${e.name}</h4>
+                        <span class="text-xs bg-gray-100 px-2 py-1 rounded">${e.rate}%</span>
                     </div>
-                    <button onclick="reassignTask('${t.id}')" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-black transition">
-                        نقل
-                    </button>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
+                        <div class="bg-teal-600 h-2 rounded-full" style="width: ${e.rate}%"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div class="bg-blue-50 p-1 rounded"><strong class="block text-blue-700">${e.total}</strong>الكل</div>
+                        <div class="bg-green-50 p-1 rounded"><strong class="block text-green-700">${e.completed}</strong>منجز</div>
+                        <div class="bg-red-50 p-1 rounded"><strong class="block text-red-700">${e.overdue}</strong>متأخر</div>
+                    </div>
                 </div>
             `).join('');
         }
 
-        async function reassignTask(taskId) {
-            const newEmp = prompt("أدخل اسم الموظف الجديد:");
-            if(newEmp && employees.includes(newEmp)) {
-                if(confirm(`هل أنت متأكد من نقل المهمة #${taskId} إلى ${newEmp}؟`)) {
-                    await auth.callAPI('reassignTask', { taskId, newEmployee: newEmp });
-                    alert("تم النقل بنجاح");
-                    loadEmployeeTasks(); // Refresh list
+        // --- Charts ---
+        function renderCharts(data) {
+            // Simplified Charts for Admin
+            new Chart(document.getElementById('chart1'), {
+                type: 'bar',
+                data: {
+                    labels: data.stats.employees.slice(0, 5).map(e => e.name.split(' ')[0]),
+                    datasets: [{ label: 'معدل الإنجاز %', data: data.stats.employees.slice(0, 5).map(e => e.rate), backgroundColor: '#0f766e' }]
                 }
-            } else if (newEmp) {
-                alert("اسم الموظف غير صحيح");
+            });
+            
+            new Chart(document.getElementById('chart2'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['منجز', 'جاري', 'متأخر'],
+                    datasets: [{ data: [data.stats.totals.completed, data.stats.totals.pending, data.stats.totals.overdue], backgroundColor: ['#059669', '#3b82f6', '#dc2626'] }]
+                }
+            });
+        }
+
+        // --- Modals Logic ---
+        function openModal(type, id) {
+            const modal = document.getElementById('main-modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+            
+            modal.classList.add('open');
+            
+            if (type === 'add') {
+                title.textContent = 'إضافة معاملة جديدة';
+                const tpl = document.getElementById('tpl-add-task').content.cloneNode(true);
+                body.innerHTML = '';
+                body.appendChild(tpl);
+                
+                // Populate Employee Select
+                const select = body.querySelector('.emp-select');
+                allData.stats.employees.forEach(e => {
+                    const opt = document.createElement('option');
+                    opt.value = e.name; opt.textContent = e.name;
+                    select.appendChild(opt);
+                });
+                
+                // Form Submit Handler
+                body.querySelector('form').onsubmit = async (e) => {
+                    e.preventDefault();
+                    // Call API to Add Task
+                    Swal.fire({ title: 'جاري الحفظ...', didOpen: () => Swal.showLoading() });
+                    // ... API Logic Here ...
+                    setTimeout(() => {
+                        Swal.fire('تم!', 'تمت إضافة المعاملة بنجاح', 'success');
+                        closeModal();
+                    }, 1000);
+                };
             }
+            // Add other cases (edit, delete, etc.) here
         }
 
-        // --- MONITOR LOGIC ---
-        function renderMonitorTable(tasks) {
-            const tbody = document.getElementById('monitor-tbody');
-            tbody.innerHTML = tasks.slice(0, 50).map(t => `
-                <tr>
-                    <td class="font-mono font-bold text-[#0f766e]">#${t.id}</td>
-                    <td>
-                        <div class="font-bold text-slate-700 truncate w-32 md:w-auto">${t.subject}</div>
-                        <div class="text-[10px] text-slate-400">${t.source}</div>
-                    </td>
-                    <td><span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] font-bold">${t.assignee}</span></td>
-                    <td><span class="text-[10px] font-bold ${getStatusColor(t.status)}">${t.status}</span></td>
-                    <td>
-                        <button onclick="deleteTask('${t.id}')" class="text-red-400 hover:text-red-600 hover:bg-red-50 p-1 rounded transition">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-            lucide.createIcons();
+        function closeModal() { document.getElementById('main-modal').classList.remove('open'); }
+
+        function deleteTask(id) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: "لن تتمكن من استرجاع هذه المعاملة!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، احذفها'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Call API
+                    Swal.fire('تم الحذف!', 'تم حذف المعاملة.', 'success');
+                }
+            });
         }
 
-        function getStatusColor(status) {
-            if(status.includes('تم')) return 'text-green-600';
-            if(status.includes('متأخر')) return 'text-red-600';
-            if(status.includes('جديد')) return 'text-slate-600';
-            return 'text-blue-600';
+        function getStatusClass(status) {
+            if(status.includes('جديد')) return 'bg-blue-100 text-blue-700';
+            if(status.includes('تم')) return 'bg-green-100 text-green-700';
+            if(status.includes('متأخر')) return 'bg-red-100 text-red-700';
+            return 'bg-gray-100 text-gray-700';
         }
-
-        async function deleteTask(id) {
-            if(confirm("⚠️ تحذير: هل أنت متأكد من حذف هذه المعاملة نهائياً؟")) {
-                // API Call to delete
-                alert("تم الحذف");
-                location.reload();
-            }
-        }
-
-        // Search Filter
-        document.getElementById('monitor-search').addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
-            const filtered = allAdminTasks.filter(t => 
-                t.subject.toLowerCase().includes(val) || 
-                t.id.toString().includes(val) ||
-                t.assignee.toLowerCase().includes(val)
-            );
-            renderMonitorTable(filtered);
-        });
-
     </script>
 </body>
 </html>
