@@ -9,7 +9,6 @@
     <link rel="manifest" href="manifest.json">
     
     <title>مؤشرات الأداء | IAG System</title>
-    
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,192 +18,124 @@
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         
-        :root {
-            --primary: #0f766e;
-            --secondary: #134e4a;
-            --c-total: #334155; --c-new: #3b82f6; --c-pending: #16a34a;
-            --c-approved: #047857; --c-followup: #6b7280; --c-late: #dc2626;
-        }
+        :root { --primary: #0f766e; }
 
         /* --- Header --- */
         .main-header {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            color: white; padding: 1rem 1.5rem 4rem;
+            color: white; padding: 1rem 1.5rem 2rem;
             border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
             box-shadow: 0 4px 20px rgba(15, 118, 110, 0.25);
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .header-btn:hover { background: rgba(255,255,255,0.2); }
-        .back-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); }
-
-        .breadcrumbs { 
-            display: flex; align-items: center; justify-content: center; gap: 6px; 
-            font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9;
-        }
+        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; opacity: 0.9; }
         .breadcrumbs a { color: #ccfbf1; text-decoration: none; opacity: 0.8; transition: 0.2s; }
-        .breadcrumbs a:hover { color: white; opacity: 1; }
         .breadcrumbs strong { font-weight: 700; color: white; }
 
-        .dept-title { font-size: 1.1rem; font-weight: 800; line-height: 1.2; text-align: center; }
-        .dept-subtitle { font-size: 0.75rem; opacity: 0.9; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; letter-spacing: 0.5px; }
-        
-        /* --- Filters Section --- */
+        .dept-title { font-size: 1.1rem; font-weight: 800; text-align: center; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.9; text-align: center; direction: ltr; font-family: sans-serif; }
+
+        /* --- Filters --- */
         .filter-container {
-            margin: -3rem 1rem 1rem; position: relative; z-index: 20;
+            margin: -1.5rem 1rem 1rem; position: relative; z-index: 20;
             background: white; border-radius: 16px; padding: 1rem;
             box-shadow: 0 8px 30px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;
         }
-        
         .filters-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        @media (max-width: 768px) { .filters-row { grid-template-columns: 1fr; } }
-
         .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
-        .f-input {
-            width: 100%; height: 42px; padding: 0 12px; 
-            border: 1px solid #cbd5e1; border-radius: 10px;
-            font-size: 0.9rem; outline: none; background: #fff; 
-            transition: all 0.2s; color: #1e293b; cursor: pointer;
-        }
-        .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+        .f-input { width: 100%; height: 40px; padding: 0 8px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none; background: #fff; }
 
-        /* --- Stats Cards (Global) --- */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
-            padding: 0 1rem 1.5rem; max-width: 1200px; margin: 0 auto;
+        /* --- Tabs --- */
+        .tabs-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; }
+        .tabs-container {
+            display: flex; background: #e2e8f0; border-radius: 12px; padding: 4px;
+            position: relative; margin-bottom: 1rem;
         }
+        .tab-btn {
+            flex: 1; text-align: center; padding: 10px; font-size: 0.9rem; font-weight: 700;
+            color: #64748b; border-radius: 10px; cursor: pointer; transition: 0.2s; z-index: 2;
+        }
+        .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        /* --- Stats Cards --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 1rem; }
         @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
 
         .stat-card {
             background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px;
-            text-align: center; display: flex; flex-direction: column; justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); min-height: 80px; transition: transform 0.2s;
+            text-align: center; cursor: pointer; transition: 0.2s;
         }
-        .stat-card:hover { transform: translateY(-2px); }
-        .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+        .stat-card.active { border-color: var(--primary); background: #f0fdfa; ring: 2px solid var(--primary); }
+        .stat-num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
         .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
-        .c-total { color: var(--c-total); } .c-new { color: var(--c-new); }
-        .c-pending { color: var(--c-pending); } .c-approved { color: var(--c-approved); }
-        .c-followup { color: var(--c-followup); } .c-late { color: var(--c-late); }
+        /* --- Colors --- */
+        .c-total { color: #334155; } .c-late { color: #dc2626; }
+        .c-new { color: #3b82f6; } .c-pending { color: #16a34a; }
+        .c-approved { color: #047857; } .c-followup { color: #6b7280; }
 
-        /* --- Leaderboard Cards --- */
-        .leaderboard-container {
-            padding: 0 1rem 5rem; display: grid; gap: 12px;
-            max-width: 1200px; margin: 0 auto;
-            grid-template-columns: 1fr;
-        }
-        @media (min-width: 768px) { .leaderboard-container { grid-template-columns: repeat(2, 1fr); } }
+        /* --- Leaderboard & Cards --- */
+        .cards-list { display: grid; gap: 12px; grid-template-columns: 1fr; padding-bottom: 5rem; }
+        @media (min-width: 768px) { .cards-list { grid-template-columns: repeat(2, 1fr); } }
 
         .emp-card {
             background: white; border-radius: 16px; overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb;
-            transition: all 0.2s; position: relative; display: flex; flex-direction: column;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03); border: 1px solid #e5e7eb;
+            display: flex; flex-direction: column; position: relative;
         }
-        
         .rank-badge {
-            position: absolute; top: 12px; left: 12px;
-            width: 32px; height: 32px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 1rem; color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 5;
-        }
-        .rank-1 { background: linear-gradient(135deg, #fbbf24, #d97706); border: 2px solid #fffbeb; }
-        .rank-2 { background: linear-gradient(135deg, #94a3b8, #64748b); border: 2px solid #f1f5f9; }
-        .rank-3 { background: linear-gradient(135deg, #d97706, #92400e); border: 2px solid #fef3c7; }
-        .rank-other { background: #f1f5f9; color: #64748b; font-size: 0.8rem; border: 1px solid #e2e8f0; }
-
-        .emp-header {
-            padding: 1.5rem 1.25rem 1rem; text-align: center; border-bottom: 1px dashed #e2e8f0;
-            background: linear-gradient(to bottom, #f8fafc, white);
-        }
-        .emp-avatar {
-            width: 60px; height: 60px; margin: 0 auto 8px; background: #e0f2fe; color: #0284c7;
+            position: absolute; top: 12px; left: 12px; width: 28px; height: 28px; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; font-weight: 700; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            font-weight: 800; color: white; z-index: 5; font-size: 0.9rem;
         }
-        .emp-name { font-size: 1rem; font-weight: 800; color: #1e293b; margin-bottom: 2px; }
-        .emp-dept { font-size: 0.75rem; color: #64748b; font-weight: 600; }
+        .rank-1 { background: #fbbf24; } .rank-2 { background: #94a3b8; } .rank-3 { background: #d97706; } .rank-other { background: #f1f5f9; color: #64748b; }
 
-        .progress-container { margin-top: 10px; position: relative; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-        .progress-bar { height: 100%; border-radius: 4px; transition: width 1s ease-in-out; }
-        .rate-text { font-size: 0.8rem; font-weight: 700; margin-top: 4px; display: flex; justify-content: space-between; }
+        .emp-header { padding: 1rem; text-align: center; border-bottom: 1px dashed #e2e8f0; background: #fafafa; }
+        .emp-avatar {
+            width: 50px; height: 50px; margin: 0 auto 6px; background: #e0f2fe; color: #0369a1;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;
+        }
+        .emp-name { font-size: 0.95rem; font-weight: 800; color: #1e293b; }
+        .emp-dept { font-size: 0.7rem; color: #64748b; }
 
-        /* --- New Employee Card Layout (Requested) --- */
-        .emp-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; gap: 1rem; }
-        
-        .emp-stats-grid { display: flex; flex-direction: column; gap: 8px; }
-        
-        /* Row 1: Big Stats (Total & Late) */
-        .es-row-lg { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; 
-        }
-        .es-box-lg { 
-            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; 
-            padding: 10px; text-align: center; 
-        }
-        .es-val-lg { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
-        .es-lbl-lg { font-size: 0.75rem; font-weight: 700; color: #64748b; }
+        .emp-stats-grid { display: flex; flex-direction: column; gap: 6px; padding: 1rem; }
+        .es-row-lg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .es-box-lg { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; text-align: center; }
+        .es-val-lg { font-size: 1.2rem; font-weight: 800; line-height: 1; }
+        .es-lbl-lg { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
-        /* Row 2: Small Stats (4 columns) */
-        .es-row-sm { 
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; 
-        }
-        .es-box-sm { 
-            background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; 
-            padding: 6px 2px; text-align: center; 
-        }
-        .es-val-sm { font-size: 1rem; font-weight: 800; line-height: 1; }
-        .es-lbl-sm { font-size: 0.6rem; color: #94a3b8; font-weight: 600; margin-top: 2px; }
+        .es-row-sm { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+        .es-box-sm { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px; text-align: center; }
+        .es-val-sm { font-size: 0.9rem; font-weight: 800; }
+        .es-lbl-sm { font-size: 0.6rem; color: #94a3b8; }
 
-        /* --- Entity List --- */
-        .entity-list { border-top: 1px solid #f1f5f9; padding-top: 1rem; }
-        .entity-item { 
-            display: flex; justify-content: space-between; align-items: center; 
-            font-size: 0.75rem; padding: 6px 0; border-bottom: 1px solid #f1f5f9; 
-        }
-        .entity-item:last-child { border-bottom: none; }
-        .entity-name { color: #475569; font-weight: 600; }
-        .entity-count { background: #f1f5f9; padding: 2px 8px; border-radius: 10px; color: #0f172a; font-weight: 700; }
-
-        .emp-footer { padding: 10px; border-top: 1px solid #f1f5f9; margin-top: auto; }
+        .emp-footer { padding: 8px; border-top: 1px solid #f1f5f9; }
         .btn-details {
             width: 100%; padding: 8px; background: white; border: 1px solid #cbd5e1;
             border-radius: 8px; font-size: 0.8rem; font-weight: 700; color: #475569;
             display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
-            transition: 0.2s;
         }
-        .btn-details:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
 
-        /* --- Side Menu (RTL Corrected) --- */
-        .side-menu { 
-            position: fixed; top: 0; right: -260px; /* Hidden Right */
-            width: 260px; height: 100%; background: white; z-index: 100; 
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            display: flex; flex-direction: column; 
-            box-shadow: -5px 0 25px rgba(0,0,0,0.1); 
-        }
-        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
-        
-        .menu-open .side-menu { right: 0; } 
-        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
-        
         /* --- Modal --- */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
-        .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
+        .modal-box { background: white; width: 95%; max-width: 500px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
         .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
         .modal-body { padding: 1.5rem; }
 
-        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
+        /* --- Side Menu (Right) --- */
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .menu-open .side-menu { right: 0; }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
 
-        /* --- Bottom Nav --- */
+        .hidden { display: none !important; }
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
-        .nav-btn.active { color: var(--primary); } .nav-btn i { width: 22px; height: 22px; }
+        .nav-btn.active { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -235,9 +166,8 @@
         <div class="max-w-[1200px] mx-auto">
             <div class="header-top">
                 <div class="flex gap-3">
-                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                    <button onclick="toggleMenu()" class="p-2 text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
                 </div>
-
                 <div class="text-center">
                     <div class="breadcrumbs mb-1">
                         <a href="coordinator.html">الرئيسية</a> 
@@ -247,74 +177,43 @@
                     <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
                     <p class="dept-subtitle">Internal Audit & Governance Department</p>
                 </div>
-
                 <div class="flex gap-3">
-                    <button onclick="window.location.href='notifications.html'" class="header-btn relative">
+                    <button onclick="window.location.href='notifications.html'" class="p-2 text-white relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
-                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
+                        <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
                     </button>
-                    </div>
+                </div>
             </div>
         </div>
     </header>
 
     <div class="filter-container">
         <div class="filters-row">
-            <div>
-                <label class="f-label">السنة</label>
-                <select id="f-year" class="f-input" onchange="loadDashboardData()">
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026" selected>2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                </select>
-            </div>
-            <div>
-                <label class="f-label">الفترة</label>
-                <select id="f-period" class="f-input" onchange="loadDashboardData()">
-                    <option value="">الكل (All)</option>
-                    <optgroup label="الربع سنوي">
-                        <option value="Q1">الربع الأول (Q1)</option>
-                        <option value="Q2">الربع الثاني (Q2)</option>
-                        <option value="Q3">الربع الثالث (Q3)</option>
-                        <option value="Q4">الربع الرابع (Q4)</option>
-                    </optgroup>
-                    <optgroup label="شهري">
-                        <option value="1">يناير</option>
-                        <option value="2">فبراير</option>
-                        <option value="3">مارس</option>
-                        <option value="4">أبريل</option>
-                        <option value="5">مايو</option>
-                        <option value="6">يونيو</option>
-                        <option value="7">يوليو</option>
-                        <option value="8">أغسطس</option>
-                        <option value="9">سبتمبر</option>
-                        <option value="10">أكتوبر</option>
-                        <option value="11">نوفمبر</option>
-                        <option value="12">ديسمبر</option>
-                    </optgroup>
-                </select>
-            </div>
-            <div>
-                <label class="f-label">المجموعة</label>
-                <select id="f-group" class="f-input" onchange="filterLeaderboard()">
-                    <option value="">كل الموظفين</option>
-                    <option value="admin">مراجع مالي وإداري</option>
-                    <option value="tech">مراجع فني</option>
-                </select>
-            </div>
+            <div><label class="f-label">السنة</label><select id="f-year" class="f-input" onchange="loadData()"><option value="2026" selected>2026</option><option value="2025">2025</option></select></div>
+            <div><label class="f-label">الفترة</label><select id="f-period" class="f-input" onchange="loadData()"><option value="">الكل</option><optgroup label="ربع سنوي"><option value="Q1">Q1</option><option value="Q2">Q2</option><option value="Q3">Q3</option><option value="Q4">Q4</option></optgroup><optgroup label="شهري"><option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option></optgroup></select></div>
+            <div><label class="f-label">المجموعة</label><select id="f-group" class="f-input" onchange="switchTab()"><option value="">الكل</option><option value="admin">مالي وإداري</option><option value="tech">فني وطبي</option></select></div>
         </div>
     </div>
 
-    <div class="stats-grid" id="stats-container">
-        <div class="col-span-full text-center py-4 text-gray-400">جاري التحميل...</div>
-    </div>
+    <div class="tabs-wrapper">
+        <div class="tabs-container">
+            <div onclick="setTab('employees')" id="tab-emp" class="tab-btn active">أداء الموظفين</div>
+            <div onclick="setTab('sources')" id="tab-src" class="tab-btn">تحليل الجهات</div>
+        </div>
 
-    <div class="leaderboard-container" id="leaderboard-list">
-        <div class="loader-box">
-            <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i>
-            <p>جاري تحميل البيانات...</p>
+        <div id="view-employees">
+            <div class="stats-grid" id="stats-emp"></div>
+            <div class="cards-list" id="list-emp">
+                <div class="col-span-full text-center py-8 text-gray-400">جاري التحميل...</div>
+            </div>
+        </div>
+
+        <div id="view-sources" class="hidden">
+            <div class="stats-grid" id="stats-src"></div>
+            <div class="text-center mb-4"><span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full" id="src-filter-label">اضغط على جهة لعرض التفاصيل</span></div>
+            <div class="cards-list" id="list-src">
+                <div class="col-span-full text-center py-8 text-gray-400">اختر جهة من الأعلى لعرض التفاصيل</div>
+            </div>
         </div>
     </div>
 
@@ -327,8 +226,7 @@
                 </div>
                 <button onclick="closeModal()" class="p-2 bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            <div class="modal-body" id="m-content">
-                </div>
+            <div class="modal-body" id="m-content"></div>
         </div>
     </div>
 
@@ -343,311 +241,285 @@
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allEmployees = [];
+        let allData = []; // Store raw employee data
+        let currentTab = 'employees';
+        let currentSourceFilter = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
-            if (typeof auth === 'undefined') { window.location.href = 'index.html'; return; }
-            const user = auth.checkAuth();
+            const user = localStorage.getItem('iag_user');
             if (!user) { window.location.href = 'index.html'; return; }
-
-            document.getElementById('menu-user').textContent = user.name;
-            document.getElementById('menu-role').textContent = user.role;
-
-            await loadDashboardData();
+            const u = JSON.parse(user);
+            document.getElementById('menu-user').textContent = u.name;
+            document.getElementById('menu-role').textContent = u.role;
+            await loadData();
         });
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
-        
-        function logout() {
-            localStorage.removeItem('iag_user');
-            localStorage.removeItem('iag_last_page');
-            window.location.href = 'index.html';
-        }
+        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+        function goBack() { window.location.href = 'coordinator.html'; }
+        function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
-        async function loadDashboardData() {
+        async function loadData() {
             const year = document.getElementById('f-year').value;
             const period = document.getElementById('f-period').value;
             
-            const container = document.getElementById('leaderboard-list');
-            container.innerHTML = `
-                <div class="loader-box">
-                    <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i>
-                    <p>جاري تحديث البيانات...</p>
-                </div>`;
-
             try {
-                const API_URL = CONFIG.API_URL;
-                const res = await fetch(API_URL, { 
+                const res = await fetch(CONFIG.API_URL, { 
                     method: 'POST', 
-                    body: JSON.stringify({ 
-                        action: 'getDashboardData', 
-                        year: year, 
-                        period: period 
-                    }) 
+                    body: JSON.stringify({ action: 'getDashboardData', year: year, period: period }) 
                 });
                 const data = await res.json();
-
                 if (data.success) {
-                    allEmployees = data.employees || [];
-                    // نستدعي الفلتر مباشرة ليقوم هو بحساب وتحديث الكروت العلوية (عشان تتطابق)
-                    filterLeaderboard(); 
-                } else {
-                    container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">${data.error || 'لا توجد بيانات'}</div>`;
+                    allData = data.employees || [];
+                    switchTab(); // Refresh current view
                 }
-            } catch (e) {
-                console.error(e);
-                container.innerHTML = `<div class="col-span-full py-12 text-center text-red-500 font-bold">خطأ في الاتصال بالسيرفر</div>`;
+            } catch (e) { console.error(e); }
+        }
+
+        function setTab(tab) {
+            currentTab = tab;
+            document.getElementById('tab-emp').classList.toggle('active', tab === 'employees');
+            document.getElementById('tab-src').classList.toggle('active', tab === 'sources');
+            document.getElementById('view-employees').classList.toggle('hidden', tab !== 'employees');
+            document.getElementById('view-sources').classList.toggle('hidden', tab !== 'sources');
+            
+            if(tab === 'sources') {
+                currentSourceFilter = null; // Reset selection
+                renderSourceAnalysis();
+            } else {
+                renderEmployeeAnalysis();
             }
         }
 
-        function filterLeaderboard() {
-            const group = document.getElementById('f-group').value;
-            
-            const filteredEmployees = allEmployees.filter(e => {
-                const title = (e.dept || e.jobTitle || '').trim();
-                
-                if (title !== 'مراجع فني' && title !== 'مراجع مالي وإداري') {
-                    return false;
-                }
+        function switchTab() { setTab(currentTab); }
 
+        function getFilteredEmployees() {
+            const group = document.getElementById('f-group').value;
+            return allData.filter(e => {
+                const title = (e.dept || e.jobTitle || '').trim();
+                if (title !== 'مراجع فني' && title !== 'مراجع مالي وإداري') return false;
                 if (group === 'tech') return title === 'مراجع فني';
                 if (group === 'admin') return title === 'مراجع مالي وإداري';
-                
-                return true; 
+                return true;
             });
-
-            recalculateStats(filteredEmployees); // توحيد الأرقام
-            renderLeaderboard(filteredEmployees);
         }
 
-        function recalculateStats(employees) {
-            // نجمع من الموظفين المفلترين فقط لضمان التطابق
-            let stats = { total: 0, completed: 0, pending: 0, overdue: 0, new: 0, inProgress: 0 };
-
-            employees.forEach(emp => {
-                stats.total += emp.total || 0;
-                stats.completed += emp.completed || 0;
-                stats.pending += emp.pending || 0;
-                stats.overdue += emp.overdue || 0;
-                
-                if(emp.tasks && emp.tasks.length > 0) {
-                    emp.tasks.forEach(t => {
-                        const s = (t.status || '').toLowerCase();
-                        if(s.includes('جديد')) stats.new++;
-                        if(s.includes('متابعة')) stats.inProgress++;
-                    });
-                }
-            });
-
-            // هنا الكروت العلوية: 6 كروت
-            // حسب طلبك:
-            // الصف الأول: الاجمالي - متاخر
-            // الصف الثاني: جديد - انتظار - معتمد - متابعة
-            // لكن التصميم العام في الـ CSS هنا Grid 2x3 أو 6x1، سنلتزم بالـ Grid الموجود في الـ style
+        // --- TAB 1: EMPLOYEE ANALYSIS ---
+        function renderEmployeeAnalysis() {
+            const employees = getFilteredEmployees();
             
-            // سأقوم برسمهم بالترتيب المنطقي في الـ Grid
-            const html = `
-                <div class="stat-card"><span class="stat-num c-total">${stats.total}</span><span class="stat-lbl">الإجمالي</span></div>
-                <div class="stat-card"><span class="stat-num c-late">${stats.overdue}</span><span class="stat-lbl">متأخر</span></div>
-                
-                <div class="stat-card"><span class="stat-num c-new">${stats.new}</span><span class="stat-lbl">جديد</span></div>
-                <div class="stat-card"><span class="stat-num c-pending">${stats.pending}</span><span class="stat-lbl">بانتظار الاعتماد</span></div>
-                <div class="stat-card"><span class="stat-num c-approved">${stats.completed}</span><span class="stat-lbl">تم الاعتماد والأرشفة</span></div>
-                <div class="stat-card"><span class="stat-num c-followup">${stats.inProgress}</span><span class="stat-lbl">بحاجة للمتابعة</span></div>
+            // Calculate Stats
+            let s = { total:0, late:0, new:0, pending:0, approved:0, followup:0 };
+            employees.forEach(e => {
+                s.total += e.total||0; s.late += e.overdue||0;
+                if(e.tasks) e.tasks.forEach(t => {
+                    const st = (t.status||'');
+                    if(st.includes('جديد')) s.new++;
+                    else if(st.includes('بانتظار')) s.pending++;
+                    else if(st.includes('تم')||st.includes('منتهي')) s.approved++;
+                    else if(st.includes('متابعة')) s.followup++;
+                });
+            });
+
+            // Render Stats
+            document.getElementById('stats-emp').innerHTML = `
+                <div class="stat-card"><div class="stat-num c-total">${s.total}</div><div class="stat-lbl">الإجمالي</div></div>
+                <div class="stat-card"><div class="stat-num c-late">${s.late}</div><div class="stat-lbl">متأخر</div></div>
+                <div class="stat-card"><div class="stat-num c-new">${s.new}</div><div class="stat-lbl">جديد</div></div>
+                <div class="stat-card"><div class="stat-num c-pending">${s.pending}</div><div class="stat-lbl">بانتظار</div></div>
+                <div class="stat-card"><div class="stat-num c-approved">${s.approved}</div><div class="stat-lbl">معتمد</div></div>
+                <div class="stat-card"><div class="stat-num c-followup">${s.followup}</div><div class="stat-lbl">متابعة</div></div>
             `;
-            document.getElementById('stats-container').innerHTML = html;
+
+            // Render Cards
+            const list = document.getElementById('list-emp');
+            if(employees.length === 0) { list.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400">لا توجد بيانات</div>'; return; }
+            
+            list.innerHTML = employees.sort((a,b) => b.rate - a.rate).map((emp, i) => {
+                let rankCls = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
+                let subStats = { new:0, pending:0, app:0, foll:0 };
+                if(emp.tasks) emp.tasks.forEach(t => {
+                    const st = (t.status||'');
+                    if(st.includes('جديد')) subStats.new++;
+                    else if(st.includes('بانتظار')) subStats.pending++;
+                    else if(st.includes('تم')||st.includes('منتهي')) subStats.app++;
+                    else if(st.includes('متابعة')) subStats.foll++;
+                });
+
+                return `
+                <div class="emp-card">
+                    <div class="rank-badge ${rankCls}">${i+1}</div>
+                    <div class="emp-header">
+                        <div class="emp-avatar">${emp.name.slice(0,2)}</div>
+                        <div class="emp-name">${emp.name}</div>
+                        <div class="emp-dept">${emp.dept}</div>
+                    </div>
+                    <div class="emp-stats-grid">
+                        <div class="es-row-lg">
+                            <div class="es-box-lg"><div class="es-val-lg c-total">${emp.total}</div><div class="es-lbl-lg">الكل</div></div>
+                            <div class="es-box-lg"><div class="es-val-lg c-late">${emp.overdue}</div><div class="es-lbl-lg">متأخر</div></div>
+                        </div>
+                        <div class="es-row-sm">
+                            <div class="es-box-sm"><div class="es-val-sm c-new">${subStats.new}</div><div class="es-lbl-sm">جديد</div></div>
+                            <div class="es-box-sm"><div class="es-val-sm c-pending">${subStats.pending}</div><div class="es-lbl-sm">انتظار</div></div>
+                            <div class="es-box-sm"><div class="es-val-sm c-approved">${subStats.app}</div><div class="es-lbl-sm">معتمد</div></div>
+                            <div class="es-box-sm"><div class="es-val-sm c-followup">${subStats.foll}</div><div class="es-lbl-sm">متابعة</div></div>
+                        </div>
+                    </div>
+                    <div class="emp-footer">
+                        <button onclick="openModal('${emp.name}')" class="btn-details">عرض التفاصيل</button>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
-        function renderLeaderboard(employees) {
-            const container = document.getElementById('leaderboard-list');
-            if (!employees || employees.length === 0) {
-                container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-bold">لا توجد بيانات للعرض</div>`;
+        // --- TAB 2: SOURCE ANALYSIS ---
+        function renderSourceAnalysis() {
+            const employees = getFilteredEmployees();
+            let sources = { 'نيابة':0, 'قانونية':0, 'وكيل':0, 'أخرى':0 };
+            let total = 0;
+
+            employees.forEach(e => {
+                if(e.tasks) e.tasks.forEach(t => {
+                    total++;
+                    const src = (t.source || t.entity || '').toString().toLowerCase(); // قراءة العمود
+                    if(src.includes('نيابة')) sources['نيابة']++;
+                    else if(src.includes('قانونية')) sources['قانونية']++;
+                    else if(src.includes('وكيل')) sources['وكيل']++;
+                    else sources['أخرى']++;
+                });
+            });
+
+            // Render 4 Cards
+            const keys = ['نيابة', 'قانونية', 'وكيل', 'أخرى'];
+            const labels = ['النيابة الإدارية', 'الشؤون القانونية', 'مكتب الوكيل', 'جهات أخرى'];
+            
+            let html = '';
+            keys.forEach((k, i) => {
+                const activeClass = currentSourceFilter === k ? 'active' : '';
+                html += `
+                <div class="stat-card ${activeClass}" onclick="filterBySource('${k}')">
+                    <div class="stat-num text-teal-700">${sources[k]}</div>
+                    <div class="stat-lbl">${labels[i]}</div>
+                </div>`;
+            });
+            // Total Card (Wide)
+            html = `<div class="stat-card col-span-2 bg-teal-50 border-teal-200"><div class="stat-num text-teal-900">${total}</div><div class="stat-lbl">إجمالي الوارد</div></div>` + html;
+            
+            document.getElementById('stats-src').innerHTML = html;
+            renderSourceList();
+        }
+
+        function filterBySource(key) {
+            currentSourceFilter = key;
+            renderSourceAnalysis(); // Re-render to update active class
+        }
+
+        function renderSourceList() {
+            if(!currentSourceFilter) {
+                document.getElementById('list-src').innerHTML = '';
+                document.getElementById('src-filter-label').textContent = 'اضغط على جهة لعرض توزيعها على الموظفين';
                 return;
             }
 
-            employees.sort((a, b) => {
-                if (b.rate !== a.rate) return b.rate - a.rate;
-                return b.total - a.total;
-            });
+            const labelMap = {'نيابة':'النيابة الإدارية', 'قانونية':'الشؤون القانونية', 'وكيل':'مكتب الوكيل', 'أخرى':'جهات أخرى'};
+            document.getElementById('src-filter-label').textContent = `توزيع ملفات: ${labelMap[currentSourceFilter]}`;
 
-            let html = '';
-            employees.forEach((emp, index) => {
-                const rank = index + 1;
-                let rankClass = 'rank-other';
-                let rankIcon = rank;
-                
-                if (rank === 1) { rankClass = 'rank-1'; rankIcon = '🥇'; }
-                else if (rank === 2) { rankClass = 'rank-2'; rankIcon = '🥈'; }
-                else if (rank === 3) { rankClass = 'rank-3'; rankIcon = '🥉'; }
+            const employees = getFilteredEmployees();
+            let listHtml = '';
 
-                let progressColor = 'bg-red-500';
-                let textColor = 'text-red-600';
-                if (emp.rate >= 90) { progressColor = 'bg-emerald-500'; textColor = 'text-emerald-600'; }
-                else if (emp.rate >= 70) { progressColor = 'bg-yellow-500'; textColor = 'text-yellow-600'; }
+            employees.forEach(emp => {
+                let count = 0;
+                let taskIds = [];
+                if(emp.tasks) emp.tasks.forEach(t => {
+                    const src = (t.source || t.entity || '').toString().toLowerCase();
+                    let match = false;
+                    if(currentSourceFilter === 'أخرى') {
+                        if(!src.includes('نيابة') && !src.includes('قانونية') && !src.includes('وكيل')) match = true;
+                    } else if(src.includes(currentSourceFilter)) {
+                        match = true;
+                    }
 
-                const distMap = {};
-                if(emp.tasks) {
-                    emp.tasks.forEach(t => {
-                        const src = t['الجهة'] || t.source || t.entity || 'جهة غير محددة';
-                        distMap[src] = (distMap[src] || 0) + 1;
-                    });
-                }
-                const topEntities = Object.entries(distMap)
-                    .sort((a,b) => b[1] - a[1])
-                    .slice(0, 5);
-
-                let distHtml = '';
-                topEntities.forEach(([name, count]) => {
-                    distHtml += `
-                        <div class="entity-item">
-                            <span class="entity-name">${name}</span>
-                            <span class="entity-count">${count}</span>
-                        </div>`;
+                    if(match) { count++; taskIds.push(t); }
                 });
 
-                // حساب فرعي لـ "جديد" و "متابعة" لهذا الموظف
-                let subNew = 0, subFollow = 0;
-                if(emp.tasks) {
-                    emp.tasks.forEach(t => {
-                        if((t.status||'').includes('جديد')) subNew++;
-                        if((t.status||'').includes('متابعة')) subFollow++;
-                    });
+                if(count > 0) {
+                    listHtml += `
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-teal-50 text-teal-700 flex items-center justify-center font-bold">${emp.name.slice(0,2)}</div>
+                            <div>
+                                <div class="font-bold text-gray-800">${emp.name}</div>
+                                <div class="text-xs text-gray-500">${emp.dept}</div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xl font-bold text-teal-600">${count}</div>
+                            <div class="text-[10px] text-gray-400">معاملة</div>
+                        </div>
+                    </div>`;
                 }
-
-                // --- التعديل هنا: شكل الكارت الداخلي (سطرين) ---
-                html += `
-                <div class="emp-card">
-                    <div class="rank-badge ${rankClass}">${rankIcon}</div>
-                    
-                    <div class="emp-header">
-                        <div class="emp-avatar">${getInitials(emp.name)}</div>
-                        <h3 class="emp-name">${emp.name}</h3>
-                        <p class="emp-dept">${emp.dept || 'الفريق'}</p>
-                        
-                        <div class="progress-container">
-                            <div class="progress-bar ${progressColor}" style="width: ${emp.rate}%"></div>
-                        </div>
-                        <div class="rate-text">
-                            <span class="text-gray-500">معدل الإنجاز</span>
-                            <span class="${textColor}">${emp.rate}%</span>
-                        </div>
-                    </div>
-
-                    <div class="emp-body">
-                        <div class="emp-stats-grid">
-                            <div class="es-row-lg">
-                                <div class="es-box-lg">
-                                    <div class="es-val-lg text-gray-700">${emp.total}</div>
-                                    <div class="es-lbl-lg">الكل</div>
-                                </div>
-                                <div class="es-box-lg">
-                                    <div class="es-val-lg text-red-600">${emp.overdue}</div>
-                                    <div class="es-lbl-lg">متأخر</div>
-                                </div>
-                            </div>
-                            
-                            <div class="es-row-sm">
-                                <div class="es-box-sm">
-                                    <div class="es-val-sm text-blue-600">${subNew}</div>
-                                    <div class="es-lbl-sm">جديد</div>
-                                </div>
-                                <div class="es-box-sm">
-                                    <div class="es-val-sm text-green-600">${emp.pending}</div>
-                                    <div class="es-lbl-sm">بانتظار</div>
-                                </div>
-                                <div class="es-box-sm">
-                                    <div class="es-val-sm text-emerald-700">${emp.completed}</div>
-                                    <div class="es-lbl-sm">معتمد</div>
-                                </div>
-                                <div class="es-box-sm">
-                                    <div class="es-val-sm text-gray-600">${subFollow}</div>
-                                    <div class="es-lbl-sm">متابعة</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="entity-list">
-                            <p class="text-xs font-bold text-gray-400 mb-2">🏛️ التوزيع حسب الجهة الواردة</p>
-                            ${distHtml || '<p class="text-center text-xs text-gray-300">لا توجد مهام موزعة</p>'}
-                        </div>
-                    </div>
-
-                    <div class="emp-footer">
-                        <button onclick="openModal('${emp.name}')" class="btn-details">
-                            <i data-lucide="eye" class="w-4 h-4"></i> عرض التفاصيل
-                        </button>
-                    </div>
-                </div>`;
             });
 
-            container.innerHTML = html;
-            lucide.createIcons();
+            document.getElementById('list-src').innerHTML = listHtml || '<div class="col-span-full text-center py-4 text-gray-400">لا يوجد موظفين لديهم ملفات من هذه الجهة</div>';
         }
 
+        // --- MODAL FIXED (6 Stats) ---
         function openModal(empName) {
-            const emp = allEmployees.find(e => e.name === empName);
+            const emp = allData.find(e => e.name === empName);
             if (!emp) return;
 
             document.getElementById('m-title').textContent = emp.name;
-            document.getElementById('m-subtitle').textContent = emp.dept || 'تقرير الأداء التفصيلي';
+            document.getElementById('m-subtitle').textContent = emp.dept;
 
+            // Recalculate Sub Stats for Modal
+            let subStats = { new:0, pending:0, app:0, foll:0 };
             let tasksHtml = '';
+            
             if (emp.tasks && emp.tasks.length > 0) {
                 tasksHtml = `
-                <div class="overflow-x-auto mt-4">
+                <div class="overflow-x-auto mt-4 max-h-64 overflow-y-auto border rounded-lg">
                     <table class="w-full text-right text-xs">
-                        <thead class="bg-gray-50 text-gray-500">
-                            <tr>
-                                <th class="p-2">الجهة الواردة</th>
-                                <th class="p-2">الموضوع</th>
-                                <th class="p-2">التاريخ</th>
-                                <th class="p-2">الحالة</th>
-                            </tr>
-                        </thead>
+                        <thead class="bg-gray-50 text-gray-500 sticky top-0"><tr><th class="p-2">الجهة</th><th class="p-2">الموضوع</th><th class="p-2">الحالة</th></tr></thead>
                         <tbody class="divide-y divide-gray-100">
-                            ${emp.tasks.map(t => `
-                                <tr>
-                                    <td class="p-2 font-bold text-gray-700">${t['الجهة'] || t.source || t.entity || '-'}</td>
-                                    <td class="p-2 text-gray-600 truncate max-w-[150px]">${t.subject}</td>
-                                    <td class="p-2 text-gray-500">${t.date}</td>
-                                    <td class="p-2"><span class="px-2 py-1 rounded text-[10px] font-bold ${getStatusColor(t.status)}">${t.status}</span></td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>`;
+                `;
+                emp.tasks.forEach(t => {
+                    const st = (t.status||'');
+                    if(st.includes('جديد')) subStats.new++;
+                    else if(st.includes('بانتظار')) subStats.pending++;
+                    else if(st.includes('تم')||st.includes('منتهي')) subStats.app++;
+                    else if(st.includes('متابعة')) subStats.foll++;
+
+                    let badge = 'bg-gray-100 text-gray-600';
+                    if(st.includes('تم')) badge = 'bg-emerald-100 text-emerald-700';
+                    else if(st.includes('متأخر')) badge = 'bg-red-100 text-red-700';
+                    else if(st.includes('جديد')) badge = 'bg-blue-100 text-blue-700';
+
+                    tasksHtml += `<tr><td class="p-2 font-bold text-gray-700">${t.source||'-'}</td><td class="p-2 truncate max-w-[150px]">${t.subject}</td><td class="p-2"><span class="px-2 py-1 rounded ${badge}">${t.status}</span></td></tr>`;
+                });
+                tasksHtml += '</tbody></table></div>';
             } else {
-                tasksHtml = '<p class="text-center py-4 text-gray-400">لا توجد تفاصيل متاحة</p>';
+                tasksHtml = '<p class="text-center py-4 text-gray-400">لا توجد تفاصيل</p>';
             }
 
+            // HTML Structure for 6 Stats (Matched with Card)
             document.getElementById('m-content').innerHTML = `
-                <div class="grid grid-cols-2 gap-4 mb-4 text-center">
-                    <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
-                        <p class="text-emerald-800 text-lg font-bold">${emp.completed}</p>
-                        <p class="text-emerald-600 text-xs">معاملات منجزة</p>
+                <div class="flex flex-col gap-2 mb-4">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-gray-50 p-3 rounded-lg border text-center"><div class="text-xl font-bold text-gray-800">${emp.total}</div><div class="text-xs text-gray-500">الكل</div></div>
+                        <div class="bg-red-50 p-3 rounded-lg border border-red-100 text-center"><div class="text-xl font-bold text-red-700">${emp.overdue}</div><div class="text-xs text-red-500">متأخر</div></div>
                     </div>
-                    <div class="bg-red-50 p-3 rounded-lg border border-red-100">
-                        <p class="text-red-800 text-lg font-bold">${emp.overdue}</p>
-                        <p class="text-red-600 text-xs">معاملات متأخرة</p>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div class="bg-blue-50 p-2 rounded border border-blue-100 text-center"><div class="font-bold text-blue-700">${subStats.new}</div><div class="text-[10px] text-blue-500">جديد</div></div>
+                        <div class="bg-green-50 p-2 rounded border border-green-100 text-center"><div class="font-bold text-green-700">${subStats.pending}</div><div class="text-[10px] text-green-500">انتظار</div></div>
+                        <div class="bg-emerald-50 p-2 rounded border border-emerald-100 text-center"><div class="font-bold text-emerald-700">${subStats.app}</div><div class="text-[10px] text-emerald-500">معتمد</div></div>
+                        <div class="bg-gray-50 p-2 rounded border border-gray-200 text-center"><div class="font-bold text-gray-700">${subStats.foll}</div><div class="text-[10px] text-gray-500">متابعة</div></div>
                     </div>
                 </div>
                 ${tasksHtml}
             `;
             
             document.getElementById('detail-modal').classList.add('open');
-        }
-
-        function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
-
-        function getInitials(name) {
-            return name ? name.split(' ').slice(0, 2).map(n => n[0]).join('') : '?';
-        }
-
-        function getStatusColor(status) {
-            if(status.includes('تم') || status.includes('منتهي')) return 'bg-emerald-100 text-emerald-700';
-            if(status.includes('متأخر')) return 'bg-red-100 text-red-700';
-            if(status.includes('جديد')) return 'bg-blue-100 text-blue-700';
-            return 'bg-gray-100 text-gray-600';
         }
     </script>
 </body>
