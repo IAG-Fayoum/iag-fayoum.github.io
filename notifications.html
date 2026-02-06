@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    
+    <title>الإشعارات | IAG System</title>
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
+        :root { --primary: #0f766e; }
+
+        /* HEADER */
+        .main-header {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            color: white; padding: 1rem 1.5rem 3.5rem;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
+            position: relative; z-index: 10;
+            padding-top: max(1rem, env(safe-area-inset-top));
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .header-btn:hover { background: rgba(255,255,255,0.2); }
+        .back-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); }
+
+        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; opacity: 0.9; }
+        .breadcrumbs span { opacity: 0.7; }
+        .breadcrumbs strong { font-weight: 700; color: white; }
+
+        .dept-title { font-size: 1.1rem; font-weight: 800; text-align: center; margin-top: 10px; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; font-family: sans-serif; }
+
+        /* STATS & ACTIONS */
+        .notif-stats {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+            padding: 0 1rem; margin: -2.5rem auto 1rem; position: relative; z-index: 20; max-width: 1200px;
+        }
+        .stat-card {
+            background: white; border-radius: 16px; padding: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+        .stat-lbl { font-size: 0.75rem; font-weight: 700; color: #64748b; }
+
+        .quick-actions { display: flex; gap: 10px; padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; }
+        .action-btn {
+            flex: 1; background: white; border: 1px solid #cbd5e1; border-radius: 10px;
+            padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-weight: 700; color: #475569; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
+        }
+        .action-btn:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
+        .btn-danger { color: #dc2626; border-color: #fecaca; }
+        .btn-danger:hover { background: #fef2f2; border-color: #dc2626; color: #b91c1c; }
+
+        /* FILTERS */
+        .filters-section { padding: 0 1rem 1rem; display: flex; flex-direction: column; gap: 10px; max-width: 1200px; margin: 0 auto; }
+        .filter-tabs { display: flex; gap: 8px; background: white; padding: 4px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .filter-tab {
+            flex: 1; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 0.85rem;
+            color: #64748b; display: flex; align-items: center; justify-content: center; gap: 6px;
+            cursor: pointer; transition: 0.2s; border: none; background: transparent;
+        }
+        .filter-tab.active { background: var(--primary); color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        .count-badge {
+            background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 10px;
+            font-size: 0.7rem; font-weight: 800; min-width: 20px; text-align: center;
+        }
+        .filter-tab.active .count-badge { background: rgba(255,255,255,0.2); }
+
+        .filter-types { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0; -webkit-overflow-scrolling: touch; }
+        .type-chip {
+            padding: 6px 12px; border-radius: 20px; background: white; border: 1px solid #e2e8f0;
+            font-size: 0.8rem; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s;
+            white-space: nowrap; display: flex; align-items: center; gap: 6px;
+        }
+        .type-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        /* NOTIFICATIONS LIST */
+        .notifs-container { padding: 0 1rem 2rem; display: flex; flex-direction: column; gap: 10px; max-width: 1200px; margin: 0 auto; }
+        
+        .notif-card {
+            background: white; border-radius: 14px; padding: 14px; border: 1px solid #e5e7eb;
+            display: flex; gap: 12px; position: relative; cursor: pointer; transition: all 0.2s;
+            overflow: hidden;
+        }
+        .notif-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); }
+        .notif-card.unread { background: #f0fdfa; border-color: #14b8a6; }
+        
+        .notif-indicator {
+            position: absolute; right: 0; top: 0; bottom: 0; width: 4px;
+            background: var(--primary); opacity: 0; transition: 0.2s;
+        }
+        .notif-card.unread .notif-indicator { opacity: 1; }
+
+        .notif-icon-wrapper {
+            width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center;
+            justify-content: center; flex-shrink: 0;
+        }
+        .notif-content { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        
+        .notif-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+        .notif-title { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.4; }
+        .notif-badge { padding: 2px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; white-space: nowrap; }
+        
+        .badge-info { background: #dbeafe; color: #1e40af; }
+        .badge-warning { background: #fef3c7; color: #b45309; }
+        .badge-urgent { background: #fee2e2; color: #b91c1c; }
+        .badge-success { background: #d1fae5; color: #065f46; }
+
+        .notif-message { font-size: 0.85rem; color: #475569; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .notif-footer { display: flex; gap: 12px; font-size: 0.75rem; color: #94a3b8; font-weight: 600; margin-top: 4px; }
+        .notif-time, .notif-from { display: flex; align-items: center; gap: 4px; }
+
+        .notif-delete {
+            width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9; border: none;
+            display: flex; align-items: center; justify-content: center; color: #64748b;
+            cursor: pointer; transition: 0.2s; flex-shrink: 0; align-self: flex-start;
+        }
+        .notif-delete:hover { background: #fee2e2; color: #dc2626; }
+
+        /* Empty State */
+        .empty-state { text-align: center; padding: 4rem 2rem; color: #94a3b8; }
+        .empty-icon { margin: 0 auto 1rem; width: 80px; height: 80px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        
+        /* Modal & Side Menu */
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+        .modal-box { background: white; width: 95%; max-width: 500px; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+        .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+        .modal-body { padding: 1.5rem; overflow-y: auto; }
+        .modal-footer { padding: 1rem; border-top: 1px solid #e5e7eb; display: flex; gap: 10px; justify-content: flex-end; background: #f8fafc; }
+
+        /* Toast */
+        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1e293b; color: white; padding: 10px 20px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: 0.3s; pointer-events: none; z-index: 9999; display: flex; gap: 8px; align-items: center; }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+        .nav-btn.active { color: var(--primary); }
+
+        .hidden { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
+    <aside class="side-menu" id="side-menu">
+        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+                <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
+            </div>
+            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
+            <p class="text-xs text-teal-600" id="menu-role">...</p>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="employee.html" id="nav-emp" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="user" class="w-4 h-4"></i> صفحتي</a>
+            <a href="coordinator.html" id="nav-coord" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm hidden"><i data-lucide="clipboard-list" class="w-4 h-4"></i> المنسق</a>
+            <a href="admin.html" id="nav-admin" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm hidden"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> لوحة التحكم</a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
+        </nav>
+        <div class="p-4 border-t">
+            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+            </button>
+        </div>
+    </aside>
+
+    <header class="main-header">
+        <div class="max-w-[1200px] mx-auto">
+            <div class="header-top">
+                <div class="flex gap-3">
+                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                </div>
+                
+                <div class="text-center">
+                    <div class="breadcrumbs">
+                        <span>الرئيسية</span>
+                        <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
+                        <strong>الإشعارات</strong>
+                    </div>
+                </div>
+                
+                <button onclick="goBack()" class="header-btn back-btn">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <h1 class="dept-title">مركز الإشعارات والتنبيهات</h1>
+            <p class="dept-subtitle">Notifications Center</p>
+        </div>
+    </header>
+
+    <div class="notif-stats">
+        <div class="stat-card">
+            <div class="stat-icon bg-blue-100"><i data-lucide="bell" class="w-6 h-6 text-blue-600"></i></div>
+            <div><div class="stat-num text-blue-600" id="total-notifs">0</div><div class="stat-lbl">الإجمالي</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-orange-100"><i data-lucide="bell-ring" class="w-6 h-6 text-orange-600"></i></div>
+            <div><div class="stat-num text-orange-600" id="unread-notifs">0</div><div class="stat-lbl">غير مقروءة</div></div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <button onclick="markAllAsRead()" class="action-btn"><i data-lucide="check-check" class="w-4 h-4"></i> تحديد الكل كمقروء</button>
+        <button onclick="clearAllNotifications()" class="action-btn btn-danger"><i data-lucide="trash-2" class="w-4 h-4"></i> حذف الكل</button>
+    </div>
+
+    <div class="filters-section">
+        <div class="filter-tabs">
+            <button onclick="filterNotifs('all')" class="filter-tab active" data-filter="all">
+                <i data-lucide="list" class="w-4 h-4"></i> الكل <span class="count-badge" id="count-all">0</span>
+            </button>
+            <button onclick="filterNotifs('unread')" class="filter-tab" data-filter="unread">
+                <i data-lucide="bell-dot" class="w-4 h-4"></i> غير مقروء <span class="count-badge" id="count-unread">0</span>
+            </button>
+            <button onclick="filterNotifs('read')" class="filter-tab" data-filter="read">
+                <i data-lucide="check-circle" class="w-4 h-4"></i> مقروء <span class="count-badge" id="count-read">0</span>
+            </button>
+        </div>
+        
+        <div class="filter-types">
+            <button onclick="filterByType('all')" class="type-chip active" data-type="all">الكل</button>
+            <button onclick="filterByType('info')" class="type-chip" data-type="info"><span class="chip-dot bg-blue-500"></span> معلومة</button>
+            <button onclick="filterByType('warning')" class="type-chip" data-type="warning"><span class="chip-dot bg-orange-500"></span> تحذير</button>
+            <button onclick="filterByType('urgent')" class="type-chip" data-type="urgent"><span class="chip-dot bg-red-500"></span> عاجل</button>
+            <button onclick="filterByType('success')" class="type-chip" data-type="success"><span class="chip-dot bg-green-500"></span> نجاح</button>
+        </div>
+    </div>
+
+    <div class="notifs-container" id="notifs-list">
+        <div class="loader-box"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto text-teal-600"></i></div>
+    </div>
+
+    <div class="empty-state hidden" id="empty-state">
+        <div class="empty-icon"><i data-lucide="bell-off" class="w-10 h-10 text-gray-400"></i></div>
+        <h3 class="font-bold text-gray-600 text-lg">لا توجد إشعارات</h3>
+        <p class="text-sm">أنت مطلع على كل شيء!</p>
+    </div>
+
+    <div class="modal-overlay" id="notif-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="font-bold text-lg text-gray-800">تفاصيل الإشعار</h3>
+                <button onclick="closeNotifModal()" class="p-2 rounded-full hover:bg-gray-100"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="modal-body" id="modal-content"></div>
+            <div class="modal-footer">
+                <button onclick="closeNotifModal()" class="action-btn">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-btn"><i data-lucide="home"></i> الرئيسية</a>
+        <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
+        <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
+        <a href="notifications.html" class="nav-btn active"><i data-lucide="bell"></i> الإشعارات</a>
+    </nav>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+        lucide.createIcons();
+        let allNotifications = [];
+        let currentFilter = 'all';
+        let currentType = 'all';
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userStr = localStorage.getItem('iag_user');
+            if (!userStr) { window.location.href = 'index.html'; return; }
+            
+            currentUser = JSON.parse(userStr);
+            document.getElementById('menu-user').textContent = currentUser.name;
+            document.getElementById('menu-role').textContent = currentUser.role;
+
+            if (currentUser.role === 'مدير' || currentUser.role === 'Admin') {
+                document.getElementById('nav-admin').classList.remove('hidden');
+                document.getElementById('nav-coord').classList.remove('hidden');
+            } else if (currentUser.role === 'منسق') {
+                document.getElementById('nav-coord').classList.remove('hidden');
+            }
+
+            localStorage.setItem('iag_last_page', 'notifications.html');
+            await loadNotifications();
+        });
+
+        function toggleMenu() { document.body.classList.toggle('menu-open'); }
+        
+        function logout() {
+            localStorage.removeItem('iag_user');
+            localStorage.removeItem('iag_last_page');
+            window.location.href = 'index.html';
+        }
+
+        function goBack() {
+            const lastPage = localStorage.getItem('iag_last_page');
+            if (lastPage && lastPage !== 'notifications.html') window.location.href = lastPage;
+            else window.location.href = 'index.html';
+        }
+
+        async function loadNotifications() {
+            try {
+                // Mock Data for Demo (Replace with actual API call)
+                // const res = await fetch(CONFIG.API_URL, { ... });
+                // const data = await res.json();
+                
+                // Simulating API response
+                setTimeout(() => {
+                    allNotifications = [
+                        { id: '1', title: 'معاملة جديدة', message: 'تم استلام معاملة جديدة من النيابة الإدارية رقم 154', type: 'info', read: false, timestamp: new Date().getTime() - 3600000 },
+                        { id: '2', title: 'تذكير بالمتابعة', message: 'يرجى متابعة المعاملة رقم 120 التي تجاوزت الموعد', type: 'warning', read: false, timestamp: new Date().getTime() - 7200000 },
+                        { id: '3', title: 'إشعار عاجل', message: 'مطلوب الرد الفوري على استعجال الوزارة', type: 'urgent', read: true, timestamp: new Date().getTime() - 86400000 },
+                        { id: '4', title: 'تم الاعتماد', message: 'تم اعتماد تقرير المرور الفني الخاص بك', type: 'success', read: true, timestamp: new Date().getTime() - 172800000 }
+                    ];
+                    
+                    updateStats();
+                    renderNotifications();
+                }, 500);
+
+            } catch (e) { console.error(e); }
+        }
+
+        function updateStats() {
+            const total = allNotifications.length;
+            const unread = allNotifications.filter(n => !n.read).length;
+            
+            document.getElementById('total-notifs').textContent = total;
+            document.getElementById('unread-notifs').textContent = unread;
+            
+            document.getElementById('count-all').textContent = total;
+            document.getElementById('count-unread').textContent = unread;
+            document.getElementById('count-read').textContent = total - unread;
+        }
+
+        function filterNotifs(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(el => el.classList.remove('active'));
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+            renderNotifications();
+        }
+
+        function filterByType(type) {
+            currentType = type;
+            document.querySelectorAll('.type-chip').forEach(el => el.classList.remove('active'));
+            document.querySelector(`[data-type="${type}"]`).classList.add('active');
+            renderNotifications();
+        }
+
+        function renderNotifications() {
+            const container = document.getElementById('notifs-list');
+            let filtered = allNotifications;
+
+            if (currentFilter === 'unread') filtered = filtered.filter(n => !n.read);
+            else if (currentFilter === 'read') filtered = filtered.filter(n => n.read);
+
+            if (currentType !== 'all') filtered = filtered.filter(n => n.type === currentType);
+
+            if (filtered.length === 0) {
+                container.innerHTML = '';
+                document.getElementById('empty-state').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('empty-state').classList.add('hidden');
+            container.innerHTML = filtered.map(n => createCard(n)).join('');
+            lucide.createIcons();
+        }
+
+        function createCard(n) {
+            const style = {
+                info: { bg: 'bg-blue-100', icon: 'info', text: 'text-blue-600', badge: 'badge-info' },
+                warning: { bg: 'bg-orange-100', icon: 'alert-triangle', text: 'text-orange-600', badge: 'badge-warning' },
+                urgent: { bg: 'bg-red-100', icon: 'alert-circle', text: 'text-red-600', badge: 'badge-urgent' },
+                success: { bg: 'bg-green-100', icon: 'check-circle', text: 'text-green-600', badge: 'badge-success' }
+            }[n.type] || { bg: 'bg-gray-100', icon: 'bell', text: 'text-gray-600', badge: '' };
+
+            return `
+            <div class="notif-card ${!n.read ? 'unread' : ''}" onclick="openNotification('${n.id}')">
+                <div class="notif-indicator"></div>
+                <div class="notif-icon-wrapper ${style.bg}"><i data-lucide="${style.icon}" class="w-6 h-6 ${style.text}"></i></div>
+                <div class="notif-content">
+                    <div class="notif-header">
+                        <h4 class="notif-title">${n.title}</h4>
+                        <span class="notif-badge ${style.badge}">${n.type.toUpperCase()}</span>
+                    </div>
+                    <p class="notif-message">${n.message}</p>
+                    <div class="notif-footer">
+                        <span class="notif-time"><i data-lucide="clock" class="w-3 h-3"></i> ${getRelativeTime(n.timestamp)}</span>
+                    </div>
+                </div>
+                <button onclick="deleteNotification(event, '${n.id}')" class="notif-delete"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>`;
+        }
+
+        function openNotification(id) {
+            const n = allNotifications.find(x => x.id == id);
+            if(!n) return;
+            
+            // Mark as read
+            if (!n.read) {
+                n.read = true;
+                updateStats();
+                renderNotifications();
+            }
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="text-center mb-4">
+                    <h3 class="font-bold text-xl text-gray-800">${n.title}</h3>
+                    <p class="text-xs text-gray-500 mt-1">${new Date(n.timestamp).toLocaleString('ar-EG')}</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 text-gray-700 leading-relaxed">
+                    ${n.message}
+                </div>
+            `;
+            document.getElementById('notif-modal').classList.add('open');
+        }
+
+        function closeNotifModal() { document.getElementById('notif-modal').classList.remove('open'); }
+
+        function deleteNotification(e, id) {
+            e.stopPropagation();
+            if(confirm('حذف الإشعار؟')) {
+                allNotifications = allNotifications.filter(n => n.id != id);
+                updateStats();
+                renderNotifications();
+            }
+        }
+
+        function markAllAsRead() {
+            allNotifications.forEach(n => n.read = true);
+            updateStats();
+            renderNotifications();
+            showToast('تم تحديد الكل كمقروء');
+        }
+
+        function clearAllNotifications() {
+            if(confirm('هل أنت متأكد من حذف جميع الإشعارات؟')) {
+                allNotifications = [];
+                updateStats();
+                renderNotifications();
+                showToast('تم حذف جميع الإشعارات');
+            }
+        }
+
+        function getRelativeTime(ts) {
+            const diff = Math.floor((new Date() - new Date(ts)) / 1000);
+            if (diff < 60) return 'الآن';
+            if (diff < 3600) return `منذ ${Math.floor(diff/60)} دقيقة`;
+            if (diff < 86400) return `منذ ${Math.floor(diff/3600)} ساعة`;
+            return `منذ ${Math.floor(diff/86400)} يوم`;
+        }
+
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'toast show';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
