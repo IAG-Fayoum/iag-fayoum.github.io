@@ -19,6 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        /* --- Original Styles Preserved --- */
         body { 
             font-family: 'Cairo', sans-serif; 
             background-color: #f8fafc; 
@@ -33,7 +34,6 @@
             -webkit-tap-highlight-color: transparent;
         }
         
-        /* Glass Effect */
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -57,6 +57,7 @@
         }
         .btn-primary:active { transform: scale(0.98); }
 
+        /* Styles for the new Nav Buttons to match original look */
         .nav-btn {
             transition: all 0.2s ease;
             border: 1px solid transparent;
@@ -126,7 +127,7 @@
             </form>
             
             <div class="mt-6 text-center">
-                <p class="text-xs text-gray-400">Governance System v8.0</p>
+                <p class="text-xs text-gray-400">System v8.0</p>
             </div>
         </div>
 
@@ -153,7 +154,7 @@
     <script>
         lucide.createIcons();
 
-        // Check Login on Load
+        // 1. Check Login on Load
         document.addEventListener('DOMContentLoaded', () => {
             const storedUser = localStorage.getItem('iag_user');
             if (storedUser) {
@@ -166,7 +167,7 @@
             }
         });
 
-        // Login Logic
+        // 2. Login Logic
         const loginForm = document.getElementById('login-form');
         const loginBtn = document.getElementById('login-btn');
         const errorMsg = document.getElementById('error-msg');
@@ -178,17 +179,16 @@
             const mobile = document.getElementById('mobile').value.trim();
             const pin = document.getElementById('pin').value.trim();
             
-            // UI Loading State
+            // Loading State
             const originalBtnContent = loginBtn.innerHTML;
             loginBtn.innerHTML = '<div class="loader"></div>';
             loginBtn.disabled = true;
             errorMsg.classList.add('hidden');
 
             try {
-                // Determine API URL
+                // Get API URL from config
                 const API_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : ''; 
-                
-                if(!API_URL) throw new Error("خطأ في إعدادات النظام (Config Missing)");
+                if(!API_URL) throw new Error("Config file missing");
 
                 const response = await fetch(API_URL, {
                     method: 'POST',
@@ -198,7 +198,7 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    // Save User
+                    // Save User Data
                     const userData = {
                         name: result.name,
                         role: result.role,
@@ -209,7 +209,7 @@
                     };
                     localStorage.setItem('iag_user', JSON.stringify(userData));
                     
-                    // Transition
+                    // Show Navigation
                     showNavScreen(userData);
                 } else {
                     throw new Error(result.error || 'بيانات الدخول غير صحيحة');
@@ -226,18 +226,21 @@
             }
         });
 
-        // Render Navigation Screen
+        // 3. Navigation Screen Logic
         function showNavScreen(user) {
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('nav-view').classList.remove('hidden');
             
+            // Update Info
             document.getElementById('user-name').textContent = 'مرحباً د. ' + user.name.split(' ').slice(0, 2).join(' ');
             document.getElementById('user-role').textContent = user.jobTitle || user.role;
 
             const container = document.getElementById('nav-buttons');
             let html = '';
 
-            // 1. Employee Page (For Everyone)
+            // -- Logic for Buttons based on Role --
+            
+            // 1. Employee Page (Available for Everyone)
             html += createBtn('employee.html', 'صفحتي الشخصية', 'user', 'bg-white border-gray-200 text-gray-700 hover:border-teal-500 hover:text-teal-700');
 
             // 2. Admin Page (Admin Only)
@@ -250,13 +253,14 @@
                 html += createBtn('coordinator.html', 'صفحة المنسق', 'clipboard-list', 'bg-blue-50 border-blue-200 text-blue-800 hover:bg-blue-100');
             }
 
-            // 4. Distribution/Dashboard (For Everyone)
+            // 4. Dashboard (Available for Everyone)
             html += createBtn('distribution.html', 'مؤشرات الأداء', 'bar-chart-2', 'bg-purple-50 border-purple-200 text-purple-800 hover:bg-purple-100');
 
             container.innerHTML = html;
             lucide.createIcons();
         }
 
+        // Helper to create styled buttons matching the design
         function createBtn(url, title, icon, classes) {
             return `
             <a href="${url}" onclick="saveLastPage('${url}')" class="nav-btn w-full p-4 rounded-xl shadow-sm flex items-center justify-between group ${classes}">
