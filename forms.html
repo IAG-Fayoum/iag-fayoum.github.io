@@ -207,13 +207,26 @@
     function goBack(e) {
         if(e) e.preventDefault();
         
-        // التحقق من حالة تسجيل الدخول
-        const user = localStorage.getItem('iag_user');
-        const lastPage = localStorage.getItem('iag_last_page');
+        // جلب بيانات المستخدم
+        const userStr = localStorage.getItem('iag_user');
 
-        if (user && lastPage) {
-            // لو مسجل دخول -> يرجع لآخر صفحة كان فيها (منسق/مؤشرات/موظف)
-            window.location.href = lastPage;
+        if (userStr) {
+            try {
+                const user = JSON.parse(userStr);
+                
+                // التوجيه بناءً على الصلاحية (الدور) وليس آخر صفحة
+                if (user.role === 'مدير' || user.role === 'Admin') {
+                    window.location.href = 'admin.html';
+                } else if (user.role === 'منسق') {
+                    window.location.href = 'coordinator.html';
+                } else {
+                    // الموظف العادي
+                    window.location.href = 'employee.html';
+                }
+            } catch (err) {
+                // في حالة وجود خطأ في البيانات
+                window.location.href = 'index.html';
+            }
         } else {
             // لو زائر أو غير مسجل -> يرجع لصفحة الدخول
             window.location.href = 'index.html';
