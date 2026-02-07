@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f766e">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
     
     <title>مؤشرات الأداء | IAG System</title>
@@ -16,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         :root { --primary: #0f766e; }
 
         /* HEADER */
@@ -33,7 +32,9 @@
         .header-btn:hover { background: rgba(255,255,255,0.2); }
 
         .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; opacity: 0.9; }
-        .breadcrumbs a { color: #ccfbf1; text-decoration: none; opacity: 0.8; transition: 0.2s; }
+        .breadcrumbs span { opacity: 0.7; }
+        .breadcrumbs strong { font-weight: 700; color: white; }
+
         .dept-title { font-size: 1.1rem; font-weight: 800; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.9; text-align: center; direction: ltr; font-family: sans-serif; }
 
@@ -59,7 +60,7 @@
         }
         .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* STATS GRID */
+        /* STATS */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 1rem; }
         @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
 
@@ -71,7 +72,6 @@
         .stat-num { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
         .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
-        /* COLORS */
         .c-total { color: #334155; } .c-late { color: #dc2626; }
         .c-new { color: #3b82f6; } .c-pending { color: #16a34a; }
         .c-approved { color: #047857; } .c-followup { color: #6b7280; }
@@ -100,13 +100,11 @@
         .emp-name { font-size: 0.95rem; font-weight: 800; color: #1e293b; }
         .emp-dept { font-size: 0.7rem; color: #64748b; }
 
-        /* PROGRESS BAR */
         .progress-wrapper { margin-top: 8px; padding: 0 4px; }
         .progress-labels { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 2px; font-weight: 700; color: #64748b; }
         .progress-track { width: 100%; height: 6px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
         .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
 
-        /* STATS INSIDE CARD */
         .emp-stats-grid { display: flex; flex-direction: column; gap: 6px; padding: 1rem; }
         .es-row-lg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .es-box-lg { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; text-align: center; }
@@ -125,7 +123,6 @@
             display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
         }
 
-        /* SOURCE LIST ITEM */
         .source-item { 
             background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px;
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
@@ -175,10 +172,18 @@
             <p class="text-xs text-teal-600" id="menu-role">...</p>
         </div>
         <nav class="flex-1 p-4 space-y-2">
-            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
-            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
-            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
-            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
+            <a href="#" id="side-nav-home" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                <i id="side-nav-icon" data-lucide="home" class="w-4 h-4"></i> <span id="side-nav-text">...</span>
+            </a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm">
+                <i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات
+            </a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                <i data-lucide="file-text" class="w-4 h-4"></i> النماذج
+            </a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                <i data-lucide="bell" class="w-4 h-4"></i> الإشعارات
+            </a>
         </nav>
         <div class="p-4 border-t">
             <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
@@ -190,26 +195,26 @@
     <header class="main-header">
         <div class="max-w-[1200px] mx-auto">
             <div class="header-top">
-                <button onclick="goBack()" class="header-btn text-white" title="رجوع">
-                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                </button>
+                <div class="flex gap-3">
+                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                </div>
+                
+                <div class="text-center">
+                    <div class="breadcrumbs mb-1">
+                        <span>الرئيسية</span>
+                        <i data-lucide="chevron-left" class="w-3 h-3"></i>
+                        <span class="font-bold">مؤشرات الأداء</span>
+                    </div>
+                    <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
+                    <p class="dept-subtitle">Internal Audit & Governance Department</p>
+                </div>
+
                 <div class="flex gap-3">
                     <button onclick="window.location.href='notifications.html'" class="header-btn relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
                         <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
                     </button>
-                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
                 </div>
-            </div>
-            
-            <div class="text-center">
-                <div class="breadcrumbs mb-1">
-                    <span>الرئيسية</span>
-                    <i data-lucide="chevron-left" class="w-3 h-3"></i>
-                    <span class="font-bold">مؤشرات الأداء</span>
-                </div>
-                <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
-                <p class="dept-subtitle">Internal Audit & Governance Department</p>
             </div>
         </div>
     </header>
@@ -300,9 +305,11 @@
         </div>
     </div>
 
-    <nav class="bottom-nav">
+    <nav class="bottom-nav lg:hidden">
+        <a href="#" id="bottom-nav-home" class="nav-btn">
+            <i id="bottom-nav-icon" data-lucide="home"></i> <span id="bottom-nav-text">...</span>
+        </a>
         <a href="distribution.html" class="nav-btn active"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
-        <a href="coordinator.html" class="nav-btn"><i data-lucide="users"></i> المنسق</a>
         <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
         <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
     </nav>
@@ -316,17 +323,48 @@
         let currentSourceFilter = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const user = localStorage.getItem('iag_user');
-            if (!user) { window.location.href = 'index.html'; return; }
-            const u = JSON.parse(user);
-            document.getElementById('menu-user').textContent = u.name;
-            document.getElementById('menu-role').textContent = u.role;
+            const userStr = localStorage.getItem('iag_user');
+            if (!userStr) { window.location.href = 'index.html'; return; }
+            
+            const user = JSON.parse(userStr);
+            document.getElementById('menu-user').textContent = user.name;
+            document.getElementById('menu-role').textContent = user.role;
+
+            // --- Dynamic Navigation Setup ---
+            let homeUrl = 'employee.html';
+            let homeText = 'مهامي';
+            let homeIcon = 'user';
+
+            if (user.role === 'مدير' || user.role === 'Admin') {
+                homeUrl = 'admin.html';
+                homeText = 'التحكم';
+                homeIcon = 'layout-dashboard';
+            } else if (user.role === 'منسق') {
+                homeUrl = 'coordinator.html';
+                homeText = 'المنسق';
+                homeIcon = 'users';
+            }
+
+            // Update Side Menu Home Link
+            const sideHome = document.getElementById('side-nav-home');
+            sideHome.href = homeUrl;
+            document.getElementById('side-nav-text').textContent = homeText;
+            document.getElementById('side-nav-icon').setAttribute('data-lucide', homeIcon);
+
+            // Update Bottom Nav Home Link
+            const bottomHome = document.getElementById('bottom-nav-home');
+            bottomHome.href = homeUrl;
+            document.getElementById('bottom-nav-text').textContent = homeText;
+            document.getElementById('bottom-nav-icon').setAttribute('data-lucide', homeIcon);
+            
+            lucide.createIcons(); // Refresh icons
+            // -------------------------------
+
             await loadData();
         });
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
-        function logout() { localStorage.removeItem('iag_user'); localStorage.removeItem('iag_last_page'); window.location.href = 'index.html'; }
-        function goBack() { window.location.href = 'coordinator.html'; }
+        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
         function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
         async function loadData() {
@@ -474,7 +512,7 @@
             employees.forEach(e => {
                 if(e.tasks) e.tasks.forEach(t => {
                     total++;
-                    const rawSrc = t.source || t['الجهة'] || ''; // Fixed Logic
+                    const rawSrc = t.source || t['الجهة'] || '';
                     const src = normalizeArabic(rawSrc);
 
                     if(src.includes(normalizeArabic('نيابة')) || src.includes(normalizeArabic('إدارية'))) sources['نيابة']++;
@@ -522,7 +560,7 @@
             let totalForSource = 0;
             employees.forEach(emp => {
                 if(emp.tasks) emp.tasks.forEach(t => {
-                    const rawSrc = t.source || t['الجهة'] || ''; // Fixed Logic
+                    const rawSrc = t.source || t['الجهة'] || '';
                     const src = normalizeArabic(rawSrc);
                     
                     let match = false;
@@ -555,7 +593,7 @@
             employees.forEach(emp => {
                 let count = 0;
                 if(emp.tasks) emp.tasks.forEach(t => {
-                    const rawSrc = t.source || t['الجهة'] || ''; // Fixed Logic
+                    const rawSrc = t.source || t['الجهة'] || '';
                     const src = normalizeArabic(rawSrc);
                     
                     let match = false;
