@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
         
         :root {
             --primary: #0f766e;
@@ -23,9 +23,9 @@
             --c-followup: #6b7280; --c-late: #dc2626;       
         }
 
-        /* --- Header (Standard) --- */
+        /* --- Header --- */
         .main-header {
-            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            background: #115e59;
             color: white; padding: 1rem 1.5rem 3.5rem;
             border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
             box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
@@ -37,8 +37,8 @@
         
         .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .header-btn:hover { background: rgba(255,255,255,0.2); }
-        .back-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); }
 
+        /* مسار التنقل */
         .breadcrumbs { 
             display: flex; align-items: center; justify-content: center; gap: 6px; 
             font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9;
@@ -49,7 +49,7 @@
         .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
-        /* --- Employee Info Card (Specific) --- */
+        /* --- Employee Info Card --- */
         .emp-info-card {
             background: white; border-radius: 16px; padding: 1.25rem;
             margin: -2.5rem 1rem 1rem; position: relative; z-index: 20;
@@ -60,7 +60,7 @@
         .info-icon { color: var(--primary); width: 18px; height: 18px; }
         .info-val { font-weight: 700; color: #1f2937; }
 
-        /* --- Stats (Standard) --- */
+        /* --- Stats --- */
         .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
         .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
@@ -85,7 +85,7 @@
         .txt-new { color: #3b82f6; } .txt-pending { color: #16a34a; }
         .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
 
-        /* --- Tabs System (Standard) --- */
+        /* --- Tabs --- */
         .tabs-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; }
         .tabs-container {
             display: flex; background: #e2e8f0; border-radius: 12px; padding: 4px;
@@ -101,7 +101,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
 
-        /* --- Filters (Standard Style) --- */
+        /* --- Filters Box --- */
         .filter-box {
             background: white; border-radius: 12px; padding: 12px;
             border: 1px solid #e2e8f0; margin-bottom: 1rem;
@@ -118,10 +118,11 @@
         }
         .f-input:focus { border-color: #0f766e; background: white; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
 
-        /* --- Task Cards (Standard Stripe) --- */
+        /* --- Cards List (Tasks & Reports) --- */
         .cards-container { display: grid; gap: 12px; grid-template-columns: 1fr; }
         @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
 
+        /* تصميم كارت المهمة الموحد */
         .task-card {
             background: white; border-radius: 14px; overflow: hidden;
             box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb;
@@ -144,7 +145,7 @@
             cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569;
         }
         
-        /* --- Report Cards --- */
+        /* تصميم كارت التقرير */
         .report-card {
             background: white; border-radius: 12px; padding: 12px; 
             border: 1px solid #e5e7eb; border-right: 4px solid #e5e7eb; 
@@ -154,7 +155,7 @@
         .border-fin { border-right-color: #4ade80; }
         .border-comp { border-right-color: #fbbf24; }
 
-        /* --- Side Menu & Modal (Standard) --- */
+        /* --- Menu & Modal --- */
         .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
         .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
@@ -171,12 +172,13 @@
 
         .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
 
-        /* --- Bottom Nav (Standard) --- */
+        /* --- Bottom Nav (Mobile Only) --- */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -200,6 +202,9 @@
             <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
                 <i data-lucide="file-text" class="w-4 h-4"></i> النماذج
             </a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                <i data-lucide="bell" class="w-4 h-4"></i> الإشعارات
+            </a>
         </nav>
         <div class="p-4 border-t">
             <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
@@ -214,20 +219,23 @@
                 <div class="flex gap-3">
                     <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
                 </div>
+                
                 <div class="text-center">
-                    <div class="breadcrumbs">
+                    <div class="breadcrumbs mb-1">
                         <span>الرئيسية</span>
                         <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
                         <strong>صفحتي الشخصية</strong>
                     </div>
+                    <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
+                    <p class="dept-subtitle">Internal Audit & Governance Dept</p>
                 </div>
-                <button onclick="goBack()" class="header-btn back-btn">
-                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <div class="text-center">
-                <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
-                <p class="dept-subtitle">Internal Audit & Governance Dept</p>
+
+                <div class="flex gap-3">
+                    <button onclick="window.location.href='notifications.html'" class="header-btn relative">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -332,10 +340,11 @@
         </div>
     </div>
 
-    <nav class="bottom-nav">
+    <nav class="bottom-nav lg:hidden">
         <a href="employee.html" class="nav-btn active"><i data-lucide="user"></i> صفحتي</a>
         <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
         <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
+        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
     </nav>
 
     <script src="assets/js/config.js"></script>
@@ -350,11 +359,9 @@
             
             const user = JSON.parse(userStr);
             
-            // Set Info
             document.getElementById('emp-name').textContent = user.name;
             document.getElementById('emp-job').textContent = user.jobTitle || user.role;
             document.getElementById('emp-email').textContent = user.email || '-';
-            
             document.getElementById('menu-user').textContent = user.name;
             document.getElementById('menu-role').textContent = user.role;
 
@@ -367,11 +374,6 @@
             localStorage.removeItem('iag_user');
             localStorage.removeItem('iag_last_page');
             window.location.href = 'index.html';
-        }
-
-        function goBack() {
-            const lastPage = localStorage.getItem('iag_last_page') || 'index.html';
-            window.location.href = lastPage;
         }
 
         function switchTab(tabId) {
@@ -407,7 +409,7 @@
                 }
             } catch (e) {
                 console.error(e);
-                document.getElementById('tasks-list').innerHTML = '<div class="error-box text-center text-red-500 p-4">خطأ في الاتصال</div>';
+                document.getElementById('tasks-list').innerHTML = '<div class="col-span-full text-center py-8 text-red-500 font-bold">خطأ في الاتصال</div>';
             }
         }
 
@@ -428,9 +430,8 @@
             }
             
             container.innerHTML = tasks.map(t => {
-                let bgClass = 'bg-gray-500';
-                if(t.status.includes('جديد')) bgClass = 'bg-new';
-                else if(t.status.includes('بانتظار')) bgClass = 'bg-pending';
+                let bgClass = 'bg-new';
+                if(t.status.includes('بانتظار')) bgClass = 'bg-pending';
                 else if(t.status.includes('تم')) bgClass = 'bg-approved';
                 else if(t.status.includes('متابعة')) bgClass = 'bg-followup';
                 else if(t.status.includes('متأخر')) bgClass = 'bg-late';
