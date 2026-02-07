@@ -117,6 +117,33 @@
     
     .btn-login:active { transform: scale(0.98); }
 
+    .btn-work-forms-static {
+      width: 100%;
+      margin-top: 12px;
+      background: white;
+      color: #334155;
+      border: 2px solid #e2e8f0;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-work-forms-static:hover {
+      border-color: #0f766e;
+      background: #f0fdfa;
+      color: #0f766e;
+    }
+
+    .btn-work-forms-static:active { transform: scale(0.98); }
+
     .error-box {
       background: #fef2f2;
       border: 1px solid #fecaca;
@@ -178,6 +205,12 @@
           <span>دخول للنظام</span>
           <i data-lucide="arrow-left" class="w-5 h-5"></i>
         </button>
+
+        <a href="forms.html" class="btn-work-forms-static">
+          <span>نماذج العمل</span>
+          <i data-lucide="file-text" class="w-5 h-5 text-teal-600"></i>
+        </a>
+
       </form>
     </div>
 
@@ -190,6 +223,11 @@
       </div>
       <div class="text-sm opacity-90 font-light text-center">
         <p class="font-bold text-white mb-2 text-base">إدارة الحوكمة والمراجعة الداخلية</p>
+        <div class="text-xs text-slate-300 space-y-1 en-font">
+          <p>MoH Fayoum Governance – Internal Access Page</p>
+          <p class="opacity-75">Developed under Governance Supervision – <span class="text-teal-400 font-bold">Dr. MAH</span></p>
+        </div>
+        <div class="w-16 h-px bg-slate-700 mx-auto my-3"></div>
         <p class="text-[10px] text-slate-500">© 2025 جميع الحقوق محفوظة</p>
       </div>
     </div>
@@ -200,20 +238,17 @@
   <script>
     lucide.createIcons();
 
-    // عند تحميل الصفحة: إذا كان المستخدم مسجلاً، وجهه فوراً
+    // التحقق التلقائي عند التحميل: إذا مسجل دخول وجهه فوراً
     window.addEventListener('load', () => {
       const userStr = localStorage.getItem('iag_user');
-      
       if (userStr) {
         try {
           const user = JSON.parse(userStr);
-          // توجيه تلقائي
           redirectUser(user);
         } catch(e) {
           localStorage.removeItem('iag_user');
         }
       } else {
-        // التركيز على حقل الإدخال
         const mobileInput = document.getElementById('mobile-input');
         if (mobileInput) setTimeout(() => mobileInput.focus(), 100);
       }
@@ -228,7 +263,7 @@
       loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // التحقق من وجود مكتبة المصادقة
+        // التأكد من وجود ملف المصادقة
         if (typeof auth === 'undefined') {
             errorText.textContent = 'خطأ في النظام: ملف المصادقة مفقود';
             errorMsg.classList.remove('hidden');
@@ -240,7 +275,7 @@
 
         errorMsg.classList.add('hidden');
 
-        // تحقق بسيط
+        // تحقق مبدئي
         if (mobile.length !== 11 || !/^01[0-2,5]\d{8}$/.test(mobile)) {
           errorText.textContent = 'رقم الموبايل غير صحيح';
           errorMsg.classList.remove('hidden');
@@ -253,7 +288,7 @@
           return;
         }
 
-        // تغيير حالة الزر
+        // تغيير حالة الزر أثناء التحميل
         const originalBtn = loginBtn.innerHTML;
         loginBtn.innerHTML = '<span class="animate-pulse">جاري التحقق...</span>';
         loginBtn.disabled = true;
@@ -274,10 +309,8 @@
             loginTime: new Date().toISOString()
           };
 
-          // حفظ البيانات
+          // حفظ البيانات وتوجيه المستخدم مباشرة
           localStorage.setItem('iag_user', JSON.stringify(userData));
-          
-          // التوجيه المباشر بدلاً من عرض القائمة
           redirectUser(userData);
 
         } catch (error) {
@@ -291,15 +324,14 @@
       });
     }
 
-    // دالة التوجيه الذكية
+    // دالة التوجيه المباشر حسب الصلاحية
     function redirectUser(user) {
-        // التحقق من الدور وتوجيه المستخدم للصفحة المناسبة
         if (user.role === 'مدير' || user.role === 'Admin') {
             window.location.href = 'admin.html';
         } else if (user.role === 'منسق') {
             window.location.href = 'coordinator.html';
         } else {
-            // الافتراضي للموظفين
+            // الموظف العادي
             window.location.href = 'employee.html';
         }
     }
