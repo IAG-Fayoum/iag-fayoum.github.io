@@ -35,7 +35,7 @@
         
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         
-        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; }
+        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
         .header-btn:hover { background: rgba(255,255,255,0.2); }
         .back-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); }
 
@@ -49,11 +49,6 @@
 
         .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
-        .page-label { 
-            font-size: 0.75rem; color: #ccfbf1; text-align: center; margin-top: 4px; 
-            font-weight: 700; background: rgba(255,255,255,0.1); display: inline-block; 
-            padding: 2px 10px; border-radius: 12px; 
-        }
 
         /* --- Filters --- */
         .filter-container {
@@ -179,8 +174,8 @@
             <p class="text-xs text-teal-600" id="menu-role">...</p>
         </div>
         <nav class="flex-1 p-4 space-y-2">
-            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
             <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
             <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
             <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
         </nav>
@@ -315,8 +310,8 @@
     </div>
 
     <nav class="bottom-nav lg:hidden">
-        <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
         <a href="coordinator.html" class="nav-btn active"><i data-lucide="users"></i> المنسق</a>
+        <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
         <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
         <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
     </nav>
@@ -399,9 +394,8 @@
             adminList = []; techList = [];
 
             allEmployees.sort((a,b) => a.name.localeCompare(b.name)).forEach(e => {
-                const title = (e.jobTitle || '').trim(); // العمود D - المسمى الوظيفي
+                const title = (e.jobTitle || '').trim();
                 
-                // الفلتر المحدد: مراجع فني أو مراجع مالي وإداري فقط
                 if (title === 'مراجع فني') {
                     techList.push(e.name);
                     const opt = document.createElement('option');
@@ -413,7 +407,6 @@
                     opt.value = e.name; opt.textContent = e.name;
                     grpAdmin.appendChild(opt);
                 }
-                // أي مسمى آخر يتم تجاهله تماماً
             });
 
             const srcSelect = document.getElementById('f-source');
