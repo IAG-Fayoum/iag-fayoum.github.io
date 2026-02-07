@@ -19,7 +19,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        /* --- General Theme --- */
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         
         :root {
             --primary: #0f766e;
@@ -27,18 +28,21 @@
             --accent: #f59e0b;
             --danger: #ef4444;
             --success: #10b981;
+            
+            --c-total: #334155; --c-late: #dc2626;
+            --c-new: #3b82f6; --c-pending: #16a34a;
+            --c-approved: #047857; --c-followup: #6b7280;
         }
 
         /* --- 1. VIP Header --- */
         .admin-header {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 50%, #0d9488 100%);
-            color: white; padding: 1rem 1.5rem 6rem; /* Increased padding */
+            color: white; padding: 1rem 1.5rem 6rem;
             border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
             box-shadow: 0 10px 40px rgba(15, 118, 110, 0.25);
             position: relative; z-index: 10; overflow: hidden;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
-        /* Luxury Pattern */
         .admin-header::before {
             content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
             background-image: 
@@ -50,13 +54,10 @@
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: relative; z-index: 2; }
         .header-btn { padding: 10px; background: rgba(255,255,255,0.15); border-radius: 50%; backdrop-filter: blur(5px); transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; }
         .header-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
-        .header-btn.back-btn { background: rgba(255,255,255,0.1); }
 
-        .admin-badge {
-            background: rgba(251, 191, 36, 0.2); border: 1px solid rgba(251, 191, 36, 0.4);
-            color: #fbbf24; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
-            display: flex; align-items: center; gap: 6px; backdrop-filter: blur(8px);
-        }
+        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; opacity: 0.9; }
+        .breadcrumbs span { opacity: 0.7; }
+        .breadcrumbs strong { font-weight: 700; color: white; }
 
         .dept-title { font-size: 1.4rem; font-weight: 800; text-align: center; margin-top: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .dept-subtitle { font-size: 0.85rem; opacity: 0.9; text-align: center; font-family: sans-serif; letter-spacing: 0.5px; margin-bottom: 15px; }
@@ -71,12 +72,7 @@
             font-size: 1.2rem; font-weight: bold; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        .notif-badge {
-            position: absolute; top: -2px; right: -2px; background: #ef4444; color: white;
-            font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; border: 2px solid #115e59;
-        }
-
-        /* --- 2. Advanced Stats (3 Rows) --- */
+        /* --- 2. Advanced Stats --- */
         .stats-wrapper { 
             margin: -4rem 1rem 1rem; position: relative; z-index: 20; 
             display: flex; flex-direction: column; gap: 10px; max-width: 1400px; margin-left: auto; margin-right: auto;
@@ -128,7 +124,7 @@
         .action-btn.btn-primary { background: var(--primary); color: white; border: none; box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2); }
         .action-btn.btn-primary:hover { background: var(--secondary); }
 
-        /* --- 4. Advanced Filters --- */
+        /* --- 4. Filters Panel --- */
         .filters-panel {
             background: white; border-radius: 16px; padding: 1.5rem; margin: 0 1rem 1.5rem;
             border: 1px solid #e2e8f0; display: none; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
@@ -157,7 +153,6 @@
         .table-section { max-width: 1400px; margin: 0 auto; padding: 0 1rem 4rem; }
         .table-container { background: white; border-radius: 16px; padding: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
         
-        /* DataTables Customization */
         table.dataTable { border-collapse: separate !important; border-spacing: 0 8px !important; margin-top: 10px !important; }
         table.dataTable thead th { 
             background: #f8fafc !important; color: #64748b !important; font-weight: 800 !important; 
@@ -176,7 +171,16 @@
         .st-done { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
         .st-late { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
 
-        /* --- Modals --- */
+        /* --- Side Menu & Modal --- */
+        .side-menu { 
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%; 
+            background: white; z-index: 100; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; flex-direction: column; box-shadow: -10px 0 40px rgba(0,0,0,0.1); 
+        }
+        .menu-open .side-menu { right: 0; }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+
         .modal-overlay { 
             position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; 
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px);
@@ -187,16 +191,9 @@
             border-radius: 20px; overflow-y: auto; display: flex; flex-direction: column;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
         }
-        .modal-header { 
-            padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; 
-            justify-content: space-between; align-items: center; background: #f8fafc; 
-        }
-        .modal-title { font-size: 1.1rem; font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: 8px; }
+        .modal-header { padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
         .modal-body { padding: 1.5rem; }
-        .modal-footer { 
-            padding: 1.25rem; border-top: 1px solid #e5e7eb; background: #f8fafc; 
-            display: flex; gap: 10px; justify-content: flex-end; 
-        }
+        .modal-footer { padding: 1.25rem; border-top: 1px solid #e5e7eb; background: #f8fafc; display: flex; gap: 10px; justify-content: flex-end; }
 
         /* --- Toast Notification --- */
         .toast {
@@ -210,16 +207,12 @@
         .toast.success { background: #065f46; border: 2px solid #34d399; }
         .toast.error { background: #991b1b; border: 2px solid #f87171; }
 
-        /* --- Side Menu --- */
-        .side-menu { 
-            position: fixed; top: 0; right: -280px; width: 280px; height: 100%; 
-            background: white; z-index: 100; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            display: flex; flex-direction: column; box-shadow: -10px 0 40px rgba(0,0,0,0.1); 
-        }
-        .menu-open .side-menu { right: 0; }
-        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.4s; }
-        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+        /* --- Bottom Nav (Mobile Only) --- */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+        .nav-btn.active { color: var(--primary); }
 
+        .hidden { display: none !important; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -239,10 +232,9 @@
             </div>
         </div>
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-            <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold transition"><i data-lucide="home" class="w-5 h-5"></i> الرئيسية</a>
             <a href="admin.html" class="flex items-center gap-3 p-3 rounded-xl bg-teal-600 text-white font-bold shadow-lg shadow-teal-200"><i data-lucide="layout-dashboard" class="w-5 h-5"></i> لوحة التحكم</a>
             <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold transition"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> مؤشرات الأداء</a>
-            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold transition"><i data-lucide="users" class="w-5 h-5"></i> المنسق</a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold transition"><i data-lucide="file-text" class="w-5 h-5"></i> النماذج</a>
             <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold transition"><i data-lucide="bell" class="w-5 h-5"></i> الإشعارات</a>
         </nav>
         <div class="p-4 border-t bg-gray-50">
@@ -260,9 +252,16 @@
                     <div class="admin-badge"><i data-lucide="shield" class="w-3 h-3"></i><span>مدير النظام</span></div>
                 </div>
                 
-                <div class="text-center hidden md:block">
-                    <div class="dept-title">إدارة المراجعة الداخلية والحوكمة</div>
-                    <div class="dept-subtitle">Administrative Control Center</div>
+                <div class="text-center">
+                    <div class="breadcrumbs mb-1">
+                        <span>الرئيسية</span>
+                        <i data-lucide="chevron-left" class="w-3 h-3"></i>
+                        <strong>لوحة التحكم</strong>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="dept-title">إدارة المراجعة الداخلية والحوكمة</div>
+                        <div class="dept-subtitle">Administrative Control Center</div>
+                    </div>
                 </div>
 
                 <div class="flex gap-2">
@@ -270,7 +269,6 @@
                         <i data-lucide="bell" class="w-6 h-6"></i>
                         <span class="notif-badge" id="notif-count">0</span>
                     </button>
-                    <button onclick="goBack()" class="header-btn back-btn"><i data-lucide="arrow-left" class="w-6 h-6"></i></button>
                 </div>
             </div>
 
@@ -470,13 +468,18 @@
         </div>
     </div>
 
+    <nav class="bottom-nav lg:hidden">
+        <a href="admin.html" class="nav-btn active"><i data-lucide="layout-dashboard"></i> لوحة التحكم</a>
+        <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
+        <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
+        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
+    </nav>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
     
@@ -519,7 +522,7 @@
         function closeModal(id) { document.getElementById(id).classList.remove('open'); }
         function openModal(id) { document.getElementById('modal-'+id).classList.add('open'); }
         function logout() { localStorage.removeItem('iag_user'); localStorage.removeItem('iag_last_page'); window.location.href = 'index.html'; }
-        function goBack() { window.location.href = 'index.html'; }
+        function goBack() { window.location.href = 'index.html'; } // أو حذفها إذا لم تعد مطلوبة، لكنك طلبت حذف زر الرجوع فقط
 
         // Load Data
         async function loadData(username) {
@@ -546,26 +549,16 @@
         // Stats
         function updateStats(s) {
             if(!s) return;
-            // Main
             $('#s-total').text(s.total);
             $('#s-late').text(s.overdue);
-            // Status
             $('#s-new').text(s.new);
             $('#s-pending').text(s.pending);
             $('#s-done').text(s.completed);
             $('#s-followup').text(s.followup);
-            // Time (Mock for demo, replace with real logic)
-            $('#s-today').text(allTasks.filter(t => isToday(t.date)).length);
-            $('#s-week').text(allTasks.filter(t => isThisWeek(t.date)).length);
-            $('#s-month').text(allTasks.filter(t => isThisMonth(t.date)).length);
-            $('#s-year').text(allTasks.filter(t => isThisYear(t.date)).length);
+            const now = new Date();
+            $('#s-today').text(allTasks.filter(t => new Date(t.date).toDateString() === now.toDateString()).length);
+            $('#s-year').text(allTasks.filter(t => new Date(t.date).getFullYear() === now.getFullYear()).length);
         }
-
-        // Helpers for dates
-        const isToday = (d) => new Date(d).toDateString() === new Date().toDateString();
-        const isThisWeek = (d) => { const date = new Date(d); const now = new Date(); return (now - date) < 7*24*60*60*1000; };
-        const isThisMonth = (d) => new Date(d).getMonth() === new Date().getMonth();
-        const isThisYear = (d) => new Date(d).getFullYear() === new Date().getFullYear();
 
         // DataTable
         function initDataTable() {
@@ -593,19 +586,22 @@
                 dataTable.row.add([
                     `<span class="font-mono font-bold text-gray-600">#${t.id}</span>`,
                     `<span class="font-bold text-gray-800">${t.subject}</span>`,
-                    t.source,
-                    `<span class="text-teal-700 font-bold">${t.assignee}</span>`,
+                    t.source || '-',
+                    `<span class="text-teal-700 font-bold">${t.assignee || '-'}</span>`,
                     `<span class="status-badge ${badge}">${t.status}</span>`,
                     t.date,
-                    `<button class="text-blue-600 hover:bg-blue-50 p-1 rounded" onclick="openEdit('${t.id}')">✏️</button>`
+                    `<button class="text-blue-600 hover:bg-blue-50 p-2 rounded-full transition" onclick="openEdit('${t.id}')"><i data-lucide="edit-3" class="w-4 h-4"></i></button>`
                 ]);
             });
             dataTable.draw();
+            lucide.createIcons();
         }
 
         // Dropdowns
         function populateDropdowns() {
             const empSelects = [document.getElementById('f-employee'), document.getElementById('email-to'), document.getElementById('notif-to')];
+            empSelects.forEach(s => { if(s) s.innerHTML = s.options[0].outerHTML; });
+
             allEmployees.forEach(e => {
                 empSelects.forEach(s => {
                     if(s) {
@@ -617,12 +613,15 @@
             });
 
             const srcSelect = document.getElementById('f-source');
-            const sources = [...new Set(allTasks.map(t => t.source))];
-            sources.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s; opt.textContent = s;
-                srcSelect.appendChild(opt);
-            });
+            if(srcSelect) {
+                srcSelect.innerHTML = srcSelect.options[0].outerHTML;
+                const sources = [...new Set(allTasks.map(t => t.source).filter(Boolean))];
+                sources.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s; opt.textContent = s;
+                    srcSelect.appendChild(opt);
+                });
+            }
         }
 
         // Actions
@@ -652,23 +651,18 @@
 
         function showToast(msg, type) {
             const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = type === 'success' ? `<i data-lucide="check-circle"></i> ${msg}` : `<i data-lucide="alert-triangle"></i> ${msg}`;
+            toast.className = `toast show`;
+            toast.style.borderLeft = type === 'success' ? '4px solid #10b981' : '4px solid #ef4444';
+            toast.innerHTML = type === 'success' ? `<i data-lucide="check-circle" class="text-green-400"></i> ${msg}` : `<i data-lucide="alert-triangle" class="text-red-400"></i> ${msg}`;
             document.body.appendChild(toast);
             lucide.createIcons();
-            
-            setTimeout(() => toast.classList.add('show'), 100);
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 500); }, 3000);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
-        // Mock Actions
         function confirmUpdate() { showToast('تم تحديث الحالة بنجاح', 'success'); closeModal('modal-updateStatus'); }
         function sendEmail() { showToast('تم إرسال البريد الإلكتروني', 'success'); closeModal('modal-sendEmail'); }
         function sendNotification() { showToast('تم تعميم الإشعار', 'success'); closeModal('modal-sendNotification'); }
-        function openEdit(id) { 
-            $('#upd-task-id').val(id);
-            openModal('updateStatus');
-        }
+        function openEdit(id) { $('#upd-task-id').val(id); openModal('updateStatus'); }
     </script>
 </body>
 </html>
