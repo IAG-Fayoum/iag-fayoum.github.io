@@ -1,238 +1,257 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-  
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Governance">
-  <meta name="application-name" content="Governance">
-  
-  <title>نماذج العمل | نظام الحوكمة</title>
-  
-  <link rel="icon" type="image/png" href="assets/icons/favicon.png">
-  <link rel="apple-touch-icon" href="assets/icons/favicon.png">
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
-    * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
     
-    body {
-      min-height: 100vh;
-      background: #f0fdfa;
-      display: flex;
-      flex-direction: column;
-      overscroll-behavior-y: none;
-    }
-
-    /* الهيدر الفخم */
-    .header-hero {
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      padding-top: 2rem;
-      padding-bottom: 4rem;
-      text-align: center;
-      color: white;
-      border-bottom-left-radius: 30px;
-      border-bottom-right-radius: 30px;
-      box-shadow: 0 4px 20px rgba(15, 118, 110, 0.15);
-      position: relative;
-    }
-
-    .logo-circle {
-      width: 80px;
-      height: 80px;
-      background: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-      border: 3px solid rgba(255,255,255,0.3);
-      overflow: hidden;
-    }
-
-    /* الكروت */
-    .cards-wrapper {
-      max-width: 600px;
-      margin: -3rem auto 2rem;
-      padding: 0 1rem;
-      position: relative;
-      z-index: 10;
-      display: grid;
-      gap: 1rem;
-    }
-
-    .form-card {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .form-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 15px -3px rgba(15, 118, 110, 0.1);
-      border-color: #0f766e;
-    }
-
-    .icon-box {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+    <title>النماذج | IAG System</title>
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
-    .bg-teal { background: #e6f7f5; color: #0f766e; }
-    .bg-rose { background: #ffe4e6; color: #e11d48; }
-    .bg-amber { background: #fef3c7; color: #f59e0b; }
-    .bg-blue { background: #dbeafe; color: #3b82f6; }
-    .bg-violet { background: #ede9fe; color: #8b5cf6; }
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-    /* زر العودة */
-    .footer-action {
-      margin-top: auto;
-      text-align: center;
-      padding: 2rem;
-    }
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
+        :root { --primary: #0f766e; }
 
-    .btn-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: white;
-      color: #64748b;
-      font-weight: 700;
-      padding: 12px 24px;
-      border-radius: 50px;
-      border: 2px solid #e2e8f0;
-      transition: all 0.2s;
-      font-size: 0.9rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      text-decoration: none;
-      cursor: pointer;
-    }
+        /* HEADER */
+        .main-header {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            color: white; padding: 1rem 1.5rem 3.5rem;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
+            position: relative; z-index: 10;
+            padding-top: max(1rem, env(safe-area-inset-top));
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .header-btn:hover { background: rgba(255,255,255,0.2); }
 
-    .btn-back:hover {
-      border-color: #0f766e;
-      color: #0f766e;
-      background: #f0fdfa;
-    }
-  </style>
+        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; opacity: 0.9; }
+        .breadcrumbs span { opacity: 0.7; }
+        .breadcrumbs strong { font-weight: 700; color: white; }
+
+        .dept-title { font-size: 1.1rem; font-weight: 800; text-align: center; margin-top: 10px; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; font-family: sans-serif; }
+
+        /* FORMS GRID */
+        .forms-container {
+            padding: 0 1rem; margin: -2.5rem auto 1rem; position: relative; z-index: 20;
+            display: grid; gap: 12px; max-width: 800px;
+        }
+        @media (min-width: 768px) { .forms-container { grid-template-columns: repeat(2, 1fr); } }
+
+        .form-card {
+            background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.25rem;
+            display: flex; align-items: center; gap: 1rem; text-decoration: none;
+            transition: all 0.2s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            position: relative; overflow: hidden;
+        }
+        .form-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(15, 118, 110, 0.1); border-color: var(--primary); }
+
+        .icon-box {
+            width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .bg-teal { background: #e6f7f5; color: #0f766e; }
+        .bg-rose { background: #ffe4e6; color: #e11d48; }
+        .bg-amber { background: #fef3c7; color: #f59e0b; }
+        .bg-blue { background: #dbeafe; color: #3b82f6; }
+        .bg-violet { background: #ede9fe; color: #8b5cf6; }
+
+        .form-info h3 { font-weight: 800; color: #1e293b; font-size: 0.95rem; }
+        .form-info p { font-size: 0.75rem; color: #64748b; margin-top: 2px; }
+
+        /* SIDE MENU */
+        .side-menu { 
+            position: fixed; top: 0; right: -260px; width: 260px; height: 100%; 
+            background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); 
+        }
+        .menu-open .side-menu { right: 0; }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+        .nav-btn.active { color: var(--primary); }
+
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
 
-  <div class="header-hero">
-    <div class="logo-circle">
-      <img src="assets/icons/favicon.png" onerror="this.style.display='none'" class="w-14 h-14 object-contain" alt="Logo">
-    </div>
-    <h1 class="text-2xl font-bold mb-1">النماذج الإلكترونية</h1>
-    <p class="text-teal-100 text-sm opacity-90">اختر النموذج المطلوب لفتحه مباشرة</p>
-  </div>
+    <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
+    <aside class="side-menu" id="side-menu">
+        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+                <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
+            </div>
+            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
+            <p class="text-xs text-teal-600" id="menu-role">...</p>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="#" id="side-nav-home" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                <i id="side-nav-icon" data-lucide="home" class="w-4 h-4"></i> <span id="side-nav-text">...</span>
+            </a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                <i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات
+            </a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm">
+                <i data-lucide="file-text" class="w-4 h-4"></i> النماذج
+            </a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                <i data-lucide="bell" class="w-4 h-4"></i> الإشعارات
+            </a>
+        </nav>
+        <div class="p-4 border-t">
+            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+            </button>
+        </div>
+    </aside>
 
-  <div class="cards-wrapper">
-
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeJhAdpfoQAs6wqMDUD12N_H4YnL0Xv9KITCj2pHGCaKSyhJA/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-teal"><i data-lucide="inbox" class="w-6 h-6"></i></div>
-      <div class="flex-1">
-        <h3 class="font-bold text-gray-800 text-sm">سجل الصادر والوارد</h3>
-        <p class="text-xs text-gray-500 mt-1">تسجيل المعاملات والمكاتبات</p>
-      </div>
-      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-[#0f766e] transition-colors"></i>
-    </a>
-
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeLbdP8tzEyNFaVI53h0jfHMp3j9uJL-mLors14rIjuUQaGIg/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-rose"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
-      <div class="flex-1">
-        <h3 class="font-bold text-gray-800 text-sm">فحص الشكاوى</h3>
-        <p class="text-xs text-gray-500 mt-1">منظومة الشكاوى والتحقيقات</p>
-      </div>
-      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-[#e11d48] transition-colors"></i>
-    </a>
-
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfe94k6Im0Y4IODqw3UCLAczVQYdKivnyZ2s8SiCAU4uTwwpA/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-amber"><i data-lucide="calculator" class="w-6 h-6"></i></div>
-      <div class="flex-1">
-        <h3 class="font-bold text-gray-800 text-sm">المرور المالي والإداري</h3>
-        <p class="text-xs text-gray-500 mt-1">مراجعة الحسابات والمخزون</p>
-      </div>
-      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-[#f59e0b] transition-colors"></i>
-    </a>
-
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSePbkn17cO2EFDUm4-7A4Le560ep6Zce9-QlyTdP7MEG_eAew/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-blue"><i data-lucide="stethoscope" class="w-6 h-6"></i></div>
-      <div class="flex-1">
-        <h3 class="font-bold text-gray-800 text-sm">فني وحدات الرعاية</h3>
-        <p class="text-xs text-gray-500 mt-1">تفتيش الوحدات الصحية</p>
-      </div>
-      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-[#3b82f6] transition-colors"></i>
-    </a>
-
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSedsoD3zW51Lwd7VanPQ1hVMB3OTmmaorOATiMieTXjaOBbRw/viewform" target="_blank" class="form-card group">
-      <div class="icon-box bg-violet"><i data-lucide="building-2" class="w-6 h-6"></i></div>
-      <div class="flex-1">
-        <h3 class="font-bold text-gray-800 text-sm">مرور فني مستشفيات</h3>
-        <p class="text-xs text-gray-500 mt-1">المرور الفني على المستشفيات</p>
-      </div>
-      <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-[#8b5cf6] transition-colors"></i>
-    </a>
-
-  </div>
-
-  <div class="footer-action">
-    <a href="#" onclick="goBack(event)" class="btn-back">
-      <i data-lucide="arrow-right" class="w-4 h-4"></i>
-      <span>العودة</span>
-    </a>
-    <p class="text-[10px] text-gray-400 mt-4">إدارة المراجعة الداخلية والحوكمة © 2025</p>
-  </div>
-
-  <script>
-    lucide.createIcons();
-
-    function goBack(e) {
-        if(e) e.preventDefault();
-        
-        // جلب بيانات المستخدم
-        const userStr = localStorage.getItem('iag_user');
-
-        if (userStr) {
-            try {
-                const user = JSON.parse(userStr);
+    <header class="main-header">
+        <div class="max-w-[1200px] mx-auto">
+            <div class="header-top">
+                <div class="flex gap-3">
+                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                </div>
                 
-                // التوجيه بناءً على الصلاحية (الدور) وليس آخر صفحة
-                if (user.role === 'مدير' || user.role === 'Admin') {
-                    window.location.href = 'admin.html';
-                } else if (user.role === 'منسق') {
-                    window.location.href = 'coordinator.html';
-                } else {
-                    // الموظف العادي
-                    window.location.href = 'employee.html';
-                }
-            } catch (err) {
-                // في حالة وجود خطأ في البيانات
-                window.location.href = 'index.html';
+                <div class="text-center">
+                    <div class="breadcrumbs">
+                        <span>الرئيسية</span>
+                        <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
+                        <strong>نماذج العمل</strong>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button onclick="window.location.href='notifications.html'" class="header-btn relative">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <h1 class="dept-title">النماذج الإلكترونية</h1>
+            <p class="dept-subtitle">Digital Forms & Requests</p>
+        </div>
+    </header>
+
+    <div class="forms-container">
+
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeJhAdpfoQAs6wqMDUD12N_H4YnL0Xv9KITCj2pHGCaKSyhJA/viewform" target="_blank" class="form-card group">
+            <div class="icon-box bg-teal"><i data-lucide="inbox" class="w-6 h-6"></i></div>
+            <div class="form-info flex-1">
+                <h3>سجل الصادر والوارد</h3>
+                <p>تسجيل المعاملات والمكاتبات</p>
+            </div>
+            <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-teal-600 transition-colors"></i>
+        </a>
+
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeLbdP8tzEyNFaVI53h0jfHMp3j9uJL-mLors14rIjuUQaGIg/viewform" target="_blank" class="form-card group">
+            <div class="icon-box bg-rose"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
+            <div class="form-info flex-1">
+                <h3>فحص الشكاوى</h3>
+                <p>منظومة الشكاوى والتحقيقات</p>
+            </div>
+            <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-rose-600 transition-colors"></i>
+        </a>
+
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfe94k6Im0Y4IODqw3UCLAczVQYdKivnyZ2s8SiCAU4uTwwpA/viewform" target="_blank" class="form-card group">
+            <div class="icon-box bg-amber"><i data-lucide="calculator" class="w-6 h-6"></i></div>
+            <div class="form-info flex-1">
+                <h3>المرور المالي والإداري</h3>
+                <p>مراجعة الحسابات والمخزون</p>
+            </div>
+            <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-amber-600 transition-colors"></i>
+        </a>
+
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSePbkn17cO2EFDUm4-7A4Le560ep6Zce9-QlyTdP7MEG_eAew/viewform" target="_blank" class="form-card group">
+            <div class="icon-box bg-blue"><i data-lucide="stethoscope" class="w-6 h-6"></i></div>
+            <div class="form-info flex-1">
+                <h3>فني وحدات الرعاية</h3>
+                <p>تفتيش الوحدات الصحية</p>
+            </div>
+            <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors"></i>
+        </a>
+
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSedsoD3zW51Lwd7VanPQ1hVMB3OTmmaorOATiMieTXjaOBbRw/viewform" target="_blank" class="form-card group">
+            <div class="icon-box bg-violet"><i data-lucide="building-2" class="w-6 h-6"></i></div>
+            <div class="form-info flex-1">
+                <h3>مرور فني مستشفيات</h3>
+                <p>المرور الفني على المستشفيات</p>
+            </div>
+            <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-violet-600 transition-colors"></i>
+        </a>
+
+    </div>
+
+    <nav class="bottom-nav lg:hidden">
+        <a href="#" id="bottom-nav-home" class="nav-btn">
+            <i id="bottom-nav-icon" data-lucide="home"></i> <span id="bottom-nav-text">...</span>
+        </a>
+        <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
+        <a href="forms.html" class="nav-btn active"><i data-lucide="file-text"></i> النماذج</a>
+        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
+    </nav>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('iag_user');
+            if (!userStr) { window.location.href = 'index.html'; return; }
+            
+            const user = JSON.parse(userStr);
+            document.getElementById('menu-user').textContent = user.name;
+            document.getElementById('menu-role').textContent = user.role;
+
+            // --- Dynamic Navigation Setup ---
+            let homeUrl = 'employee.html';
+            let homeText = 'مهامي';
+            let homeIcon = 'user';
+
+            if (user.role === 'مدير' || user.role === 'Admin') {
+                homeUrl = 'admin.html';
+                homeText = 'التحكم';
+                homeIcon = 'layout-dashboard';
+            } else if (user.role === 'منسق') {
+                homeUrl = 'coordinator.html';
+                homeText = 'المنسق';
+                homeIcon = 'users';
             }
-        } else {
-            // لو زائر أو غير مسجل -> يرجع لصفحة الدخول
+
+            // Update Side Menu
+            const sideHome = document.getElementById('side-nav-home');
+            sideHome.href = homeUrl;
+            document.getElementById('side-nav-text').textContent = homeText;
+            document.getElementById('side-nav-icon').setAttribute('data-lucide', homeIcon);
+
+            // Update Bottom Nav
+            const bottomHome = document.getElementById('bottom-nav-home');
+            bottomHome.href = homeUrl;
+            document.getElementById('bottom-nav-text').textContent = homeText;
+            document.getElementById('bottom-nav-icon').setAttribute('data-lucide', homeIcon);
+            
+            lucide.createIcons();
+            
+            localStorage.setItem('iag_last_page', 'forms.html');
+        });
+
+        function toggleMenu() { document.body.classList.toggle('menu-open'); }
+        
+        function logout() {
+            localStorage.removeItem('iag_user');
+            localStorage.removeItem('iag_last_page');
             window.location.href = 'index.html';
         }
-    }
-  </script>
-
+    </script>
 </body>
 </html>
