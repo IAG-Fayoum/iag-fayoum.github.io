@@ -91,11 +91,11 @@
             <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
                 <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
             </div>
-            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
-            <p class="text-xs text-teal-600" id="menu-role">...</p>
+            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">زائر</h3>
+            <p class="text-xs text-teal-600" id="menu-role">تصفح النماذج</p>
         </div>
         <nav class="flex-1 p-4 space-y-2">
-            <a href="#" id="side-nav-home" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+            <a href="#" id="side-nav-home" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm hidden">
                 <i id="side-nav-icon" data-lucide="home" class="w-4 h-4"></i> <span id="side-nav-text">...</span>
             </a>
             <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
@@ -109,8 +109,8 @@
             </a>
         </nav>
         <div class="p-4 border-t">
-            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
-                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+            <button onclick="handleAuthAction()" id="auth-btn" class="w-full flex items-center justify-center gap-2 p-3 font-bold rounded-lg text-sm text-teal-600 hover:bg-teal-50">
+                <i data-lucide="log-in" class="w-5 h-5"></i> تسجيل دخول
             </button>
         </div>
     </aside>
@@ -124,7 +124,7 @@
                 
                 <div class="text-center">
                     <div class="breadcrumbs">
-                        <span>الرئيسية</span>
+                        <span onclick="goBack()" class="cursor-pointer">الرئيسية</span>
                         <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
                         <strong>نماذج العمل</strong>
                     </div>
@@ -192,8 +192,8 @@
     </div>
 
     <nav class="bottom-nav lg:hidden">
-        <a href="#" id="bottom-nav-home" class="nav-btn">
-            <i id="bottom-nav-icon" data-lucide="home"></i> <span id="bottom-nav-text">...</span>
+        <a href="#" onclick="goBack(event)" class="nav-btn">
+            <i data-lucide="home"></i> <span>الرئيسية</span>
         </a>
         <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
         <a href="forms.html" class="nav-btn active"><i data-lucide="file-text"></i> النماذج</a>
@@ -207,50 +207,76 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const userStr = localStorage.getItem('iag_user');
-            if (!userStr) { window.location.href = 'index.html'; return; }
             
-            const user = JSON.parse(userStr);
-            document.getElementById('menu-user').textContent = user.name;
-            document.getElementById('menu-role').textContent = user.role;
+            if (userStr) {
+                // المستخدم مسجل دخول
+                const user = JSON.parse(userStr);
+                document.getElementById('menu-user').textContent = user.name;
+                document.getElementById('menu-role').textContent = user.role;
+                
+                // زر الخروج
+                const authBtn = document.getElementById('auth-btn');
+                authBtn.innerHTML = '<i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج';
+                authBtn.classList.remove('text-teal-600', 'hover:bg-teal-50');
+                authBtn.classList.add('text-red-600', 'hover:bg-red-50');
+                authBtn.onclick = logout;
 
-            // --- Dynamic Navigation Setup ---
-            let homeUrl = 'employee.html';
-            let homeText = 'مهامي';
-            let homeIcon = 'user';
+                // إعداد الروابط
+                let homeUrl = 'employee.html';
+                let homeText = 'مهامي';
+                let homeIcon = 'user';
 
-            if (user.role === 'مدير' || user.role === 'Admin') {
-                homeUrl = 'admin.html';
-                homeText = 'التحكم';
-                homeIcon = 'layout-dashboard';
-            } else if (user.role === 'منسق') {
-                homeUrl = 'coordinator.html';
-                homeText = 'المنسق';
-                homeIcon = 'users';
+                if (user.role === 'مدير' || user.role === 'Admin') {
+                    homeUrl = 'admin.html';
+                    homeText = 'التحكم';
+                    homeIcon = 'layout-dashboard';
+                } else if (user.role === 'منسق') {
+                    homeUrl = 'coordinator.html';
+                    homeText = 'المنسق';
+                    homeIcon = 'users';
+                }
+
+                // تحديث القائمة الجانبية
+                const sideHome = document.getElementById('side-nav-home');
+                sideHome.href = homeUrl;
+                document.getElementById('side-nav-text').textContent = homeText;
+                document.getElementById('side-nav-icon').setAttribute('data-lucide', homeIcon);
+                sideHome.classList.remove('hidden');
+
+            } else {
+                // مستخدم زائر (Guest)
+                // الإبقاء على الوضع الافتراضي (زر دخول، وإخفاء رابط الصفحة الشخصية)
             }
-
-            // Update Side Menu
-            const sideHome = document.getElementById('side-nav-home');
-            sideHome.href = homeUrl;
-            document.getElementById('side-nav-text').textContent = homeText;
-            document.getElementById('side-nav-icon').setAttribute('data-lucide', homeIcon);
-
-            // Update Bottom Nav
-            const bottomHome = document.getElementById('bottom-nav-home');
-            bottomHome.href = homeUrl;
-            document.getElementById('bottom-nav-text').textContent = homeText;
-            document.getElementById('bottom-nav-icon').setAttribute('data-lucide', homeIcon);
             
             lucide.createIcons();
-            
-            localStorage.setItem('iag_last_page', 'forms.html');
+            // لا نحفظ هذه الصفحة في last_page حتى لا يعلق المستخدم فيها
         });
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
         
+        function handleAuthAction() {
+            // هذا الزر يعمل كـ Login للزائر وكـ Logout للمسجل
+            window.location.href = 'index.html';
+        }
+
         function logout() {
             localStorage.removeItem('iag_user');
             localStorage.removeItem('iag_last_page');
             window.location.href = 'index.html';
+        }
+
+        function goBack(e) {
+            if(e) e.preventDefault();
+            const userStr = localStorage.getItem('iag_user');
+            
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                if (user.role === 'مدير' || user.role === 'Admin') window.location.href = 'admin.html';
+                else if (user.role === 'منسق') window.location.href = 'coordinator.html';
+                else window.location.href = 'employee.html';
+            } else {
+                window.location.href = 'index.html';
+            }
         }
     </script>
 </body>
