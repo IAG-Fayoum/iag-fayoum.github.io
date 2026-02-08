@@ -22,8 +22,8 @@
         .main-header {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             color: white; padding: 1rem 1.5rem 2.5rem;
-            border-bottom-left-radius: 25px; border-bottom-right-radius: 25px;
-            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.25);
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
@@ -134,7 +134,7 @@
         .si-num { font-size: 1.1rem; font-weight: 800; color: #0f766e; line-height: 1; }
         .si-pct { font-size: 0.65rem; color: #64748b; font-weight: 600; }
 
-        /* SIDE MENU (RIGHT) */
+        /* SIDE MENU */
         .side-menu { 
             position: fixed; top: 0; right: -260px; width: 260px; height: 100%; 
             background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -325,7 +325,6 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const userStr = localStorage.getItem('iag_user');
             if (!userStr) { window.location.href = 'index.html'; return; }
-            
             const user = JSON.parse(userStr);
             document.getElementById('menu-user').textContent = user.name;
             document.getElementById('menu-role').textContent = user.role;
@@ -345,13 +344,13 @@
                 homeIcon = 'users';
             }
 
-            // Update Side Menu Home Link
+            // Update Side Menu
             const sideHome = document.getElementById('side-nav-home');
             sideHome.href = homeUrl;
             document.getElementById('side-nav-text').textContent = homeText;
             document.getElementById('side-nav-icon').setAttribute('data-lucide', homeIcon);
 
-            // Update Bottom Nav Home Link
+            // Update Bottom Nav
             const bottomHome = document.getElementById('bottom-nav-home');
             bottomHome.href = homeUrl;
             document.getElementById('bottom-nav-text').textContent = homeText;
@@ -413,6 +412,7 @@
         }
 
         // --- Helper: Normalize Arabic ---
+        // توحيد النصوص لضمان دقة البحث (نيابة = نيابه، إدارية = ادارية)
         function normalizeArabic(text) {
             if (!text) return "";
             return text.toString().trim()
@@ -512,11 +512,12 @@
             employees.forEach(e => {
                 if(e.tasks) e.tasks.forEach(t => {
                     total++;
-                    const rawSrc = t.source || t['الجهة'] || '';
+                    // التعديل: البحث بالأولوية (مصدر الفورم > مصدر الباك > احتياطي)
+                    const rawSrc = t['الجهة (الوارد) منها'] || t['الجهة'] || t.source || t.entity || '';
                     const src = normalizeArabic(rawSrc);
 
-                    if(src.includes(normalizeArabic('نيابة')) || src.includes(normalizeArabic('إدارية'))) sources['نيابة']++;
-                    else if(src.includes(normalizeArabic('قانونية')) || src.includes(normalizeArabic('شئون قانونية'))) sources['قانونية']++;
+                    if(src.includes(normalizeArabic('نيابة'))) sources['نيابة']++;
+                    else if(src.includes(normalizeArabic('قانونية'))) sources['قانونية']++;
                     else if(src.includes(normalizeArabic('وكيل'))) sources['وكيل']++;
                     else sources['أخرى']++;
                 });
@@ -560,30 +561,18 @@
             let totalForSource = 0;
             employees.forEach(emp => {
                 if(emp.tasks) emp.tasks.forEach(t => {
-                    const rawSrc = t.source || t['الجهة'] || '';
+                    const rawSrc = t['الجهة (الوارد) منها'] || t['الجهة'] || t.source || t.entity || '';
                     const src = normalizeArabic(rawSrc);
                     
                     let match = false;
                     const nNyaba = normalizeArabic('نيابة');
-                    const nEdaria = normalizeArabic('إدارية');
                     const nQanoon = normalizeArabic('قانونية');
-                    const nShoon = normalizeArabic('شئون قانونية');
                     const nWakeel = normalizeArabic('وكيل');
 
                     if(currentSourceFilter === 'أخرى') { 
-                        if(!src.includes(nNyaba) && !src.includes(nEdaria) && 
-                           !src.includes(nQanoon) && !src.includes(nShoon) && 
-                           !src.includes(nWakeel)) match = true; 
+                        if(!src.includes(nNyaba) && !src.includes(nQanoon) && !src.includes(nWakeel)) match = true; 
                     }
-                    else if (currentSourceFilter === 'نيابة') {
-                        if(src.includes(nNyaba) || src.includes(nEdaria)) match = true;
-                    }
-                    else if (currentSourceFilter === 'قانونية') {
-                        if(src.includes(nQanoon) || src.includes(nShoon)) match = true;
-                    }
-                    else if(src.includes(normalizeArabic(currentSourceFilter))) { 
-                        match = true; 
-                    }
+                    else if(src.includes(normalizeArabic(currentSourceFilter))) { match = true; }
                     
                     if(match) totalForSource++;
                 });
@@ -593,30 +582,18 @@
             employees.forEach(emp => {
                 let count = 0;
                 if(emp.tasks) emp.tasks.forEach(t => {
-                    const rawSrc = t.source || t['الجهة'] || '';
+                    const rawSrc = t['الجهة (الوارد) منها'] || t['الجهة'] || t.source || t.entity || '';
                     const src = normalizeArabic(rawSrc);
                     
                     let match = false;
                     const nNyaba = normalizeArabic('نيابة');
-                    const nEdaria = normalizeArabic('إدارية');
                     const nQanoon = normalizeArabic('قانونية');
-                    const nShoon = normalizeArabic('شئون قانونية');
                     const nWakeel = normalizeArabic('وكيل');
 
                     if(currentSourceFilter === 'أخرى') { 
-                        if(!src.includes(nNyaba) && !src.includes(nEdaria) && 
-                           !src.includes(nQanoon) && !src.includes(nShoon) && 
-                           !src.includes(nWakeel)) match = true; 
+                        if(!src.includes(nNyaba) && !src.includes(nQanoon) && !src.includes(nWakeel)) match = true; 
                     }
-                    else if (currentSourceFilter === 'نيابة') {
-                        if(src.includes(nNyaba) || src.includes(nEdaria)) match = true;
-                    }
-                    else if (currentSourceFilter === 'قانونية') {
-                        if(src.includes(nQanoon) || src.includes(nShoon)) match = true;
-                    }
-                    else if(src.includes(normalizeArabic(currentSourceFilter))) { 
-                        match = true; 
-                    }
+                    else if(src.includes(normalizeArabic(currentSourceFilter))) { match = true; }
                     
                     if(match) count++;
                 });
@@ -670,7 +647,10 @@
                     else if(st.includes('متأخر')) badge = 'bg-red-100 text-red-700';
                     else if(st.includes('جديد')) badge = 'bg-blue-100 text-blue-700';
 
-                    tasksHtml += `<tr><td class="p-2 font-bold text-gray-700">${t['الجهة']||t.source||'-'}</td><td class="p-2 truncate max-w-[150px]">${t.subject}</td><td class="p-2"><span class="px-2 py-1 rounded ${badge}">${t.status}</span></td></tr>`;
+                    // عرض اسم الجهة الصحيح
+                    const srcDisplay = t['الجهة (الوارد) منها'] || t['الجهة'] || t.source || '-';
+
+                    tasksHtml += `<tr><td class="p-2 font-bold text-gray-700">${srcDisplay}</td><td class="p-2 truncate max-w-[150px]">${t.subject}</td><td class="p-2"><span class="px-2 py-1 rounded ${badge}">${t.status}</span></td></tr>`;
                 });
                 tasksHtml += '</tbody></table></div>';
             } else {
