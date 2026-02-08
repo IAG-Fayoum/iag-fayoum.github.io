@@ -1,16 +1,41 @@
 {
   "name": "نظام إدارة المراجعة الداخلية والحوكمة",
-  "short_name": "نظام الحوكمة",
+  "short_name": "IAG System",
   "description": "نظام إدارة المراجعة الداخلية والحوكمة - مديرية الصحة بالفيوم",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0f766e",
   "theme_color": "#0f766e",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "scope": "./",
   "lang": "ar",
   "dir": "rtl",
   "icons": [
+    {
+      "src": "assets/icons/favicon.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/favicon.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/favicon.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/favicon.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/favicon.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
     {
       "src": "assets/icons/favicon.png",
       "sizes": "192x192",
@@ -19,11 +44,28 @@
     },
     {
       "src": "assets/icons/favicon.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/favicon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
   ],
-  "categories": ["business", "productivity", "medical"],
+  "categories": ["productivity", "business", "governance"],
+  "shortcuts": [
+    {
+      "name": "مهامي",
+      "url": "employee.html",
+      "description": "الانتقال لصفحة المهام"
+    },
+    {
+      "name": "الإشعارات",
+      "url": "notifications.html",
+      "description": "عرض الإشعارات الجديدة"
+    }
+  ],
   "prefer_related_applications": false
 }
