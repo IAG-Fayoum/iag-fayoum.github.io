@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         
         :root {
             --primary: #0f766e;
@@ -35,11 +35,9 @@
         
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         
-        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
+        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .header-btn:hover { background: rgba(255,255,255,0.2); }
-        .back-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); }
 
-        /* مسار التنقل (Breadcrumbs) */
         .breadcrumbs { 
             display: flex; align-items: center; justify-content: center; gap: 6px; 
             font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9;
@@ -131,11 +129,11 @@
         .tc-subject { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.5; }
         .tc-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #475569; }
         
-        .tc-footer { padding: 10px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; margin-top: auto; }
+        .tc-footer { padding: 10px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap; }
         .btn-card {
             flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;
             display: flex; align-items: center; justify-content: center; gap: 6px;
-            cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569;
+            cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569; min-width: 80px;
         }
         .btn-attach { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
         
@@ -199,7 +197,6 @@
                         <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
                         <strong>صفحة المنسق</strong>
                     </div>
-
                     <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
                     <p class="dept-subtitle">Internal Audit & Governance Dept</p>
                 </div>
@@ -216,7 +213,6 @@
 
     <div class="filter-container">
         <div class="filter-grid">
-            
             <div class="filter-item-search">
                 <label class="f-label">بحث شامل</label>
                 <div class="search-wrapper">
@@ -224,7 +220,6 @@
                     <i data-lucide="search" class="search-icon"></i>
                 </div>
             </div>
-
             <div class="filter-item">
                 <label class="f-label">الموظف المسؤول</label>
                 <select id="f-emp" class="f-input px-2" onchange="applyFilters()">
@@ -235,14 +230,12 @@
                     <optgroup label="مراجع فني" id="grp-tech"></optgroup>
                 </select>
             </div>
-
             <div class="filter-item">
                 <label class="f-label">الجهة الوارد منها</label>
                 <select id="f-source" class="f-input px-2" onchange="applyFilters()">
                     <option value="">كل الجهات</option>
                 </select>
             </div>
-
             <div class="filter-item">
                 <label class="f-label">من تاريخ</label>
                 <input type="date" id="f-start" class="f-input px-2" onchange="applyFilters()">
@@ -251,14 +244,12 @@
                 <label class="f-label">إلى تاريخ</label>
                 <input type="date" id="f-end" class="f-input px-2" onchange="applyFilters()">
             </div>
-
             <div class="filter-item-btn">
                 <label class="f-label text-transparent hidden lg:block">.</label>
                 <button onclick="window.print()" class="btn-print" title="طباعة">
                     <i data-lucide="printer" class="w-5 h-5"></i>
                 </button>
             </div>
-
         </div>
     </div>
 
@@ -318,6 +309,9 @@
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
+    
+    <script src="coordinator-enhancements.js"></script>
+
     <script>
         lucide.createIcons();
         let allTasks = [];
@@ -541,11 +535,15 @@
                         <div class="tc-row">
                             <span class="flex items-center"><i data-lucide="calendar" class="tc-icon"></i>&nbsp;${displayDate}</span>
                             <span class="tc-val flex items-center text-teal-700">${t.assignee || 'غير موزع'}<i data-lucide="user" class="tc-icon ml-1"></i></span>
+                            <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 text-gray-700" title="تغيير المكلف">تغيير</button>
                         </div>
                     </div>
                     <div class="tc-footer">
                         <button onclick="openModal('${t.id}')" class="btn-card">
                             <i data-lucide="eye" class="w-4 h-4"></i> التفاصيل
+                        </button>
+                        <button onclick="openStatusModal('${t.id}')" class="btn-card text-blue-600 border-blue-200 bg-blue-50">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i> الحالة
                         </button>
                         ${t.attachment ? `<button onclick="window.open('${t.attachment}')" class="btn-card btn-attach">
                             <i data-lucide="paperclip" class="w-4 h-4"></i> المرفق
@@ -595,6 +593,5 @@
             return date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
         }
     </script>
-            <script src="coordinator-enhancements.js"></script>
 </body>
 </html>
