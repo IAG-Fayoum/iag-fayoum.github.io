@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    
+    <title>التقارير الربع سنوية | IAG System</title>
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        :root { --primary: #0f766e; --secondary: #115e59; }
+
+        /* HEADER */
+        .main-header {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            color: white; padding: 1rem 1.5rem 3.5rem;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
+            position: relative; z-index: 10;
+            padding-top: max(1rem, env(safe-area-inset-top));
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .header-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; opacity: 0.9; }
+        .breadcrumbs span { opacity: 0.7; }
+        .breadcrumbs strong { font-weight: 700; color: white; }
+
+        .dept-title { font-size: 1.1rem; font-weight: 800; text-align: center; margin-top: 10px; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; font-family: sans-serif; }
+
+        /* FILTERS */
+        .filter-container {
+            margin: -2.5rem 1rem 1rem; position: relative; z-index: 20;
+            background: white; border-radius: 16px; padding: 1rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;
+        }
+        .filters-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: end; }
+        @media (max-width: 768px) { .filters-row { grid-template-columns: 1fr; } }
+        
+        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
+        .f-input {
+            width: 100%; height: 42px; padding: 0 12px; 
+            border: 1px solid #cbd5e1; border-radius: 10px;
+            font-size: 0.9rem; outline: none; background: #fff; color: #1e293b;
+        }
+        .f-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+        
+        .f-btn {
+            width: 100%; height: 42px; background: var(--primary); color: white;
+            border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .f-btn:hover { background: #115e59; }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            padding: 0 1rem 1.5rem; max-width: 1200px; margin: 0 auto;
+        }
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr; } }
+
+        .stat-card {
+            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px;
+            text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); min-height: 110px; position: relative; overflow: hidden;
+        }
+        .stat-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; font-size: 1.2rem; }
+        .stat-num { font-size: 1.8rem; font-weight: 800; line-height: 1; margin-bottom: 4px; color: #1e293b; }
+        .stat-lbl { font-size: 0.8rem; font-weight: 700; color: #64748b; }
+
+        /* REPORTS LIST */
+        .reports-container { padding: 0 1rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; }
+        @media (min-width: 768px) { .reports-container { grid-template-columns: 1fr 1fr; } }
+
+        .report-card {
+            background: white; border-radius: 16px; padding: 1.25rem;
+            border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: 0.2s;
+        }
+        .report-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+
+        .rc-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; border-bottom: 1px dashed #e2e8f0; padding-bottom: 1rem; }
+        .rc-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; flex-shrink: 0; }
+        .rc-header h3 { font-weight: 800; color: #1e293b; font-size: 1rem; }
+        .rc-header p { font-size: 0.75rem; color: #64748b; }
+
+        .rc-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .btn-download {
+            padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc;
+            font-size: 0.75rem; font-weight: 700; color: #475569; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: 0.2s;
+        }
+        .btn-download:hover { border-color: var(--primary); color: var(--primary); background: white; }
+
+        /* SIDE MENU */
+        .side-menu { 
+            position: fixed; top: 0; right: -260px; width: 260px; height: 100%; 
+            background: white; z-index: 100; transition: 0.3s; 
+            display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); 
+        }
+        .menu-open .side-menu { right: 0; }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+        .nav-btn.active { color: var(--primary); }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
+    <aside class="side-menu" id="side-menu">
+        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+                <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
+            </div>
+            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
+            <p class="text-xs text-teal-600" id="menu-role">...</p>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="#" id="side-nav-home" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                <i id="side-nav-icon" data-lucide="home" class="w-4 h-4"></i> <span id="side-nav-text">...</span>
+            </a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                <i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات
+            </a>
+            <a href="quarterly-reports.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm">
+                <i data-lucide="pie-chart" class="w-4 h-4"></i> التقارير
+            </a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                <i data-lucide="file-text" class="w-4 h-4"></i> النماذج
+            </a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                <i data-lucide="bell" class="w-4 h-4"></i> الإشعارات
+            </a>
+        </nav>
+        <div class="p-4 border-t">
+            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+            </button>
+        </div>
+    </aside>
+
+    <header class="main-header">
+        <div class="max-w-[1200px] mx-auto">
+            <div class="header-top">
+                <div class="flex gap-3">
+                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                </div>
+                
+                <div class="text-center">
+                    <div class="breadcrumbs">
+                        <span>الرئيسية</span>
+                        <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
+                        <strong>التقارير</strong>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button onclick="window.location.href='notifications.html'" class="header-btn relative">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <h1 class="dept-title">التقارير الربع سنوية</h1>
+            <p class="dept-subtitle">Quarterly Performance Reports</p>
+        </div>
+    </header>
+
+    <div class="filter-container">
+        <div class="filters-row">
+            <div>
+                <label class="f-label">السنة المالية</label>
+                <select id="f-year" class="f-input">
+                    <option value="2024">2024</option>
+                    <option value="2025" selected>2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+            <div>
+                <label class="f-label">الربع</label>
+                <select id="f-quarter" class="f-input">
+                    <option value="Q1">الربع الأول (Q1)</option>
+                    <option value="Q2">الربع الثاني (Q2)</option>
+                    <option value="Q3">الربع الثالث (Q3)</option>
+                    <option value="Q4">الربع الرابع (Q4)</option>
+                </select>
+            </div>
+            <div>
+                <label class="f-label">إجراء</label>
+                <button onclick="loadReports()" class="f-btn">
+                    <i data-lucide="search" class="w-4 h-4"></i> عرض التقرير
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon bg-blue-50 text-blue-600"><i data-lucide="arrow-up-right"></i></div>
+            <span class="stat-num" id="val-outgoing">0</span>
+            <span class="stat-lbl">صادر</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-teal-50 text-teal-600"><i data-lucide="arrow-down-left"></i></div>
+            <span class="stat-num" id="val-incoming">0</span>
+            <span class="stat-lbl">وارد</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-purple-50 text-purple-600"><i data-lucide="award"></i></div>
+            <span class="stat-num" id="val-achievements">0</span>
+            <span class="stat-lbl">إنجاز</span>
+        </div>
+    </div>
+
+    <div class="reports-container">
+        <div class="report-card">
+            <div class="rc-header">
+                <div class="rc-icon bg-orange-50 text-orange-600"><i data-lucide="file-text"></i></div>
+                <div>
+                    <h3>التقرير الفني</h3>
+                    <p>ملخص الأعمال الفنية والرقابية</p>
+                </div>
+            </div>
+            <div class="rc-actions">
+                <button class="btn-download" onclick="downloadReport('tech', 'txt')"><i data-lucide="file-text" class="w-4 h-4"></i> نصي</button>
+                <button class="btn-download" onclick="downloadReport('tech', 'word')"><i data-lucide="file" class="w-4 h-4"></i> Word</button>
+                <button class="btn-download" onclick="downloadReport('tech', 'pdf')"><i data-lucide="file-check" class="w-4 h-4"></i> PDF</button>
+            </div>
+        </div>
+
+        <div class="report-card">
+            <div class="rc-header">
+                <div class="rc-icon bg-green-50 text-green-600"><i data-lucide="calculator"></i></div>
+                <div>
+                    <h3>التقرير المالي</h3>
+                    <p>الموقف المالي والمراجعات</p>
+                </div>
+            </div>
+            <div class="rc-actions">
+                <button class="btn-download" onclick="downloadReport('fin', 'txt')"><i data-lucide="file-text" class="w-4 h-4"></i> نصي</button>
+                <button class="btn-download" onclick="downloadReport('fin', 'word')"><i data-lucide="file" class="w-4 h-4"></i> Word</button>
+                <button class="btn-download" onclick="downloadReport('fin', 'pdf')"><i data-lucide="file-check" class="w-4 h-4"></i> PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav lg:hidden">
+        <a href="#" id="bottom-nav-home" class="nav-btn">
+            <i id="bottom-nav-icon" data-lucide="home"></i> <span id="bottom-nav-text">...</span>
+        </a>
+        <a href="quarterly-reports.html" class="nav-btn active"><i data-lucide="pie-chart"></i> التقارير</a>
+        <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
+        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
+    </nav>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('iag_user');
+            if (!userStr) { window.location.href = 'index.html'; return; }
+            
+            const user = JSON.parse(userStr);
+            document.getElementById('menu-user').textContent = user.name;
+            document.getElementById('menu-role').textContent = user.role;
+
+            // --- Dynamic Nav ---
+            let homeUrl = 'employee.html';
+            let homeText = 'مهامي';
+            let homeIcon = 'user';
+
+            if (user.role === 'مدير' || user.role === 'Admin') {
+                homeUrl = 'admin.html';
+                homeText = 'التحكم';
+                homeIcon = 'layout-dashboard';
+            } else if (user.role === 'منسق') {
+                homeUrl = 'coordinator.html';
+                homeText = 'المنسق';
+                homeIcon = 'users';
+            }
+
+            // Update Side
+            const sideHome = document.getElementById('side-nav-home');
+            sideHome.href = homeUrl;
+            document.getElementById('side-nav-text').textContent = homeText;
+            document.getElementById('side-nav-icon').setAttribute('data-lucide', homeIcon);
+
+            // Update Bottom
+            const bottomHome = document.getElementById('bottom-nav-home');
+            bottomHome.href = homeUrl;
+            document.getElementById('bottom-nav-text').textContent = homeText;
+            document.getElementById('bottom-nav-icon').setAttribute('data-lucide', homeIcon);
+            
+            lucide.createIcons();
+            // ------------------
+
+            // Load Data
+            loadReports();
+        });
+
+        function toggleMenu() { document.body.classList.toggle('menu-open'); }
+        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+        async function loadReports() {
+            const year = document.getElementById('f-year').value;
+            const quarter = document.getElementById('f-quarter').value;
+            
+            // Reset to loader
+            document.getElementById('val-outgoing').textContent = '...';
+            document.getElementById('val-incoming').textContent = '...';
+            document.getElementById('val-achievements').textContent = '...';
+
+            try {
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'getQuarterlyReport',
+                        year: year,
+                        quarter: quarter
+                    })
+                });
+                const data = await res.json();
+
+                if(data.success) {
+                    const stats = data.stats || { out: 0, in: 0, ach: 0 };
+                    animateValue('val-outgoing', 0, stats.out, 800);
+                    animateValue('val-incoming', 0, stats.in, 800);
+                    animateValue('val-achievements', 0, stats.ach, 800);
+                } else {
+                    alert('لا توجد بيانات متاحة لهذه الفترة');
+                    resetValues();
+                }
+            } catch(e) {
+                console.error(e);
+                resetValues();
+            }
+        }
+
+        function resetValues() {
+            document.getElementById('val-outgoing').textContent = '0';
+            document.getElementById('val-incoming').textContent = '0';
+            document.getElementById('val-achievements').textContent = '0';
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        async function downloadReport(type, format) {
+            const year = document.getElementById('f-year').value;
+            const quarter = document.getElementById('f-quarter').value;
+            const typeName = type === 'tech' ? 'التقرير الفني' : 'التقرير المالي';
+
+            if(!confirm(`هل تريد تحميل ${typeName} (${format.toUpperCase()})؟`)) return;
+
+            try {
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'downloadReportLink',
+                        type: type,
+                        format: format,
+                        year: year,
+                        quarter: quarter
+                    })
+                });
+                const data = await res.json();
+
+                if(data.success && data.url) {
+                    window.open(data.url, '_blank');
+                } else {
+                    alert('عذراً، الملف غير متاح حالياً.');
+                }
+            } catch(e) {
+                alert('حدث خطأ أثناء التحميل');
+            }
+        }
+    </script>
+</body>
+</html>
