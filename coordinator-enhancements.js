@@ -1,12 +1,11 @@
 // Coordinator Enhancements Script
-// يتضمن وظائف النوافذ المنبثقة (Modals) لتغيير المكلف وتغيير الحالة
-// تم التعديل لضبط الحالات وفلترة الموظفين حسب المسمى الوظيفي
+// يتضمن وظائف النوافذ المنبثقة (Modals) والاتصال الفعلي بالخادم (API)
 
 document.addEventListener('DOMContentLoaded', () => {
     injectModals();
 });
 
-// 1. حقن كود النوافذ المنبثقة في الصفحة
+// 1. حقن كود النوافذ المنبثقة
 function injectModals() {
     const modalHTML = `
     <div class="modal-overlay" id="modal-reassign">
@@ -20,13 +19,13 @@ function injectModals() {
                 <label class="block text-sm font-bold text-gray-700 mb-2">اختر الموظف الجديد:</label>
                 <select id="reassign-select" class="w-full p-3 border rounded-lg bg-white mb-4">
                     <option value="">-- اختر من القائمة --</option>
-                    </select>
+                </select>
                 <p class="text-xs text-gray-500 bg-yellow-50 p-2 rounded border border-yellow-200">
                     <i data-lucide="alert-circle" class="w-3 h-3 inline"></i> سيتم إشعار الموظف الجديد تلقائياً.
                 </p>
             </div>
             <div class="modal-footer flex gap-2 justify-end p-4 bg-gray-50 border-t">
-                <button onclick="confirmReassign()" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700">تأكيد التغيير</button>
+                <button onclick="confirmReassign()" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700" id="btn-confirm-reassign">تأكيد التغيير</button>
                 <button onclick="closeEnhancementModal('modal-reassign')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
             </div>
         </div>
@@ -49,7 +48,7 @@ function injectModals() {
                 </select>
             </div>
             <div class="modal-footer flex gap-2 justify-end p-4 bg-gray-50 border-t">
-                <button onclick="confirmStatusChange()" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700">حفظ الحالة</button>
+                <button onclick="confirmStatusChange()" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700" id="btn-confirm-status">حفظ الحالة</button>
                 <button onclick="closeEnhancementModal('modal-status')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
             </div>
         </div>
@@ -59,21 +58,16 @@ function injectModals() {
     lucide.createIcons();
 }
 
-// 2. وظائف الفتح (يتم استدعاؤها من الأزرار)
+// 2. وظائف الفتح
 function openReassignModal(taskId) {
     document.getElementById('reassign-task-id').value = taskId;
     const select = document.getElementById('reassign-select');
     select.innerHTML = '<option value="">-- تحميل القائمة... --</option>';
     
-    // التحقق من وجود قائمة الموظفين (المتغير global في صفحة coordinator.html)
     if (typeof allEmployees !== 'undefined' && allEmployees.length > 0) {
         select.innerHTML = '<option value="">-- اختر من القائمة --</option>';
-        
-        // تصفية الموظفين: فقط مراجع فني أو مراجع مالي وإداري
         allEmployees.forEach(emp => {
-            const title = (emp.jobTitle || '').trim(); // تنظيف المسمى الوظيفي من المسافات الزائدة
-            
-            // الشرط: المسمى الوظيفي مطابق لما في الشيت
+            const title = (emp.jobTitle || '').trim();
             if (title === 'مراجع فني' || title === 'مراجع مالي وإداري') {
                 const opt = document.createElement('option');
                 opt.value = emp.name;
@@ -81,16 +75,10 @@ function openReassignModal(taskId) {
                 select.appendChild(opt);
             }
         });
-        
-        // في حالة لم يتم العثور على أي موظف مطابق
-        if (select.options.length === 1) {
-             select.innerHTML = '<option value="">-- لا يوجد مراجعين متاحين --</option>';
-        }
-
+        if (select.options.length === 1) select.innerHTML = '<option value="">-- لا يوجد مراجعين --</option>';
     } else {
         select.innerHTML = '<option value="">-- لا يوجد بيانات --</option>';
     }
-
     document.getElementById('modal-reassign').classList.add('open');
 }
 
@@ -103,49 +91,110 @@ function closeEnhancementModal(id) {
     document.getElementById(id).classList.remove('open');
 }
 
-// 3. منطق التأكيد والحفظ
-function confirmReassign() {
+// 3. التنفيذ الفعلي (API Calls)
+
+// أ) تغيير المكلف
+async function confirmReassign() {
     const taskId = document.getElementById('reassign-task-id').value;
     const newEmp = document.getElementById('reassign-select').value;
+    const btn = document.getElementById('btn-confirm-reassign');
 
     if (!newEmp) { alert('يرجى اختيار موظف'); return; }
 
     if (confirm(`هل أنت متأكد من تغيير المكلف إلى ${newEmp}؟`)) {
-        // محاكاة الاتصال بالخادم
-        const btn = document.querySelector('#modal-reassign button.bg-teal-600');
+        // تغيير حالة الزر
         const originalText = btn.textContent;
-        btn.textContent = 'جاري الحفظ...';
+        btn.textContent = 'جاري الاتصال...';
         btn.disabled = true;
 
-        setTimeout(() => {
-            alert('تم تغيير المكلف بنجاح ✓');
+        try {
+            // جلب بيانات المستخدم الحالي لتسجيل من قام بالتعديل
+            const userStr = localStorage.getItem('iag_user');
+            const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
+
+            // الاتصال بالباك إند
+            const res = await fetch(CONFIG.API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'reassignTask',      // اسم الدالة في Google Apps Script
+                    taskId: taskId,              // رقم المهمة
+                    newEmployee: newEmp,         // الموظف الجديد
+                    updatedBy: currentUser       // من قام بالتعديل
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                alert('✅ تم تغيير المكلف بنجاح، وتم إرسال الإشعار.');
+                closeEnhancementModal('modal-reassign');
+                // تحديث البيانات في الصفحة
+                if(typeof loadData === 'function') {
+                    const u = JSON.parse(localStorage.getItem('iag_user'));
+                    loadData(u.name); 
+                }
+            } else {
+                alert('❌ حدث خطأ: ' + (data.error || 'لم يتم التعديل'));
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert('❌ خطأ في الاتصال بالخادم');
+        } finally {
+            // إعادة الزر لحالته الأصلية
             btn.textContent = originalText;
             btn.disabled = false;
-            closeEnhancementModal('modal-reassign');
-            // تحديث البيانات في الصفحة الخلفية
-            if(typeof applyFilters === 'function') applyFilters();
-        }, 1000);
+        }
     }
 }
 
-function confirmStatusChange() {
+// ب) تغيير الحالة
+async function confirmStatusChange() {
     const taskId = document.getElementById('status-task-id').value;
     const newStatus = document.getElementById('status-select').value;
+    const btn = document.getElementById('btn-confirm-status');
 
     if (confirm(`هل أنت متأكد من تغيير الحالة إلى "${newStatus}"؟`)) {
-        // محاكاة الاتصال بالخادم
-        const btn = document.querySelector('#modal-status button.bg-teal-600');
+        // تغيير حالة الزر
         const originalText = btn.textContent;
         btn.textContent = 'جاري الحفظ...';
         btn.disabled = true;
 
-        setTimeout(() => {
-            alert('تم تغيير الحالة بنجاح ✓');
+        try {
+            const userStr = localStorage.getItem('iag_user');
+            const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
+
+            // الاتصال بالباك إند
+            const res = await fetch(CONFIG.API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'updateStatus',      // اسم الدالة في Google Apps Script
+                    taskId: taskId,
+                    newStatus: newStatus,
+                    updatedBy: currentUser
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                alert('✅ تم تحديث الحالة بنجاح.');
+                closeEnhancementModal('modal-status');
+                // تحديث البيانات
+                if(typeof loadData === 'function') {
+                    const u = JSON.parse(localStorage.getItem('iag_user'));
+                    loadData(u.name);
+                }
+            } else {
+                alert('❌ حدث خطأ: ' + (data.error || 'لم يتم التعديل'));
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert('❌ خطأ في الاتصال بالخادم');
+        } finally {
             btn.textContent = originalText;
             btn.disabled = false;
-            closeEnhancementModal('modal-status');
-            // تحديث البيانات في الصفحة الخلفية
-            if(typeof applyFilters === 'function') applyFilters();
-        }, 1000);
+        }
     }
 }
