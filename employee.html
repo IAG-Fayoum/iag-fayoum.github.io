@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f766e">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    
     <title>مهامي | نظام الحوكمة</title>
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -29,109 +32,145 @@
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
-        
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
         .header-btn:hover { background: rgba(255,255,255,0.2); }
-
         .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9; }
+        .breadcrumbs span { opacity: 0.7; }
         .breadcrumbs strong { font-weight: 700; color: white; }
-
         .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
+        /* --- Employee Info Card --- */
+        .emp-card {
+            margin: -2.5rem 1rem 1rem; position: relative; z-index: 20;
+            background: white; border-radius: 16px; padding: 1rem 1.25rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;
+            display: flex; align-items: center; gap: 14px;
+        }
+        @media (min-width: 1024px) { .emp-card { max-width: 1200px; margin: -2.5rem auto 1rem; } }
+        .emp-avatar { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+        .emp-info { flex: 1; min-width: 0; }
+        .emp-name { font-size: 1rem; font-weight: 800; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .emp-title { font-size: 0.8rem; font-weight: 700; }
+        .emp-meta { font-size: 0.7rem; color: #94a3b8; font-weight: 600; margin-top: 2px; display: flex; gap: 12px; flex-wrap: wrap; }
+
         /* --- Filters --- */
-        .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
-        .filter-grid { display: flex; flex-direction: column; gap: 12px; }
-        @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
-
-        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
-        .f-input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; }
+        .filter-container { margin: 0 1rem 1rem; position: relative; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
+        .filter-grid { display: flex; flex-direction: column; gap: 10px; }
+        @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: 0 auto 1rem; } .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
+        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
+        .f-input { width: 100%; height: 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.85rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; }
         .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
-
         .search-wrapper { position: relative; }
-        .search-input { padding-right: 12px; padding-left: 40px; background-color: #f8fafc; }
-        .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; color: #94a3b8; pointer-events: none; }
+        .search-input { padding-right: 12px; padding-left: 36px; background-color: #f8fafc; }
+        .search-icon { position: absolute; left: 10px; top: 10px; width: 18px; height: 18px; color: #94a3b8; pointer-events: none; }
 
-        /* --- Stats (Interactive) --- */
-        .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
-        .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-
-        .stat-card-big { background: white; border: 2px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
-        .stat-card-big.active-stat { background: #f0fdfa !important; border-color: var(--primary) !important; box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2); transform: translateY(-2px); }
-        .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-        .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
-
-        .stat-card-small { background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
-        .stat-card-small.active-stat { background: #f0fdfa !important; border-color: var(--primary) !important; box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2); transform: translateY(-2px); }
-        .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
-        .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
-
+        /* --- Stats --- */
+        .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+        .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .stat-card-big { background: white; border: 2px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 82px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
+        .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); }
+        .stat-card-big .num { font-size: 1.8rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+        .stat-card-big .lbl { font-size: 0.8rem; font-weight: 700; color: #64748b; }
+        .stat-card-small { background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 6px; text-align: center; cursor: pointer; min-height: 65px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
+        .stat-card-small.active { background: #f0fdfa; border-color: var(--primary); }
+        .stat-card-small .num { font-size: 1.3rem; font-weight: 800; line-height: 1; }
+        .stat-card-small .lbl { font-size: 0.6rem; font-weight: 700; color: #64748b; }
         .txt-total { color: #334155; } .txt-late { color: #dc2626; } .txt-new { color: #3b82f6; } .txt-pending { color: #16a34a; } .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
 
         /* --- Tabs --- */
-        .main-tabs { display: flex; gap: 10px; padding: 0 1rem; max-width: 1200px; margin: 0 auto 15px; border-bottom: 1px solid #e2e8f0; }
-        .tab-btn { padding: 12px 20px; font-weight: 700; color: #64748b; border-bottom: 3px solid transparent; cursor: pointer; transition: 0.3s; flex: 1; text-align: center; }
+        .main-tabs { display: flex; gap: 0; padding: 0 1rem; max-width: 1200px; margin: 0 auto 12px; border-bottom: 1px solid #e2e8f0; overflow-x: auto; }
+        .tab-btn { padding: 10px 14px; font-weight: 700; color: #64748b; border-bottom: 3px solid transparent; cursor: pointer; transition: 0.3s; white-space: nowrap; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab-badge { background: #e2e8f0; color: #64748b; font-size: 0.6rem; font-weight: 800; padding: 1px 6px; border-radius: 10px; }
+        .tab-btn.active .tab-badge { background: #ccfbf1; color: var(--primary); }
 
-        .sub-tabs { display: flex; gap: 8px; padding: 10px; background: #e2e8f0; border-radius: 10px; margin-bottom: 15px; }
-        .sub-tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; }
+        .sub-tabs { display: flex; gap: 8px; padding: 8px; background: #e2e8f0; border-radius: 10px; margin-bottom: 12px; }
+        .sub-tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; }
         .sub-tab.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* --- Cards List --- */
-        .cards-container { padding: 0 1rem 1rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; grid-template-columns: 1fr; }
+        /* --- Cards --- */
+        .cards-container { padding: 0 1rem 5rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; grid-template-columns: 1fr; }
         @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
 
-        .task-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb; display: flex; flex-direction: column; transition: transform 0.2s; }
-        .card-stripe { padding: 8px 12px; color: white; font-weight: 700; font-size: 0.75rem; display: flex; justify-content: space-between; }
+        .task-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb; display: flex; flex-direction: column; }
+        .card-stripe { padding: 7px 12px; color: white; font-weight: 700; font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; }
+        .stripe-right { display: flex; align-items: center; gap: 6px; }
+        .stripe-type { background: rgba(255,255,255,0.25); padding: 1px 8px; border-radius: 5px; font-size: 0.65rem; }
+        .stripe-dot { width: 6px; height: 6px; border-radius: 50%; background: white; opacity: 0.8; }
         
-        .bg-new { background-color: #3b82f6; } .bg-pending { background-color: #16a34a; } .bg-approved { background-color: #047857; } .bg-followup { background-color: #6b7280; } .bg-late { background-color: #dc2626; }
+        .bg-new { background: #3b82f6; } .bg-pending { background: #16a34a; } .bg-approved { background: #047857; } .bg-followup { background: #6b7280; } .bg-late { background: #dc2626; }
+        .bg-incoming { background: #2563eb; } .bg-outgoing { background: #0f766e; } .bg-complaint { background: #7c3aed; }
+        .bg-tech { background: #2563eb; } .bg-fin { background: #16a34a; }
 
-        .card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        .tc-subject { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.5; }
-        .tc-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #475569; }
-        
-        .tc-footer { padding: 10px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
-        .btn-card { flex: 1; padding: 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569; transition: 0.2s; min-width: 80px; }
-        .btn-card:hover { background: #f1f5f9; border-color: #cbd5e1; }
-        
-        .btn-edit { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
-        .btn-att { color: #059669; border-color: #a7f3d0; background: #ecfdf5; }
-        .btn-pdf { color: #dc2626; border-color: #fecaca; background: #fef2f2; }
+        .card-body { padding: 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .tc-subject { font-size: 0.9rem; font-weight: 800; color: #1e293b; line-height: 1.5; border-right: 3px solid #0f766e; padding-right: 8px; }
+        .tc-row { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: #475569; }
+        .tc-icon-box { width: 22px; height: 22px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+        /* Badges */
+        .badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 20px; font-size: 0.6rem; font-weight: 700; }
+        .badge-imp-urgent2 { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .badge-imp-urgent { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+        .badge-imp-normal { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+        .badge-type { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
+        .badge-case { background: #faf5ff; color: #7c3aed; border: 1px solid #e9d5ff; }
+        .badge-delay { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; animation: pulse 2s infinite; }
+        .badge-done { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .badges-row { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 8px; border-top: 1px solid #f1f5f9; margin-top: 4px; }
+
+        .tc-notes { padding: 5px 8px; border-radius: 6px; background: #fffbeb; border: 1px solid #fde68a; font-size: 0.7rem; color: #92400e; font-weight: 600; line-height: 1.5; }
+
+        /* Footer buttons */
+        .tc-footer { padding: 8px 12px; background: #fafbfc; border-top: 1px solid #f1f5f9; display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; }
+        .btn-card { padding: 6px 8px; border-radius: 7px; font-size: 0.7rem; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; cursor: pointer; border: 1px solid; text-decoration: none; transition: 0.15s; }
         .btn-details { background: #334155; color: white; border-color: #334155; }
-        .btn-details:hover { background: #1e293b; }
+        .btn-att-in { color: #0369a1; border-color: #bae6fd; background: #f0f9ff; }
+        .btn-att-out { color: #0f766e; border-color: #99f6e4; background: #f0fdfa; }
+        .btn-doc { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+        .btn-report { color: #7c3aed; border-color: #ddd6fe; background: #faf5ff; }
+        .btn-pdf { color: #dc2626; border-color: #fecaca; background: #fef2f2; }
+        .btn-archive { color: #047857; border-color: #a7f3d0; background: #ecfdf5; }
 
-        /* --- Menu & Modal --- */
+        /* Report Card */
+        .report-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb; border-right: 4px solid #e5e7eb; }
+        .report-card.rc-tech { border-right-color: #3b82f6; }
+        .report-card.rc-fin { border-right-color: #16a34a; }
+        .report-card.rc-complaint { border-right-color: #7c3aed; }
+
+        /* --- Side Menu, Modal, Nav --- */
         .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
         .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
-        
+
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
         .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
-        .modal-header { padding: 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
-        .modal-body { padding: 1.5rem; }
-        
-        .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 8px; }
-        .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
-        .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
+        .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+        .modal-body { padding: 1.25rem; }
+        .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 6px; }
+        .data-label { font-size: 0.7rem; color: #64748b; font-weight: 700; }
+        .data-val { font-size: 0.9rem; color: #0f172a; font-weight: 600; }
+        .modal-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #e5e7eb; }
 
-        /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
 
-        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
+        .loader-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #94a3b8; }
         .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
-        
         .hidden { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
     </style>
 </head>
 <body>
 
-    <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
-    <aside class="side-menu" id="side-menu">
+    <!-- Side Menu -->
+    <div class="side-menu-overlay" onclick="toggleMenu()"></div>
+    <aside class="side-menu">
         <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
             <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
                 <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
@@ -152,31 +191,65 @@
         </div>
     </aside>
 
+    <!-- Header -->
     <header class="main-header">
         <div class="max-w-[1200px] mx-auto">
             <div class="header-top">
-                <div class="flex gap-3">
-                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
-                </div>
+                <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
                 <div class="text-center">
-                    <div class="breadcrumbs">
-                        <span>الرئيسية</span>
-                        <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
-                        <strong>صفحتي الشخصية</strong>
-                    </div>
+                    <div class="breadcrumbs"><span>الرئيسية</span><i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i><strong>صفحتي الشخصية</strong></div>
                     <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
                     <p class="dept-subtitle">Internal Audit & Governance Dept</p>
                 </div>
-                <div class="flex gap-3">
-                    <button onclick="window.location.href='notifications.html'" class="header-btn relative">
-                        <i data-lucide="bell" class="w-6 h-6"></i>
-                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
-                    </button>
-                </div>
+                <button onclick="window.location.href='notifications.html'" class="header-btn relative">
+                    <i data-lucide="bell" class="w-6 h-6"></i>
+                    <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
+                </button>
             </div>
         </div>
     </header>
 
+    <!-- Employee Card -->
+    <div class="emp-card" id="emp-card">
+        <div class="emp-avatar" id="emp-avatar">👤</div>
+        <div class="emp-info">
+            <div class="emp-name" id="emp-name">...</div>
+            <div class="emp-title" id="emp-title">...</div>
+            <div class="emp-meta">
+                <span id="emp-email">...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-wrapper">
+        <div class="stats-row-big">
+            <div class="stat-card-big active" onclick="filterStatus('')" id="st-total"><span class="num txt-total" id="c-total">0</span><span class="lbl">الإجمالي</span></div>
+            <div class="stat-card-big" onclick="filterStatus('متأخر')" id="st-late"><span class="num txt-late" id="c-late">0</span><span class="lbl">متأخر</span></div>
+        </div>
+        <div class="stats-row-small">
+            <div class="stat-card-small" onclick="filterStatus('جديد')" id="st-new"><span class="num txt-new" id="c-new">0</span><span class="lbl">جديد</span></div>
+            <div class="stat-card-small" onclick="filterStatus('بانتظار')" id="st-pending"><span class="num txt-pending" id="c-pending">0</span><span class="lbl">بانتظار</span></div>
+            <div class="stat-card-small" onclick="filterStatus('تم')" id="st-approved"><span class="num txt-approved" id="c-approved">0</span><span class="lbl">معتمد</span></div>
+            <div class="stat-card-small" onclick="filterStatus('متابعة')" id="st-followup"><span class="num txt-followup" id="c-followup">0</span><span class="lbl">متابعة</span></div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="main-tabs" id="main-tabs">
+        <div onclick="switchTab('tasks')" id="tab-tasks" class="tab-btn active"><i data-lucide="list-checks" class="w-4 h-4"></i> المعاملات <span class="tab-badge" id="badge-tasks">0</span></div>
+        <div onclick="switchTab('reports')" id="tab-reports" class="tab-btn"><i data-lucide="file-check" class="w-4 h-4"></i> التقارير <span class="tab-badge" id="badge-reports">0</span></div>
+    </div>
+
+    <!-- Sub Tabs (Reports) -->
+    <div id="sub-tabs-box" class="hidden px-4 mb-3" style="max-width:1200px;margin-left:auto;margin-right:auto;">
+        <div class="sub-tabs">
+            <div onclick="switchSubTab('inspection')" id="sub-inspection" class="sub-tab active">تقارير المرور</div>
+            <div onclick="switchSubTab('complaint')" id="sub-complaint" class="sub-tab">فحص الشكاوى</div>
+        </div>
+    </div>
+
+    <!-- Filters -->
     <div class="filter-container">
         <div class="filter-grid">
             <div class="filter-item-search">
@@ -185,12 +258,6 @@
                     <input type="text" id="f-search" class="f-input search-input" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
                     <i data-lucide="search" class="search-icon"></i>
                 </div>
-            </div>
-            <div class="filter-item">
-                <label class="f-label">الجهة الوارد منها</label>
-                <select id="f-source" class="f-input px-2" onchange="applyFilters()">
-                    <option value="">كل الجهات</option>
-                </select>
             </div>
             <div class="filter-item">
                 <label class="f-label">من تاريخ</label>
@@ -203,65 +270,23 @@
         </div>
     </div>
 
-    <div class="stats-wrapper">
-        <div class="stats-row-big">
-            <div class="stat-card-big active-stat" onclick="filterStatus('')" id="st-total">
-                <span class="num txt-total" id="c-total">0</span><span class="lbl">الإجمالي</span>
-            </div>
-            <div class="stat-card-big" onclick="filterStatus('متأخر')" id="st-late">
-                <span class="num txt-late" id="c-late">0</span><span class="lbl">متأخر</span>
-            </div>
-        </div>
-        <div class="stats-row-small">
-            <div class="stat-card-small" onclick="filterStatus('جديد')" id="st-new">
-                <span class="num txt-new" id="c-new">0</span><span class="lbl">جديد</span>
-            </div>
-            <div class="stat-card-small" onclick="filterStatus('بانتظار الاعتماد')" id="st-pending">
-                <span class="num txt-pending" id="c-pending">0</span><span class="lbl">بانتظار الاعتماد</span>
-            </div>
-            <div class="stat-card-small" onclick="filterStatus('تم الاعتماد والأرشفة')" id="st-approved">
-                <span class="num txt-approved" id="c-approved">0</span><span class="lbl">تم الاعتماد والأرشفة</span>
-            </div>
-            <div class="stat-card-small" onclick="filterStatus('بحاجة الي متابعة')" id="st-followup">
-                <span class="num txt-followup" id="c-followup">0</span><span class="lbl">بحاجة الي متابعة</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="main-tabs">
-        <div onclick="switchMainTab('tasks')" id="tab-tasks" class="tab-btn active">المهام الحالية</div>
-        <div onclick="switchMainTab('reports')" id="tab-reports" class="tab-btn">التقارير</div>
-    </div>
-
-    <div id="sub-tabs-container" class="hidden px-4 mb-4">
-        <div class="sub-tabs">
-            <div onclick="switchSubTab('inspection')" id="sub-inspection" class="sub-tab active">تقارير المرور</div>
-            <div onclick="switchSubTab('complaint')" id="sub-complaint" class="sub-tab">فحص الشكاوى</div>
-        </div>
-    </div>
-
+    <!-- Cards -->
     <div class="cards-container" id="cards-list">
-        <div class="loader-box">
-            <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i>
-            <p>جاري تحميل البيانات...</p>
-        </div>
+        <div class="loader-box"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i><p>جاري تحميل البيانات...</p></div>
     </div>
 
+    <!-- Detail Modal -->
     <div class="modal-overlay" id="detail-modal">
         <div class="modal-box">
             <div class="modal-header">
-                <div>
-                    <h3 class="font-bold text-lg text-gray-900">تفاصيل المعاملة</h3>
-                    <p class="text-xs text-gray-500 font-mono" id="m-id">#...</p>
-                </div>
+                <div><h3 class="font-bold text-lg text-gray-900">تفاصيل المعاملة</h3><p class="text-xs text-gray-500 font-mono" id="m-id">#...</p></div>
                 <button onclick="closeModal()" class="p-2 bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            <div class="modal-body">
-                <div class="flex flex-col gap-4" id="m-content"></div>
-            </div>
+            <div class="modal-body"><div id="m-content"></div></div>
         </div>
     </div>
 
+    <!-- Bottom Nav -->
     <nav class="bottom-nav lg:hidden">
         <a href="employee.html" class="nav-btn active"><i data-lucide="list-todo"></i> مهامي</a>
         <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
@@ -273,13 +298,14 @@
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allTasks = [];
-        let allReports = [];
-        let currentStatusFilter = '';
-        let currentMainTab = 'tasks'; 
-        let currentSubTab = 'inspection';
+
+        let allTasks = [], allReports = [];
+        let currentStatusFilter = '', currentTab = 'tasks', currentSubTab = 'inspection';
         let currentUser = null;
 
+        // ══════════════════════════════════════════
+        // INIT
+        // ══════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', async () => {
             const userStr = localStorage.getItem('iag_user');
             if (!userStr) { window.location.href = 'index.html'; return; }
@@ -288,22 +314,35 @@
             document.getElementById('menu-user').textContent = currentUser.name;
             document.getElementById('menu-role').textContent = currentUser.role;
 
-            // Set sub-tabs text dynamically
-            const inspectionTitle = document.getElementById('sub-inspection');
-            const jobTitle = (currentUser.jobTitle || '').trim();
-            if(jobTitle.includes('مالي')) {
-                inspectionTitle.textContent = 'مرور مالي وإداري';
-            } else {
-                inspectionTitle.textContent = 'مرور فني';
-            }
+            // Employee card
+            const jt = (currentUser.jobTitle || '').trim();
+            const isTech = jt.includes('فني');
+            document.getElementById('emp-name').textContent = currentUser.name;
+            document.getElementById('emp-title').textContent = jt || currentUser.role;
+            document.getElementById('emp-title').style.color = isTech ? '#2563eb' : '#16a34a';
+            document.getElementById('emp-email').textContent = currentUser.email || '';
+            document.getElementById('emp-avatar').textContent = isTech ? '🔬' : '💰';
+            document.getElementById('emp-avatar').style.background = isTech ? '#eff6ff' : '#f0fdf4';
+
+            // Sub-tab label
+            document.getElementById('sub-inspection').textContent = isTech ? 'مرور فني' : 'مرور مالي وإداري';
+
+            // Default date = current month
+            const now = new Date();
+            const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0');
+            document.getElementById('f-start').value = y+'-'+m+'-01';
+            document.getElementById('f-end').value = y+'-'+m+'-'+new Date(y, now.getMonth()+1, 0).getDate();
 
             await loadData(currentUser.name);
         });
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
-        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+        function logout() { localStorage.removeItem('iag_user'); localStorage.removeItem('iag_last_page'); window.location.href = 'index.html'; }
         function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
+        // ══════════════════════════════════════════
+        // DATA LOADING
+        // ══════════════════════════════════════════
         async function loadData(username) {
             try {
                 const res = await fetch(CONFIG.API_URL, {
@@ -311,47 +350,34 @@
                     body: JSON.stringify({ action: 'getAllData', role: 'موظف', name: username })
                 });
                 const data = await res.json();
-
                 if (data.success) {
                     allTasks = data.tasks || [];
-                    allReports = data.reports || []; 
-                    
-                    populateDropdowns();
-                    calculateStats();
-                    renderContent();
+                    allReports = data.reports || [];
+                    updateBadges();
+                    applyFilters();
                 } else {
-                    document.getElementById('cards-list').innerHTML = `<div class="empty-box">لا توجد بيانات</div>`;
+                    document.getElementById('cards-list').innerHTML = '<div class="empty-box">لا توجد بيانات</div>';
                 }
             } catch (e) {
-                document.getElementById('cards-list').innerHTML = `<div class="empty-box text-red-500">خطأ في الاتصال</div>`;
+                document.getElementById('cards-list').innerHTML = '<div class="empty-box text-red-500"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2"></i>خطأ في الاتصال</div>';
+                lucide.createIcons();
             }
         }
 
-        // --- Logic ---
-
-        function populateDropdowns() {
-            const srcSelect = document.getElementById('f-source');
-            srcSelect.innerHTML = '<option value="">كل الجهات</option>';
-            const sources = new Set(allTasks.map(t => t.source).filter(s => s));
-            Array.from(sources).sort().forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s; opt.textContent = s;
-                srcSelect.appendChild(opt);
-            });
-        }
-
-        function calculateStats() {
-            let c = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
-            allTasks.forEach(t => {
+        // ══════════════════════════════════════════
+        // STATS & BADGES
+        // ══════════════════════════════════════════
+        function updateStats(tasks) {
+            let c = { total:0, new:0, pending:0, approved:0, followup:0, late:0 };
+            tasks.forEach(t => {
                 c.total++;
                 const s = (t.status||'');
-                if(s.includes('جديد')) c.new++;
+                if(s.includes('متأخر')) c.late++;
+                else if(s.includes('جديد')) c.new++;
                 else if(s.includes('بانتظار')) c.pending++;
-                else if(s.includes('تم')) c.approved++;
+                else if(s.includes('تم') || s.includes('أرشيف')) c.approved++;
                 else if(s.includes('متابعة')) c.followup++;
-                else if(s.includes('متأخر')) c.late++;
             });
-
             document.getElementById('c-total').textContent = c.total;
             document.getElementById('c-new').textContent = c.new;
             document.getElementById('c-pending').textContent = c.pending;
@@ -360,228 +386,285 @@
             document.getElementById('c-late').textContent = c.late;
         }
 
-        // --- Filter Fix: Visual & Logic ---
+        function updateBadges() {
+            document.getElementById('badge-tasks').textContent = allTasks.length;
+            document.getElementById('badge-reports').textContent = allReports.length;
+        }
+
         function filterStatus(status) {
             currentStatusFilter = status;
-            
-            // Remove 'active-stat' from all
-            document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => {
-                el.classList.remove('active-stat');
-                el.style.borderColor = "#e5e7eb";
-                el.style.backgroundColor = "white";
-            });
-            
-            // Map status to ID
-            const map = {'': 'st-total', 'جديد': 'st-new', 'بانتظار': 'st-pending', 'تم': 'st-approved', 'متابعة': 'st-followup', 'متأخر': 'st-late'};
-            let activeId = 'st-total';
-            if(status) {
-                const key = Object.keys(map).find(k => status.includes(k));
-                if(key) activeId = map[key];
-            }
-            
-            // Add 'active-stat' to selected
-            const activeCard = document.getElementById(activeId);
-            activeCard.classList.add('active-stat');
-            
-            renderContent();
+            document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
+            const map = {'':'st-total','جديد':'st-new','بانتظار':'st-pending','تم':'st-approved','متابعة':'st-followup','متأخر':'st-late'};
+            let id = 'st-total';
+            if(status) { const k = Object.keys(map).find(k => status.includes(k)); if(k) id = map[k]; }
+            document.getElementById(id).classList.add('active');
+            applyFilters();
         }
 
-        function applyFilters() { renderContent(); }
-
-        function switchMainTab(tab) {
-            currentMainTab = tab;
-            document.querySelectorAll('.main-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.add('active');
-            
-            if(tab === 'reports') document.getElementById('sub-tabs-container').classList.remove('hidden');
-            else document.getElementById('sub-tabs-container').classList.add('hidden');
-            
-            renderContent();
+        // ══════════════════════════════════════════
+        // TABS
+        // ══════════════════════════════════════════
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-'+tab).classList.add('active');
+            document.getElementById('sub-tabs-box').classList.toggle('hidden', tab !== 'reports');
+            applyFilters();
         }
-
         function switchSubTab(sub) {
             currentSubTab = sub;
             document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
-            document.getElementById('sub-' + sub).classList.add('active');
-            renderContent();
+            document.getElementById('sub-'+sub).classList.add('active');
+            applyFilters();
         }
 
-        // --- Date Fix ---
-        function parseDate(dateStr) {
-            // Convert '8/2/2026' -> Date Object
-            if(!dateStr) return null;
-            const parts = dateStr.split('/'); // Assumes D/M/YYYY
-            if(parts.length !== 3) return null;
-            return new Date(parts[2], parts[1]-1, parts[0]);
+        // ══════════════════════════════════════════
+        // DATE HELPERS
+        // ══════════════════════════════════════════
+        function parseDate(str) {
+            if(!str) return null;
+            const p = str.split('/');
+            return p.length===3 ? new Date(p[2], p[1]-1, p[0]) : null;
         }
-
-        function isDateInRange(taskDateStr, startStr, endStr) {
-            if(!startStr && !endStr) return true;
-            if(!taskDateStr) return false;
-
-            const taskDate = parseDate(taskDateStr);
-            if(!taskDate) return false;
-
-            if(startStr) {
-                const startDate = new Date(startStr); // YYYY-MM-DD
-                if(taskDate < startDate) return false;
-            }
-            if(endStr) {
-                const endDate = new Date(endStr); // YYYY-MM-DD
-                if(taskDate > endDate) return false;
-            }
+        function inRange(dateStr, s, e) {
+            if(!s && !e) return true;
+            const d = parseDate(dateStr);
+            if(!d) return false;
+            if(s && d < new Date(s)) return false;
+            if(e && d > new Date(e+'T23:59:59')) return false;
             return true;
         }
+        function fmtDate(str) {
+            if(!str) return '-';
+            const p = str.split('/');
+            if(p.length!==3) return str;
+            return new Date(p[2],p[1]-1,p[0]).toLocaleDateString('ar-EG',{day:'numeric',month:'short',year:'numeric'});
+        }
 
-        // --- Rendering ---
-
-        function renderContent() {
+        // ══════════════════════════════════════════
+        // FILTERS & RENDER
+        // ══════════════════════════════════════════
+        function applyFilters() {
             const container = document.getElementById('cards-list');
             const search = document.getElementById('f-search').value.toLowerCase();
-            const src = document.getElementById('f-source').value;
             const start = document.getElementById('f-start').value;
             const end = document.getElementById('f-end').value;
 
-            let dataToRender = [];
-
-            if (currentMainTab === 'tasks') {
-                // Filter Tasks
-                dataToRender = allTasks.filter(t => {
+            if (currentTab === 'tasks') {
+                let filtered = allTasks.filter(t => {
                     if(currentStatusFilter && !(t.status||'').includes(currentStatusFilter)) return false;
-                    if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
-                    if(src && t.source !== src) return false;
-                    if(!isDateInRange(t.date, start, end)) return false;
+                    if(search && !(t.subject+t.id+t.source+t.entity).toLowerCase().includes(search)) return false;
+                    if(!inRange(t.date, start, end)) return false;
                     return true;
                 });
+                updateStats(filtered);
+                if(filtered.length === 0) { container.innerHTML = '<div class="empty-box">لا توجد نتائج</div>'; return; }
+                renderTasks(filtered, container);
             } else {
-                // Filter Reports (Logic based on user role + sub tab)
-                dataToRender = allReports.filter(r => {
-                    const rType = (r.type || '').toLowerCase();
-                    let matchSub = false;
-                    
-                    if (currentSubTab === 'inspection') {
-                        matchSub = rType.includes('مرور') || rType.includes('فني') || rType.includes('مالي');
+                let filtered = allReports.filter(r => {
+                    const rt = (r.type||'').toLowerCase();
+                    if(currentSubTab === 'inspection') {
+                        if(!rt.includes('مرور') && !rt.includes('فني') && !rt.includes('مالي')) return false;
                     } else {
-                        matchSub = rType.includes('شكو') || rType.includes('شكا') || rType.includes('فحص');
+                        if(!rt.includes('شكو') && !rt.includes('شكا') && !rt.includes('فحص')) return false;
                     }
-                    
-                    if(!matchSub) return false;
-                    if(search && !(r.title+r.entity).toLowerCase().includes(search)) return false;
-                    if(!isDateInRange(r.date, start, end)) return false;
+                    if(search && !(r.title+r.entity+r.type).toLowerCase().includes(search)) return false;
+                    if(!inRange(r.date, start, end)) return false;
                     return true;
                 });
-            }
-
-            if(dataToRender.length === 0) {
-                container.innerHTML = `<div class="empty-box">لا توجد نتائج</div>`;
-                return;
-            }
-
-            if (currentMainTab === 'tasks') {
-                renderTasks(dataToRender, container);
-            } else {
-                renderReportsCards(dataToRender, container);
+                if(filtered.length === 0) { container.innerHTML = '<div class="empty-box">لا توجد تقارير</div>'; return; }
+                renderReports(filtered, container);
             }
             lucide.createIcons();
         }
 
+        // ══════════════════════════════════════════
+        // RENDER TASKS (Professional Cards)
+        // ══════════════════════════════════════════
         function renderTasks(tasks, container) {
             container.innerHTML = tasks.map(t => {
+                const s = t.status || '';
+                // Status stripe color
                 let bgClass = 'bg-new';
-                if(t.status.includes('بانتظار')) bgClass = 'bg-pending';
-                else if(t.status.includes('تم')) bgClass = 'bg-approved';
-                else if(t.status.includes('متابعة')) bgClass = 'bg-followup';
-                else if(t.status.includes('متأخر')) bgClass = 'bg-late';
+                if(s.includes('متأخر')) bgClass = 'bg-late';
+                else if(s.includes('بانتظار')) bgClass = 'bg-pending';
+                else if(s.includes('تم') || s.includes('أرشيف')) bgClass = 'bg-approved';
+                else if(s.includes('جاري') || s.includes('قيد')) bgClass = 'bg-followup';
+                else if(s.includes('متابعة')) bgClass = 'bg-followup';
 
-                // Icons Logic
-                const hasDoc = t.report || t.docLink; 
-                const hasAtt = t.attachment;
+                // Status label
+                let stLabel = 'جديد';
+                if(s.includes('متأخر')) stLabel = 'متأخر';
+                else if(s.includes('بانتظار')) stLabel = 'بانتظار';
+                else if(s.includes('تم') || s.includes('أرشيف')) stLabel = 'معتمد';
+                else if(s.includes('جاري') || s.includes('قيد')) stLabel = 'قيد التنفيذ';
+                else if(s.includes('متابعة')) stLabel = 'متابعة';
+
+                // Type detection
+                const isComplaint = (t.transactionType||'').includes('شك');
+                const isOutgoing = t.docType === 'صادر';
+                const typeLabel = isComplaint ? 'شكوى' : isOutgoing ? 'صادر' : 'وارد';
+                const typeIcon = isComplaint ? '⚖️' : isOutgoing ? '📤' : '📥';
+
+                // Subject border color
+                const subjectBorder = isComplaint ? '#7c3aed' : isOutgoing ? '#0f766e' : '#2563eb';
+
+                // Importance badge
+                let impBadge = '';
+                if(t.importance) {
+                    const cls = t.importance === 'عاجل جداً' ? 'badge-imp-urgent2' : t.importance === 'عاجل' ? 'badge-imp-urgent' : 'badge-imp-normal';
+                    const ico = t.importance === 'عاجل جداً' ? '🔴' : t.importance === 'عاجل' ? '🟠' : '🟢';
+                    impBadge = '<span class="badge '+cls+'">'+ico+' '+t.importance+'</span>';
+                }
+
+                // Other badges
+                let typeBadge = '<span class="badge badge-type">📝 '+(t.transactionType||t.docType||'')+'</span>';
+                let caseBadge = (t.caseNumber && t.caseNumber!=='') ? '<span class="badge badge-case">📁 '+t.caseNumber+'/'+(t.caseYear||'')+'</span>' : '';
+                let delayBadge = t.delay ? '<span class="badge badge-delay">⚠️ متأخر '+t.delay+' يوم</span>' : '';
+                let doneBadge = t.completionDate ? '<span class="badge badge-done">✅ أُنجز '+t.completionDate+'</span>' : '';
+
+                // Notes
+                let notesHtml = (t.notes && t.notes.trim()) ? '<div class="tc-notes">💡 '+t.notes+'</div>' : '';
+
+                // Buttons - differentiated icons
+                let btns = '<button onclick="openModal(\''+t.id+'\')" class="btn-card btn-details"><i data-lucide="eye" class="w-3.5 h-3.5"></i> التفاصيل</button>';
+                
+                // مرفق الوارد
+                if(t.attachment && !isOutgoing) btns += '<a href="'+t.attachment+'" target="_blank" class="btn-card btn-att-in"><i data-lucide="inbox" class="w-3.5 h-3.5"></i> مرفق الوارد</a>';
+                // مرفق الصادر
+                if(t.attachment && isOutgoing) btns += '<a href="'+t.attachment+'" target="_blank" class="btn-card btn-att-out"><i data-lucide="send" class="w-3.5 h-3.5"></i> مرفق الصادر</a>';
+                // الأرشيف (التقرير النهائي المعتمد)
+                if(t.archive) btns += '<a href="'+t.archive+'" target="_blank" class="btn-card btn-archive"><i data-lucide="archive" class="w-3.5 h-3.5"></i> النهائي المعتمد</a>';
+                // تقرير المرور / فحص الشكوى (Google Doc)
+                if(t.report) {
+                    if(isComplaint) {
+                        btns += '<a href="'+t.report+'" target="_blank" class="btn-card btn-report"><i data-lucide="scale" class="w-3.5 h-3.5"></i> تقرير الفحص</a>';
+                    } else {
+                        btns += '<a href="'+t.report+'" target="_blank" class="btn-card btn-doc"><i data-lucide="file-text" class="w-3.5 h-3.5"></i> تقرير المرور</a>';
+                    }
+                }
 
                 return `
                 <div class="task-card">
                     <div class="card-stripe ${bgClass}">
-                        <span class="font-mono">#${t.id}</span>
-                        <span>${t.status}</span>
+                        <div class="stripe-right">
+                            <span>${typeIcon}</span>
+                            <span class="stripe-type">${typeLabel}</span>
+                            <span style="font-family:monospace;font-size:0.75rem">#${t.id}</span>
+                        </div>
+                        <div class="stripe-right">
+                            <span class="stripe-dot"></span>
+                            <span>${stLabel}</span>
+                        </div>
                     </div>
                     <div class="card-body">
-                        <h3 class="tc-subject">${t.subject}</h3>
+                        <h3 class="tc-subject" style="border-right-color:${subjectBorder}">${t.subject}</h3>
                         <div class="tc-row">
-                            <span class="flex items-center"><i data-lucide="building-2" class="w-3 h-3 text-teal-600"></i>&nbsp;${t.source}</span>
+                            <span class="tc-icon-box" style="background:#f0fdfa"><i data-lucide="building-2" class="w-3 h-3 text-teal-600"></i></span>
+                            ${t.source || '-'}
                         </div>
-                        <div class="tc-row">
-                            <span class="flex items-center"><i data-lucide="calendar" class="w-3 h-3 text-gray-500"></i>&nbsp;${t.date}</span>
-                            ${t.deadline ? `<span class="flex items-center text-red-600 font-bold"><i data-lucide="alert-circle" class="w-3 h-3"></i>&nbsp;${t.deadline}</span>` : ''}
+                        ${t.entity && t.entity !== t.source ? '<div class="tc-row"><span class="tc-icon-box" style="background:#f1f5f9"><i data-lucide="map-pin" class="w-3 h-3 text-gray-500"></i></span>'+t.entity+'</div>' : ''}
+                        <div class="tc-row" style="gap:12px">
+                            <span style="display:flex;align-items:center;gap:3px"><i data-lucide="calendar" class="w-3 h-3 text-gray-400"></i> ${fmtDate(t.date)}</span>
+                            ${t.deadline ? '<span style="display:flex;align-items:center;gap:3px;color:'+(s.includes('متأخر')?'#dc2626':'#ea580c')+';font-weight:700"><i data-lucide="clock" class="w-3 h-3"></i> '+fmtDate(t.deadline)+'</span>' : ''}
                         </div>
+                        <div class="badges-row">
+                            ${impBadge}${typeBadge}${caseBadge}${delayBadge}${doneBadge}
+                        </div>
+                        ${notesHtml}
                     </div>
-                    <div class="tc-footer">
-                        <button onclick="openModal('${t.id}')" class="btn-card btn-details">
-                            <i data-lucide="eye" class="w-4 h-4"></i> التفاصيل
-                        </button>
-                        ${hasAtt ? `<button onclick="window.open('${t.attachment}')" class="btn-card btn-att">
-                            <i data-lucide="paperclip" class="w-4 h-4"></i> المرفقات
-                        </button>` : ''}
-                        ${hasDoc ? `<button onclick="window.open('${t.report || t.docLink}')" class="btn-card btn-edit">
-                            <i data-lucide="file-edit" class="w-4 h-4"></i> تعديل التقرير
-                        </button>` : ''}
-                    </div>
+                    <div class="tc-footer">${btns}</div>
                 </div>`;
             }).join('');
         }
 
-        function renderReportsCards(reports, container) {
+        // ══════════════════════════════════════════
+        // RENDER REPORTS
+        // ══════════════════════════════════════════
+        function renderReports(reports, container) {
             container.innerHTML = reports.map(r => {
-                // Identify Attachment (Image) and Doc (Edit) and PDF (Final)
-                const attLink = r.attachment; // Assuming reports might have this
-                const docLink = r.docLink;    // Editable
-                const pdfLink = r.pdfLink;    // Final PDF
+                const rt = (r.type||'').toLowerCase();
+                let rcClass = 'rc-tech', icon = '🔬', accent = '#2563eb';
+                if(rt.includes('مالي')) { rcClass = 'rc-fin'; icon = '💰'; accent = '#16a34a'; }
+                if(rt.includes('شك') || rt.includes('فحص')) { rcClass = 'rc-complaint'; icon = '⚖️'; accent = '#7c3aed'; }
+
+                let btns = '';
+                if(r.docLink) {
+                    const docLabel = (rt.includes('شك') || rt.includes('فحص')) ? 'تقرير الفحص' : 'تقرير المرور';
+                    const docIcon = (rt.includes('شك') || rt.includes('فحص')) ? 'scale' : 'file-text';
+                    btns += '<a href="'+r.docLink+'" target="_blank" class="btn-card btn-doc"><i data-lucide="'+docIcon+'" class="w-3.5 h-3.5"></i> '+docLabel+'</a>';
+                }
+                if(r.pdfLink) btns += '<a href="'+r.pdfLink+'" target="_blank" class="btn-card btn-pdf"><i data-lucide="file-check" class="w-3.5 h-3.5"></i> PDF النهائي</a>';
 
                 return `
-                <div class="task-card">
-                    <div class="card-stripe bg-gray-600">
-                        <span>${r.date}</span>
-                        <span>${r.type}</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="tc-subject">${r.title || r.type}</h3>
-                        <div class="tc-row">
-                            <span class="flex items-center"><i data-lucide="map-pin" class="w-3 h-3 text-teal-600"></i>&nbsp;${r.entity}</span>
+                <div class="report-card ${rcClass}">
+                    <div style="padding:12px 14px">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <span style="width:34px;height:34px;border-radius:8px;background:${accent}10;display:flex;align-items:center;justify-content:center;font-size:18px">${icon}</span>
+                                <div>
+                                    <div style="font-size:0.85rem;font-weight:800;color:${accent}">${r.type}</div>
+                                    <div style="font-size:0.65rem;color:#94a3b8;font-weight:600">${fmtDate(r.date)}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size:0.85rem;font-weight:700;color:#1e293b;margin-bottom:4px;display:flex;align-items:center;gap:5px">
+                            <i data-lucide="map-pin" class="w-3 h-3 text-teal-600"></i> ${r.entity}
                         </div>
                     </div>
-                    <div class="tc-footer">
-                        ${attLink ? `<button onclick="window.open('${attLink}')" class="btn-card btn-att">
-                            <i data-lucide="paperclip" class="w-4 h-4"></i> مرفقات المرور
-                        </button>` : ''}
-                        
-                        ${docLink ? `<button onclick="window.open('${docLink}')" class="btn-card btn-edit">
-                            <i data-lucide="file-text" class="w-4 h-4"></i> عرض الملف
-                        </button>` : ''}
-                        
-                        ${pdfLink ? `<button onclick="window.open('${pdfLink}')" class="btn-card btn-pdf">
-                            <i data-lucide="file-check" class="w-4 h-4"></i> التقرير النهائي
-                        </button>` : ''}
-                    </div>
-                </div>
-            `}).join('');
+                    <div class="tc-footer">${btns}</div>
+                </div>`;
+            }).join('');
         }
 
-        // --- Helpers ---
+        // ══════════════════════════════════════════
+        // DETAIL MODAL
+        // ══════════════════════════════════════════
         function openModal(id) {
             const t = allTasks.find(x => x.id == id);
             if(!t) return;
             document.getElementById('m-id').textContent = '#' + t.id;
-            
-            const html = `
-                <div class="data-item"><span class="data-label">الموضوع</span><p class="data-val">${t.subject}</p></div>
-                <div class="data-item"><span class="data-label">الجهة الواردة</span><p class="data-val">${t.source}</p></div>
+
+            const isComplaint = (t.transactionType||'').includes('شك');
+            const isOutgoing = t.docType === 'صادر';
+
+            // Importance color
+            let impHtml = t.importance || '-';
+            if(t.importance === 'عاجل جداً') impHtml = '<span style="color:#dc2626;font-weight:800">🔴 '+t.importance+'</span>';
+            else if(t.importance === 'عاجل') impHtml = '<span style="color:#ea580c;font-weight:800">🟠 '+t.importance+'</span>';
+            else if(t.importance) impHtml = '<span style="color:#16a34a;font-weight:800">🟢 '+t.importance+'</span>';
+
+            let html = `
+                <div class="data-item"><span class="data-label">رقم القيد</span><p class="data-val">${t.id}</p></div>
+                <div class="data-item"><span class="data-label">نوع المستند</span><p class="data-val">${t.docType || '-'}</p></div>
+                <div class="data-item"><span class="data-label">التاريخ</span><p class="data-val">${fmtDate(t.date)}</p></div>
+                <div class="data-item"><span class="data-label">الموضوع</span><p class="data-val" style="font-weight:800;line-height:1.6">${t.subject}</p></div>
+                <div class="data-item"><span class="data-label">${isOutgoing ? 'الجهة المرسل إليها' : 'الجهة الواردة'}</span><p class="data-val">${t.source}</p></div>
                 <div class="data-item"><span class="data-label">محل التنفيذ</span><p class="data-val">${t.entity}</p></div>
-                <div class="data-item"><span class="data-label">تاريخ الوارد</span><p class="data-val">${t.date}</p></div>
-                <div class="data-item"><span class="data-label">تاريخ التكليف</span><p class="data-val">${t.assignDate}</p></div>
-                <div class="data-item"><span class="data-label">الموعد النهائي</span><p class="data-val text-red-600 font-bold">${t.deadline || '-'}</p></div>
-                <div class="data-item"><span class="data-label">الحالة</span><p class="data-val text-teal-700">${t.status}</p></div>
-                ${t.notes ? `<div class="bg-yellow-50 p-2 rounded text-sm border border-yellow-200"><span class="data-label text-yellow-700">ملاحظات</span><p class="data-val text-gray-700">${t.notes}</p></div>` : ''}
+                <div class="data-item"><span class="data-label">نوع المعاملة</span><p class="data-val">${t.transactionType || '-'}</p></div>
+                ${t.caseNumber ? '<div class="data-item"><span class="data-label">رقم القضية</span><p class="data-val">'+t.caseNumber+' / '+(t.caseYear||'')+'</p></div>' : ''}
+                <div class="data-item"><span class="data-label">الأهمية</span><p class="data-val">${impHtml}</p></div>
+                <div class="data-item"><span class="data-label">تاريخ التكليف</span><p class="data-val">${fmtDate(t.assignDate)}</p></div>
+                <div class="data-item"><span class="data-label">الموعد النهائي</span><p class="data-val" style="color:${t.status&&t.status.includes('متأخر')?'#dc2626':'#ea580c'};font-weight:800">${fmtDate(t.deadline) || '-'}</p></div>
+                <div class="data-item"><span class="data-label">الحالة</span><p class="data-val" style="color:var(--primary)">${t.status}</p></div>
+                <div class="data-item"><span class="data-label">تاريخ الإنجاز</span><p class="data-val">${t.completionDate ? fmtDate(t.completionDate) : '-'}</p></div>
+                ${t.delay ? '<div class="data-item"><span class="data-label" style="color:#dc2626">أيام التأخير</span><p class="data-val" style="color:#dc2626;font-weight:800">'+t.delay+' يوم</p></div>' : ''}
+                ${t.notes && t.notes.trim() ? '<div class="bg-yellow-50 p-2 rounded-lg text-sm border border-yellow-200 mt-2"><span class="data-label text-yellow-700">ملاحظات</span><p class="data-val text-gray-700">'+t.notes+'</p></div>' : ''}
             `;
+
+            // Links
+            let links = '';
+            if(t.attachment && !isOutgoing) links += '<a href="'+t.attachment+'" target="_blank" class="btn-card btn-att-in"><i data-lucide="inbox" class="w-3.5 h-3.5"></i> مرفق الوارد</a>';
+            if(t.attachment && isOutgoing) links += '<a href="'+t.attachment+'" target="_blank" class="btn-card btn-att-out"><i data-lucide="send" class="w-3.5 h-3.5"></i> مرفق الصادر</a>';
+            if(t.archive) links += '<a href="'+t.archive+'" target="_blank" class="btn-card btn-archive"><i data-lucide="archive" class="w-3.5 h-3.5"></i> النهائي المعتمد</a>';
+            if(t.report && isComplaint) links += '<a href="'+t.report+'" target="_blank" class="btn-card btn-report"><i data-lucide="scale" class="w-3.5 h-3.5"></i> تقرير الفحص</a>';
+            else if(t.report) links += '<a href="'+t.report+'" target="_blank" class="btn-card btn-doc"><i data-lucide="file-text" class="w-3.5 h-3.5"></i> تقرير المرور</a>';
+
+            if(links) html += '<div class="modal-links">'+links+'</div>';
+
             document.getElementById('m-content').innerHTML = html;
             document.getElementById('detail-modal').classList.add('open');
+            lucide.createIcons();
         }
     </script>
 </body>
