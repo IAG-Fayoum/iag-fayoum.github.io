@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         
         :root {
             --primary: #0f766e;
@@ -23,7 +23,7 @@
             --c-followup: #6b7280; --c-late: #dc2626;       
         }
 
-        /* --- Header --- */
+        /* HEADER */
         .main-header {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             color: white; padding: 1rem 1.5rem 3.5rem;
@@ -32,20 +32,15 @@
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
-        
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        
         .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .header-btn:hover { background: rgba(255,255,255,0.2); }
 
         .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; opacity: 0.9; }
-        .breadcrumbs span { opacity: 0.7; }
-        .breadcrumbs strong { font-weight: 700; color: white; }
-
         .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; margin-top: 10px; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
-        /* --- Employee Info Card --- */
+        /* INFO CARD */
         .emp-info-card {
             background: white; border-radius: 16px; padding: 1.25rem;
             margin: -2.5rem 1rem 1rem; position: relative; z-index: 20;
@@ -56,24 +51,16 @@
         .info-icon { color: var(--primary); width: 18px; height: 18px; }
         .info-val { font-weight: 700; color: #1f2937; }
 
-        /* --- Stats --- */
+        /* STATS */
         .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
         .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
-        .stat-card-big {
-            background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px;
-            text-align: center; cursor: pointer; height: 90px;
-            display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
+        .stat-card-big { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
         .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
 
-        .stat-card-small {
-            background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px;
-            text-align: center; cursor: pointer; min-height: 75px;
-            display: flex; flex-direction: column; justify-content: center;
-        }
+        .stat-card-small { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; min-height: 75px; display: flex; flex-direction: column; justify-content: center; }
         .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
         .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
 
@@ -81,99 +68,64 @@
         .txt-new { color: #3b82f6; } .txt-pending { color: #16a34a; }
         .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
 
-        /* --- Tabs --- */
+        /* TABS */
         .tabs-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; }
-        .tabs-container {
-            display: flex; background: #e2e8f0; border-radius: 12px; padding: 4px;
-            position: relative; margin-bottom: 1rem;
-        }
-        .tab-btn {
-            flex: 1; text-align: center; padding: 10px; font-size: 0.9rem; font-weight: 700;
-            color: #64748b; border-radius: 10px; cursor: pointer; transition: 0.2s; z-index: 2;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-        }
+        .tabs-container { display: flex; background: #e2e8f0; border-radius: 12px; padding: 4px; margin-bottom: 1rem; }
+        .tab-btn { flex: 1; text-align: center; padding: 10px; font-size: 0.9rem; font-weight: 700; color: #64748b; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
 
-        /* --- Filters Box --- */
-        .filter-box {
-            background: white; border-radius: 12px; padding: 12px;
-            border: 1px solid #e2e8f0; margin-bottom: 1rem;
-            display: flex; flex-direction: column; gap: 10px;
-        }
+        /* FILTERS */
+        .filter-box { background: white; border-radius: 12px; padding: 12px; border: 1px solid #e2e8f0; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 10px; }
         .filter-grid { display: grid; gap: 8px; }
         @media (min-width: 768px) { .filter-grid { grid-template-columns: repeat(3, 1fr); align-items: end; } }
-        
         .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
-        .f-input {
-            width: 100%; height: 40px; padding: 0 12px; 
-            border: 1px solid #cbd5e1; border-radius: 8px;
-            font-size: 0.9rem; outline: none; background: #f8fafc; color: #1e293b;
-        }
+        .f-input { width: 100%; height: 40px; padding: 0 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; outline: none; background: #f8fafc; color: #1e293b; }
         .f-input:focus { border-color: #0f766e; background: white; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
 
-        /* --- Cards List --- */
+        /* LIST */
         .cards-container { display: grid; gap: 12px; grid-template-columns: 1fr; }
         @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
 
-        .task-card {
-            background: white; border-radius: 14px; overflow: hidden;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb;
-            display: flex; flex-direction: column; transition: transform 0.2s;
-        }
+        .task-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb; display: flex; flex-direction: column; transition: transform 0.2s; }
         .card-stripe { padding: 8px 12px; color: white; font-weight: 700; font-size: 0.75rem; display: flex; justify-content: space-between; }
-        
         .bg-new { background-color: #3b82f6; } .bg-pending { background-color: #16a34a; }
-        .bg-approved { background-color: #047857; } .bg-followup { background-color: #6b7280; }
-        .bg-late { background-color: #dc2626; }
+        .bg-approved { background-color: #047857; } .bg-followup { background-color: #6b7280; } .bg-late { background-color: #dc2626; }
 
         .card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .tc-subject { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.5; }
         .tc-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #475569; }
-        
         .tc-footer { padding: 10px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; margin-top: auto; }
-        .btn-card {
-            flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569;
-        }
-        
-        /* Report Card */
-        .report-card {
-            background: white; border-radius: 12px; padding: 12px; 
-            border: 1px solid #e5e7eb; border-right: 4px solid #e5e7eb; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03); display: flex; flex-direction: column;
-        }
-        .border-tech { border-right-color: #60a5fa; }
-        .border-fin { border-right-color: #4ade80; }
-        .border-comp { border-right-color: #fbbf24; }
+        .btn-card { flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569; }
 
-        /* --- Menu & Modal --- */
+        /* Report Card */
+        .report-card { background: white; border-radius: 12px; padding: 12px; border: 1px solid #e5e7eb; border-right: 4px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
+        .border-tech { border-right-color: #60a5fa; } .border-fin { border-right-color: #4ade80; }
+
+        /* SIDE MENU */
         .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
         .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
-        
+
+        /* MODAL */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
         .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
         .modal-header { padding: 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
         .modal-body { padding: 1.5rem; }
-        
         .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 8px; }
         .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
         .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
 
-        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
-
-        /* --- Bottom Nav --- */
+        /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .hidden { display: none !important; }
+        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
     </style>
 </head>
 <body>
@@ -188,18 +140,10 @@
             <p class="text-xs text-teal-600" id="menu-role">...</p>
         </div>
         <nav class="flex-1 p-4 space-y-2">
-            <a href="employee.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm">
-                <i data-lucide="user" class="w-4 h-4"></i> صفحتي
-            </a>
-            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
-                <i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات
-            </a>
-            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
-                <i data-lucide="file-text" class="w-4 h-4"></i> النماذج
-            </a>
-            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
-                <i data-lucide="bell" class="w-4 h-4"></i> الإشعارات
-            </a>
+            <a href="employee.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="user" class="w-4 h-4"></i> صفحتي</a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
         </nav>
         <div class="p-4 border-t">
             <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
@@ -226,7 +170,6 @@
                 <div class="flex gap-3">
                     <button onclick="window.location.href='notifications.html'" class="header-btn relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
-                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
                     </button>
                 </div>
             </div>
@@ -241,7 +184,7 @@
 
     <div class="stats-wrapper">
         <div class="stats-row-big">
-            <div class="stat-card-big"><span class="stat-num txt-total" id="st-total">0</span><span class="stat-lbl">إجمالي المهام</span></div>
+            <div class="stat-card-big"><span class="stat-num txt-total" id="st-total">0</span><span class="stat-lbl">المهام</span></div>
             <div class="stat-card-big"><span class="stat-num txt-late" id="st-late">0</span><span class="stat-lbl">متأخر</span></div>
         </div>
         <div class="stats-row-small">
@@ -261,7 +204,7 @@
 
         <div id="tab-tasks" class="tab-content active">
             <div class="filter-box">
-                <input type="text" id="f-search-tasks" class="f-input" placeholder="بحث في المهام..." oninput="filterTasks()">
+                <input type="text" id="f-search-tasks" class="f-input" placeholder="بحث..." oninput="filterTasks()">
                 <div class="filter-grid">
                     <div>
                         <label class="f-label">الحالة</label>
@@ -274,8 +217,8 @@
                             <option value="متأخر">متأخر</option>
                         </select>
                     </div>
-                    <div><label class="f-label">من تاريخ</label><input type="date" id="f-date-start" class="f-input" onchange="filterTasks()"></div>
-                    <div><label class="f-label">إلى تاريخ</label><input type="date" id="f-date-end" class="f-input" onchange="filterTasks()"></div>
+                    <div><label class="f-label">من</label><input type="date" id="f-date-start" class="f-input" onchange="filterTasks()"></div>
+                    <div><label class="f-label">إلى</label><input type="date" id="f-date-end" class="f-input" onchange="filterTasks()"></div>
                 </div>
             </div>
             <div id="tasks-list" class="cards-container">
@@ -291,9 +234,7 @@
         </div>
 
         <div id="tab-notifs" class="tab-content">
-            <div id="notifs-list" class="cards-container">
-                <p class="text-center text-gray-400 py-8">لا توجد إشعارات جديدة</p>
-            </div>
+            <div id="notifs-list" class="cards-container"></div>
         </div>
     </div>
 
@@ -325,7 +266,6 @@
             if (!userStr) { window.location.href = 'index.html'; return; }
             
             const user = JSON.parse(userStr);
-            
             document.getElementById('emp-name').textContent = user.name;
             document.getElementById('emp-job').textContent = user.jobTitle || user.role;
             document.getElementById('emp-email').textContent = user.email || '-';
@@ -336,7 +276,8 @@
         });
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
-        function logout() { localStorage.removeItem('iag_user'); localStorage.removeItem('iag_last_page'); window.location.href = 'index.html'; }
+        function logout() { localStorage.removeItem('iag_user'); window.location.href = 'index.html'; }
+        function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -357,14 +298,14 @@
                     allData.tasks = data.tasks || [];
                     allData.reports = data.reports || [];
                     
-                    const s = (data.stats && data.stats.totals) ? data.stats.totals : { total:0, new:0, pending:0, completed:0, followup:0, overdue:0 };
+                    const s = data.stats && data.stats.totals ? data.stats.totals : { total:0, new:0, pending:0, completed:0, followup:0, overdue:0 };
                     updateStats(s);
                     renderTasks(allData.tasks);
                     renderReports(allData.reports);
                     renderNotifications(allData.tasks);
                 }
             } catch (e) {
-                document.getElementById('tasks-list').innerHTML = '<div class="col-span-full text-center py-8 text-red-500 font-bold">خطأ في الاتصال</div>';
+                document.getElementById('tasks-list').innerHTML = '<div class="loader-box text-red-500">خطأ في الاتصال</div>';
             }
         }
 
@@ -379,7 +320,7 @@
 
         function renderTasks(tasks) {
             const container = document.getElementById('tasks-list');
-            if(tasks.length === 0) { container.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400">لا توجد معاملات</div>'; return; }
+            if(tasks.length === 0) { container.innerHTML = '<div class="loader-box">لا توجد معاملات</div>'; return; }
             
             container.innerHTML = tasks.map(t => {
                 let bgClass = 'bg-new';
@@ -410,19 +351,16 @@
 
         function renderReports(reports) {
             const container = document.getElementById('reports-list');
-            if(reports.length === 0) { container.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400">لا توجد تقارير</div>'; return; }
+            if(reports.length === 0) { container.innerHTML = '<div class="loader-box">لا توجد تقارير</div>'; return; }
 
             container.innerHTML = reports.map(r => {
-                let borderClass = 'border-gray-300';
-                if(r.type.includes('فني')) borderClass = 'border-tech';
-                else if(r.type.includes('مالي')) borderClass = 'border-fin';
-                
+                let borderClass = r.type.includes('فني') ? 'border-tech' : 'border-fin';
                 return `
                 <div class="report-card ${borderClass}">
                     <div class="flex justify-between font-bold text-gray-800 mb-2"><span>${r.type}</span><span class="text-xs bg-gray-100 px-2 py-1 rounded">${r.date}</span></div>
                     <p class="text-sm text-gray-600 mb-2"><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${r.entity}</p>
                     <div class="flex gap-2 mt-auto pt-2">
-                        ${r.docLink ? `<a href="${r.docLink}" target="_blank" class="flex-1 bg-blue-50 text-blue-700 text-center py-1 rounded text-xs font-bold border border-blue-200">Google Doc</a>` : ''}
+                        ${r.docLink ? `<a href="${r.docLink}" target="_blank" class="flex-1 bg-blue-50 text-blue-700 text-center py-1 rounded text-xs font-bold border border-blue-200">Doc</a>` : ''}
                         ${r.pdfLink ? `<a href="${r.pdfLink}" target="_blank" class="flex-1 bg-red-50 text-red-700 text-center py-1 rounded text-xs font-bold border border-red-200">PDF</a>` : ''}
                     </div>
                 </div>`;
@@ -433,7 +371,6 @@
         function renderNotifications(tasks) {
             const container = document.getElementById('notifs-list');
             const notifs = tasks.filter(t => t.status.includes('جديد') || t.status.includes('متابعة')).slice(0, 10);
-            
             if(notifs.length === 0) { container.innerHTML = '<p class="text-center text-gray-400 py-8">لا توجد إشعارات جديدة</p>'; return; }
 
             container.innerHTML = notifs.map(t => {
@@ -464,15 +401,6 @@
             document.getElementById('detail-modal').classList.add('open');
         }
 
-        function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
-
-        function parseDateToISO(dateStr) {
-            if(!dateStr) return null;
-            const parts = dateStr.split('/');
-            if(parts.length === 3) return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
-            return null;
-        }
-
         function filterTasks() {
             const status = document.getElementById('f-status').value;
             const search = document.getElementById('f-search-tasks').value.toLowerCase();
@@ -483,11 +411,9 @@
                 if (status && !t.status.includes(status)) return false;
                 if (search && !(t.subject + t.id + t.source).toLowerCase().includes(search)) return false;
                 if (start || end) {
-                    const taskDate = parseDateToISO(t.date);
-                    if (taskDate) {
-                        if (start && taskDate < start) return false;
-                        if (end && taskDate > end) return false;
-                    }
+                    const d = t.date ? t.date.split('T')[0] : '';
+                    if (start && d < start) return false;
+                    if (end && d > end) return false;
                 }
                 return true;
             });
