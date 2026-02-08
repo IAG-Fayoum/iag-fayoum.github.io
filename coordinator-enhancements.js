@@ -1,11 +1,12 @@
 // Coordinator Enhancements Script
-// Adds Reassign & Status Change Functionality without modifying original HTML structure excessively.
+// يتضمن وظائف النوافذ المنبثقة (Modals) لتغيير المكلف وتغيير الحالة
+// تم التعديل لضبط الحالات وفلترة الموظفين حسب المسمى الوظيفي
 
 document.addEventListener('DOMContentLoaded', () => {
     injectModals();
 });
 
-// 1. Inject Modals HTML into the DOM
+// 1. حقن كود النوافذ المنبثقة في الصفحة
 function injectModals() {
     const modalHTML = `
     <div class="modal-overlay" id="modal-reassign">
@@ -41,11 +42,10 @@ function injectModals() {
                 <input type="hidden" id="status-task-id">
                 <label class="block text-sm font-bold text-gray-700 mb-2">اختر الحالة الجديدة:</label>
                 <select id="status-select" class="w-full p-3 border rounded-lg bg-white mb-4">
-                    <option value="جديد">جديدة</option>
-                    <option value="مكلف بها">مكلف بها</option>
-                    <option value="متابعة">قيد التنفيذ / متابعة</option>
-                    <option value="بانتظار">معلقة / بانتظار</option>
-                    <option value="تم">منتهية / تم الاعتماد</option>
+                    <option value="جديد">جديد</option>
+                    <option value="بانتظار الاعتماد">بانتظار الاعتماد</option>
+                    <option value="تم الاعتماد والأرشفة">تم الاعتماد والأرشفة</option>
+                    <option value="بحاجة الي متابعة">بحاجة الي متابعة</option>
                 </select>
             </div>
             <div class="modal-footer flex gap-2 justify-end p-4 bg-gray-50 border-t">
@@ -59,24 +59,35 @@ function injectModals() {
     lucide.createIcons();
 }
 
-// 2. Open Functions (To be called from buttons)
+// 2. وظائف الفتح (يتم استدعاؤها من الأزرار)
 function openReassignModal(taskId) {
     document.getElementById('reassign-task-id').value = taskId;
     const select = document.getElementById('reassign-select');
     select.innerHTML = '<option value="">-- تحميل القائمة... --</option>';
     
-    // Simulate loading employees (Use 'allEmployees' from coordinator.html scope if available, else mock)
-    // Assuming 'allEmployees' is global in coordinator.html
+    // التحقق من وجود قائمة الموظفين (المتغير global في صفحة coordinator.html)
     if (typeof allEmployees !== 'undefined' && allEmployees.length > 0) {
         select.innerHTML = '<option value="">-- اختر من القائمة --</option>';
+        
+        // تصفية الموظفين: فقط مراجع فني أو مراجع مالي وإداري
         allEmployees.forEach(emp => {
-            const opt = document.createElement('option');
-            opt.value = emp.name;
-            opt.textContent = emp.name;
-            select.appendChild(opt);
+            const title = (emp.jobTitle || '').trim(); // تنظيف المسمى الوظيفي من المسافات الزائدة
+            
+            // الشرط: المسمى الوظيفي مطابق لما في الشيت
+            if (title === 'مراجع فني' || title === 'مراجع مالي وإداري') {
+                const opt = document.createElement('option');
+                opt.value = emp.name;
+                opt.textContent = emp.name;
+                select.appendChild(opt);
+            }
         });
+        
+        // في حالة لم يتم العثور على أي موظف مطابق
+        if (select.options.length === 1) {
+             select.innerHTML = '<option value="">-- لا يوجد مراجعين متاحين --</option>';
+        }
+
     } else {
-        // Fallback or fetch again
         select.innerHTML = '<option value="">-- لا يوجد بيانات --</option>';
     }
 
@@ -92,7 +103,7 @@ function closeEnhancementModal(id) {
     document.getElementById(id).classList.remove('open');
 }
 
-// 3. Confirm Logic
+// 3. منطق التأكيد والحفظ
 function confirmReassign() {
     const taskId = document.getElementById('reassign-task-id').value;
     const newEmp = document.getElementById('reassign-select').value;
@@ -100,7 +111,7 @@ function confirmReassign() {
     if (!newEmp) { alert('يرجى اختيار موظف'); return; }
 
     if (confirm(`هل أنت متأكد من تغيير المكلف إلى ${newEmp}؟`)) {
-        // Mock API Call
+        // محاكاة الاتصال بالخادم
         const btn = document.querySelector('#modal-reassign button.bg-teal-600');
         const originalText = btn.textContent;
         btn.textContent = 'جاري الحفظ...';
@@ -111,7 +122,7 @@ function confirmReassign() {
             btn.textContent = originalText;
             btn.disabled = false;
             closeEnhancementModal('modal-reassign');
-            // Refresh data if possible
+            // تحديث البيانات في الصفحة الخلفية
             if(typeof applyFilters === 'function') applyFilters();
         }, 1000);
     }
@@ -122,7 +133,7 @@ function confirmStatusChange() {
     const newStatus = document.getElementById('status-select').value;
 
     if (confirm(`هل أنت متأكد من تغيير الحالة إلى "${newStatus}"؟`)) {
-        // Mock API Call
+        // محاكاة الاتصال بالخادم
         const btn = document.querySelector('#modal-status button.bg-teal-600');
         const originalText = btn.textContent;
         btn.textContent = 'جاري الحفظ...';
@@ -133,7 +144,7 @@ function confirmStatusChange() {
             btn.textContent = originalText;
             btn.disabled = false;
             closeEnhancementModal('modal-status');
-            // Refresh data if possible
+            // تحديث البيانات في الصفحة الخلفية
             if(typeof applyFilters === 'function') applyFilters();
         }, 1000);
     }
