@@ -25,7 +25,7 @@
 
         /* --- Header --- */
         .main-header {
-            background: #115e59;
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             color: white; padding: 1rem 1.5rem 3.5rem;
             border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
             box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
@@ -38,15 +38,11 @@
         .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .header-btn:hover { background: rgba(255,255,255,0.2); }
 
-        /* مسار التنقل */
-        .breadcrumbs { 
-            display: flex; align-items: center; justify-content: center; gap: 6px; 
-            font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9;
-        }
+        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; opacity: 0.9; }
         .breadcrumbs span { opacity: 0.7; }
         .breadcrumbs strong { font-weight: 700; color: white; }
 
-        .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
+        .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; margin-top: 10px; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
         /* --- Employee Info Card --- */
@@ -118,11 +114,10 @@
         }
         .f-input:focus { border-color: #0f766e; background: white; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
 
-        /* --- Cards List (Tasks & Reports) --- */
+        /* --- Cards List --- */
         .cards-container { display: grid; gap: 12px; grid-template-columns: 1fr; }
         @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
 
-        /* تصميم كارت المهمة الموحد */
         .task-card {
             background: white; border-radius: 14px; overflow: hidden;
             box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb;
@@ -145,7 +140,7 @@
             cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569;
         }
         
-        /* تصميم كارت التقرير */
+        /* Report Card */
         .report-card {
             background: white; border-radius: 12px; padding: 12px; 
             border: 1px solid #e5e7eb; border-right: 4px solid #e5e7eb; 
@@ -172,7 +167,7 @@
 
         .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
 
-        /* --- Bottom Nav (Mobile Only) --- */
+        /* --- Bottom Nav --- */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
@@ -219,9 +214,8 @@
                 <div class="flex gap-3">
                     <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
                 </div>
-                
                 <div class="text-center">
-                    <div class="breadcrumbs mb-1">
+                    <div class="breadcrumbs">
                         <span>الرئيسية</span>
                         <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
                         <strong>صفحتي الشخصية</strong>
@@ -229,7 +223,6 @@
                     <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
                     <p class="dept-subtitle">Internal Audit & Governance Dept</p>
                 </div>
-
                 <div class="flex gap-3">
                     <button onclick="window.location.href='notifications.html'" class="header-btn relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
@@ -241,18 +234,9 @@
     </header>
 
     <div class="emp-info-card">
-        <div class="info-row">
-            <i data-lucide="user" class="info-icon"></i>
-            <span class="info-val" id="emp-name">...</span>
-        </div>
-        <div class="info-row">
-            <i data-lucide="briefcase" class="info-icon"></i>
-            <span class="info-val" id="emp-job">...</span>
-        </div>
-        <div class="info-row">
-            <i data-lucide="mail" class="info-icon"></i>
-            <span class="info-val" id="emp-email">...</span>
-        </div>
+        <div class="info-row"><i data-lucide="user" class="info-icon"></i><span class="info-val" id="emp-name">...</span></div>
+        <div class="info-row"><i data-lucide="briefcase" class="info-icon"></i><span class="info-val" id="emp-job">...</span></div>
+        <div class="info-row"><i data-lucide="mail" class="info-icon"></i><span class="info-val" id="emp-email">...</span></div>
     </div>
 
     <div class="stats-wrapper">
@@ -290,14 +274,8 @@
                             <option value="متأخر">متأخر</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="f-label">من تاريخ</label>
-                        <input type="date" id="f-date-start" class="f-input" onchange="filterTasks()">
-                    </div>
-                    <div>
-                        <label class="f-label">إلى تاريخ</label>
-                        <input type="date" id="f-date-end" class="f-input" onchange="filterTasks()">
-                    </div>
+                    <div><label class="f-label">من تاريخ</label><input type="date" id="f-date-start" class="f-input" onchange="filterTasks()"></div>
+                    <div><label class="f-label">إلى تاريخ</label><input type="date" id="f-date-end" class="f-input" onchange="filterTasks()"></div>
                 </div>
             </div>
             <div id="tasks-list" class="cards-container">
@@ -308,17 +286,6 @@
         <div id="tab-reports" class="tab-content">
             <div class="filter-box">
                 <input type="text" id="f-search-reports" class="f-input" placeholder="بحث في التقارير..." oninput="filterReports()">
-                <div class="filter-grid">
-                    <div>
-                        <label class="f-label">النوع</label>
-                        <select id="f-type" class="f-input" onchange="filterReports()">
-                            <option value="">الكل</option>
-                            <option value="فني">مرور فني</option>
-                            <option value="مالي">مرور مالي</option>
-                            <option value="شكوى">فحص شكوى</option>
-                        </select>
-                    </div>
-                </div>
             </div>
             <div id="reports-list" class="cards-container"></div>
         </div>
@@ -369,17 +336,11 @@
         });
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
-        
-        function logout() {
-            localStorage.removeItem('iag_user');
-            localStorage.removeItem('iag_last_page');
-            window.location.href = 'index.html';
-        }
+        function logout() { localStorage.removeItem('iag_user'); localStorage.removeItem('iag_last_page'); window.location.href = 'index.html'; }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
             document.getElementById('tab-' + tabId).classList.add('active');
             document.getElementById('btn-' + tabId).classList.add('active');
         }
@@ -388,11 +349,7 @@
             try {
                 const res = await fetch(CONFIG.API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({
-                        action: 'getAllData',
-                        role: 'موظف',
-                        name: name
-                    })
+                    body: JSON.stringify({ action: 'getAllData', role: 'موظف', name: name })
                 });
                 const data = await res.json();
 
@@ -402,13 +359,11 @@
                     
                     const s = (data.stats && data.stats.totals) ? data.stats.totals : { total:0, new:0, pending:0, completed:0, followup:0, overdue:0 };
                     updateStats(s);
-                    
                     renderTasks(allData.tasks);
                     renderReports(allData.reports);
                     renderNotifications(allData.tasks);
                 }
             } catch (e) {
-                console.error(e);
                 document.getElementById('tasks-list').innerHTML = '<div class="col-span-full text-center py-8 text-red-500 font-bold">خطأ في الاتصال</div>';
             }
         }
@@ -424,10 +379,7 @@
 
         function renderTasks(tasks) {
             const container = document.getElementById('tasks-list');
-            if(tasks.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400">لا توجد معاملات</div>';
-                return;
-            }
+            if(tasks.length === 0) { container.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400">لا توجد معاملات</div>'; return; }
             
             container.innerHTML = tasks.map(t => {
                 let bgClass = 'bg-new';
@@ -440,10 +392,7 @@
 
                 return `
                 <div class="task-card">
-                    <div class="card-stripe ${bgClass}">
-                        <span>#${t.id}</span>
-                        <span>${t.status}</span>
-                    </div>
+                    <div class="card-stripe ${bgClass}"><span>#${t.id}</span><span>${t.status}</span></div>
                     <div class="card-body">
                         <h3 class="tc-subject">${t.subject}</h3>
                         <div class="tc-row"><i data-lucide="building-2" class="w-4 h-4 text-teal-600"></i> ${t.source}</div>
@@ -461,23 +410,16 @@
 
         function renderReports(reports) {
             const container = document.getElementById('reports-list');
-            if(reports.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400">لا توجد تقارير</div>';
-                return;
-            }
+            if(reports.length === 0) { container.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400">لا توجد تقارير</div>'; return; }
 
             container.innerHTML = reports.map(r => {
                 let borderClass = 'border-gray-300';
                 if(r.type.includes('فني')) borderClass = 'border-tech';
                 else if(r.type.includes('مالي')) borderClass = 'border-fin';
-                else if(r.type.includes('شكوى')) borderClass = 'border-comp';
-
+                
                 return `
                 <div class="report-card ${borderClass}">
-                    <div class="flex justify-between font-bold text-gray-800 mb-2">
-                        <span>${r.type}</span>
-                        <span class="text-xs bg-gray-100 px-2 py-1 rounded">${r.date}</span>
-                    </div>
+                    <div class="flex justify-between font-bold text-gray-800 mb-2"><span>${r.type}</span><span class="text-xs bg-gray-100 px-2 py-1 rounded">${r.date}</span></div>
                     <p class="text-sm text-gray-600 mb-2"><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${r.entity}</p>
                     <div class="flex gap-2 mt-auto pt-2">
                         ${r.docLink ? `<a href="${r.docLink}" target="_blank" class="flex-1 bg-blue-50 text-blue-700 text-center py-1 rounded text-xs font-bold border border-blue-200">Google Doc</a>` : ''}
@@ -492,21 +434,14 @@
             const container = document.getElementById('notifs-list');
             const notifs = tasks.filter(t => t.status.includes('جديد') || t.status.includes('متابعة')).slice(0, 10);
             
-            if(notifs.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-400 py-8">لا توجد إشعارات جديدة</p>';
-                return;
-            }
+            if(notifs.length === 0) { container.innerHTML = '<p class="text-center text-gray-400 py-8">لا توجد إشعارات جديدة</p>'; return; }
 
             container.innerHTML = notifs.map(t => {
                 let bg = t.status.includes('جديد') ? 'bg-blue-50 border-blue-100' : 'bg-orange-50 border-orange-100';
                 let title = t.status.includes('جديد') ? 'تكليف جديد' : 'تذكير متابعة';
-                
                 return `
                 <div class="p-3 rounded-lg border ${bg} mb-2 cursor-pointer" onclick="openModal('${t.id}')">
-                    <div class="flex justify-between font-bold text-gray-800 mb-1">
-                        <span>${title}</span>
-                        <span class="text-xs bg-white px-1 rounded border">#${t.id}</span>
-                    </div>
+                    <div class="flex justify-between font-bold text-gray-800 mb-1"><span>${title}</span><span class="text-xs bg-white px-1 rounded border">#${t.id}</span></div>
                     <p class="text-sm text-gray-600 truncate">${t.subject}</p>
                 </div>`;
             }).join('');
@@ -515,7 +450,6 @@
         function openModal(id) {
             const t = allData.tasks.find(x => x.id == id);
             if(!t) return;
-            
             const html = `
                 <div class="data-item"><span class="data-label">رقم المعاملة</span><p class="data-val">#${t.id}</p></div>
                 <div class="data-item"><span class="data-label">الموضوع</span><p class="data-val">${t.subject}</p></div>
@@ -532,7 +466,6 @@
 
         function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
-        // Filter Helpers
         function parseDateToISO(dateStr) {
             if(!dateStr) return null;
             const parts = dateStr.split('/');
@@ -562,11 +495,8 @@
         }
 
         function filterReports() {
-            const type = document.getElementById('f-type').value;
             const search = document.getElementById('f-search-reports').value.toLowerCase();
-            
             const filtered = allData.reports.filter(r => {
-                if (type && !r.type.includes(type)) return false;
                 if (search && !(r.entity + r.type).toLowerCase().includes(search)) return false;
                 return true;
             });
