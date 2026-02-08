@@ -35,13 +35,12 @@
         .header-btn:hover { background: rgba(255,255,255,0.2); }
 
         .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9; }
-        .breadcrumbs span { opacity: 0.7; }
         .breadcrumbs strong { font-weight: 700; color: white; }
 
         .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
-        /* --- Filters (Coordinator Style) --- */
+        /* --- Filters --- */
         .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
         .filter-grid { display: flex; flex-direction: column; gap: 12px; }
         @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
@@ -59,13 +58,13 @@
         .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
-        .stat-card-big { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s; }
-        .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); border-width: 2px; }
+        .stat-card-big { background: white; border: 2px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
+        .stat-card-big.active-stat { background: #f0fdfa !important; border-color: var(--primary) !important; box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2); transform: translateY(-2px); }
         .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
         .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
 
-        .stat-card-small { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
-        .stat-card-small.active { background: #f0fdfa; border-color: var(--primary); border-width: 2px; }
+        .stat-card-small { background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
+        .stat-card-small.active-stat { background: #f0fdfa !important; border-color: var(--primary) !important; box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2); transform: translateY(-2px); }
         .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
         .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
 
@@ -93,13 +92,14 @@
         .tc-subject { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.5; }
         .tc-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #475569; }
         
-        .tc-footer { padding: 10px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
-        .btn-card { padding: 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569; transition: 0.2s; }
-        .btn-card:hover { background: #f1f5f9; }
+        .tc-footer { padding: 10px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+        .btn-card { flex: 1; padding: 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569; transition: 0.2s; min-width: 80px; }
+        .btn-card:hover { background: #f1f5f9; border-color: #cbd5e1; }
         
         .btn-edit { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
         .btn-att { color: #059669; border-color: #a7f3d0; background: #ecfdf5; }
-        .btn-details { grid-column: span 2; background: #334155; color: white; border-color: #334155; }
+        .btn-pdf { color: #dc2626; border-color: #fecaca; background: #fef2f2; }
+        .btn-details { background: #334155; color: white; border-color: #334155; }
         .btn-details:hover { background: #1e293b; }
 
         /* --- Menu & Modal --- */
@@ -126,7 +126,6 @@
         .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
         
         .hidden { display: none !important; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -206,7 +205,7 @@
 
     <div class="stats-wrapper">
         <div class="stats-row-big">
-            <div class="stat-card-big active" onclick="filterStatus('')" id="st-total">
+            <div class="stat-card-big active-stat" onclick="filterStatus('')" id="st-total">
                 <span class="num txt-total" id="c-total">0</span><span class="lbl">الإجمالي</span>
             </div>
             <div class="stat-card-big" onclick="filterStatus('متأخر')" id="st-late">
@@ -277,8 +276,8 @@
         let allTasks = [];
         let allReports = [];
         let currentStatusFilter = '';
-        let currentMainTab = 'tasks'; // 'tasks' or 'reports'
-        let currentSubTab = 'inspection'; // 'inspection' or 'complaint'
+        let currentMainTab = 'tasks'; 
+        let currentSubTab = 'inspection';
         let currentUser = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -289,9 +288,10 @@
             document.getElementById('menu-user').textContent = currentUser.name;
             document.getElementById('menu-role').textContent = currentUser.role;
 
-            // Set sub-tabs text based on role
+            // Set sub-tabs text dynamically
             const inspectionTitle = document.getElementById('sub-inspection');
-            if(currentUser.jobTitle && currentUser.jobTitle.includes('مالي')) {
+            const jobTitle = (currentUser.jobTitle || '').trim();
+            if(jobTitle.includes('مالي')) {
                 inspectionTitle.textContent = 'مرور مالي وإداري';
             } else {
                 inspectionTitle.textContent = 'مرور فني';
@@ -314,7 +314,7 @@
 
                 if (data.success) {
                     allTasks = data.tasks || [];
-                    allReports = data.reports || []; // Assuming backend sends reports list too
+                    allReports = data.reports || []; 
                     
                     populateDropdowns();
                     calculateStats();
@@ -360,17 +360,29 @@
             document.getElementById('c-late').textContent = c.late;
         }
 
+        // --- Filter Fix: Visual & Logic ---
         function filterStatus(status) {
             currentStatusFilter = status;
-            document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
             
+            // Remove 'active-stat' from all
+            document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => {
+                el.classList.remove('active-stat');
+                el.style.borderColor = "#e5e7eb";
+                el.style.backgroundColor = "white";
+            });
+            
+            // Map status to ID
             const map = {'': 'st-total', 'جديد': 'st-new', 'بانتظار': 'st-pending', 'تم': 'st-approved', 'متابعة': 'st-followup', 'متأخر': 'st-late'};
             let activeId = 'st-total';
             if(status) {
                 const key = Object.keys(map).find(k => status.includes(k));
                 if(key) activeId = map[key];
             }
-            document.getElementById(activeId).classList.add('active');
+            
+            // Add 'active-stat' to selected
+            const activeCard = document.getElementById(activeId);
+            activeCard.classList.add('active-stat');
+            
             renderContent();
         }
 
@@ -394,6 +406,33 @@
             renderContent();
         }
 
+        // --- Date Fix ---
+        function parseDate(dateStr) {
+            // Convert '8/2/2026' -> Date Object
+            if(!dateStr) return null;
+            const parts = dateStr.split('/'); // Assumes D/M/YYYY
+            if(parts.length !== 3) return null;
+            return new Date(parts[2], parts[1]-1, parts[0]);
+        }
+
+        function isDateInRange(taskDateStr, startStr, endStr) {
+            if(!startStr && !endStr) return true;
+            if(!taskDateStr) return false;
+
+            const taskDate = parseDate(taskDateStr);
+            if(!taskDate) return false;
+
+            if(startStr) {
+                const startDate = new Date(startStr); // YYYY-MM-DD
+                if(taskDate < startDate) return false;
+            }
+            if(endStr) {
+                const endDate = new Date(endStr); // YYYY-MM-DD
+                if(taskDate > endDate) return false;
+            }
+            return true;
+        }
+
         // --- Rendering ---
 
         function renderContent() {
@@ -411,16 +450,11 @@
                     if(currentStatusFilter && !(t.status||'').includes(currentStatusFilter)) return false;
                     if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
                     if(src && t.source !== src) return false;
-                    if(start && end && t.date) {
-                        const isoDate = parseDateToISO(t.date);
-                        if(isoDate && (isoDate < start || isoDate > end)) return false;
-                    }
+                    if(!isDateInRange(t.date, start, end)) return false;
                     return true;
                 });
             } else {
-                // Filter Reports
-                // Filter by type based on user role + sub tab
-                // Assuming report type strings contain: 'مرور', 'شكوى', etc.
+                // Filter Reports (Logic based on user role + sub tab)
                 dataToRender = allReports.filter(r => {
                     const rType = (r.type || '').toLowerCase();
                     let matchSub = false;
@@ -433,7 +467,7 @@
                     
                     if(!matchSub) return false;
                     if(search && !(r.title+r.entity).toLowerCase().includes(search)) return false;
-                    // Add date filter for reports if needed
+                    if(!isDateInRange(r.date, start, end)) return false;
                     return true;
                 });
             }
@@ -459,7 +493,7 @@
                 else if(t.status.includes('متابعة')) bgClass = 'bg-followup';
                 else if(t.status.includes('متأخر')) bgClass = 'bg-late';
 
-                // Check Buttons Availability
+                // Icons Logic
                 const hasDoc = t.report || t.docLink; 
                 const hasAtt = t.attachment;
 
@@ -484,7 +518,7 @@
                             <i data-lucide="eye" class="w-4 h-4"></i> التفاصيل
                         </button>
                         ${hasAtt ? `<button onclick="window.open('${t.attachment}')" class="btn-card btn-att">
-                            <i data-lucide="paperclip" class="w-4 h-4"></i> المرفق
+                            <i data-lucide="paperclip" class="w-4 h-4"></i> المرفقات
                         </button>` : ''}
                         ${hasDoc ? `<button onclick="window.open('${t.report || t.docLink}')" class="btn-card btn-edit">
                             <i data-lucide="file-edit" class="w-4 h-4"></i> تعديل التقرير
@@ -495,7 +529,13 @@
         }
 
         function renderReportsCards(reports, container) {
-            container.innerHTML = reports.map(r => `
+            container.innerHTML = reports.map(r => {
+                // Identify Attachment (Image) and Doc (Edit) and PDF (Final)
+                const attLink = r.attachment; // Assuming reports might have this
+                const docLink = r.docLink;    // Editable
+                const pdfLink = r.pdfLink;    // Final PDF
+
+                return `
                 <div class="task-card">
                     <div class="card-stripe bg-gray-600">
                         <span>${r.date}</span>
@@ -508,15 +548,20 @@
                         </div>
                     </div>
                     <div class="tc-footer">
-                        ${r.docLink ? `<button onclick="window.open('${r.docLink}')" class="btn-card btn-edit">
+                        ${attLink ? `<button onclick="window.open('${attLink}')" class="btn-card btn-att">
+                            <i data-lucide="paperclip" class="w-4 h-4"></i> مرفقات المرور
+                        </button>` : ''}
+                        
+                        ${docLink ? `<button onclick="window.open('${docLink}')" class="btn-card btn-edit">
                             <i data-lucide="file-text" class="w-4 h-4"></i> عرض الملف
                         </button>` : ''}
-                        ${r.pdfLink ? `<button onclick="window.open('${r.pdfLink}')" class="btn-card text-red-600 border-red-200 bg-red-50">
-                            <i data-lucide="file-down" class="w-4 h-4"></i> PDF
+                        
+                        ${pdfLink ? `<button onclick="window.open('${pdfLink}')" class="btn-card btn-pdf">
+                            <i data-lucide="file-check" class="w-4 h-4"></i> التقرير النهائي
                         </button>` : ''}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         // --- Helpers ---
@@ -537,14 +582,6 @@
             `;
             document.getElementById('m-content').innerHTML = html;
             document.getElementById('detail-modal').classList.add('open');
-        }
-
-        function parseDateToISO(dateStr) {
-            if(!dateStr) return null;
-            if(dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
-            const parts = dateStr.split('/');
-            if(parts.length === 3) return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
-            return null;
         }
     </script>
 </body>
