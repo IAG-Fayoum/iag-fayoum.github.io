@@ -7,214 +7,99 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
     
-    <title>لوحة التحكم | Admin Dashboard</title>
+    <title>لوحة التحكم | IAG System</title>
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
     <style>
-        /* --- General Theme --- */
-        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
-        
-        :root {
-            --primary: #0f766e;
-            --secondary: #115e59;
-            --accent: #f59e0b;
-            --danger: #ef4444;
-            --success: #10b981;
-            
-            --c-total: #334155; --c-late: #dc2626;
-            --c-new: #3b82f6; --c-pending: #16a34a;
-            --c-approved: #047857; --c-followup: #6b7280;
-        }
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        :root { --primary: #0f766e; }
 
-        /* --- 1. VIP Header --- */
+        /* HEADER */
         .admin-header {
-            background: linear-gradient(135deg, #0f766e 0%, #115e59 50%, #0d9488 100%);
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             color: white; padding: 1rem 1.5rem 6rem;
-            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
-            box-shadow: 0 10px 40px rgba(15, 118, 110, 0.25);
-            position: relative; z-index: 10; overflow: hidden;
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 30px rgba(15, 118, 110, 0.2);
+            position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
-        .admin-header::before {
-            content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.05) 0%, transparent 40%);
-            pointer-events: none;
-        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .header-btn { padding: 10px; background: rgba(255,255,255,0.15); border-radius: 50%; backdrop-filter: blur(5px); transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .header-btn:hover { background: rgba(255,255,255,0.3); }
 
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: relative; z-index: 2; }
-        .header-btn { padding: 10px; background: rgba(255,255,255,0.15); border-radius: 50%; backdrop-filter: blur(5px); transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; }
-        .header-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+        .dept-title { font-size: 1.25rem; font-weight: 800; text-align: center; }
+        .dept-subtitle { font-size: 0.85rem; opacity: 0.9; text-align: center; margin-bottom: 10px; font-family: sans-serif; letter-spacing: 0.5px; }
 
-        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; opacity: 0.9; }
-        .breadcrumbs span { opacity: 0.7; }
-        .breadcrumbs strong { font-weight: 700; color: white; }
+        .admin-info { display: flex; align-items: center; gap: 12px; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1rem; }
+        .admin-avatar { width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; border: 2px solid rgba(255,255,255,0.3); }
 
-        .dept-title { font-size: 1.4rem; font-weight: 800; text-align: center; margin-top: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .dept-subtitle { font-size: 0.85rem; opacity: 0.9; text-align: center; font-family: sans-serif; letter-spacing: 0.5px; margin-bottom: 15px; }
-
-        .admin-info-row {
-            margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.15);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .admin-avatar {
-            width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.3);
-            font-size: 1.2rem; font-weight: bold; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        /* --- 2. Advanced Stats --- */
-        .stats-wrapper { 
-            margin: -4rem 1rem 1rem; position: relative; z-index: 20; 
-            display: flex; flex-direction: column; gap: 10px; max-width: 1400px; margin-left: auto; margin-right: auto;
-        }
-        
-        .stats-row-main { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        /* STATS */
+        .stats-wrapper { margin: -4rem 1rem 1rem; position: relative; z-index: 20; display: flex; flex-direction: column; gap: 10px; max-width: 1400px; margin-left: auto; margin-right: auto; }
+        .stats-row-main { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        @media (max-width: 768px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
 
-        .stat-card-main {
-            background: white; border-radius: 16px; padding: 1.25rem; box-shadow: 0 8px 20px -4px rgba(0,0,0,0.08);
-            border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 1rem; transition: transform 0.2s;
-        }
-        .stat-card-main:hover { transform: translateY(-3px); }
-        .stat-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.5rem; }
-        
-        .stat-card {
-            background: white; border-radius: 14px; padding: 12px; text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;
-            display: flex; flex-direction: column; justify-content: center; min-height: 90px; transition: 0.2s;
-        }
-        .stat-card:hover { transform: translateY(-2px); border-color: var(--primary); }
-        
-        .stat-num { font-size: 1.6rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-        .stat-lbl { font-size: 0.75rem; font-weight: 700; color: #64748b; }
+        .stat-card-main { background: white; border-radius: 16px; padding: 1.25rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 1rem; }
+        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .stat-card { background: white; border-radius: 12px; padding: 10px; text-align: center; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: center; min-height: 85px; }
+        .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+        .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
-        /* Colors */
-        .c-total { color: #1e293b; } .c-late { color: #dc2626; }
-        .c-new { color: #2563eb; } .c-pending { color: #d97706; }
-        .c-done { color: #059669; } .c-follow { color: #6b7280; }
-        .bg-blue-100 { background: #dbeafe; color: #1d4ed8; }
-        .bg-red-100 { background: #fee2e2; color: #b91c1c; }
-
-        /* --- 3. Quick Actions --- */
+        /* ACTIONS */
         .actions-section { max-width: 1400px; margin: 0 auto 1.5rem; padding: 0 1rem; }
-        .section-title { font-size: 1.1rem; font-weight: 800; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        
+        .section-header { font-weight: 800; color: #334155; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .actions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        @media (min-width: 640px) { .actions-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (min-width: 1024px) { .actions-grid { grid-template-columns: repeat(6, 1fr); } }
+        @media (min-width: 768px) { .actions-grid { grid-template-columns: repeat(4, 1fr); } }
 
-        .action-btn {
-            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-            font-weight: 700; color: #475569; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); height: 90px;
-        }
-        .action-btn:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); background: #f0fdfa; }
-        .action-btn.btn-primary { background: var(--primary); color: white; border: none; box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2); }
-        .action-btn.btn-primary:hover { background: var(--secondary); }
+        .action-btn { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-weight: 700; color: #475569; font-size: 0.85rem; cursor: pointer; transition: 0.2s; height: 100px; }
+        .action-btn:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; transform: translateY(-2px); }
+        .btn-primary { background: var(--primary); color: white; border: none; box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2); }
+        .btn-primary:hover { background: #115e59; color: white; }
 
-        /* --- 4. Filters Panel --- */
-        .filters-panel {
-            background: white; border-radius: 16px; padding: 1.5rem; margin: 0 1rem 1.5rem;
-            border: 1px solid #e2e8f0; display: none; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
-            max-width: 1400px; margin-left: auto; margin-right: auto;
-        }
-        .filters-panel.active { display: block; animation: slideDown 0.3s ease-out; }
+        /* TABLE */
+        .table-section { max-width: 1400px; margin: 0 auto; padding: 0 1rem 2rem; }
+        .table-container { background: white; border-radius: 16px; padding: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.03); overflow: hidden; }
         
-        .filter-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 1.5rem; }
-        @media (min-width: 640px) { .filter-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1024px) { .filter-grid { grid-template-columns: repeat(4, 1fr); } }
+        table.dataTable { width: 100% !important; border-collapse: collapse !important; }
+        table.dataTable thead th { background: #f1f5f9; color: #475569; font-weight: 800; padding: 12px; border-bottom: 2px solid #e2e8f0; text-align: right; }
+        table.dataTable tbody td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; white-space: nowrap; }
+        .st-new { background: #eff6ff; color: #2563eb; } .st-pending { background: #fff7ed; color: #c2410c; }
+        .st-done { background: #ecfdf5; color: #059669; } .st-late { background: #fef2f2; color: #dc2626; }
 
-        .f-group { display: flex; flex-direction: column; gap: 5px; }
-        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; }
-        .f-input { 
-            width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; 
-            font-size: 0.9rem; outline: none; transition: 0.2s; 
-        }
+        /* MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+        .modal-box { background: white; width: 95%; max-width: 500px; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+        .modal-header { padding: 1.25rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+        .modal-body { padding: 1.5rem; overflow-y: auto; }
+        .f-group { margin-bottom: 1rem; }
+        .f-label { display: block; font-size: 0.8rem; font-weight: 700; color: #64748b; margin-bottom: 5px; }
+        .f-input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; transition: 0.2s; }
         .f-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+        .f-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border-radius: 8px; font-weight: 700; transition: 0.2s; }
+        .f-btn:hover { background: #115e59; }
 
-        .filter-actions { display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #f1f5f9; padding-top: 1rem; }
-        .btn-filter { padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-        .btn-apply { background: var(--primary); color: white; border: none; }
-        .btn-reset { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
-
-        /* --- 5. Data Table --- */
-        .table-section { max-width: 1400px; margin: 0 auto; padding: 0 1rem 4rem; }
-        .table-container { background: white; border-radius: 16px; padding: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
-        
-        table.dataTable { border-collapse: separate !important; border-spacing: 0 8px !important; margin-top: 10px !important; }
-        table.dataTable thead th { 
-            background: #f8fafc !important; color: #64748b !important; font-weight: 800 !important; 
-            border-bottom: 2px solid #e2e8f0 !important; padding: 12px 10px !important;
-        }
-        table.dataTable tbody td { 
-            background: white; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;
-            padding: 12px 10px !important; vertical-align: middle !important;
-        }
-        table.dataTable tbody tr { box-shadow: 0 2px 4px rgba(0,0,0,0.01); transition: 0.2s; }
-        table.dataTable tbody tr:hover { transform: scale(1.005); z-index: 5; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        
-        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
-        .st-new { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
-        .st-pending { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
-        .st-done { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
-        .st-late { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-
-        /* --- Side Menu & Modal --- */
-        .side-menu { 
-            position: fixed; top: 0; right: -280px; width: 280px; height: 100%; 
-            background: white; z-index: 100; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            display: flex; flex-direction: column; box-shadow: -10px 0 40px rgba(0,0,0,0.1); 
-        }
+        /* SIDE MENU */
+        .side-menu { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
         .menu-open .side-menu { right: 0; }
-        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
 
-        .modal-overlay { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; 
-            display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px);
-        }
-        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
-        .modal-box { 
-            background: white; width: 95%; max-width: 600px; max-height: 90vh; 
-            border-radius: 20px; overflow-y: auto; display: flex; flex-direction: column;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-        }
-        .modal-header { padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
-        .modal-body { padding: 1.5rem; }
-        .modal-footer { padding: 1.25rem; border-top: 1px solid #e5e7eb; background: #f8fafc; display: flex; gap: 10px; justify-content: flex-end; }
-
-        /* --- Toast Notification --- */
-        .toast {
-            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: #1e293b; color: white; padding: 12px 24px; border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px;
-            z-index: 9999; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0;
-            font-weight: 600; font-size: 0.9rem; pointer-events: none;
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .toast.success { background: #065f46; border: 2px solid #34d399; }
-        .toast.error { background: #991b1b; border: 2px solid #f87171; }
-
-        /* --- Bottom Nav (Mobile Only) --- */
+        /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
 
         .hidden { display: none !important; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -226,66 +111,45 @@
                 <i data-lucide="shield-check" class="w-10 h-10 text-teal-700"></i>
             </div>
             <h3 class="font-bold text-teal-900 text-lg" id="menu-user">Admin</h3>
-            <div class="inline-flex items-center gap-1 bg-teal-100 px-3 py-1 rounded-full mt-2">
-                <span class="w-2 h-2 bg-teal-600 rounded-full animate-pulse"></span>
-                <p class="text-xs text-teal-700 font-bold">متصل الآن</p>
-            </div>
+            <p class="text-xs text-teal-600">مدير النظام</p>
         </div>
-        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-            <a href="admin.html" class="flex items-center gap-3 p-3 rounded-xl bg-teal-600 text-white font-bold shadow-lg shadow-teal-200"><i data-lucide="layout-dashboard" class="w-5 h-5"></i> لوحة التحكم</a>
-            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold transition"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> مؤشرات الأداء</a>
-            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold transition"><i data-lucide="file-text" class="w-5 h-5"></i> النماذج</a>
-            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold transition"><i data-lucide="bell" class="w-5 h-5"></i> الإشعارات</a>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="admin.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="layout-dashboard" class="w-5 h-5"></i> لوحة التحكم</a>
+            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات</a>
+            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-5 h-5"></i> النماذج</a>
+            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-5 h-5"></i> الإشعارات</a>
         </nav>
-        <div class="p-4 border-t bg-gray-50">
-            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-100 rounded-xl transition">
+        <div class="p-4 border-t">
+            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
                 <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
             </button>
         </div>
     </aside>
 
     <header class="admin-header">
-        <div class="max-w-[1400px] mx-auto relative z-10">
+        <div class="max-w-[1400px] mx-auto">
             <div class="header-top">
-                <div class="flex gap-3 items-center">
+                <div class="flex gap-3">
                     <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
-                    <div class="admin-badge"><i data-lucide="shield" class="w-3 h-3"></i><span>مدير النظام</span></div>
                 </div>
-                
                 <div class="text-center">
-                    <div class="breadcrumbs mb-1">
-                        <span>الرئيسية</span>
-                        <i data-lucide="chevron-left" class="w-3 h-3"></i>
-                        <strong>لوحة التحكم</strong>
-                    </div>
-                    <div class="hidden md:block">
-                        <div class="dept-title">إدارة المراجعة الداخلية والحوكمة</div>
-                        <div class="dept-subtitle">Administrative Control Center</div>
-                    </div>
+                    <div class="dept-title">إدارة المراجعة الداخلية</div>
+                    <div class="dept-subtitle">لوحة التحكم المركزية</div>
                 </div>
-
-                <div class="flex gap-2">
+                <div class="flex gap-3">
                     <button onclick="window.location.href='notifications.html'" class="header-btn relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
-                        <span class="notif-badge" id="notif-count">0</span>
+                        <span id="notif-badge" class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border border-white hidden"></span>
                     </button>
                 </div>
             </div>
-
-            <div class="md:hidden text-center mt-4">
-                <div class="dept-title text-xl">إدارة الحوكمة</div>
-                <div class="dept-subtitle">لوحة تحكم المدير</div>
-            </div>
-
-            <div class="admin-info-row">
-                <div class="flex items-center gap-3">
-                    <div class="admin-avatar" id="avatar-initials">A</div>
-                    <div>
-                        <div class="text-white font-bold text-lg" id="header-name">Admin User</div>
-                        <div class="text-teal-200 text-xs">صلاحيات كاملة</div>
-                    </div>
+            
+            <div class="admin-info">
+                <div class="admin-avatar" id="avatar-initials">A</div>
+                <div>
+                    <div class="font-bold text-white" id="header-name">Admin User</div>
+                    <div class="text-teal-200 text-xs">صلاحيات كاملة</div>
                 </div>
-                <div class="text-teal-100 text-xs bg-white/10 px-3 py-1 rounded-full" id="last-login">...</div>
             </div>
         </div>
     </header>
@@ -294,71 +158,34 @@
         <div class="stats-row-main">
             <div class="stat-card-main">
                 <div class="stat-icon bg-blue-100"><i data-lucide="inbox" class="text-blue-600"></i></div>
-                <div><div class="stat-num c-total" id="s-total">0</div><div class="stat-lbl">إجمالي المعاملات</div></div>
+                <div><div class="stat-num text-slate-800" id="s-total">0</div><div class="stat-lbl">إجمالي المعاملات</div></div>
             </div>
             <div class="stat-card-main">
                 <div class="stat-icon bg-red-100"><i data-lucide="alert-circle" class="text-red-600"></i></div>
-                <div><div class="stat-num c-late" id="s-late">0</div><div class="stat-lbl text-red-600">متأخر - يحتاج انتباه</div></div>
+                <div><div class="stat-num text-red-600" id="s-late">0</div><div class="stat-lbl">متأخر - انتباه</div></div>
             </div>
         </div>
-
         <div class="stats-row">
-            <div class="stat-card"><div class="stat-num c-new" id="s-new">0</div><div class="stat-lbl">جديد</div></div>
-            <div class="stat-card"><div class="stat-num c-pending" id="s-pending">0</div><div class="stat-lbl">بانتظار الاعتماد</div></div>
-            <div class="stat-card"><div class="stat-num c-done" id="s-done">0</div><div class="stat-lbl">تم الاعتماد</div></div>
-            <div class="stat-card"><div class="stat-num c-follow" id="s-followup">0</div><div class="stat-lbl">متابعة</div></div>
-        </div>
-
-        <div class="stats-row">
-            <div class="stat-card"><div class="stat-num text-purple-600" id="s-today">0</div><div class="stat-lbl">اليوم</div></div>
-            <div class="stat-card"><div class="stat-num text-orange-600" id="s-week">0</div><div class="stat-lbl">هذا الأسبوع</div></div>
-            <div class="stat-card"><div class="stat-num text-cyan-600" id="s-month">0</div><div class="stat-lbl">هذا الشهر</div></div>
-            <div class="stat-card"><div class="stat-num text-gray-600" id="s-year">0</div><div class="stat-lbl">العام الحالي</div></div>
+            <div class="stat-card"><div class="stat-num text-blue-600" id="s-new">0</div><div class="stat-lbl">جديد</div></div>
+            <div class="stat-card"><div class="stat-num text-orange-600" id="s-pending">0</div><div class="stat-lbl">بانتظار</div></div>
+            <div class="stat-card"><div class="stat-num text-emerald-600" id="s-done">0</div><div class="stat-lbl">منتهي</div></div>
+            <div class="stat-card"><div class="stat-num text-gray-600" id="s-followup">0</div><div class="stat-lbl">متابعة</div></div>
         </div>
     </div>
 
     <div class="actions-section">
-        <h3 class="section-title"><i data-lucide="zap" class="text-amber-500"></i> إجراءات سريعة</h3>
+        <div class="section-header"><i data-lucide="zap" class="w-5 h-5 text-amber-500"></i> إجراءات سريعة</div>
         <div class="actions-grid">
             <button onclick="openModal('updateStatus')" class="action-btn btn-primary"><i data-lucide="refresh-cw"></i><span>تحديث حالة</span></button>
-            <button onclick="openModal('sendEmail')" class="action-btn"><i data-lucide="mail"></i><span>إرسال إيميل</span></button>
-            <button onclick="openModal('sendNotification')" class="action-btn"><i data-lucide="bell"></i><span>إرسال إشعار</span></button>
-            <button onclick="toggleFilters()" class="action-btn"><i data-lucide="filter"></i><span>بحث متقدم</span></button>
+            <button onclick="openModal('sendEmail')" class="action-btn"><i data-lucide="mail"></i><span>بريد إلكتروني</span></button>
+            <button onclick="openModal('sendNotification')" class="action-btn"><i data-lucide="bell"></i><span>إشعار فوري</span></button>
             <button onclick="exportData()" class="action-btn"><i data-lucide="download"></i><span>تصدير Excel</span></button>
-            <button onclick="printReport()" class="action-btn"><i data-lucide="printer"></i><span>طباعة تقرير</span></button>
-        </div>
-    </div>
-
-    <div class="filters-panel" id="filters-panel">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="font-bold text-gray-800">فلترة متقدمة</h3>
-            <button onclick="toggleFilters()" class="text-gray-400 hover:text-red-500"><i data-lucide="x"></i></button>
-        </div>
-        <div class="filter-grid">
-            <div class="f-group"><label class="f-label">بحث شامل</label><input type="text" id="f-search" class="f-input" placeholder="اسم، رقم، موضوع..."></div>
-            <div class="f-group"><label class="f-label">الموظف</label><select id="f-employee" class="f-input"><option value="">الكل</option></select></div>
-            <div class="f-group"><label class="f-label">الجهة</label><select id="f-source" class="f-input"><option value="">الكل</option></select></div>
-            <div class="f-group"><label class="f-label">الحالة</label>
-                <select id="f-status" class="f-input">
-                    <option value="">الكل</option>
-                    <option value="جديد">جديد</option>
-                    <option value="بانتظار">بانتظار الاعتماد</option>
-                    <option value="تم">تم الاعتماد</option>
-                    <option value="متأخر">متأخر</option>
-                </select>
-            </div>
-            <div class="f-group"><label class="f-label">من تاريخ</label><input type="date" id="f-from" class="f-input"></div>
-            <div class="f-group"><label class="f-label">إلى تاريخ</label><input type="date" id="f-to" class="f-input"></div>
-        </div>
-        <div class="filter-actions">
-            <button onclick="applyFilters()" class="btn-filter btn-apply"><i data-lucide="search" class="w-4 h-4"></i> بحث</button>
-            <button onclick="resetFilters()" class="btn-filter btn-reset"><i data-lucide="rotate-ccw" class="w-4 h-4"></i> مسح</button>
         </div>
     </div>
 
     <div class="table-section">
         <div class="table-container">
-            <table id="tasks-table" class="display responsive nowrap w-full" style="width:100%">
+            <table id="tasks-table" class="display responsive nowrap" style="width:100%">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -367,7 +194,7 @@
                         <th>الموظف</th>
                         <th>الحالة</th>
                         <th>التاريخ</th>
-                        <th>الإجراءات</th>
+                        <th>تحكم</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -378,35 +205,29 @@
     <div class="modal-overlay" id="modal-updateStatus">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 class="modal-title"><i data-lucide="refresh-cw" class="text-teal-600"></i> تحديث حالة المعاملة</h3>
-                <button onclick="closeModal('modal-updateStatus')" class="p-2 hover:bg-red-50 hover:text-red-500 rounded-full"><i data-lucide="x"></i></button>
+                <h3 class="font-bold">تحديث حالة معاملة</h3>
+                <button onclick="closeModal('modal-updateStatus')"><i data-lucide="x"></i></button>
             </div>
             <div class="modal-body">
-                <div class="f-group mb-4">
-                    <label class="f-label">اختر المعاملة (بحث بالرقم)</label>
-                    <input type="text" id="upd-task-id" class="f-input" placeholder="رقم المعاملة #">
+                <div class="f-group">
+                    <label class="f-label">رقم المعاملة (Task ID)</label>
+                    <input type="text" id="upd-task-id" class="f-input" placeholder="مثال: 105">
                 </div>
-                <div class="f-group mb-4">
+                <div class="f-group">
                     <label class="f-label">الحالة الجديدة</label>
                     <select id="upd-status" class="f-input">
-                        <option>جديد - لم يبدأ</option>
-                        <option>بانتظار الاعتماد</option>
-                        <option>تم الاعتماد</option>
-                        <option>بحاجة للمتابعة</option>
-                        <option>متأخر</option>
-                        <option>منتهي - أرشيف</option>
+                        <option value="جديد">جديد</option>
+                        <option value="بانتظار الاعتماد">بانتظار الاعتماد</option>
+                        <option value="تم الاعتماد والأرشفة">تم الاعتماد والأرشفة</option>
+                        <option value="بحاجة الي متابعة">بحاجة الي متابعة</option>
+                        <option value="متأخر">متأخر</option>
                     </select>
                 </div>
-                <div class="f-group mb-4">
+                <div class="f-group">
                     <label class="f-label">ملاحظات إدارية</label>
                     <textarea id="upd-notes" class="f-input" rows="3"></textarea>
                 </div>
-                <div class="flex gap-2 items-center text-sm text-gray-600">
-                    <input type="checkbox" id="upd-notify" checked> <label for="upd-notify">إشعار الموظف بالتحديث</label>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="confirmUpdate()" class="btn-filter btn-apply">حفظ التحديث</button>
+                <button onclick="confirmUpdate()" class="f-btn">حفظ التحديث</button>
             </div>
         </div>
     </div>
@@ -414,25 +235,23 @@
     <div class="modal-overlay" id="modal-sendEmail">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 class="modal-title"><i data-lucide="mail" class="text-blue-600"></i> إرسال بريد إلكتروني</h3>
-                <button onclick="closeModal('modal-sendEmail')" class="p-2 hover:bg-red-50 hover:text-red-500 rounded-full"><i data-lucide="x"></i></button>
+                <h3 class="font-bold">إرسال بريد إلكتروني</h3>
+                <button onclick="closeModal('modal-sendEmail')"><i data-lucide="x"></i></button>
             </div>
             <div class="modal-body">
-                <div class="f-group mb-4">
-                    <label class="f-label">إلى (الموظف)</label>
-                    <select id="email-to" class="f-input"><option>تحميل...</option></select>
+                <div class="f-group">
+                    <label class="f-label">الموظف</label>
+                    <select id="email-to" class="f-input"><option value="">جاري التحميل...</option></select>
                 </div>
-                <div class="f-group mb-4">
+                <div class="f-group">
                     <label class="f-label">الموضوع</label>
                     <input type="text" id="email-subject" class="f-input">
                 </div>
-                <div class="f-group mb-4">
+                <div class="f-group">
                     <label class="f-label">الرسالة</label>
-                    <textarea id="email-body" class="f-input" rows="5"></textarea>
+                    <textarea id="email-body" class="f-input" rows="4"></textarea>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="sendEmail()" class="btn-filter btn-apply bg-blue-600">إرسال</button>
+                <button onclick="sendEmail()" class="f-btn bg-blue-600 hover:bg-blue-700">إرسال</button>
             </div>
         </div>
     </div>
@@ -440,30 +259,19 @@
     <div class="modal-overlay" id="modal-sendNotification">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 class="modal-title"><i data-lucide="bell" class="text-orange-500"></i> إرسال إشعار فوري</h3>
-                <button onclick="closeModal('modal-sendNotification')" class="p-2 hover:bg-red-50 hover:text-red-500 rounded-full"><i data-lucide="x"></i></button>
+                <h3 class="font-bold">إرسال إشعار فوري</h3>
+                <button onclick="closeModal('modal-sendNotification')"><i data-lucide="x"></i></button>
             </div>
             <div class="modal-body">
-                <div class="f-group mb-4">
-                    <label class="f-label">نوع الإشعار</label>
-                    <select id="notif-type" class="f-input">
-                        <option value="info">تنبيه عام</option>
-                        <option value="warning">تحذير (تأخير)</option>
-                        <option value="urgent">عاجل جداً</option>
-                        <option value="success">تهنئة / شكر</option>
-                    </select>
-                </div>
-                <div class="f-group mb-4">
+                <div class="f-group">
                     <label class="f-label">المستلم</label>
                     <select id="notif-to" class="f-input"><option value="all">الجميع</option></select>
                 </div>
-                <div class="f-group mb-4">
+                <div class="f-group">
                     <label class="f-label">نص الإشعار</label>
                     <textarea id="notif-msg" class="f-input" rows="3"></textarea>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="sendNotification()" class="btn-filter btn-apply bg-orange-600">بث الإشعار</button>
+                <button onclick="sendNotification()" class="f-btn bg-orange-600 hover:bg-orange-700">بث الإشعار</button>
             </div>
         </div>
     </div>
@@ -475,56 +283,60 @@
         <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
     </nav>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
     
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
 
     <script>
         lucide.createIcons();
-        let allTasks = [];
-        let allEmployees = [];
         let dataTable;
+        let allEmployees = [];
 
-        // Auth Check
         document.addEventListener('DOMContentLoaded', async () => {
             const userStr = localStorage.getItem('iag_user');
             if (!userStr) { window.location.href = 'index.html'; return; }
             
             const user = JSON.parse(userStr);
             if (user.role !== 'مدير' && user.role !== 'Admin') {
-                alert('غير مصرح بالدخول');
+                alert('غير مصرح لك بالدخول لهذه الصفحة');
                 window.location.href = 'index.html';
                 return;
             }
 
-            // Set UI Data
             document.getElementById('header-name').textContent = user.name;
             document.getElementById('menu-user').textContent = user.name.split(' ')[0];
             document.getElementById('avatar-initials').textContent = user.name.charAt(0);
-            document.getElementById('last-login').textContent = `دخول: ${new Date().toLocaleTimeString('ar-EG')}`;
 
-            localStorage.setItem('iag_last_page', 'admin.html');
-            
             initDataTable();
             await loadData(user.name);
         });
 
-        // Toggle Functions
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
-        function toggleFilters() { document.getElementById('filters-panel').classList.toggle('active'); }
+        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
         function closeModal(id) { document.getElementById(id).classList.remove('open'); }
         function openModal(id) { document.getElementById('modal-'+id).classList.add('open'); }
-        function logout() { localStorage.removeItem('iag_user'); localStorage.removeItem('iag_last_page'); window.location.href = 'index.html'; }
-        function goBack() { window.location.href = 'index.html'; } // أو حذفها إذا لم تعد مطلوبة، لكنك طلبت حذف زر الرجوع فقط
 
-        // Load Data
+        function initDataTable() {
+            dataTable = $('#tasks-table').DataTable({
+                responsive: true,
+                language: { url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/ar.json' },
+                dom: 'Brtip',
+                buttons: [ { extend: 'excel', className: 'hidden' } ], // Hidden btn triggered by custom btn
+                pageLength: 10,
+                order: [[0, 'desc']],
+                columnDefs: [
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: 1 },
+                    { responsivePriority: 3, targets: 4 }
+                ]
+            });
+        }
+
         async function loadData(username) {
             try {
                 const res = await fetch(CONFIG.API_URL, {
@@ -534,45 +346,26 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    allTasks = data.tasks || [];
-                    if(data.stats && data.stats.employees) allEmployees = data.stats.employees;
+                    const tasks = data.tasks || [];
+                    allEmployees = data.stats.employees || [];
                     
                     updateStats(data.stats.totals);
-                    populateTable(allTasks);
+                    populateTable(tasks);
                     populateDropdowns();
+                } else {
+                    alert('لم يتم تحميل البيانات بشكل صحيح');
                 }
             } catch (e) {
-                showToast('خطأ في الاتصال بالخادم', 'error');
+                console.error(e);
+                alert('خطأ في الاتصال بالخادم');
             }
         }
 
-        // Stats
         function updateStats(s) {
             if(!s) return;
-            $('#s-total').text(s.total);
-            $('#s-late').text(s.overdue);
-            $('#s-new').text(s.new);
-            $('#s-pending').text(s.pending);
-            $('#s-done').text(s.completed);
-            $('#s-followup').text(s.followup);
-            const now = new Date();
-            $('#s-today').text(allTasks.filter(t => new Date(t.date).toDateString() === now.toDateString()).length);
-            $('#s-year').text(allTasks.filter(t => new Date(t.date).getFullYear() === now.getFullYear()).length);
-        }
-
-        // DataTable
-        function initDataTable() {
-            dataTable = $('#tasks-table').DataTable({
-                responsive: true,
-                language: { url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/ar.json' },
-                dom: 'Brtip',
-                buttons: [
-                    { extend: 'excel', text: 'Excel', className: 'action-btn', exportOptions: { columns: ':not(:last-child)' } },
-                    { extend: 'print', text: 'طباعة', className: 'action-btn' }
-                ],
-                pageLength: 10,
-                order: [[0, 'desc']]
-            });
+            $('#s-total').text(s.total); $('#s-late').text(s.overdue);
+            $('#s-new').text(s.new); $('#s-pending').text(s.pending);
+            $('#s-done').text(s.completed); $('#s-followup').text(s.followup);
         }
 
         function populateTable(tasks) {
@@ -590,17 +383,22 @@
                     `<span class="text-teal-700 font-bold">${t.assignee || '-'}</span>`,
                     `<span class="status-badge ${badge}">${t.status}</span>`,
                     t.date,
-                    `<button class="text-blue-600 hover:bg-blue-50 p-2 rounded-full transition" onclick="openEdit('${t.id}')"><i data-lucide="edit-3" class="w-4 h-4"></i></button>`
+                    `<button class="text-blue-600 hover:bg-blue-50 p-2 rounded-full" onclick="openEdit('${t.id}')"><i data-lucide="edit-3" class="w-4 h-4"></i></button>`
                 ]);
             });
             dataTable.draw();
             lucide.createIcons();
         }
 
-        // Dropdowns
         function populateDropdowns() {
-            const empSelects = [document.getElementById('f-employee'), document.getElementById('email-to'), document.getElementById('notif-to')];
-            empSelects.forEach(s => { if(s) s.innerHTML = s.options[0].outerHTML; });
+            const empSelects = [document.getElementById('email-to'), document.getElementById('notif-to')];
+            empSelects.forEach(s => { if(s) s.innerHTML = '<option value="">اختر الموظف...</option>'; });
+            
+            // Add 'All' option for notification
+            if(document.getElementById('notif-to')) {
+                const allOpt = document.createElement('option'); allOpt.value = 'all'; allOpt.textContent = 'الجميع';
+                document.getElementById('notif-to').appendChild(allOpt);
+            }
 
             allEmployees.forEach(e => {
                 empSelects.forEach(s => {
@@ -611,58 +409,88 @@
                     }
                 });
             });
+        }
 
-            const srcSelect = document.getElementById('f-source');
-            if(srcSelect) {
-                srcSelect.innerHTML = srcSelect.options[0].outerHTML;
-                const sources = [...new Set(allTasks.map(t => t.source).filter(Boolean))];
-                sources.forEach(s => {
-                    const opt = document.createElement('option');
-                    opt.value = s; opt.textContent = s;
-                    srcSelect.appendChild(opt);
+        // --- Real API Actions ---
+
+        function openEdit(id) {
+            $('#upd-task-id').val(id);
+            openModal('updateStatus');
+        }
+
+        async function confirmUpdate() {
+            const taskId = $('#upd-task-id').val();
+            const status = $('#upd-status').val();
+            const notes = $('#upd-notes').val();
+            const btn = document.querySelector('#modal-updateStatus .f-btn');
+
+            if(!taskId) { alert('رقم المعاملة مطلوب'); return; }
+
+            const user = JSON.parse(localStorage.getItem('iag_user'));
+            btn.textContent = 'جاري الحفظ...'; btn.disabled = true;
+
+            try {
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'adminUpdateStatus',
+                        taskId: taskId, newStatus: status, notes: notes, updatedBy: user.name
+                    })
                 });
-            }
+                const data = await res.json();
+                if(data.success) { 
+                    alert('✅ تم تحديث الحالة بنجاح'); 
+                    closeModal('modal-updateStatus'); 
+                    loadData(user.name); 
+                } else { alert('❌ خطأ: ' + data.error); }
+            } catch(e) { alert('❌ خطأ في الاتصال'); }
+            finally { btn.textContent = 'حفظ التحديث'; btn.disabled = false; }
         }
 
-        // Actions
-        function applyFilters() {
-            const search = $('#f-search').val().toLowerCase();
-            const emp = $('#f-employee').val();
-            const status = $('#f-status').val();
-            
-            const filtered = allTasks.filter(t => {
-                if(search && !JSON.stringify(t).toLowerCase().includes(search)) return false;
-                if(emp && t.assignee !== emp) return false;
-                if(status && !t.status.includes(status)) return false;
-                return true;
-            });
-            
-            populateTable(filtered);
-            showToast(`تم العثور على ${filtered.length} نتيجة`, 'success');
+        async function sendEmail() {
+            const to = $('#email-to').val();
+            const subject = $('#email-subject').val();
+            const body = $('#email-body').val();
+            const btn = document.querySelector('#modal-sendEmail .f-btn');
+
+            if(!to || !subject) { alert('البيانات ناقصة'); return; }
+
+            btn.textContent = 'جاري الإرسال...'; btn.disabled = true;
+
+            try {
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'sendCustomEmail', toEmployee: to, subject: subject, body: body })
+                });
+                const data = await res.json();
+                if(data.success) { alert('✅ تم الإرسال'); closeModal('modal-sendEmail'); }
+                else { alert('❌ فشل الإرسال'); }
+            } catch(e) { alert('❌ خطأ في الاتصال'); }
+            finally { btn.textContent = 'إرسال'; btn.disabled = false; }
         }
 
-        function resetFilters() {
-            $('.f-input').val('');
-            populateTable(allTasks);
+        async function sendNotification() {
+            const to = $('#notif-to').val();
+            const msg = $('#notif-msg').val();
+            const btn = document.querySelector('#modal-sendNotification .f-btn');
+
+            if(!msg) { alert('اكتب الرسالة'); return; }
+
+            btn.textContent = 'جاري البث...'; btn.disabled = true;
+
+            try {
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'broadcastNotification', target: to, message: msg })
+                });
+                const data = await res.json();
+                if(data.success) { alert('✅ تم بث الإشعار'); closeModal('modal-sendNotification'); }
+                else { alert('❌ فشل البث'); }
+            } catch(e) { alert('❌ خطأ في الاتصال'); }
+            finally { btn.textContent = 'بث الإشعار'; btn.disabled = false; }
         }
 
-        function exportData() { dataTable.button('.buttons-excel').trigger(); }
-        function printReport() { dataTable.button('.buttons-print').trigger(); }
-
-        function showToast(msg, type) {
-            const toast = document.createElement('div');
-            toast.className = `toast show`;
-            toast.style.borderLeft = type === 'success' ? '4px solid #10b981' : '4px solid #ef4444';
-            toast.innerHTML = type === 'success' ? `<i data-lucide="check-circle" class="text-green-400"></i> ${msg}` : `<i data-lucide="alert-triangle" class="text-red-400"></i> ${msg}`;
-            document.body.appendChild(toast);
-            lucide.createIcons();
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
-        }
-
-        function confirmUpdate() { showToast('تم تحديث الحالة بنجاح', 'success'); closeModal('modal-updateStatus'); }
-        function sendEmail() { showToast('تم إرسال البريد الإلكتروني', 'success'); closeModal('modal-sendEmail'); }
-        function sendNotification() { showToast('تم تعميم الإشعار', 'success'); closeModal('modal-sendNotification'); }
-        function openEdit(id) { $('#upd-task-id').val(id); openModal('updateStatus'); }
+        function exportData() { dataTable.button(0).trigger(); }
     </script>
 </body>
 </html>
