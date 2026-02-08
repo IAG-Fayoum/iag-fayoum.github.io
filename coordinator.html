@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         
         :root {
             --primary: #0f766e;
@@ -34,14 +34,10 @@
         }
         
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        
-        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
         .header-btn:hover { background: rgba(255,255,255,0.2); }
 
-        .breadcrumbs { 
-            display: flex; align-items: center; justify-content: center; gap: 6px; 
-            font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9;
-        }
+        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9; }
         .breadcrumbs span { opacity: 0.7; }
         .breadcrumbs strong { font-weight: 700; color: white; }
 
@@ -49,37 +45,19 @@
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
         /* --- Filters --- */
-        .filter-container {
-            margin: -2.5rem 1rem 1rem; position: relative; z-index: 20;
-            background: white; border-radius: 16px; padding: 1rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;
-        }
-        
+        .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
         .filter-grid { display: flex; flex-direction: column; gap: 12px; }
-        @media (min-width: 1024px) {
-            .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; }
-            .filter-grid { flex-direction: row; align-items: flex-end; }
-            .filter-item-search { flex: 2; }
-            .filter-item { flex: 1; }
-        }
+        @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
 
         .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
-        .f-input {
-            width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px;
-            font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s;
-        }
+        .f-input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; }
         .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
 
         .search-wrapper { position: relative; }
         .search-input { padding-right: 12px; padding-left: 40px; background-color: #f8fafc; }
         .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; color: #94a3b8; pointer-events: none; }
 
-        .btn-print {
-            background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;
-            border-radius: 10px; height: 44px; width: 44px;
-            font-weight: 700; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .btn-print { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 10px; height: 44px; width: 44px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
 
         /* --- Stats --- */
@@ -87,66 +65,49 @@
         .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
-        .stat-card-big {
-            background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px;
-            text-align: center; cursor: pointer; height: 90px;
-            display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
+        .stat-card-big { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); border-width: 2px; }
         .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
         .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
 
-        .stat-card-small {
-            background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px;
-            text-align: center; cursor: pointer; min-height: 75px;
-            display: flex; flex-direction: column; justify-content: center;
-        }
+        .stat-card-small { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; }
         .stat-card-small.active { background: #f0fdfa; border-color: var(--primary); border-width: 2px; }
         .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
         .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
 
-        .txt-total { color: #334155; } .txt-late { color: #dc2626; }
-        .txt-new { color: #3b82f6; } .txt-pending { color: #16a34a; }
-        .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
+        .txt-total { color: #334155; } .txt-late { color: #dc2626; } .txt-new { color: #3b82f6; } .txt-pending { color: #16a34a; } .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
 
         /* --- Cards List --- */
         .cards-container { padding: 0 1rem 5rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; grid-template-columns: 1fr; }
         @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
 
-        .task-card {
-            background: white; border-radius: 14px; overflow: hidden;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb;
-            display: flex; flex-direction: column; transition: transform 0.2s;
-        }
+        .task-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb; display: flex; flex-direction: column; transition: transform 0.2s; }
         .card-stripe { padding: 8px 12px; color: white; font-weight: 700; font-size: 0.75rem; display: flex; justify-content: space-between; }
         
-        .bg-new { background-color: #3b82f6; } .bg-pending { background-color: #16a34a; }
-        .bg-approved { background-color: #047857; } .bg-followup { background-color: #6b7280; }
-        .bg-late { background-color: #dc2626; }
+        .bg-new { background-color: #3b82f6; } .bg-pending { background-color: #16a34a; } .bg-approved { background-color: #047857; } .bg-followup { background-color: #6b7280; } .bg-late { background-color: #dc2626; }
 
         .card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .tc-subject { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.5; }
         .tc-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #475569; }
         
         .tc-footer { padding: 10px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap; }
-        .btn-card {
-            flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569; min-width: 80px;
-        }
+        .btn-card { flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569; min-width: 80px; }
         .btn-attach { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
         
-        /* --- Menu & Modal --- */
+        /* --- Side Menu --- */
         .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
         .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
         
+        /* --- Modal --- */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
         .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
         .modal-header { padding: 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
         .modal-body { padding: 1.5rem; }
+        .modal-footer { padding: 1rem; border-top: 1px solid #e2e8f0; background: #f8fafc; display: flex; gap: 8px; justify-content: flex-end; }
+        
         .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 8px; }
         .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
         .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
@@ -154,10 +115,13 @@
         .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
         .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
 
-        /* Bottom Nav */
+        /* Bottom Nav (Mobile Only) */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -300,6 +264,52 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="modal-reassign">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="font-bold text-lg">تغيير الموظف المكلف</h3>
+                <button onclick="closeEnhancementModal('modal-reassign')" class="p-2 rounded-full hover:bg-gray-100"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="reassign-task-id">
+                <label class="block text-sm font-bold text-gray-700 mb-2">اختر الموظف الجديد:</label>
+                <select id="reassign-select" class="w-full p-3 border rounded-lg bg-white mb-4 border-gray-300">
+                    <option value="">-- اختر من القائمة --</option>
+                </select>
+                <p class="text-xs text-gray-500 bg-yellow-50 p-2 rounded border border-yellow-200">
+                    <i data-lucide="alert-circle" class="w-3 h-3 inline"></i> سيتم إشعار الموظف الجديد تلقائياً.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="confirmReassign()" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700" id="btn-confirm-reassign">تأكيد التغيير</button>
+                <button onclick="closeEnhancementModal('modal-reassign')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-status">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="font-bold text-lg">تغيير حالة المعاملة</h3>
+                <button onclick="closeEnhancementModal('modal-status')" class="p-2 rounded-full hover:bg-gray-100"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="status-task-id">
+                <label class="block text-sm font-bold text-gray-700 mb-2">اختر الحالة الجديدة:</label>
+                <select id="status-select" class="w-full p-3 border rounded-lg bg-white mb-4 border-gray-300">
+                    <option value="جديد">جديد</option>
+                    <option value="بانتظار الاعتماد">بانتظار الاعتماد</option>
+                    <option value="تم الاعتماد والأرشفة">تم الاعتماد والأرشفة</option>
+                    <option value="بحاجة الي متابعة">بحاجة الي متابعة</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button onclick="confirmStatusChange()" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700" id="btn-confirm-status">حفظ الحالة</button>
+                <button onclick="closeEnhancementModal('modal-status')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <nav class="bottom-nav lg:hidden">
         <a href="coordinator.html" class="nav-btn active"><i data-lucide="users"></i> المنسق</a>
         <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
@@ -309,9 +319,6 @@
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
-    
-    <script src="coordinator-enhancements.js"></script>
-
     <script>
         lucide.createIcons();
         let allTasks = [];
@@ -347,6 +354,9 @@
             window.location.href = 'index.html';
         }
 
+        function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
+        function closeEnhancementModal(id) { document.getElementById(id).classList.remove('open'); }
+
         async function loadData(username) {
             const container = document.getElementById('tasks-list');
             container.innerHTML = `
@@ -375,7 +385,7 @@
                     lucide.createIcons();
                 }
             } catch (e) {
-                container.innerHTML = `<div class="error-box"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2 text-red-500"></i>خطأ في الاتصال بالخادم</div>`;
+                container.innerHTML = `<div class="empty-box text-red-500"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2"></i>خطأ في الاتصال بالخادم</div>`;
                 lucide.createIcons();
             }
         }
@@ -383,23 +393,27 @@
         function populateDropdowns() {
             const grpAdmin = document.getElementById('grp-admin');
             const grpTech = document.getElementById('grp-tech');
+            const reassignSelect = document.getElementById('reassign-select');
             
             grpAdmin.innerHTML = ''; grpTech.innerHTML = '';
             adminList = []; techList = [];
+            
+            // Populate Reassign Modal
+            if(reassignSelect) reassignSelect.innerHTML = '<option value="">-- اختر من القائمة --</option>';
 
             allEmployees.sort((a,b) => a.name.localeCompare(b.name)).forEach(e => {
                 const title = (e.jobTitle || '').trim();
                 
                 if (title === 'مراجع فني') {
                     techList.push(e.name);
-                    const opt = document.createElement('option');
-                    opt.value = e.name; opt.textContent = e.name;
+                    const opt = document.createElement('option'); opt.value = e.name; opt.textContent = e.name;
                     grpTech.appendChild(opt);
+                    if(reassignSelect) { const rOpt = document.createElement('option'); rOpt.value = e.name; rOpt.textContent = e.name; reassignSelect.appendChild(rOpt); }
                 } else if (title === 'مراجع مالي وإداري') {
                     adminList.push(e.name);
-                    const opt = document.createElement('option');
-                    opt.value = e.name; opt.textContent = e.name;
+                    const opt = document.createElement('option'); opt.value = e.name; opt.textContent = e.name;
                     grpAdmin.appendChild(opt);
+                    if(reassignSelect) { const rOpt = document.createElement('option'); rOpt.value = e.name; rOpt.textContent = e.name; reassignSelect.appendChild(rOpt); }
                 }
             });
 
@@ -461,29 +475,7 @@
 
         function updateStatsContext(filtered) {
             let c = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
-            
-            const empVal = document.getElementById('f-emp').value;
-            const src = document.getElementById('f-source').value;
-            const search = document.getElementById('f-search').value.toLowerCase();
-            const start = document.getElementById('f-start').value;
-            const end = document.getElementById('f-end').value;
-
-            const contextData = allTasks.filter(t => {
-                if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
-                if(src && t.source !== src) return false;
-                if (empVal) {
-                    if (empVal === 'ALL_ADMIN') { if (!adminList.includes(t.assignee)) return false; }
-                    else if (empVal === 'ALL_TECH') { if (!techList.includes(t.assignee)) return false; }
-                    else { if (t.assignee !== empVal) return false; }
-                }
-                if(start && end && t.date) {
-                    const isoDate = parseDateToISO(t.date);
-                    if(isoDate && (isoDate < start || isoDate > end)) return false;
-                }
-                return true;
-            });
-
-            contextData.forEach(t => {
+            filtered.forEach(t => {
                 c.total++;
                 const s = (t.status||'');
                 if(s.includes('جديد')) c.new++;
@@ -513,7 +505,6 @@
             container.innerHTML = tasks.map(t => {
                 let bgClass = 'bg-new';
                 let stLabel = t.status;
-                
                 if(t.status.includes('بانتظار')) bgClass = 'bg-pending';
                 else if(t.status.includes('تم')) bgClass = 'bg-approved';
                 else if(t.status.includes('متابعة')) bgClass = 'bg-followup';
@@ -534,15 +525,17 @@
                         </div>
                         <div class="tc-row">
                             <span class="flex items-center"><i data-lucide="calendar" class="tc-icon"></i>&nbsp;${displayDate}</span>
-                            <span class="tc-val flex items-center text-teal-700">${t.assignee || 'غير موزع'}<i data-lucide="user" class="tc-icon ml-1"></i></span>
-                            <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 text-gray-700" title="تغيير المكلف">تغيير</button>
+                            <span class="tc-val flex items-center text-teal-700 font-bold">
+                                ${t.assignee || 'غير موزع'}
+                                <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-gray-100 border border-gray-300 px-2 py-1 rounded hover:bg-gray-200 text-gray-700" title="تغيير المكلف">تغيير</button>
+                            </span>
                         </div>
                     </div>
                     <div class="tc-footer">
                         <button onclick="openModal('${t.id}')" class="btn-card">
                             <i data-lucide="eye" class="w-4 h-4"></i> التفاصيل
                         </button>
-                        <button onclick="openStatusModal('${t.id}')" class="btn-card text-blue-600 border-blue-200 bg-blue-50">
+                        <button onclick="openStatusModal('${t.id}')" class="btn-card text-blue-600 border-blue-200 bg-blue-50 hover:bg-blue-100">
                             <i data-lucide="refresh-cw" class="w-4 h-4"></i> الحالة
                         </button>
                         ${t.attachment ? `<button onclick="window.open('${t.attachment}')" class="btn-card btn-attach">
@@ -554,6 +547,7 @@
             lucide.createIcons();
         }
 
+        // --- Details Modal ---
         function openModal(id) {
             const t = allTasks.find(x => x.id == id);
             if(!t) return;
@@ -575,8 +569,73 @@
             document.getElementById('detail-modal').classList.add('open');
         }
 
-        function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
+        // --- Enhancement Modals Functions ---
+        function openReassignModal(taskId) {
+            document.getElementById('reassign-task-id').value = taskId;
+            document.getElementById('modal-reassign').classList.add('open');
+        }
 
+        function openStatusModal(taskId) {
+            document.getElementById('status-task-id').value = taskId;
+            document.getElementById('modal-status').classList.add('open');
+        }
+
+        // --- Real API Actions ---
+        async function confirmReassign() {
+            const taskId = document.getElementById('reassign-task-id').value;
+            const newEmp = document.getElementById('reassign-select').value;
+            const btn = document.getElementById('btn-confirm-reassign');
+
+            if (!newEmp) { alert('يرجى اختيار موظف'); return; }
+
+            if (confirm(`هل أنت متأكد من تغيير المكلف إلى ${newEmp}؟`)) {
+                btn.textContent = 'جاري الاتصال...'; btn.disabled = true;
+                try {
+                    const userStr = localStorage.getItem('iag_user');
+                    const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
+                    const res = await fetch(CONFIG.API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'reassignTask', taskId: taskId, newEmployee: newEmp, updatedBy: currentUser })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        alert('✅ تم تغيير المكلف بنجاح.');
+                        closeEnhancementModal('modal-reassign');
+                        const u = JSON.parse(localStorage.getItem('iag_user'));
+                        loadData(u.name);
+                    } else { alert('❌ حدث خطأ: ' + (data.error || 'لم يتم التعديل')); }
+                } catch (error) { alert('❌ خطأ في الاتصال بالخادم'); } 
+                finally { btn.textContent = 'تأكيد التغيير'; btn.disabled = false; }
+            }
+        }
+
+        async function confirmStatusChange() {
+            const taskId = document.getElementById('status-task-id').value;
+            const newStatus = document.getElementById('status-select').value;
+            const btn = document.getElementById('btn-confirm-status');
+
+            if (confirm(`هل أنت متأكد من تغيير الحالة إلى "${newStatus}"؟`)) {
+                btn.textContent = 'جاري الحفظ...'; btn.disabled = true;
+                try {
+                    const userStr = localStorage.getItem('iag_user');
+                    const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
+                    const res = await fetch(CONFIG.API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'updateStatus', taskId: taskId, newStatus: newStatus, updatedBy: currentUser })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        alert('✅ تم تحديث الحالة بنجاح.');
+                        closeEnhancementModal('modal-status');
+                        const u = JSON.parse(localStorage.getItem('iag_user'));
+                        loadData(u.name);
+                    } else { alert('❌ حدث خطأ: ' + (data.error || 'لم يتم التعديل')); }
+                } catch (error) { alert('❌ خطأ في الاتصال بالخادم'); }
+                finally { btn.textContent = 'حفظ الحالة'; btn.disabled = false; }
+            }
+        }
+
+        // --- Helpers ---
         function parseDateToISO(dateStr) {
             if(!dateStr) return null;
             if(dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
