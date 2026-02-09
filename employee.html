@@ -237,8 +237,8 @@
 
     <!-- Tabs -->
     <div class="main-tabs" id="main-tabs">
-        <div onclick="switchTab('tasks')" id="tab-tasks" class="tab-btn active"><i data-lucide="list-checks" class="w-4 h-4"></i> المعاملات <span class="tab-badge" id="badge-tasks">0</span></div>
-        <div onclick="switchTab('reports')" id="tab-reports" class="tab-btn"><i data-lucide="file-check" class="w-4 h-4"></i> التقارير <span class="tab-badge" id="badge-reports">0</span></div>
+        <div onclick="switchTab('tasks')" id="tab-tasks" class="tab-btn active"><i data-lucide="list-checks" class="w-4 h-4"></i> المعاملات</div>
+        <div onclick="switchTab('reports')" id="tab-reports" class="tab-btn"><i data-lucide="file-check" class="w-4 h-4"></i> التقارير</div>
     </div>
 
     <!-- Sub Tabs (Reports) -->
@@ -353,7 +353,6 @@
                 if (data.success) {
                     allTasks = data.tasks || [];
                     allReports = data.reports || [];
-                    updateBadges();
                     applyFilters();
                 } else {
                     document.getElementById('cards-list').innerHTML = '<div class="empty-box">لا توجد بيانات</div>';
@@ -384,11 +383,6 @@
             document.getElementById('c-approved').textContent = c.approved;
             document.getElementById('c-followup').textContent = c.followup;
             document.getElementById('c-late').textContent = c.late;
-        }
-
-        function updateBadges() {
-            document.getElementById('badge-tasks').textContent = allTasks.length;
-            document.getElementById('badge-reports').textContent = allReports.length;
         }
 
         function filterStatus(status) {
@@ -461,6 +455,7 @@
                 if(filtered.length === 0) { container.innerHTML = '<div class="empty-box">لا توجد نتائج</div>'; return; }
                 renderTasks(filtered, container);
             } else {
+                // التقارير - لا نطبق فلتر التاريخ عليها (تواريخها مختلفة عن المعاملات)
                 let filtered = allReports.filter(r => {
                     const rt = (r.type||'').toLowerCase();
                     if(currentSubTab === 'inspection') {
@@ -469,7 +464,6 @@
                         if(!rt.includes('شكو') && !rt.includes('شكا') && !rt.includes('فحص')) return false;
                     }
                     if(search && !(r.title+r.entity+r.type).toLowerCase().includes(search)) return false;
-                    if(!inRange(r.date, start, end)) return false;
                     return true;
                 });
                 if(filtered.length === 0) { container.innerHTML = '<div class="empty-box">لا توجد تقارير</div>'; return; }
@@ -484,30 +478,21 @@
         function renderTasks(tasks, container) {
             container.innerHTML = tasks.map(t => {
                 const s = t.status || '';
-                // Status stripe color
-                let bgClass = 'bg-new';
-                if(s.includes('متأخر')) bgClass = 'bg-late';
-                else if(s.includes('بانتظار')) bgClass = 'bg-pending';
-                else if(s.includes('تم') || s.includes('أرشيف')) bgClass = 'bg-approved';
-                else if(s.includes('جاري') || s.includes('قيد')) bgClass = 'bg-followup';
-                else if(s.includes('متابعة')) bgClass = 'bg-followup';
-
-                // Status label
-                let stLabel = 'جديد';
-                if(s.includes('متأخر')) stLabel = 'متأخر';
-                else if(s.includes('بانتظار')) stLabel = 'بانتظار';
-                else if(s.includes('تم') || s.includes('أرشيف')) stLabel = 'معتمد';
-                else if(s.includes('جاري') || s.includes('قيد')) stLabel = 'قيد التنفيذ';
-                else if(s.includes('متابعة')) stLabel = 'متابعة';
-
-                // Type detection
-                const isComplaint = (t.transactionType||'').includes('شك');
                 const isOutgoing = t.docType === 'صادر';
-                const typeLabel = isComplaint ? 'شكوى' : isOutgoing ? 'صادر' : 'وارد';
-                const typeIcon = isComplaint ? '⚖️' : isOutgoing ? '📤' : '📥';
+                const isComplaint = (t.transactionType||'').includes('شك');
+                const isApproved = s.includes('تم') || s.includes('أرشيف');
 
-                // Subject border color
-                const subjectBorder = isComplaint ? '#7c3aed' : isOutgoing ? '#0f766e' : '#2563eb';
+                // Status stripe color
+                let bgClass = 'bg-new', stLabel = 'جديد';
+                if(s.includes('متأخر')) { bgClass = 'bg-late'; stLabel = 'متأخر'; }
+                else if(s.includes('بانتظار')) { bgClass = 'bg-pending'; stLabel = 'بانتظار'; }
+                else if(isApproved) { bgClass = 'bg-approved'; stLabel = 'معتمد'; }
+                else if(s.includes('جاري') || s.includes('قيد')) { bgClass = 'bg-followup'; stLabel = 'قيد التنفيذ'; }
+                else if(s.includes('متابعة')) { bgClass = 'bg-followup'; stLabel = 'متابعة'; }
+
+                // Stripe: نوع المستند الفعلي (وارد/صادر) - الشكوى تظل "وارد"
+                const typeLabel = isOutgoing ? 'صادر' : 'وارد';
+                const typeIcon = isOutgoing ? '📤' : '📥';
 
                 // Importance badge
                 let impBadge = '';
@@ -517,25 +502,21 @@
                     impBadge = '<span class="badge '+cls+'">'+ico+' '+t.importance+'</span>';
                 }
 
-                // Other badges
-                let typeBadge = '<span class="badge badge-type">📝 '+(t.transactionType||t.docType||'')+'</span>';
-                let caseBadge = (t.caseNumber && t.caseNumber!=='') ? '<span class="badge badge-case">📁 '+t.caseNumber+'/'+(t.caseYear||'')+'</span>' : '';
+                // Other badges - نوع المعاملة الفرعي (شكوى، تحقيق، متابعة، إلخ)
+                let txnBadge = t.transactionType ? '<span class="badge badge-type">📝 '+t.transactionType+'</span>' : '';
+                let caseBadge = (t.caseNumber && t.caseNumber!=='') ? '<span class="badge badge-case">📁 قضية '+t.caseNumber+'/'+( t.caseYear||'')+'</span>' : '';
                 let delayBadge = t.delay ? '<span class="badge badge-delay">⚠️ متأخر '+t.delay+' يوم</span>' : '';
                 let doneBadge = t.completionDate ? '<span class="badge badge-done">✅ أُنجز '+t.completionDate+'</span>' : '';
 
-                // Notes
                 let notesHtml = (t.notes && t.notes.trim()) ? '<div class="tc-notes">💡 '+t.notes+'</div>' : '';
 
-                // Buttons - differentiated icons
+                // ── الأزرار ──
                 let btns = '<button onclick="openModal(\''+t.id+'\')" class="btn-card btn-details"><i data-lucide="eye" class="w-3.5 h-3.5"></i> التفاصيل</button>';
                 
-                // مرفق الوارد
-                if(t.attachment && !isOutgoing) btns += '<a href="'+t.attachment+'" target="_blank" class="btn-card btn-att-in"><i data-lucide="inbox" class="w-3.5 h-3.5"></i> مرفق الوارد</a>';
-                // مرفق الصادر
-                if(t.attachment && isOutgoing) btns += '<a href="'+t.attachment+'" target="_blank" class="btn-card btn-att-out"><i data-lucide="send" class="w-3.5 h-3.5"></i> مرفق الصادر</a>';
-                // الأرشيف (التقرير النهائي المعتمد)
-                if(t.archive) btns += '<a href="'+t.archive+'" target="_blank" class="btn-card btn-archive"><i data-lucide="archive" class="w-3.5 h-3.5"></i> النهائي المعتمد</a>';
-                // تقرير المرور / فحص الشكوى (Google Doc)
+                // 1) مرفق الوارد الأصلي (attachment = دائماً مرفق الوارد)
+                if(t.attachment) btns += '<a href="'+t.attachment+'" target="_blank" class="btn-card btn-att-in"><i data-lucide="inbox" class="w-3.5 h-3.5"></i> مرفق الوارد</a>';
+                
+                // 2) تقرير المرور أو فحص الشكوى (Google Doc المُنشأ)
                 if(t.report) {
                     if(isComplaint) {
                         btns += '<a href="'+t.report+'" target="_blank" class="btn-card btn-report"><i data-lucide="scale" class="w-3.5 h-3.5"></i> تقرير الفحص</a>';
@@ -543,6 +524,12 @@
                         btns += '<a href="'+t.report+'" target="_blank" class="btn-card btn-doc"><i data-lucide="file-text" class="w-3.5 h-3.5"></i> تقرير المرور</a>';
                     }
                 }
+
+                // 3) الصادر النهائي المعتمد (archive = فقط لو الحالة معتمد/أرشيف)
+                if(t.archive && isApproved) btns += '<a href="'+t.archive+'" target="_blank" class="btn-card btn-archive"><i data-lucide="archive" class="w-3.5 h-3.5"></i> الصادر النهائي</a>';
+
+                // Subject border color based on transaction type
+                const subjectBorder = isComplaint ? '#7c3aed' : isOutgoing ? '#0f766e' : '#0f766e';
 
                 return `
                 <div class="task-card">
@@ -569,7 +556,7 @@
                             ${t.deadline ? '<span style="display:flex;align-items:center;gap:3px;color:'+(s.includes('متأخر')?'#dc2626':'#ea580c')+';font-weight:700"><i data-lucide="clock" class="w-3 h-3"></i> '+fmtDate(t.deadline)+'</span>' : ''}
                         </div>
                         <div class="badges-row">
-                            ${impBadge}${typeBadge}${caseBadge}${delayBadge}${doneBadge}
+                            ${impBadge}${txnBadge}${caseBadge}${delayBadge}${doneBadge}
                         </div>
                         ${notesHtml}
                     </div>
@@ -654,11 +641,13 @@
 
             // Links
             let links = '';
-            if(t.attachment && !isOutgoing) links += '<a href="'+t.attachment+'" target="_blank" class="btn-card btn-att-in"><i data-lucide="inbox" class="w-3.5 h-3.5"></i> مرفق الوارد</a>';
-            if(t.attachment && isOutgoing) links += '<a href="'+t.attachment+'" target="_blank" class="btn-card btn-att-out"><i data-lucide="send" class="w-3.5 h-3.5"></i> مرفق الصادر</a>';
-            if(t.archive) links += '<a href="'+t.archive+'" target="_blank" class="btn-card btn-archive"><i data-lucide="archive" class="w-3.5 h-3.5"></i> النهائي المعتمد</a>';
+            // 1) مرفق الوارد الأصلي
+            if(t.attachment) links += '<a href="'+t.attachment+'" target="_blank" class="btn-card btn-att-in"><i data-lucide="inbox" class="w-3.5 h-3.5"></i> مرفق الوارد</a>';
+            // 2) تقرير المرور / فحص الشكوى
             if(t.report && isComplaint) links += '<a href="'+t.report+'" target="_blank" class="btn-card btn-report"><i data-lucide="scale" class="w-3.5 h-3.5"></i> تقرير الفحص</a>';
             else if(t.report) links += '<a href="'+t.report+'" target="_blank" class="btn-card btn-doc"><i data-lucide="file-text" class="w-3.5 h-3.5"></i> تقرير المرور</a>';
+            // 3) الصادر النهائي (فقط لو معتمد)
+            if(t.archive && (s.includes('تم') || s.includes('أرشيف'))) links += '<a href="'+t.archive+'" target="_blank" class="btn-card btn-archive"><i data-lucide="archive" class="w-3.5 h-3.5"></i> الصادر النهائي</a>';
 
             if(links) html += '<div class="modal-links">'+links+'</div>';
 
