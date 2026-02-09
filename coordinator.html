@@ -112,6 +112,17 @@
         .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
         .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
 
+        /* Editable fields in modal */
+        .edit-field { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+        .edit-input { flex: 1; height: 36px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 10px; font-size: 0.85rem; font-family: Cairo, sans-serif; outline: none; background: #fffbeb; }
+        .edit-input:focus { border-color: #0f766e; box-shadow: 0 0 0 2px rgba(15,118,110,0.1); background: #fff; }
+        .edit-btn { height: 36px; padding: 0 14px; border-radius: 8px; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; font-family: Cairo, sans-serif; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .edit-btn-save { background: #0f766e; color: white; }
+        .edit-btn-save:hover { background: #0d6b63; }
+        .edit-btn-save:disabled { background: #94a3b8; cursor: not-allowed; }
+        .edit-hint { font-size: 0.65rem; color: #94a3b8; font-style: italic; margin-top: 2px; }
+        .badge-missing { display: inline-flex; align-items: center; gap: 3px; background: #fef3c7; color: #92400e; font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; border: 1px solid #fde68a; }
+
         .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
         .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
 
@@ -511,6 +522,10 @@
                 else if(t.status.includes('متأخر')) bgClass = 'bg-late';
 
                 const displayDate = formatArabicDate(t.date);
+                
+                // Count missing fields
+                const missing = [t.caseNumber, t.caseYear, t.archive, t.assignee].filter(v => !v || !v.toString().trim()).length;
+                const missingBadge = missing > 0 ? `<span class="badge-missing" style="margin-right:auto">⚠ ${missing} حقول ناقصة</span>` : '';
 
                 return `
                 <div class="task-card">
@@ -526,10 +541,11 @@
                         <div class="tc-row">
                             <span class="flex items-center"><i data-lucide="calendar" class="tc-icon"></i>&nbsp;${displayDate}</span>
                             <span class="tc-val flex items-center text-teal-700 font-bold">
-                                ${t.assignee || 'غير موزع'}
+                                ${t.assignee || '<span style="color:#dc2626">غير موزع</span>'}
                                 <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-gray-100 border border-gray-300 px-2 py-1 rounded hover:bg-gray-200 text-gray-700" title="تغيير المكلف">تغيير</button>
                             </span>
                         </div>
+                        ${missingBadge ? `<div class="tc-row" style="margin-top:2px">${missingBadge}</div>` : ''}
                     </div>
                     <div class="tc-footer">
                         <button onclick="openModal('${t.id}')" class="btn-card">
@@ -547,26 +563,133 @@
             lucide.createIcons();
         }
 
-        // --- Details Modal ---
+        // --- Details Modal (Enhanced - editable empty fields) ---
         function openModal(id) {
             const t = allTasks.find(x => x.id == id);
             if(!t) return;
             document.getElementById('m-id').textContent = '#' + t.id;
             
-            const html = `
-                <div class="data-item"><span class="data-label">الموضوع</span><p class="data-val">${t.subject}</p></div>
-                <div class="data-item"><span class="data-label">الجهة الواردة</span><p class="data-val">${t.source}</p></div>
-                <div class="data-item"><span class="data-label">محل التنفيذ</span><p class="data-val">${t.entity}</p></div>
-                <div class="data-item"><span class="data-label">تاريخ الوارد</span><p class="data-val">${formatArabicDate(t.date)}</p></div>
-                <div class="data-item"><span class="data-label">تاريخ التكليف</span><p class="data-val">${formatArabicDate(t.assignDate)}</p></div>
-                <div class="data-item"><span class="data-label">تاريخ الإنجاز</span><p class="data-val">${t.completionDate ? formatArabicDate(t.completionDate) : '-'}</p></div>
-                <div class="data-item"><span class="data-label">الموظف</span><p class="data-val text-teal-700">${t.assignee}</p></div>
-                <div class="data-item"><span class="data-label">الحالة</span><p class="data-val">${t.status}</p></div>
-                ${t.caseNumber ? `<div class="data-item"><span class="data-label">رقم القضية</span><p class="data-val">${t.caseNumber}</p></div>` : ''}
-                ${t.notes ? `<div class="bg-yellow-50 p-2 rounded text-sm border border-yellow-200"><span class="data-label text-yellow-700">ملاحظات</span><p class="data-val text-gray-700">${t.notes}</p></div>` : ''}
-            `;
+            // Helper: read-only field
+            const ro = (label, val) => `<div class="data-item"><span class="data-label">${label}</span><p class="data-val">${val || '-'}</p></div>`;
+            
+            // Helper: editable if empty, read-only if filled
+            const ed = (label, field, val, placeholder) => {
+                if (val && val.toString().trim() !== '') {
+                    return ro(label, val);
+                }
+                return `<div class="data-item">
+                    <span class="data-label">${label} <span class="badge-missing">⚠ ناقص</span></span>
+                    <div class="edit-field">
+                        <input type="text" class="edit-input" id="edit-${field}-${t.id}" placeholder="${placeholder || 'أدخل البيانات'}">
+                        <button class="edit-btn edit-btn-save" onclick="saveFieldUpdate('${t.id}','${field}', this)">حفظ</button>
+                    </div>
+                    <p class="edit-hint">اضغط حفظ بعد الإدخال</p>
+                </div>`;
+            };
+            
+            // Linked incoming ID (for outgoing docs)
+            const isOutgoing = t.docType === 'صادر';
+            
+            let html = '';
+            html += ro('الموضوع', `<span style="font-weight:800;line-height:1.6">${t.subject}</span>`);
+            html += ro('الجهة الواردة', t.source);
+            html += ro('محل التنفيذ', t.entity);
+            html += ro('نوع المعاملة', t.transactionType || t.docType || '-');
+            html += ro('تاريخ الوارد', formatArabicDate(t.date));
+            html += ro('تاريخ التكليف', formatArabicDate(t.assignDate));
+            html += ro('تاريخ الإنجاز', t.completionDate ? formatArabicDate(t.completionDate) : '-');
+            html += ro('الموظف', `<span class="text-teal-700">${t.assignee}</span>`);
+            html += ro('الحالة', t.status);
+            
+            // Editable fields if empty
+            html += ed('رقم قيد القضية', 'caseNumber', t.caseNumber, 'مثال: 157');
+            html += ed('لسنة', 'caseYear', t.caseYear, 'مثال: 2026');
+            html += ed('الأهمية', 'importance', t.importance, 'عادي / عاجل / عاجل جداً');
+            
+            if (isOutgoing) {
+                html += ed('رقم الوارد المرتبط', 'linkedIncomingId', t.linkedIncomingId, 'رقم الوارد المرتبط');
+            }
+            
+            // Assignee editable if empty
+            html += ed('المكلف', 'assignee', t.assignee, 'اسم الموظف');
+            
+            // Archive link editable if empty
+            if (t.archive && t.archive.toString().trim() !== '') {
+                html += `<div class="data-item"><span class="data-label">المرفق النهائي (الأرشيف)</span><p class="data-val"><a href="${t.archive}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح المرفق</a></p></div>`;
+            } else {
+                html += `<div class="data-item">
+                    <span class="data-label">المرفق النهائي (الأرشيف) <span class="badge-missing">⚠ ناقص</span></span>
+                    <div class="edit-field">
+                        <input type="text" class="edit-input" id="edit-archive-${t.id}" placeholder="الصق رابط المرفق هنا">
+                        <button class="edit-btn edit-btn-save" onclick="saveFieldUpdate('${t.id}','archive', this)">حفظ</button>
+                    </div>
+                    <p class="edit-hint">الصق رابط Google Drive للمرفق النهائي</p>
+                </div>`;
+            }
+            
+            // Notes
+            if (t.notes) {
+                html += `<div class="bg-yellow-50 p-2 rounded text-sm border border-yellow-200"><span class="data-label text-yellow-700">ملاحظات</span><p class="data-val text-gray-700">${t.notes}</p></div>`;
+            }
+            
+            // Attachment button
+            if (t.attachment) {
+                html += `<div style="margin-top:8px"><a href="${t.attachment}" target="_blank" class="btn-card btn-attach" style="display:inline-flex;width:auto;padding:8px 16px"><i data-lucide="inbox" class="w-4 h-4"></i> مرفق الوارد</a></div>`;
+            }
+
             document.getElementById('m-content').innerHTML = html;
             document.getElementById('detail-modal').classList.add('open');
+            lucide.createIcons();
+        }
+
+        // --- Save single field update ---
+        async function saveFieldUpdate(taskId, fieldName, btnEl) {
+            const input = document.getElementById(`edit-${fieldName}-${taskId}`);
+            if (!input) return;
+            const value = input.value.trim();
+            if (!value) { alert('يرجى إدخال القيمة أولاً'); return; }
+            
+            const origText = btnEl.textContent;
+            btnEl.textContent = 'جاري...'; btnEl.disabled = true;
+            
+            try {
+                const userStr = localStorage.getItem('iag_user');
+                const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
+                
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'updateTaskField',
+                        taskId: taskId,
+                        fieldName: fieldName,
+                        fieldValue: value,
+                        updatedBy: updatedBy
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    // Update local data
+                    const task = allTasks.find(x => x.id == taskId);
+                    if (task) task[fieldName] = value;
+                    
+                    // Replace input with read-only value
+                    const parent = input.closest('.data-item');
+                    const label = parent.querySelector('.data-label').textContent.replace('⚠ ناقص','').trim();
+                    
+                    if (fieldName === 'archive') {
+                        parent.innerHTML = `<span class="data-label">${label}</span><p class="data-val"><a href="${value}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح المرفق</a></p>`;
+                    } else {
+                        parent.innerHTML = `<span class="data-label">${label} ✅</span><p class="data-val">${value}</p>`;
+                    }
+                } else {
+                    alert('❌ ' + (data.error || 'فشل الحفظ'));
+                    btnEl.textContent = origText; btnEl.disabled = false;
+                }
+            } catch (e) {
+                alert('❌ خطأ في الاتصال');
+                btnEl.textContent = origText; btnEl.disabled = false;
+            }
         }
 
         // --- Enhancement Modals Functions ---
