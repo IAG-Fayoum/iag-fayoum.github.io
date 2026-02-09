@@ -67,13 +67,12 @@
         .sub-tab { padding: 8px 16px; text-align: center; border: 1px solid #e2e8f0; border-radius: 50px; font-size: 0.8rem; font-weight: 700; color: #64748b; background: white; transition: 0.2s; }
         .sub-tab.active { border-color: var(--primary); color: var(--primary); background: #f0fdfa; }
 
-        /* --- CARD DESIGN (From Your Request) --- */
+        /* --- CARD DESIGN --- */
         .cards-list { padding: 0 1rem 2rem; display: grid; gap: 16px; }
         
         .task-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; position: relative; transition: transform 0.2s; }
         .task-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -3px rgba(0,0,0,0.08); }
 
-        /* Type Indicator Strip */
         .card-strip { height: 4px; width: 100%; }
         .strip-incoming { background: #2563eb; } /* الوارد - أزرق */
         .strip-outgoing { background: #0f766e; } /* الصادر - أخضر */
@@ -81,7 +80,7 @@
 
         .card-header { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; }
         .card-id { font-family: 'Courier New', monospace; font-weight: 800; color: #334155; font-size: 0.9rem; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; }
-        .card-badges { display: flex; gap: 6px; }
+        .card-badges { display: flex; gap: 6px; flex-wrap: wrap; }
         
         .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; gap: 4px; }
         .b-blue { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
@@ -102,14 +101,13 @@
         /* Action Buttons */
         .btn-action { flex: 1; padding: 10px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border: 1px solid transparent; transition: 0.2s; min-width: 90px; }
         .btn-view { background: white; border-color: #cbd5e1; color: #475569; }
-        .btn-att { background: #eff6ff; border-color: #bfdbfe; color: #2563eb; } /* أزرق: مرفق الوارد */
-        .btn-archive { background: #fffbeb; border-color: #fcd34d; color: #b45309; } /* ذهبي: الرد النهائي */
-        .btn-doc { background: #f5f3ff; border-color: #ddd6fe; color: #7c3aed; } /* بنفسجي: تعديل تقرير */
-        .btn-pdf { background: #fef2f2; border-color: #fecaca; color: #dc2626; } /* أحمر: PDF */
-        .btn-green { background: #f0fdfa; border-color: #99f6e4; color: #0f766e; } /* أخضر: مرفق الصادر */
+        .btn-att { background: #eff6ff; border-color: #bfdbfe; color: #2563eb; } 
+        .btn-archive { background: #fffbeb; border-color: #fcd34d; color: #b45309; } 
+        .btn-doc { background: #f5f3ff; border-color: #ddd6fe; color: #7c3aed; } 
+        .btn-pdf { background: #fef2f2; border-color: #fecaca; color: #dc2626; } 
+        .btn-green { background: #f0fdfa; border-color: #99f6e4; color: #0f766e; }
 
         /* --- Modal & Nav --- */
-        /* (Same as before to keep consistency) */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; backdrop-filter: blur(4px); display: none; justify-content: center; align-items: flex-end; }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
         .modal-box { background: white; width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 85vh; overflow-y: auto; }
@@ -121,6 +119,10 @@
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #94a3b8; text-decoration: none; font-size: 0.7rem; font-weight: 600; width: 65px; }
         .nav-item.active { color: var(--primary); transform: translateY(-3px); }
 
+        .side-menu { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: white; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; box-shadow: -5px 0 30px rgba(0,0,0,0.15); }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(2px); }
+        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+
         .hidden { display: none !important; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -130,6 +132,7 @@
     <header class="main-header">
         <div class="max-w-[1200px] mx-auto">
             <div class="header-top">
+                <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
                 <div class="user-welcome">
                     <div class="user-avatar" id="avatar-initial">?</div>
                     <div class="user-text">
@@ -208,6 +211,28 @@
         </div>
     </div>
 
+    <div class="side-menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
+    <aside class="side-menu" id="side-menu">
+        <div class="p-8 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center shadow-md mb-3 border-4 border-white">
+                <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
+            </div>
+            <h3 class="font-bold text-teal-900 text-lg" id="menu-user-name">...</h3>
+            <p class="text-xs text-teal-600" id="menu-user-role">...</p>
+        </div>
+        <nav class="flex-1 p-6 space-y-3">
+            <a href="employee.html" class="flex items-center gap-4 p-3 rounded-xl bg-teal-600 text-white font-bold text-sm shadow-md transition-all"><i data-lucide="list-todo" class="w-5 h-5"></i> مهامي</a>
+            <a href="distribution.html" class="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold text-sm transition-all"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> المؤشرات</a>
+            <a href="forms.html" class="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold text-sm transition-all"><i data-lucide="file-text" class="w-5 h-5"></i> النماذج</a>
+            <a href="notifications.html" class="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 text-gray-700 font-bold text-sm transition-all"><i data-lucide="bell" class="w-5 h-5"></i> الإشعارات</a>
+        </nav>
+        <div class="p-6 border-t">
+            <button onclick="logout()" class="w-full flex items-center justify-center gap-3 p-4 text-red-600 font-bold hover:bg-red-50 rounded-xl text-sm transition-all border border-red-100">
+                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+            </button>
+        </div>
+    </aside>
+
     <nav class="bottom-nav lg:hidden">
         <a href="employee.html" class="nav-item active"><i data-lucide="list-todo" class="w-6 h-6"></i> مهامي</a>
         <a href="distribution.html" class="nav-item"><i data-lucide="bar-chart-2" class="w-6 h-6"></i> مؤشرات</a>
@@ -221,8 +246,13 @@
         lucide.createIcons();
         
         let allData = { tasks: [], reports: [] };
-        let state = { tab: 'tasks', subTab: 'inspection', statFilter: 'all' };
+        let state = {
+            tab: 'tasks',
+            subTab: 'inspection',
+            statFilter: 'all'
+        };
 
+        // --- Init ---
         document.addEventListener('DOMContentLoaded', async () => {
             const userStr = localStorage.getItem('iag_user');
             if (!userStr) { window.location.href = 'index.html'; return; }
@@ -237,6 +267,8 @@
         function setupUserUI(user) {
             document.getElementById('user-name').textContent = user.name.split(' ').slice(0,2).join(' ');
             document.getElementById('user-role').textContent = user.role;
+            document.getElementById('menu-user-name').textContent = user.name;
+            document.getElementById('menu-user-role').textContent = user.role;
             document.getElementById('avatar-initial').textContent = user.name.charAt(0);
             
             const jobTitle = (user.jobTitle || '').trim();
@@ -248,7 +280,13 @@
             const date = new Date();
             const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
             const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-            const formatDate = (d) => d.toISOString().split('T')[0];
+            
+            const formatDate = (d) => {
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
             
             document.getElementById('f-start').value = formatDate(firstDay);
             document.getElementById('f-end').value = formatDate(lastDay);
@@ -293,9 +331,15 @@
 
             if (state.tab === 'tasks') {
                 items = allData.tasks.filter(t => {
+                    // Stat Filter
                     if (state.statFilter === 'late' && !t.status.includes('متأخر')) return false;
+                    
+                    // Search
                     if (search && !(t.subject + t.id + t.source).toLowerCase().includes(search)) return false;
+                    
+                    // Date
                     if (!isDateInRange(t.date, start, end)) return false;
+                    
                     return true;
                 });
                 
@@ -303,15 +347,18 @@
                 container.innerHTML = items.map(t => createCard(t)).join('');
 
             } else {
+                // Reports Tab
                 items = allData.reports.filter(r => {
                     const type = (r.type || '').toLowerCase();
                     let matchSub = false;
+                    
                     if (state.subTab === 'inspection') matchSub = type.includes('مرور') || type.includes('فني') || type.includes('مالي');
                     else matchSub = type.includes('شكو') || type.includes('شكا') || type.includes('فحص');
                     
                     if (!matchSub) return false;
                     if (search && !(r.title + r.entity).toLowerCase().includes(search)) return false;
                     if (!isDateInRange(r.date, start, end)) return false;
+                    
                     return true;
                 });
 
@@ -389,6 +436,32 @@
             </div>`;
         }
 
+        function filterByStat(filter, el) {
+            state.statFilter = filter;
+            document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            renderContent();
+        }
+
+        function switchTab(tab) {
+            state.tab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-'+tab).classList.add('active');
+            
+            const subBox = document.getElementById('sub-tabs-box');
+            if (tab === 'reports') subBox.classList.remove('hidden');
+            else subBox.classList.add('hidden');
+            
+            renderContent();
+        }
+
+        function switchSubTab(sub) {
+            state.subTab = sub;
+            document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById('sub-'+sub).classList.add('active');
+            renderContent();
+        }
+
         function openModal(id) {
             const t = allData.tasks.find(x => x.id == id);
             if(!t) return;
@@ -414,36 +487,10 @@
 
         function closeModal() { document.getElementById('modal-details').classList.remove('open'); }
         
-        function filterByStat(filter, el) {
-            state.statFilter = filter;
-            document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            renderContent();
-        }
-
-        function switchTab(tab) {
-            state.tab = tab;
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-'+tab).classList.add('active');
-            
-            const subBox = document.getElementById('sub-tabs-box');
-            if(tab === 'reports') subBox.classList.remove('hidden');
-            else subBox.classList.add('hidden');
-            
-            renderContent();
-        }
-
-        function switchSubTab(sub) {
-            state.subTab = sub;
-            document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
-            document.getElementById('sub-'+sub).classList.add('active');
-            renderContent();
-        }
-
         function toggleMenu() {
             const menu = document.getElementById('side-menu');
             const overlay = document.getElementById('menu-overlay');
-            if(menu.style.right === '0px') { menu.style.right = '-280px'; overlay.style.opacity = '0'; setTimeout(()=>overlay.style.pointerEvents='none',300); }
+            if (menu.style.right === '0px') { menu.style.right = '-280px'; overlay.style.opacity = '0'; setTimeout(()=>overlay.style.pointerEvents='none',300); }
             else { menu.style.right = '0px'; overlay.style.pointerEvents='auto'; overlay.style.opacity = '1'; }
         }
 
@@ -452,16 +499,22 @@
         function isDateInRange(dateStr, start, end) {
             if (!start && !end) return true;
             if (!dateStr) return false;
+            
             let d = null;
             if (dateStr.includes('/')) {
                 const p = dateStr.split('/');
                 d = new Date(p[2], p[1]-1, p[0]);
-            } else d = new Date(dateStr);
+            } else if(dateStr.includes('-')) {
+                d = new Date(dateStr);
+            }
             
+            if(!d || isNaN(d.getTime())) return true; 
+
             const startDate = start ? new Date(start) : null;
             const endDate = end ? new Date(end) : null;
-            if(startDate) startDate.setHours(0,0,0,0);
-            if(endDate) endDate.setHours(23,59,59,999);
+            
+            if (startDate) startDate.setHours(0,0,0,0);
+            if (endDate) endDate.setHours(23,59,59,999);
             
             if (startDate && d < startDate) return false;
             if (endDate && d > endDate) return false;
