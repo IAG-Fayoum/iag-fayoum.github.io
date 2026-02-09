@@ -122,6 +122,15 @@
         .edit-btn-save:disabled { background: #94a3b8; cursor: not-allowed; }
         .edit-hint { font-size: 0.65rem; color: #94a3b8; font-style: italic; margin-top: 2px; }
         .badge-missing { display: inline-flex; align-items: center; gap: 3px; background: #fef3c7; color: #92400e; font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; border: 1px solid #fde68a; }
+        .badge-case { display: inline-flex; align-items: center; gap: 3px; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+        .badge-case-na { background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
+        .badge-case-sq { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .upload-area { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 16px; text-align: center; cursor: pointer; transition: 0.2s; background: #fefce8; margin-top: 4px; }
+        .upload-area:hover { border-color: #0f766e; background: #f0fdfa; }
+        .upload-area.uploading { opacity: 0.6; pointer-events: none; }
+        .btn-archive-card { font-size: 0.7rem; padding: 4px 10px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; border: none; }
+        .btn-archive-upload { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .btn-archive-view { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
 
         .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
         .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
@@ -513,6 +522,9 @@
                 return;
             }
 
+            // جهات القضايا
+            const caseEntities = ['النيابة الإدارية', 'نيابة', 'الشؤون القانونية', 'شئون قانونية', 'ش.ق', 'ش ق'];
+
             container.innerHTML = tasks.map(t => {
                 let bgClass = 'bg-new';
                 let stLabel = t.status;
@@ -523,9 +535,30 @@
 
                 const displayDate = formatArabicDate(t.date);
                 
-                // Count missing fields
-                const missing = [t.caseNumber, t.caseYear, t.archive, t.assignee].filter(v => !v || !v.toString().trim()).length;
-                const missingBadge = missing > 0 ? `<span class="badge-missing" style="margin-right:auto">⚠ ${missing} حقول ناقصة</span>` : '';
+                // هل الجهة من جهات القضايا؟
+                const isCaseEntity = caseEntities.some(ce => (t.source||'').includes(ce));
+                
+                // badge القضية على الكارت
+                let caseBadge = '';
+                if (isCaseEntity && t.caseNumber) {
+                    const isNA = (t.source||'').includes('نيابة');
+                    const caseLabel = isNA ? 'ن.إ' : 'ش.ق';
+                    const badgeClass = isNA ? 'badge-case-na' : 'badge-case-sq';
+                    caseBadge = `<span class="${badgeClass} badge-case">⚖️ ${caseLabel}: ${t.caseNumber}/${t.caseYear||''}</span>`;
+                } else if (isCaseEntity && !t.caseNumber) {
+                    caseBadge = `<span class="badge-missing">⚠ رقم القضية ناقص</span>`;
+                }
+                
+                // زر الأرشيف على الكارت (فقط لـ تم الاعتماد والأرشفة)
+                let archiveBtn = '';
+                const isApproved = (t.status||'').includes('تم');
+                if (isApproved) {
+                    if (t.archive && t.archive.toString().trim()) {
+                        archiveBtn = `<button onclick="event.stopPropagation();window.open('${t.archive}')" class="btn-archive-card btn-archive-view">📎 الصادر</button>`;
+                    } else {
+                        archiveBtn = `<button onclick="event.stopPropagation();openArchiveUpload('${t.id}')" class="btn-archive-card btn-archive-upload">📤 رفع الصادر</button>`;
+                    }
+                }
 
                 return `
                 <div class="task-card">
@@ -545,7 +578,7 @@
                                 <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-gray-100 border border-gray-300 px-2 py-1 rounded hover:bg-gray-200 text-gray-700" title="تغيير المكلف">تغيير</button>
                             </span>
                         </div>
-                        ${missingBadge ? `<div class="tc-row" style="margin-top:2px">${missingBadge}</div>` : ''}
+                        ${caseBadge || archiveBtn ? `<div class="tc-row" style="margin-top:2px;gap:6px;flex-wrap:wrap">${caseBadge}${archiveBtn}</div>` : ''}
                     </div>
                     <div class="tc-footer">
                         <button onclick="openModal('${t.id}')" class="btn-card">
@@ -563,32 +596,25 @@
             lucide.createIcons();
         }
 
-        // --- Details Modal (Enhanced - editable empty fields) ---
+        // --- Details Modal (Enhanced v22 - editable empty fields) ---
         function openModal(id) {
             const t = allTasks.find(x => x.id == id);
             if(!t) return;
             document.getElementById('m-id').textContent = '#' + t.id;
             
-            // Helper: read-only field
             const ro = (label, val) => `<div class="data-item"><span class="data-label">${label}</span><p class="data-val">${val || '-'}</p></div>`;
             
-            // Helper: editable if empty, read-only if filled
             const ed = (label, field, val, placeholder) => {
-                if (val && val.toString().trim() !== '') {
-                    return ro(label, val);
-                }
-                return `<div class="data-item">
-                    <span class="data-label">${label} <span class="badge-missing">⚠ ناقص</span></span>
-                    <div class="edit-field">
-                        <input type="text" class="edit-input" id="edit-${field}-${t.id}" placeholder="${placeholder || 'أدخل البيانات'}">
-                        <button class="edit-btn edit-btn-save" onclick="saveFieldUpdate('${t.id}','${field}', this)">حفظ</button>
-                    </div>
-                    <p class="edit-hint">اضغط حفظ بعد الإدخال</p>
-                </div>`;
+                if (val && val.toString().trim() !== '' && val !== 'undefined') return ro(label, val);
+                return `<div class="data-item"><span class="data-label">${label} <span class="badge-missing">⚠ ناقص</span></span>
+                    <div class="edit-field"><input type="text" class="edit-input" id="edit-${field}-${t.id}" placeholder="${placeholder || ''}">
+                    <button class="edit-btn edit-btn-save" onclick="saveFieldUpdate('${t.id}','${field}',this)">حفظ</button></div></div>`;
             };
             
-            // Linked incoming ID (for outgoing docs)
-            const isOutgoing = t.docType === 'صادر';
+            // جهات القضايا
+            const caseEntities = ['النيابة الإدارية', 'نيابة', 'الشؤون القانونية', 'شئون قانونية', 'ش.ق', 'ش ق'];
+            const isCaseEntity = caseEntities.some(ce => (t.source||'').includes(ce));
+            const isApproved = (t.status||'').includes('تم');
             
             let html = '';
             html += ro('الموضوع', `<span style="font-weight:800;line-height:1.6">${t.subject}</span>`);
@@ -598,43 +624,40 @@
             html += ro('تاريخ الوارد', formatArabicDate(t.date));
             html += ro('تاريخ التكليف', formatArabicDate(t.assignDate));
             html += ro('تاريخ الإنجاز', t.completionDate ? formatArabicDate(t.completionDate) : '-');
-            html += ro('الموظف', `<span class="text-teal-700">${t.assignee}</span>`);
+            html += ed('الموظف المكلف', 'assignee', t.assignee, 'اسم الموظف');
             html += ro('الحالة', t.status);
             
-            // Editable fields if empty
-            html += ed('رقم قيد القضية', 'caseNumber', t.caseNumber, 'مثال: 157');
-            html += ed('لسنة', 'caseYear', t.caseYear, 'مثال: 2026');
+            // القضية - فقط لجهات القضايا
+            if (isCaseEntity) {
+                const isNA = (t.source||'').includes('نيابة');
+                const caseLabel = isNA ? 'رقم قضية النيابة الإدارية' : 'رقم قضية الشؤون القانونية';
+                html += ed(caseLabel, 'caseNumber', t.caseNumber, 'رقم القضية');
+                html += ed('لسنة', 'caseYear', t.caseYear, '2026');
+            }
+            
             html += ed('الأهمية', 'importance', t.importance, 'عادي / عاجل / عاجل جداً');
             
-            if (isOutgoing) {
-                html += ed('رقم الوارد المرتبط', 'linkedIncomingId', t.linkedIncomingId, 'رقم الوارد المرتبط');
+            // الأرشيف (الصادر النهائي) - فقط لـ تم الاعتماد
+            if (isApproved) {
+                if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
+                    html += `<div class="data-item"><span class="data-label">الصادر النهائي (الأرشيف)</span><p class="data-val"><a href="${t.archive}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p></div>`;
+                } else {
+                    html += `<div class="data-item"><span class="data-label">الصادر النهائي (الأرشيف) <span class="badge-missing">⚠ ناقص</span></span>
+                        <div class="upload-area" id="upload-area-${t.id}" onclick="document.getElementById('file-${t.id}').click()">
+                            <input type="file" id="file-${t.id}" style="display:none" onchange="uploadArchiveFile('${t.id}',this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            <p style="font-size:0.85rem;font-weight:700;color:#92400e;margin:0">📤 اضغط لرفع ملف الصادر</p>
+                            <p style="font-size:0.7rem;color:#94a3b8;margin:4px 0 0">PDF, Word, أو صورة</p>
+                        </div>
+                        <p id="upload-status-${t.id}" style="font-size:0.75rem;margin-top:4px;display:none"></p>
+                    </div>`;
+                }
             }
             
-            // Assignee editable if empty
-            html += ed('المكلف', 'assignee', t.assignee, 'اسم الموظف');
-            
-            // Archive link editable if empty
-            if (t.archive && t.archive.toString().trim() !== '') {
-                html += `<div class="data-item"><span class="data-label">المرفق النهائي (الأرشيف)</span><p class="data-val"><a href="${t.archive}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح المرفق</a></p></div>`;
-            } else {
-                html += `<div class="data-item">
-                    <span class="data-label">المرفق النهائي (الأرشيف) <span class="badge-missing">⚠ ناقص</span></span>
-                    <div class="edit-field">
-                        <input type="text" class="edit-input" id="edit-archive-${t.id}" placeholder="الصق رابط المرفق هنا">
-                        <button class="edit-btn edit-btn-save" onclick="saveFieldUpdate('${t.id}','archive', this)">حفظ</button>
-                    </div>
-                    <p class="edit-hint">الصق رابط Google Drive للمرفق النهائي</p>
-                </div>`;
-            }
-            
-            // Notes
             if (t.notes) {
                 html += `<div class="bg-yellow-50 p-2 rounded text-sm border border-yellow-200"><span class="data-label text-yellow-700">ملاحظات</span><p class="data-val text-gray-700">${t.notes}</p></div>`;
             }
-            
-            // Attachment button
             if (t.attachment) {
-                html += `<div style="margin-top:8px"><a href="${t.attachment}" target="_blank" class="btn-card btn-attach" style="display:inline-flex;width:auto;padding:8px 16px"><i data-lucide="inbox" class="w-4 h-4"></i> مرفق الوارد</a></div>`;
+                html += `<div style="margin-top:8px"><a href="${t.attachment}" target="_blank" class="btn-card btn-attach" style="display:inline-flex;width:auto;padding:8px 16px"><i data-lucide="paperclip" class="w-4 h-4"></i> مرفق الوارد</a></div>`;
             }
 
             document.getElementById('m-content').innerHTML = html;
@@ -658,30 +681,18 @@
                 
                 const res = await fetch(CONFIG.API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({
-                        action: 'updateTaskField',
-                        taskId: taskId,
-                        fieldName: fieldName,
-                        fieldValue: value,
-                        updatedBy: updatedBy
-                    })
+                    body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName, fieldValue: value, updatedBy })
                 });
                 const data = await res.json();
                 
                 if (data.success) {
-                    // Update local data
                     const task = allTasks.find(x => x.id == taskId);
                     if (task) task[fieldName] = value;
-                    
-                    // Replace input with read-only value
                     const parent = input.closest('.data-item');
                     const label = parent.querySelector('.data-label').textContent.replace('⚠ ناقص','').trim();
-                    
-                    if (fieldName === 'archive') {
-                        parent.innerHTML = `<span class="data-label">${label}</span><p class="data-val"><a href="${value}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح المرفق</a></p>`;
-                    } else {
-                        parent.innerHTML = `<span class="data-label">${label} ✅</span><p class="data-val">${value}</p>`;
-                    }
+                    parent.innerHTML = `<span class="data-label">${label} ✅</span><p class="data-val">${value}</p>`;
+                    // تحديث الكارت
+                    applyFilters();
                 } else {
                     alert('❌ ' + (data.error || 'فشل الحفظ'));
                     btnEl.textContent = origText; btnEl.disabled = false;
@@ -690,6 +701,72 @@
                 alert('❌ خطأ في الاتصال');
                 btnEl.textContent = origText; btnEl.disabled = false;
             }
+        }
+
+        // --- Upload archive file ---
+        async function uploadArchiveFile(taskId, inputEl) {
+            const file = inputEl.files[0];
+            if (!file) return;
+            
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) { alert('حجم الملف أكبر من 10 ميجا'); return; }
+            
+            const area = document.getElementById(`upload-area-${taskId}`);
+            const status = document.getElementById(`upload-status-${taskId}`);
+            area.classList.add('uploading');
+            area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#0f766e">⏳ جاري الرفع...</p>';
+            status.style.display = 'block';
+            status.textContent = `📁 ${file.name} (${(file.size/1024).toFixed(0)} KB)`;
+            status.style.color = '#64748b';
+            
+            try {
+                const base64 = await fileToBase64(file);
+                const userStr = localStorage.getItem('iag_user');
+                const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
+                
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'uploadArchiveFile',
+                        taskId: taskId,
+                        fileName: `صادر_${taskId}_${file.name}`,
+                        fileBase64: base64,
+                        mimeType: file.type,
+                        updatedBy: updatedBy
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    const task = allTasks.find(x => x.id == taskId);
+                    if (task) task.archive = data.fileUrl;
+                    
+                    const parent = area.closest('.data-item');
+                    parent.innerHTML = `<span class="data-label">الصادر النهائي (الأرشيف) ✅</span><p class="data-val"><a href="${data.fileUrl}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p>`;
+                    applyFilters();
+                } else {
+                    alert('❌ ' + (data.error || 'فشل الرفع'));
+                    area.classList.remove('uploading');
+                    area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ فشل الرفع - اضغط للمحاولة مرة أخرى</p>';
+                }
+            } catch (e) {
+                alert('❌ خطأ في الاتصال');
+                area.classList.remove('uploading');
+                area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ خطأ - اضغط للمحاولة</p>';
+            }
+        }
+
+        function openArchiveUpload(taskId) {
+            openModal(taskId);
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         }
 
         // --- Enhancement Modals Functions ---
