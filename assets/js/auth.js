@@ -1,33 +1,24 @@
 /**
- * 🔐 IAG System - Authentication & Logic (v8.0 Final)
+ * 🔐 IAG System - Authentication & Logic (v8.1)
  * - يدعم المرور لصفحة forms.html بدون تسجيل دخول
  * - يعتمد على config.js
  */
 
 const auth = {
-    
-    // بيانات المستخدم الحالي
+
     currentUser: null,
 
-    /**
-     * 1. الاتصال بالسيرفر (API Call)
-     */
+    // 1. API Call
     async callAPI(action, data = {}) {
-        // التأكد إن ملف الإعدادات موجود
         if (typeof CONFIG === 'undefined') {
-            alert("خطأ جسيم: ملف config.js غير موجود!");
             return { success: false, error: "Config Missing" };
         }
-
-        // تجهيز البيانات
-        const payload = { action, ...data };
-
         try {
             const response = await fetch(CONFIG.API_URL, {
                 method: "POST",
-                mode: "cors", // مهم عشان الكروس دومين
+                mode: "cors",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(payload),
+                body: JSON.stringify({ action, ...data }),
             });
             return await response.json();
         } catch (error) {
@@ -36,15 +27,10 @@ const auth = {
         }
     },
 
-    /**
-     * 2. تسجيل الدخول
-     */
+    // 2. تسجيل الدخول — يحفظ فقط، التوجيه في index.html
     async login(mobile, pin) {
-        // نبعت للباك إند يتحقق
         const result = await this.callAPI("login", { mobile: mobile.trim(), pin: pin.trim() });
-
         if (result.success) {
-            // لو تمام، نحفظ البيانات في المتصفح
             this.currentUser = {
                 name: result.name,
                 role: result.role,
@@ -52,78 +38,39 @@ const auth = {
                 mobile: result.mobile,
                 email: result.email
             };
-            localStorage.setItem("user", JSON.stringify(this.currentUser));
-            
-            // نوجهه للصفحة بتاعته
-            this.redirectUser(result.role);
+            localStorage.setItem("iag_user", JSON.stringify(this.currentUser));
         }
         return result;
     },
 
-    /**
-     * 3. التوجيه الذكي حسب الوظيفة
-     */
-    redirectUser(role) {
-        const r = (role || '').toLowerCase().trim();
-        
-        if (r === 'admin' || r === 'مدير' || r === 'مدير النظام') {
-            window.location.href = 'admin.html';
-        } 
-        else if (r === 'coordinator' || r === 'منسق') {
-            window.location.href = 'coordinator.html';
-        } 
-        else {
-            // أي حد تاني يروح صفحة الموظف
-            window.location.href = 'employee.html';
+    // 3. التحقق من الجلسة
+    checkAuth() {
+        const stored = localStorage.getItem("iag_user");
+        if (!stored) return null;
+        try {
+            this.currentUser = JSON.parse(stored);
+            return this.currentUser;
+        } catch (e) {
+            localStorage.removeItem("iag_user");
+            return null;
         }
     },
 
-    /**
-     * 4. التحقق من الجلسة (هل مسجل دخول؟)
-     */
-    checkAuth() {
-        const stored = localStorage.getItem("user");
-        if (!stored) return null;
-        
-        this.currentUser = JSON.parse(stored);
-        return this.currentUser;
-    },
-
-    /**
-     * 5. تسجيل الخروج
-     */
+    // 4. تسجيل الخروج — موحد في كل الصفحات
     logout() {
-        localStorage.removeItem("user");
+        localStorage.removeItem("iag_user");
+        localStorage.removeItem("iag_last_page");
         window.location.href = "index.html";
     }
 };
 
-/* 🛡️ نظام الحماية والتوجيه التلقائي
-   -----------------------------------
-   الكود ده بيشتغل أول ما أي صفحة تفتح عشان يتأكد:
-   1. هل الصفحة دي محتاجة دخول؟
-   2. لو محتاجة، هل المستخدم مسجل؟
-*/
+// 🛡️ حماية الصفحات المقيدة
 (function protectRoute() {
     const path = window.location.pathname;
-    
-    // الصفحات المسموح بزيارتها بدون تسجيل دخول (Public Pages)
-    // ضفنا forms.html هنا عشان تفتح عادي
-    const publicPages = [
-        "index.html", 
-        "forms.html", 
-        "/" // الصفحة الرئيسية
-    ];
-
-    // هل الصفحة الحالية واحدة من الصفحات العامة؟
+    const publicPages = ["index.html", "forms.html", "/"];
     const isPublic = publicPages.some(page => path.endsWith(page));
-
     if (!isPublic) {
-        // لو دي صفحة "محمية" (زي admin او employee)
-        const user = auth.checkAuth();
-        
-        if (!user) {
-            // لو مش مسجل دخول، اطرده لصفحة الدخول فوراً
+        if (!auth.checkAuth()) {
             window.location.href = "index.html";
         }
     }
