@@ -300,18 +300,8 @@
             throw new Error(result.error || 'بيانات غير صحيحة');
           }
 
-          const userData = {
-            name: result.name,
-            email: result.email,
-            jobTitle: result.jobTitle,
-            role: result.role,
-            mobile: result.mobile,
-            loginTime: new Date().toISOString()
-          };
-
-          // حفظ البيانات وتوجيه المستخدم مباشرة
-          localStorage.setItem('iag_user', JSON.stringify(userData));
-          redirectUser(userData);
+          // auth.login حفظ البيانات بالفعل — نوجه مباشرة
+          redirectUser(auth.currentUser);
 
         } catch (error) {
           errorText.textContent = error.message === 'Failed to fetch' ? 'خطأ في الاتصال بالخادم' : error.message;
@@ -324,14 +314,14 @@
       });
     }
 
-    // دالة التوجيه المباشر حسب الصلاحية
+    // دالة التوجيه حسب الصلاحية
     function redirectUser(user) {
-        if (user.role === 'مدير' || user.role === 'Admin') {
+        const r = (user.role || '').toLowerCase().trim();
+        if (r === 'admin' || r === 'مدير' || r === 'مدير النظام') {
             window.location.href = 'admin.html';
-        } else if (user.role === 'منسق') {
+        } else if (r === 'coordinator' || r === 'منسق') {
             window.location.href = 'coordinator.html';
         } else {
-            // الموظف العادي
             window.location.href = 'employee.html';
         }
     }
