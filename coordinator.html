@@ -23,7 +23,6 @@
             --c-followup: #6b7280; --c-late: #dc2626;       
         }
 
-        /* --- Header --- */
         .main-header {
             background: #115e59;
             color: white; padding: 1rem 1.5rem 3.5rem;
@@ -44,7 +43,6 @@
         .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
-        /* --- Filters --- */
         .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
         .filter-grid { display: flex; flex-direction: column; gap: 12px; }
         @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
@@ -57,10 +55,11 @@
         .search-input { padding-right: 12px; padding-left: 40px; background-color: #f8fafc; }
         .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; color: #94a3b8; pointer-events: none; }
 
-        .btn-print { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 10px; height: 44px; width: 44px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .btn-print { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 10px; height: 44px; width: 44px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
 
-        /* --- Stats --- */
+        .btn-missing { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 10px; height: 44px; padding: 0 12px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; font-family: 'Cairo', sans-serif; }
+
         .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
         .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
@@ -77,12 +76,13 @@
 
         .txt-total { color: #334155; } .txt-late { color: #dc2626; } .txt-new { color: #3b82f6; } .txt-pending { color: #16a34a; } .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
 
-        /* --- Cards List --- */
+        /* --- Cards --- */
         .cards-container { padding: 0 1rem 5rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; grid-template-columns: 1fr; }
         @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
 
         .task-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb; display: flex; flex-direction: column; transition: transform 0.2s; }
+        .task-card.has-missing { border-right: 3px solid #f59e0b; }
         .card-stripe { padding: 8px 12px; color: white; font-weight: 700; font-size: 0.75rem; display: flex; justify-content: space-between; }
         
         .bg-new { background-color: #3b82f6; } .bg-pending { background-color: #16a34a; } .bg-approved { background-color: #047857; } .bg-followup { background-color: #6b7280; } .bg-late { background-color: #dc2626; }
@@ -112,7 +112,6 @@
         .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
         .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
 
-        /* Editable fields in modal */
         .edit-field { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
         .edit-input { flex: 1; height: 36px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 10px; font-size: 0.85rem; font-family: Cairo, sans-serif; outline: none; background: #fffbeb; }
         .edit-input:focus { border-color: #0f766e; box-shadow: 0 0 0 2px rgba(15,118,110,0.1); background: #fff; }
@@ -120,7 +119,6 @@
         .edit-btn-save { background: #0f766e; color: white; }
         .edit-btn-save:hover { background: #0d6b63; }
         .edit-btn-save:disabled { background: #94a3b8; cursor: not-allowed; }
-        .edit-hint { font-size: 0.65rem; color: #94a3b8; font-style: italic; margin-top: 2px; }
         .badge-missing { display: inline-flex; align-items: center; gap: 3px; background: #fef3c7; color: #92400e; font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; border: 1px solid #fde68a; }
         .badge-case { display: inline-flex; align-items: center; gap: 3px; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
         .badge-case-na { background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
@@ -135,10 +133,24 @@
         .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
         .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
 
-        /* Bottom Nav (Mobile Only) */
+        /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
+
+        /* --- Table Mode --- */
+        .table-wrapper { padding: 0 1rem 5rem; max-width: 1200px; margin: 0 auto; }
+        .table-container { width: 100%; overflow-x: auto; background: white; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .data-table { width: 100%; text-align: right; border-collapse: collapse; }
+        .data-table th { background: #f8fafc; padding: 12px 14px; font-size: 0.8rem; color: #64748b; border-bottom: 2px solid #e2e8f0; white-space: nowrap; font-weight: 700; font-family: 'Cairo', sans-serif; }
+        .data-table td { padding: 11px 14px; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; font-family: 'Cairo', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover td { background: #f8fafc; }
+        .data-table tr.row-missing td:first-child { border-right: 3px solid #f59e0b; }
+        .missing-tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; margin: 1px; }
+        .missing-tag-assignee { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .missing-tag-case { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+        .missing-tag-archive { background: #fefce8; color: #92400e; border: 1px solid #fde68a; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .hidden { display: none !important; }
@@ -174,7 +186,6 @@
                 <div class="flex gap-3">
                     <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
                 </div>
-
                 <div class="text-center">
                     <div class="breadcrumbs">
                         <span>الرئيسية</span>
@@ -184,7 +195,6 @@
                     <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
                     <p class="dept-subtitle">Internal Audit & Governance Dept</p>
                 </div>
-
                 <div class="flex gap-3">
                     <button onclick="window.location.href='notifications.html'" class="header-btn relative">
                         <i data-lucide="bell" class="w-6 h-6"></i>
@@ -228,8 +238,18 @@
                 <label class="f-label">إلى تاريخ</label>
                 <input type="date" id="f-end" class="f-input px-2" onchange="applyFilters()">
             </div>
-            <div class="filter-item-btn">
+            <div class="filter-item-btn flex gap-2 items-end">
                 <label class="f-label text-transparent hidden lg:block">.</label>
+                <!-- زر النواقص -->
+                <button onclick="toggleMissingData()" id="btn-missing" class="btn-missing" title="عرض النواقص فقط">
+                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                    <span class="hidden lg:inline">النواقص</span>
+                </button>
+                <!-- زر تبديل العرض -->
+                <button onclick="toggleViewMode()" id="btn-view" class="btn-print" title="تبديل الجدول / الكروت">
+                    <i data-lucide="table" id="icon-view" class="w-5 h-5"></i>
+                </button>
+                <!-- طباعة -->
                 <button onclick="window.print()" class="btn-print" title="طباعة">
                     <i data-lucide="printer" class="w-5 h-5"></i>
                 </button>
@@ -262,6 +282,7 @@
         </div>
     </div>
 
+    <!-- Cards View -->
     <div class="cards-container" id="tasks-list">
         <div class="loader-box">
             <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i>
@@ -269,6 +290,27 @@
         </div>
     </div>
 
+    <!-- Table View -->
+    <div class="table-wrapper hidden" id="tasks-table-container">
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>رقم</th>
+                        <th>الموضوع</th>
+                        <th>الجهة</th>
+                        <th>المكلف</th>
+                        <th>الحالة</th>
+                        <th>النواقص</th>
+                        <th style="text-align:center">إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="tasks-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
     <div class="modal-overlay" id="detail-modal">
         <div class="modal-box">
             <div class="modal-header">
@@ -284,6 +326,7 @@
         </div>
     </div>
 
+    <!-- Reassign Modal -->
     <div class="modal-overlay" id="modal-reassign">
         <div class="modal-box">
             <div class="modal-header">
@@ -307,6 +350,7 @@
         </div>
     </div>
 
+    <!-- Status Modal -->
     <div class="modal-overlay" id="modal-status">
         <div class="modal-box">
             <div class="modal-header">
@@ -341,11 +385,16 @@
     <script src="assets/js/auth.js"></script>
     <script>
         lucide.createIcons();
-        let allTasks = [];
-        let allEmployees = [];
-        let adminList = [];
-        let techList = [];
+
+        let allTasks      = [];
+        let allEmployees  = [];
+        let adminList     = [];
+        let techList      = [];
         let currentStatusFilter = '';
+        let showMissingOnly = false;
+        let isTableView     = false;
+
+        const CASE_ENTITIES = ['النيابة الإدارية', 'نيابة', 'الشؤون القانونية', 'شئون قانونية', 'ش.ق', 'ش ق'];
 
         document.addEventListener('DOMContentLoaded', async () => {
             if (typeof auth === 'undefined') { window.location.href = 'index.html'; return; }
@@ -359,7 +408,6 @@
             const y = now.getFullYear();
             const m = String(now.getMonth() + 1).padStart(2, '0');
             const lastDay = new Date(y, now.getMonth() + 1, 0).getDate();
-
             document.getElementById('f-start').value = `${y}-${m}-01`;
             document.getElementById('f-end').value = `${y}-${m}-${lastDay}`;
 
@@ -377,6 +425,31 @@
         function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
         function closeEnhancementModal(id) { document.getElementById(id).classList.remove('open'); }
 
+        // ── Toggle View Mode ──
+        function toggleViewMode() {
+            isTableView = !isTableView;
+            const iconEl = document.getElementById('icon-view');
+            iconEl.setAttribute('data-lucide', isTableView ? 'layout-grid' : 'table');
+            lucide.createIcons();
+            document.getElementById('tasks-list').classList.toggle('hidden', isTableView);
+            document.getElementById('tasks-table-container').classList.toggle('hidden', !isTableView);
+        }
+
+        function toggleMissingData() {
+            showMissingOnly = !showMissingOnly;
+            const btn = document.getElementById('btn-missing');
+            if (showMissingOnly) {
+                btn.classList.replace('bg-red-50', 'bg-red-600');
+                btn.classList.replace('text-red-600', 'text-white');
+                btn.classList.replace('border-red-200', 'border-red-600');
+            } else {
+                btn.classList.replace('bg-red-600', 'bg-red-50');
+                btn.classList.replace('text-white', 'text-red-600');
+                btn.classList.replace('border-red-600', 'border-red-200');
+            }
+            applyFilters();
+        }
+
         async function loadData(username) {
             const container = document.getElementById('tasks-list');
             container.innerHTML = `
@@ -384,10 +457,10 @@
                     <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto mb-3 text-teal-600"></i>
                     <p class="font-bold text-gray-500">جاري الاتصال بقاعدة البيانات...</p>
                 </div>`;
+            lucide.createIcons();
 
             try {
-                const API_URL = CONFIG.API_URL;
-                const res = await fetch(API_URL, { 
+                const res = await fetch(CONFIG.API_URL, { 
                     method: 'POST', 
                     body: JSON.stringify({ action: 'getAllData', role: 'مدير', name: username }) 
                 });
@@ -395,97 +468,97 @@
 
                 if (data.success) {
                     allTasks = data.tasks || [];
-                    if(data.stats && data.stats.employees) allEmployees = data.stats.employees;
-                    
+                    if (data.stats && data.stats.employees) allEmployees = data.stats.employees;
                     populateDropdowns();
-                    updateStats();
                     applyFilters();
                 } else {
-                    container.innerHTML = `<div class="empty-box"><i data-lucide="alert-circle" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i>لا توجد بيانات</div>`;
+                    container.innerHTML = `<div class="empty-box"><i data-lucide="alert-circle" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i><p>${data.error || 'لا توجد بيانات'}</p></div>`;
                     lucide.createIcons();
                 }
             } catch (e) {
-                container.innerHTML = `<div class="empty-box text-red-500"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2"></i>خطأ في الاتصال بالخادم</div>`;
+                container.innerHTML = `<div class="empty-box text-red-500"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2"></i><p>خطأ في الاتصال بالخادم</p></div>`;
                 lucide.createIcons();
             }
         }
 
         function populateDropdowns() {
-            const grpAdmin = document.getElementById('grp-admin');
-            const grpTech = document.getElementById('grp-tech');
+            const grpAdmin      = document.getElementById('grp-admin');
+            const grpTech       = document.getElementById('grp-tech');
             const reassignSelect = document.getElementById('reassign-select');
             
             grpAdmin.innerHTML = ''; grpTech.innerHTML = '';
             adminList = []; techList = [];
-            
-            // Populate Reassign Modal
-            if(reassignSelect) reassignSelect.innerHTML = '<option value="">-- اختر من القائمة --</option>';
+            if (reassignSelect) reassignSelect.innerHTML = '<option value="">-- اختر من القائمة --</option>';
 
-            allEmployees.sort((a,b) => a.name.localeCompare(b.name)).forEach(e => {
+            allEmployees.sort((a, b) => a.name.localeCompare(b.name)).forEach(e => {
                 const title = (e.jobTitle || '').trim();
-                
                 if (title === 'مراجع فني') {
                     techList.push(e.name);
-                    const opt = document.createElement('option'); opt.value = e.name; opt.textContent = e.name;
-                    grpTech.appendChild(opt);
-                    if(reassignSelect) { const rOpt = document.createElement('option'); rOpt.value = e.name; rOpt.textContent = e.name; reassignSelect.appendChild(rOpt); }
+                    grpTech.innerHTML += `<option value="${e.name}">${e.name}</option>`;
+                    if (reassignSelect) reassignSelect.innerHTML += `<option value="${e.name}">${e.name}</option>`;
                 } else if (title === 'مراجع مالي وإداري') {
                     adminList.push(e.name);
-                    const opt = document.createElement('option'); opt.value = e.name; opt.textContent = e.name;
-                    grpAdmin.appendChild(opt);
-                    if(reassignSelect) { const rOpt = document.createElement('option'); rOpt.value = e.name; rOpt.textContent = e.name; reassignSelect.appendChild(rOpt); }
+                    grpAdmin.innerHTML += `<option value="${e.name}">${e.name}</option>`;
+                    if (reassignSelect) reassignSelect.innerHTML += `<option value="${e.name}">${e.name}</option>`;
                 }
             });
 
             const srcSelect = document.getElementById('f-source');
             const sources = new Set(allTasks.map(t => t.source).filter(s => s));
             Array.from(sources).sort().forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s; opt.textContent = s;
-                srcSelect.appendChild(opt);
+                srcSelect.innerHTML += `<option value="${s}">${s}</option>`;
             });
         }
 
         function filterStatus(status) {
             currentStatusFilter = status;
             document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
-            
-            const map = {'': 'st-total', 'جديد': 'st-new', 'بانتظار': 'st-pending', 'تم': 'st-approved', 'متابعة': 'st-followup', 'متأخر': 'st-late'};
+            const map = { '': 'st-total', 'جديد': 'st-new', 'بانتظار': 'st-pending', 'تم': 'st-approved', 'متابعة': 'st-followup', 'متأخر': 'st-late' };
             let activeId = 'st-total';
-            if(status) {
+            if (status) {
                 const key = Object.keys(map).find(k => status.includes(k));
-                if(key) activeId = map[key];
+                if (key) activeId = map[key];
             }
             document.getElementById(activeId).classList.add('active');
             applyFilters();
         }
 
+        function getMissingFields(t) {
+            const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
+            const isApproved   = (t.status || '').includes('تم');
+            const missing = [];
+            if (!t.assignee || t.assignee.trim() === '')                                       missing.push('assignee');
+            if (isCaseEntity && (!t.caseNumber || t.caseNumber.toString().trim() === ''))      missing.push('case');
+            if (isApproved  && (!t.archive  || t.archive.toString().trim()  === 'undefined' || t.archive.toString().trim() === '')) missing.push('archive');
+            return missing;
+        }
+
         function applyFilters() {
             const empVal = document.getElementById('f-emp').value;
-            const src = document.getElementById('f-source').value;
+            const src    = document.getElementById('f-source').value;
             const search = document.getElementById('f-search').value.toLowerCase();
-            const start = document.getElementById('f-start').value;
-            const end = document.getElementById('f-end').value;
+            const start  = document.getElementById('f-start').value;
+            const end    = document.getElementById('f-end').value;
 
             const filtered = allTasks.filter(t => {
-                if(currentStatusFilter && !(t.status||'').includes(currentStatusFilter)) return false;
-                if(search && !(t.subject+t.id+t.source).toLowerCase().includes(search)) return false;
-                if(src && t.source !== src) return false;
-                
+                if (currentStatusFilter && !(t.status || '').includes(currentStatusFilter)) return false;
+                if (search && !(t.subject + t.id + t.source).toLowerCase().includes(search)) return false;
+                if (src && t.source !== src) return false;
+
                 if (empVal) {
-                    if (empVal === 'ALL_ADMIN') {
-                        if (!adminList.includes(t.assignee)) return false;
-                    } else if (empVal === 'ALL_TECH') {
-                        if (!techList.includes(t.assignee)) return false;
-                    } else {
-                        if (t.assignee !== empVal) return false;
-                    }
+                    if (empVal === 'ALL_ADMIN') { if (!adminList.includes(t.assignee)) return false; }
+                    else if (empVal === 'ALL_TECH') { if (!techList.includes(t.assignee)) return false; }
+                    else { if (t.assignee !== empVal) return false; }
                 }
 
-                if(start && end && t.date) {
+                if (start && end && t.date) {
                     const isoDate = parseDateToISO(t.date);
-                    if(isoDate && (isoDate < start || isoDate > end)) return false;
+                    if (isoDate && (isoDate < start || isoDate > end)) return false;
                 }
+
+                // فلتر النواقص
+                if (showMissingOnly && getMissingFields(t).length === 0) return false;
+
                 return true;
             });
 
@@ -497,125 +570,147 @@
             let c = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
             filtered.forEach(t => {
                 c.total++;
-                const s = (t.status||'');
-                if(s.includes('جديد')) c.new++;
-                else if(s.includes('بانتظار')) c.pending++;
-                else if(s.includes('تم')) c.approved++;
-                else if(s.includes('متابعة')) c.followup++;
-                else if(s.includes('متأخر')) c.late++;
+                const s = (t.status || '');
+                if (s.includes('جديد'))         c.new++;
+                else if (s.includes('بانتظار')) c.pending++;
+                else if (s.includes('تم'))      c.approved++;
+                else if (s.includes('متابعة'))  c.followup++;
+                else if (s.includes('متأخر'))   c.late++;
             });
-
-            document.getElementById('c-total').textContent = c.total;
-            document.getElementById('c-new').textContent = c.new;
+            document.getElementById('c-total').textContent   = c.total;
+            document.getElementById('c-new').textContent     = c.new;
             document.getElementById('c-pending').textContent = c.pending;
-            document.getElementById('c-approved').textContent = c.approved;
-            document.getElementById('c-followup').textContent = c.followup;
-            document.getElementById('c-late').textContent = c.late;
+            document.getElementById('c-approved').textContent= c.approved;
+            document.getElementById('c-followup').textContent= c.followup;
+            document.getElementById('c-late').textContent    = c.late;
         }
 
-        function updateStats() { applyFilters(); }
-
         function renderTasks(tasks) {
-            const container = document.getElementById('tasks-list');
-            if(tasks.length === 0) {
-                container.innerHTML = `<div class="empty-box">لا توجد نتائج مطابقة</div>`;
+            const container  = document.getElementById('tasks-list');
+            const tableBody  = document.getElementById('tasks-table-body');
+
+            if (tasks.length === 0) {
+                const emptyHtml = `<div class="empty-box">لا توجد نتائج مطابقة</div>`;
+                container.innerHTML = emptyHtml;
+                tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:3rem;color:#64748b">لا توجد نتائج</td></tr>`;
                 return;
             }
 
-            // جهات القضايا
-            const caseEntities = ['النيابة الإدارية', 'نيابة', 'الشؤون القانونية', 'شئون قانونية', 'ش.ق', 'ش ق'];
-
+            // ── Cards ──
             container.innerHTML = tasks.map(t => {
                 let bgClass = 'bg-new';
-                let stLabel = t.status;
-                if(t.status.includes('بانتظار')) bgClass = 'bg-pending';
-                else if(t.status.includes('تم')) bgClass = 'bg-approved';
-                else if(t.status.includes('متابعة')) bgClass = 'bg-followup';
-                else if(t.status.includes('متأخر')) bgClass = 'bg-late';
+                if (t.status.includes('بانتظار')) bgClass = 'bg-pending';
+                else if (t.status.includes('تم'))      bgClass = 'bg-approved';
+                else if (t.status.includes('متابعة'))  bgClass = 'bg-followup';
+                else if (t.status.includes('متأخر'))   bgClass = 'bg-late';
 
-                const displayDate = formatArabicDate(t.date);
-                
-                // هل الجهة من جهات القضايا؟
-                const isCaseEntity = caseEntities.some(ce => (t.source||'').includes(ce));
-                
-                // badge القضية على الكارت
+                const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
+                const isApproved   = (t.status || '').includes('تم');
+                const missing      = getMissingFields(t);
+                const hasMissing   = missing.length > 0;
+
                 let caseBadge = '';
-                if (isCaseEntity && t.caseNumber) {
-                    const isNA = (t.source||'').includes('نيابة');
-                    const caseLabel = isNA ? 'ن.إ' : 'ش.ق';
-                    const badgeClass = isNA ? 'badge-case-na' : 'badge-case-sq';
-                    caseBadge = `<span class="${badgeClass} badge-case">⚖️ ${caseLabel}: ${t.caseNumber}/${t.caseYear||''}</span>`;
-                } else if (isCaseEntity && !t.caseNumber) {
+                if (isCaseEntity && t.caseNumber && t.caseNumber.toString().trim()) {
+                    const isNA = (t.source || '').includes('نيابة');
+                    caseBadge = `<span class="${isNA ? 'badge-case-na' : 'badge-case-sq'} badge-case">⚖️ ${isNA ? 'ن.إ' : 'ش.ق'}: ${t.caseNumber}/${t.caseYear || ''}</span>`;
+                } else if (isCaseEntity && missing.includes('case')) {
                     caseBadge = `<span class="badge-missing">⚠ رقم القضية ناقص</span>`;
                 }
-                
-                // زر الأرشيف على الكارت (فقط لـ تم الاعتماد والأرشفة)
+
                 let archiveBtn = '';
-                const isApproved = (t.status||'').includes('تم');
                 if (isApproved) {
-                    if (t.archive && t.archive.toString().trim()) {
+                    if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
                         archiveBtn = `<button onclick="event.stopPropagation();window.open('${t.archive}')" class="btn-archive-card btn-archive-view">📎 الصادر</button>`;
                     } else {
-                        archiveBtn = `<button onclick="event.stopPropagation();openArchiveUpload('${t.id}')" class="btn-archive-card btn-archive-upload">📤 رفع الصادر</button>`;
+                        archiveBtn = `<button onclick="event.stopPropagation();openArchiveUpload('${t.id}')" class="btn-archive-card" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca">⚠ الصادر ناقص</button>`;
                     }
                 }
 
+                const assigneeHtml = t.assignee
+                    ? `${t.assignee} <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-gray-100 border border-gray-300 px-2 py-1 rounded hover:bg-gray-200 text-gray-700" title="تغيير المكلف">تغيير</button>`
+                    : `<span style="color:#dc2626">⚠ غير موزع</span> <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-red-100 border border-red-300 px-2 py-1 rounded text-red-700">تعيين</button>`;
+
                 return `
-                <div class="task-card">
+                <div class="task-card ${hasMissing ? 'has-missing' : ''}">
                     <div class="card-stripe ${bgClass}">
-                        <span class="ch-id">#${t.id}</span>
-                        <span>${stLabel}</span>
+                        <span>#${t.id}</span>
+                        <span>${t.status}</span>
                     </div>
                     <div class="card-body">
                         <h3 class="tc-subject">${t.subject}</h3>
                         <div class="tc-row">
-                            <span class="flex items-center"><i data-lucide="building-2" class="tc-icon"></i>&nbsp;${t.source || 'غير محدد'}</span>
+                            <i data-lucide="building-2" class="w-4 h-4 flex-shrink-0"></i>
+                            <span>${t.source || 'غير محدد'}</span>
                         </div>
                         <div class="tc-row">
-                            <span class="flex items-center"><i data-lucide="calendar" class="tc-icon"></i>&nbsp;${displayDate}</span>
-                            <span class="tc-val flex items-center text-teal-700 font-bold">
-                                ${t.assignee || '<span style="color:#dc2626">غير موزع</span>'}
-                                <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-gray-100 border border-gray-300 px-2 py-1 rounded hover:bg-gray-200 text-gray-700" title="تغيير المكلف">تغيير</button>
-                            </span>
+                            <i data-lucide="calendar" class="w-4 h-4 flex-shrink-0"></i>
+                            <span>${formatArabicDate(t.date)}</span>
                         </div>
-                        ${caseBadge || archiveBtn ? `<div class="tc-row" style="margin-top:2px;gap:6px;flex-wrap:wrap">${caseBadge}${archiveBtn}</div>` : ''}
+                        <div class="tc-row">
+                            <i data-lucide="user" class="w-4 h-4 flex-shrink-0 text-teal-600"></i>
+                            <span class="font-bold text-teal-700 flex items-center gap-1 flex-wrap">${assigneeHtml}</span>
+                        </div>
+                        ${(caseBadge || archiveBtn) ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}${archiveBtn}</div>` : ''}
                     </div>
                     <div class="tc-footer">
-                        <button onclick="openModal('${t.id}')" class="btn-card">
-                            <i data-lucide="eye" class="w-4 h-4"></i> التفاصيل
+                        <button onclick="openModal('${t.id}')" class="btn-card bg-teal-50 border-teal-200 text-teal-800 hover:bg-teal-100 w-full">
+                            <i data-lucide="edit" class="w-4 h-4"></i> إدارة ومعالجة
                         </button>
-                        <button onclick="openStatusModal('${t.id}')" class="btn-card text-blue-600 border-blue-200 bg-blue-50 hover:bg-blue-100">
-                            <i data-lucide="refresh-cw" class="w-4 h-4"></i> الحالة
-                        </button>
-                        ${t.attachment ? `<button onclick="window.open('${t.attachment}')" class="btn-card btn-attach">
-                            <i data-lucide="paperclip" class="w-4 h-4"></i> المرفق
-                        </button>` : ''}
+                        ${t.attachment ? `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="btn-card btn-attach"><i data-lucide="paperclip" class="w-4 h-4"></i> المرفق</button>` : ''}
                     </div>
                 </div>`;
             }).join('');
+
+            // ── Table ──
+            tableBody.innerHTML = tasks.map(t => {
+                const missing = getMissingFields(t);
+                let missingTags = '';
+                if (missing.includes('assignee')) missingTags += '<span class="missing-tag missing-tag-assignee">المكلف</span>';
+                if (missing.includes('case'))     missingTags += '<span class="missing-tag missing-tag-case">القضية</span>';
+                if (missing.includes('archive'))  missingTags += '<span class="missing-tag missing-tag-archive">الصادر</span>';
+
+                return `
+                <tr class="${missing.length ? 'row-missing' : ''}">
+                    <td class="font-mono text-gray-500 font-bold text-xs">#${t.id}</td>
+                    <td class="font-bold text-gray-800" style="max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${t.subject}">${t.subject}</td>
+                    <td class="text-gray-600 text-xs">${t.source || '-'}</td>
+                    <td class="font-bold text-xs ${t.assignee ? 'text-teal-700' : 'text-red-500'}">${t.assignee || 'غير موزع'}</td>
+                    <td><span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-bold">${t.status}</span></td>
+                    <td>${missingTags || '<span style="color:#d1d5db">—</span>'}</td>
+                    <td style="text-align:center">
+                        <button onclick="openModal('${t.id}')" class="bg-teal-50 text-teal-700 hover:bg-teal-600 hover:text-white p-2 rounded transition-colors" title="فتح التفاصيل">
+                            <i data-lucide="edit" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+
             lucide.createIcons();
         }
 
-        // --- Details Modal (Enhanced v22 - editable empty fields) ---
+        // ── Details Modal ──
         function openModal(id) {
             const t = allTasks.find(x => x.id == id);
-            if(!t) return;
+            if (!t) return;
             document.getElementById('m-id').textContent = '#' + t.id;
-            
-            const ro = (label, val) => `<div class="data-item"><span class="data-label">${label}</span><p class="data-val">${val || '-'}</p></div>`;
-            
+
+            const ro = (label, val) =>
+                `<div class="data-item"><span class="data-label">${label}</span><p class="data-val">${val || '-'}</p></div>`;
+
             const ed = (label, field, val, placeholder) => {
                 if (val && val.toString().trim() !== '' && val !== 'undefined') return ro(label, val);
-                return `<div class="data-item"><span class="data-label">${label} <span class="badge-missing">⚠ ناقص</span></span>
-                    <div class="edit-field"><input type="text" class="edit-input" id="edit-${field}-${t.id}" placeholder="${placeholder || ''}">
-                    <button class="edit-btn edit-btn-save" onclick="saveFieldUpdate('${t.id}','${field}',this)">حفظ</button></div></div>`;
+                return `<div class="data-item">
+                    <span class="data-label">${label} <span class="badge-missing">⚠ ناقص</span></span>
+                    <div class="edit-field">
+                        <input type="text" class="edit-input" id="edit-${field}-${t.id}" placeholder="${placeholder || ''}">
+                        <button class="edit-btn edit-btn-save" onclick="saveFieldUpdate('${t.id}','${field}',this)">حفظ</button>
+                    </div>
+                </div>`;
             };
-            
-            // جهات القضايا
-            const caseEntities = ['النيابة الإدارية', 'نيابة', 'الشؤون القانونية', 'شئون قانونية', 'ش.ق', 'ش ق'];
-            const isCaseEntity = caseEntities.some(ce => (t.source||'').includes(ce));
-            const isApproved = (t.status||'').includes('تم');
-            
+
+            const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
+            const isApproved   = (t.status || '').includes('تم');
+
             let html = '';
             html += ro('الموضوع', `<span style="font-weight:800;line-height:1.6">${t.subject}</span>`);
             html += ro('الجهة الواردة', t.source);
@@ -626,23 +721,22 @@
             html += ro('تاريخ الإنجاز', t.completionDate ? formatArabicDate(t.completionDate) : '-');
             html += ed('الموظف المكلف', 'assignee', t.assignee, 'اسم الموظف');
             html += ro('الحالة', t.status);
-            
-            // القضية - فقط لجهات القضايا
+
             if (isCaseEntity) {
-                const isNA = (t.source||'').includes('نيابة');
-                const caseLabel = isNA ? 'رقم قضية النيابة الإدارية' : 'رقم قضية الشؤون القانونية';
-                html += ed(caseLabel, 'caseNumber', t.caseNumber, 'رقم القضية');
-                html += ed('لسنة', 'caseYear', t.caseYear, '2026');
+                const isNA = (t.source || '').includes('نيابة');
+                html += ed(isNA ? 'رقم قضية النيابة الإدارية' : 'رقم قضية الشؤون القانونية', 'caseNumber', t.caseNumber, 'رقم القضية');
+                html += ed('لسنة', 'caseYear', t.caseYear, new Date().getFullYear().toString());
             }
-            
+
             html += ed('الأهمية', 'importance', t.importance, 'عادي / عاجل / عاجل جداً');
-            
-            // الأرشيف (الصادر النهائي) - فقط لـ تم الاعتماد
+
             if (isApproved) {
                 if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
-                    html += `<div class="data-item"><span class="data-label">الصادر النهائي (الأرشيف)</span><p class="data-val"><a href="${t.archive}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p></div>`;
+                    html += `<div class="data-item"><span class="data-label">الصادر النهائي (الأرشيف)</span>
+                        <p class="data-val"><a href="${t.archive}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p></div>`;
                 } else {
-                    html += `<div class="data-item"><span class="data-label">الصادر النهائي (الأرشيف) <span class="badge-missing">⚠ ناقص</span></span>
+                    html += `<div class="data-item">
+                        <span class="data-label">الصادر النهائي (الأرشيف) <span class="badge-missing">⚠ ناقص</span></span>
                         <div class="upload-area" id="upload-area-${t.id}" onclick="document.getElementById('file-${t.id}').click()">
                             <input type="file" id="file-${t.id}" style="display:none" onchange="uploadArchiveFile('${t.id}',this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                             <p style="font-size:0.85rem;font-weight:700;color:#92400e;margin:0">📤 اضغط لرفع ملف الصادر</p>
@@ -652,12 +746,17 @@
                     </div>`;
                 }
             }
-            
+
             if (t.notes) {
-                html += `<div class="bg-yellow-50 p-2 rounded text-sm border border-yellow-200"><span class="data-label text-yellow-700">ملاحظات</span><p class="data-val text-gray-700">${t.notes}</p></div>`;
+                html += `<div class="bg-yellow-50 p-2 rounded text-sm border border-yellow-200">
+                    <span class="data-label text-yellow-700">ملاحظات</span>
+                    <p class="data-val text-gray-700">${t.notes}</p></div>`;
             }
             if (t.attachment) {
-                html += `<div style="margin-top:8px"><a href="${t.attachment}" target="_blank" class="btn-card btn-attach" style="display:inline-flex;width:auto;padding:8px 16px"><i data-lucide="paperclip" class="w-4 h-4"></i> مرفق الوارد</a></div>`;
+                html += `<div style="margin-top:8px">
+                    <a href="${t.attachment}" target="_blank" class="btn-card btn-attach" style="display:inline-flex;width:auto;padding:8px 16px">
+                        <i data-lucide="paperclip" class="w-4 h-4"></i> مرفق الوارد
+                    </a></div>`;
             }
 
             document.getElementById('m-content').innerHTML = html;
@@ -665,33 +764,32 @@
             lucide.createIcons();
         }
 
-        // --- Save single field update ---
+        // ── Save Field Update ──
         async function saveFieldUpdate(taskId, fieldName, btnEl) {
             const input = document.getElementById(`edit-${fieldName}-${taskId}`);
             if (!input) return;
             const value = input.value.trim();
             if (!value) { alert('يرجى إدخال القيمة أولاً'); return; }
-            
+
             const origText = btnEl.textContent;
             btnEl.textContent = 'جاري...'; btnEl.disabled = true;
-            
+
             try {
-                const userStr = localStorage.getItem('iag_user');
+                const userStr   = localStorage.getItem('iag_user');
                 const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
-                
-                const res = await fetch(CONFIG.API_URL, {
+
+                const res  = await fetch(CONFIG.API_URL, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName, fieldValue: value, updatedBy })
                 });
                 const data = await res.json();
-                
+
                 if (data.success) {
                     const task = allTasks.find(x => x.id == taskId);
                     if (task) task[fieldName] = value;
                     const parent = input.closest('.data-item');
-                    const label = parent.querySelector('.data-label').textContent.replace('⚠ ناقص','').trim();
+                    const label  = parent.querySelector('.data-label').textContent.replace('⚠ ناقص', '').trim();
                     parent.innerHTML = `<span class="data-label">${label} ✅</span><p class="data-val">${value}</p>`;
-                    // تحديث الكارت
                     applyFilters();
                 } else {
                     alert('❌ ' + (data.error || 'فشل الحفظ'));
@@ -703,73 +801,67 @@
             }
         }
 
-        // --- Upload archive file ---
+        // ── Upload Archive File ──
         async function uploadArchiveFile(taskId, inputEl) {
             const file = inputEl.files[0];
             if (!file) return;
-            
-            const maxSize = 10 * 1024 * 1024; // 10MB
-            if (file.size > maxSize) { alert('حجم الملف أكبر من 10 ميجا'); return; }
-            
-            const area = document.getElementById(`upload-area-${taskId}`);
+            if (file.size > 10 * 1024 * 1024) { alert('حجم الملف أكبر من 10 ميجا'); return; }
+
+            const area   = document.getElementById(`upload-area-${taskId}`);
             const status = document.getElementById(`upload-status-${taskId}`);
             area.classList.add('uploading');
             area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#0f766e">⏳ جاري الرفع...</p>';
             status.style.display = 'block';
-            status.textContent = `📁 ${file.name} (${(file.size/1024).toFixed(0)} KB)`;
+            status.textContent = `📁 ${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
             status.style.color = '#64748b';
-            
+
             try {
-                const base64 = await fileToBase64(file);
-                const userStr = localStorage.getItem('iag_user');
+                const base64    = await fileToBase64(file);
+                const userStr   = localStorage.getItem('iag_user');
                 const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
-                
-                const res = await fetch(CONFIG.API_URL, {
+
+                const res  = await fetch(CONFIG.API_URL, {
                     method: 'POST',
                     body: JSON.stringify({
                         action: 'uploadArchiveFile',
-                        taskId: taskId,
-                        fileName: `صادر_${taskId}_${file.name}`,
+                        taskId, updatedBy,
+                        fileName  : `صادر_${taskId}_${file.name}`,
                         fileBase64: base64,
-                        mimeType: file.type,
-                        updatedBy: updatedBy
+                        mimeType  : file.type
                     })
                 });
                 const data = await res.json();
-                
+
                 if (data.success) {
                     const task = allTasks.find(x => x.id == taskId);
                     if (task) task.archive = data.fileUrl;
-                    
                     const parent = area.closest('.data-item');
-                    parent.innerHTML = `<span class="data-label">الصادر النهائي (الأرشيف) ✅</span><p class="data-val"><a href="${data.fileUrl}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p>`;
+                    parent.innerHTML = `<span class="data-label">الصادر النهائي (الأرشيف) ✅</span>
+                        <p class="data-val"><a href="${data.fileUrl}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p>`;
                     applyFilters();
                 } else {
                     alert('❌ ' + (data.error || 'فشل الرفع'));
                     area.classList.remove('uploading');
-                    area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ فشل الرفع - اضغط للمحاولة مرة أخرى</p>';
+                    area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ فشل الرفع — اضغط للمحاولة مرة أخرى</p>';
                 }
             } catch (e) {
                 alert('❌ خطأ في الاتصال');
                 area.classList.remove('uploading');
-                area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ خطأ - اضغط للمحاولة</p>';
+                area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ خطأ — اضغط للمحاولة</p>';
             }
         }
 
-        function openArchiveUpload(taskId) {
-            openModal(taskId);
-        }
+        function openArchiveUpload(taskId) { openModal(taskId); }
 
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onload  = () => resolve(reader.result.split(',')[1]);
                 reader.onerror = reject;
                 reader.readAsDataURL(file);
             });
         }
 
-        // --- Enhancement Modals Functions ---
         function openReassignModal(taskId) {
             document.getElementById('reassign-task-id').value = taskId;
             document.getElementById('modal-reassign').classList.add('open');
@@ -780,22 +872,20 @@
             document.getElementById('modal-status').classList.add('open');
         }
 
-        // --- Real API Actions ---
         async function confirmReassign() {
             const taskId = document.getElementById('reassign-task-id').value;
             const newEmp = document.getElementById('reassign-select').value;
-            const btn = document.getElementById('btn-confirm-reassign');
-
+            const btn    = document.getElementById('btn-confirm-reassign');
             if (!newEmp) { alert('يرجى اختيار موظف'); return; }
 
             if (confirm(`هل أنت متأكد من تغيير المكلف إلى ${newEmp}؟`)) {
                 btn.textContent = 'جاري الاتصال...'; btn.disabled = true;
                 try {
-                    const userStr = localStorage.getItem('iag_user');
+                    const userStr    = localStorage.getItem('iag_user');
                     const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
-                    const res = await fetch(CONFIG.API_URL, {
+                    const res  = await fetch(CONFIG.API_URL, {
                         method: 'POST',
-                        body: JSON.stringify({ action: 'reassignTask', taskId: taskId, newEmployee: newEmp, updatedBy: currentUser })
+                        body: JSON.stringify({ action: 'reassignTask', taskId, newEmployee: newEmp, updatedBy: currentUser })
                     });
                     const data = await res.json();
                     if (data.success) {
@@ -803,25 +893,25 @@
                         closeEnhancementModal('modal-reassign');
                         const u = JSON.parse(localStorage.getItem('iag_user'));
                         loadData(u.name);
-                    } else { alert('❌ حدث خطأ: ' + (data.error || 'لم يتم التعديل')); }
-                } catch (error) { alert('❌ خطأ في الاتصال بالخادم'); } 
+                    } else { alert('❌ ' + (data.error || 'لم يتم التعديل')); }
+                } catch (err) { alert('❌ خطأ في الاتصال بالخادم'); }
                 finally { btn.textContent = 'تأكيد التغيير'; btn.disabled = false; }
             }
         }
 
         async function confirmStatusChange() {
-            const taskId = document.getElementById('status-task-id').value;
+            const taskId    = document.getElementById('status-task-id').value;
             const newStatus = document.getElementById('status-select').value;
-            const btn = document.getElementById('btn-confirm-status');
+            const btn       = document.getElementById('btn-confirm-status');
 
             if (confirm(`هل أنت متأكد من تغيير الحالة إلى "${newStatus}"؟`)) {
                 btn.textContent = 'جاري الحفظ...'; btn.disabled = true;
                 try {
-                    const userStr = localStorage.getItem('iag_user');
+                    const userStr    = localStorage.getItem('iag_user');
                     const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
-                    const res = await fetch(CONFIG.API_URL, {
+                    const res  = await fetch(CONFIG.API_URL, {
                         method: 'POST',
-                        body: JSON.stringify({ action: 'updateStatus', taskId: taskId, newStatus: newStatus, updatedBy: currentUser })
+                        body: JSON.stringify({ action: 'updateStatus', taskId, newStatus, updatedBy: currentUser })
                     });
                     const data = await res.json();
                     if (data.success) {
@@ -829,27 +919,26 @@
                         closeEnhancementModal('modal-status');
                         const u = JSON.parse(localStorage.getItem('iag_user'));
                         loadData(u.name);
-                    } else { alert('❌ حدث خطأ: ' + (data.error || 'لم يتم التعديل')); }
-                } catch (error) { alert('❌ خطأ في الاتصال بالخادم'); }
+                    } else { alert('❌ ' + (data.error || 'لم يتم التعديل')); }
+                } catch (err) { alert('❌ خطأ في الاتصال بالخادم'); }
                 finally { btn.textContent = 'حفظ الحالة'; btn.disabled = false; }
             }
         }
 
-        // --- Helpers ---
         function parseDateToISO(dateStr) {
-            if(!dateStr) return null;
-            if(dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
+            if (!dateStr) return null;
+            if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
             const parts = dateStr.split('/');
-            if(parts.length === 3) return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+            if (parts.length === 3) return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
             return null;
         }
 
         function formatArabicDate(dateStr) {
-            if(!dateStr) return '-';
+            if (!dateStr) return '-';
             const parts = dateStr.split('/');
-            if(parts.length !== 3) return dateStr;
-            const date = new Date(parts[2], parts[1]-1, parts[0]);
-            return date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
+            if (parts.length !== 3) return dateStr;
+            const d = new Date(parts[2], parts[1] - 1, parts[0]);
+            return d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
         }
     </script>
 </body>
