@@ -528,17 +528,43 @@
 
         function filterStatus(status) {
             // toggle: ضغط على المربع النشط يرجع للإجمالي
-            if (status && currentStatusFilter === status) status = '';
-            currentStatusFilter = status;
-            document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
-            const map = { '': 'st-total', 'جديد': 'st-new', 'بانتظار': 'st-pending', 'تم': 'st-approved', 'متابعة': 'st-followup', 'متأخر': 'st-late' };
-            let activeId = 'st-total';
-            if (status) {
-                const key = Object.keys(map).find(k => status.includes(k));
-                if (key) activeId = map[key];
+            if (status && currentStatusFilter === status) {
+                currentStatusFilter = ''; // إلغاء الفلتر إذا تم الضغط على نفس الكارت
+            } else {
+                currentStatusFilter = status;
             }
-            document.getElementById(activeId).classList.add('active');
+            
+            // تحديث الشكل البصري للكروت فوراً
+            updateActiveStatCard();
+            
+            // تطبيق الفلاتر
             applyFilters();
+        }
+
+        // دالة جديدة ومستقلة لتحديث الشكل البصري للكروت بناءً على currentStatusFilter
+        function updateActiveStatCard() {
+            // 1. مسح الكلاس active من كل الكروت
+            document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
+            
+            // 2. خريطة مطابقة النصوص لـ IDs الكروت
+            const map = { 
+                '': 'st-total', 
+                'جديد': 'st-new', 
+                'بانتظار الاعتماد': 'st-pending', // التعديل هنا: استخدام النص الكامل لضمان دقة المطابقة
+                'تم الاعتماد والأرشفة': 'st-approved', 
+                'بحاجة الي متابعة': 'st-followup', 
+                'متأخر': 'st-late' 
+            };
+
+            // 3. تحديد الـ ID الذي يجب أن يكون نشطاً
+            // إذا كان currentStatusFilter فارغاً (الإجمالي) سيأخذ st-total
+            let activeId = map[currentStatusFilter] || 'st-total'; 
+
+            // 4. إضافة الكلاس active للكارت الهدف
+            const activeCard = document.getElementById(activeId);
+            if(activeCard) {
+                activeCard.classList.add('active');
+            }
         }
 
         function getMissingFields(t) {
