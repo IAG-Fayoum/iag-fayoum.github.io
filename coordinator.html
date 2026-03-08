@@ -1,5 +1,6 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html><html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -7,6 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
 
+```
 <title>المنسق | IAG System</title>
 <link rel="icon" type="image/png" href="assets/icons/favicon.png">
 
@@ -59,23 +61,18 @@
     .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
 
     .btn-missing { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 10px; height: 44px; padding: 0 12px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; font-family: 'Cairo', sans-serif; }
-    .btn-missing.active { background: #dc2626; color: white; border-color: #dc2626; }
 
     .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
     .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
-    .stat-card-big { background: white; border-width: 1px; border-style: solid; border-color: #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.15s; }
-    .stat-card-big.active { background: #ccfbf1; border-color: #0f766e; border-width: 2px; outline: 3px solid rgba(15,118,110,0.2); outline-offset: 1px; }
-    .stat-card-big.active .lbl { color: #0f766e; }
-    .stat-card-big.active .num { color: #0f766e; }
+    .stat-card-big { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); border-width: 2px; }
     .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
     .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
 
-    .stat-card-small { background: white; border-width: 1px; border-style: solid; border-color: #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; transition: 0.15s; }
-    .stat-card-small.active { background: #ccfbf1; border-color: #0f766e; border-width: 2px; outline: 3px solid rgba(15,118,110,0.2); outline-offset: 1px; }
-    .stat-card-small.active .lbl { color: #0f766e; }
-    .stat-card-small.active .num { color: #0f766e; }
+    .stat-card-small { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; }
+    .stat-card-small.active { background: #f0fdfa; border-color: var(--primary); border-width: 2px; }
     .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
     .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
 
@@ -108,12 +105,12 @@
     /* --- Modal --- */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
     .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
-    .modal-box { background: white; width: 95%; max-width: 580px; max-height: 85vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
-    .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; flex-shrink: 0; }
-    .modal-body { padding: 1rem 1.25rem; overflow-y: auto; }
+    .modal-box { background: white; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
+    .modal-header { padding: 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+    .modal-body { padding: 1.5rem; }
     .modal-footer { padding: 1rem; border-top: 1px solid #e2e8f0; background: #f8fafc; display: flex; gap: 8px; justify-content: flex-end; }
     
-    .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 6px; }
+    .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 8px; }
     .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
     .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
 
@@ -157,27 +154,15 @@
     .missing-tag-case { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
     .missing-tag-archive { background: #fefce8; color: #92400e; border: 1px solid #fde68a; }
 
-
-    /* --- Context Bar --- */
-    .context-bar { max-width: 1200px; margin: 0 1rem 10px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-    .ctx-label { font-size: 0.72rem; color: #94a3b8; font-weight: 700; white-space: nowrap; }
-    .ctx-total { font-size: 0.8rem; font-weight: 800; color: #334155; white-space: nowrap; }
-    .ctx-divider { width: 1px; height: 16px; background: #e2e8f0; flex-shrink: 0; }
-    .ctx-chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.15s; font-family: 'Cairo', sans-serif; background: #f1f5f9; color: #475569; white-space: nowrap; }
-    .ctx-chip:hover { background: #e2e8f0; }
-    .ctx-chip.active { background: #0f766e; color: white; border-color: #0f766e; }
-    .ctx-count { background: rgba(0,0,0,0.08); border-radius: 10px; padding: 0 5px; font-size: 0.7rem; }
-    .ctx-chip.active .ctx-count { background: rgba(255,255,255,0.25); }
-    @media (min-width: 1024px) { .context-bar { margin: 0 auto 10px; } }
-
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     .hidden { display: none !important; }
 </style>
-
+```
 
 </head>
 <body>
 
+```
 <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
 <aside class="side-menu" id="side-menu">
     <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
@@ -263,7 +248,7 @@
             <!-- زر النواقص -->
             <button onclick="toggleMissingData()" id="btn-missing" class="btn-missing" title="عرض النواقص فقط">
                 <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-                النواقص
+                <span class="hidden lg:inline">النواقص</span>
             </button>
             <!-- زر تبديل العرض -->
             <button onclick="toggleViewMode()" id="btn-view" class="btn-print" title="تبديل الجدول / الكروت">
@@ -302,12 +287,6 @@
     </div>
 </div>
 
-<!-- Context Bar -->
-<div class="context-bar" id="context-bar" style="display:none">
-    <span class="ctx-label">عرض:</span>
-    <div id="ctx-chips" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"></div>
-</div>
-
 <!-- Cards View -->
 <div class="cards-container" id="tasks-list">
     <div class="loader-box">
@@ -337,7 +316,7 @@
 </div>
 
 <!-- Detail Modal -->
-<div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeModal()">
+<div class="modal-overlay" id="detail-modal">
     <div class="modal-box">
         <div class="modal-header">
             <div>
@@ -347,13 +326,13 @@
             <button onclick="closeModal()" class="p-2 bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
         <div class="modal-body">
-            <div class="flex flex-col gap-3" id="m-content"></div>
+            <div class="flex flex-col gap-4" id="m-content"></div>
         </div>
     </div>
 </div>
 
 <!-- Reassign Modal -->
-<div class="modal-overlay" id="modal-reassign" onclick="if(event.target===this)closeEnhancementModal('modal-reassign')">
+<div class="modal-overlay" id="modal-reassign">
     <div class="modal-box">
         <div class="modal-header">
             <h3 class="font-bold text-lg">تغيير الموظف المكلف</h3>
@@ -377,7 +356,7 @@
 </div>
 
 <!-- Status Modal -->
-<div class="modal-overlay" id="modal-status" onclick="if(event.target===this)closeEnhancementModal('modal-status')">
+<div class="modal-overlay" id="modal-status">
     <div class="modal-box">
         <div class="modal-header">
             <h3 class="font-bold text-lg">تغيير حالة المعاملة</h3>
@@ -417,7 +396,6 @@
     let adminList     = [];
     let techList      = [];
     let currentStatusFilter = '';
-    let currentDocFilter    = '';
     let showMissingOnly = false;
     let isTableView     = false;
 
@@ -464,7 +442,16 @@
 
     function toggleMissingData() {
         showMissingOnly = !showMissingOnly;
-        document.getElementById('btn-missing').classList.toggle('active', showMissingOnly);
+        const btn = document.getElementById('btn-missing');
+        if (showMissingOnly) {
+            btn.classList.replace('bg-red-50', 'bg-red-600');
+            btn.classList.replace('text-red-600', 'text-white');
+            btn.classList.replace('border-red-200', 'border-red-600');
+        } else {
+            btn.classList.replace('bg-red-600', 'bg-red-50');
+            btn.classList.replace('text-white', 'text-red-600');
+            btn.classList.replace('border-red-600', 'border-red-200');
+        }
         applyFilters();
     }
 
@@ -529,66 +516,38 @@
     }
 
     function filterStatus(status) {
-        // toggle: ضغط على المربع النشط يرجع للإجمالي
-        if (status && currentStatusFilter === status) {
-            currentStatusFilter = ''; // إلغاء الفلتر إذا تم الضغط على نفس الكارت
-        } else {
-            currentStatusFilter = status;
-        }
-        
-        // تحديث الشكل البصري للكروت فوراً
-        updateActiveStatCard();
-        
-        // تطبيق الفلاتر
-        applyFilters();
-    }
-
-    // دالة جديدة ومستقلة لتحديث الشكل البصري للكروت بناءً على currentStatusFilter
-    function updateActiveStatCard() {
-        // 1. مسح الكلاس active من كل الكروت
+        currentStatusFilter = status;
         document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
-        
-        // 2. خريطة مطابقة النصوص لـ IDs الكروت
-        const map = { 
-            '': 'st-total', 
-            'جديد': 'st-new', 
-            'بانتظار الاعتماد': 'st-pending', // التعديل هنا: استخدام النص الكامل لضمان دقة المطابقة
-            'تم الاعتماد والأرشفة': 'st-approved', 
-            'بحاجة الي متابعة': 'st-followup', 
-            'متأخر': 'st-late' 
-        };
-
-        // 3. تحديد الـ ID الذي يجب أن يكون نشطاً
-        // إذا كان currentStatusFilter فارغاً (الإجمالي) سيأخذ st-total
-        let activeId = map[currentStatusFilter] || 'st-total'; 
-
-        // 4. إضافة الكلاس active للكارت الهدف
-        const activeCard = document.getElementById(activeId);
-        if(activeCard) {
-            activeCard.classList.add('active');
+        const map = { '': 'st-total', 'جديد': 'st-new', 'بانتظار': 'st-pending', 'تم': 'st-approved', 'متابعة': 'st-followup', 'متأخر': 'st-late' };
+        let activeId = 'st-total';
+        if (status) {
+            const key = Object.keys(map).find(k => status.includes(k));
+            if (key) activeId = map[key];
         }
+        document.getElementById(activeId).classList.add('active');
+        applyFilters();
     }
 
     function getMissingFields(t) {
         const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
-        const isApproved   = (t.status || '').includes('تم');
+        const status       = t.status || '';
+        const isOutgoing   = (t.transactionType || t.docType || '').includes('صادر');
+        const isNew        = status.includes('جديد');
+        const isPending    = status.includes('بانتظار');
+        const isApproved   = status.includes('تم');
         const missing = [];
-        if (!t.assignee || t.assignee.trim() === '')                                       missing.push('assignee');
-        if (isCaseEntity && (!t.caseNumber || t.caseNumber.toString().trim() === ''))      missing.push('case');
-        if (isApproved  && (!t.archive  || t.archive.toString().trim()  === 'undefined' || t.archive.toString().trim() === '')) missing.push('archive');
+        if (!t.assignee || t.assignee.trim() === '') missing.push('assignee');
+        if (isCaseEntity && (!t.caseNumber || t.caseNumber.toString().trim() === '')) missing.push('case');
+        // مرفق الوارد: ناقص فقط لو وارد + جديد
+        if (!isOutgoing && isNew && (!t.attachment || t.attachment.trim() === '' || t.attachment === 'undefined'))
+            missing.push('attachment');
+        // مسودة الرد PDF: ناقص فقط لو بانتظار الاعتماد
+        if (isPending && (!t.reportPdf || t.reportPdf.trim() === '' || t.reportPdf === 'undefined'))
+            missing.push('reportPdf');
+        // مرفق الصادر: ناقص فقط لو تم الاعتماد والأرشفة
+        if (isApproved && (!t.archive || t.archive.trim() === '' || t.archive === 'undefined'))
+            missing.push('archive');
         return missing;
-    }
-
-    // ── DocType helpers ──
-    function getDocGroup(t) {
-        const tp = (t.transactionType || t.docType || '').trim();
-        if (tp.includes('صادر')) return 'صادر';
-        return 'وارد'; // كل ما ليس صادراً صريحاً = وارد
-    }
-
-    function filterDocType(group) {
-        currentDocFilter = (currentDocFilter === group) ? '' : group;
-        applyFilters();
     }
 
     function applyFilters() {
@@ -598,78 +557,49 @@
         const start  = document.getElementById('f-start').value;
         const end    = document.getElementById('f-end').value;
 
-        // baseFiltered: كل الفلاتر ما عدا الحالة ونوع المستند
-        const baseFiltered = allTasks.filter(t => {
+        const filtered = allTasks.filter(t => {
+            if (currentStatusFilter && !(t.status || '').includes(currentStatusFilter)) return false;
             if (search && !(t.subject + t.id + t.source).toLowerCase().includes(search)) return false;
             if (src && t.source !== src) return false;
+
             if (empVal) {
                 if (empVal === 'ALL_ADMIN') { if (!adminList.includes(t.assignee)) return false; }
                 else if (empVal === 'ALL_TECH') { if (!techList.includes(t.assignee)) return false; }
                 else { if (t.assignee !== empVal) return false; }
             }
+
             if (start && end && t.date) {
                 const isoDate = parseDateToISO(t.date);
                 if (isoDate && (isoDate < start || isoDate > end)) return false;
             }
+
+            // فلتر النواقص
             if (showMissingOnly && getMissingFields(t).length === 0) return false;
+
             return true;
         });
 
-        // الأرقام الـ 6 من baseFiltered (مش متأثرة بالحالة)
-        updateStatsContext(baseFiltered);
-
-        // الكروت = baseFiltered + status + docType
-        const displayFiltered = baseFiltered.filter(t => {
-            if (currentStatusFilter && !(t.status || '').includes(currentStatusFilter)) return false;
-            if (currentDocFilter && getDocGroup(t) !== currentDocFilter) return false;
-            return true;
-        });
-
-        // context bar يتبع displayFiltered
-        updateContextBar(displayFiltered);
-
-        renderTasks(displayFiltered);
+        updateStatsContext(filtered);
+        renderTasks(filtered);
     }
 
-    function updateStatsContext(tasks) {
+    function updateStatsContext(filtered) {
         let c = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
-        tasks.forEach(t => {
+        filtered.forEach(t => {
             c.total++;
             const s = (t.status || '');
-            if      (s.includes('جديد'))     c.new++;
-            else if (s.includes('بانتظار'))  c.pending++;
-            else if (s.includes('تم'))       c.approved++;
-            else if (s.includes('متابعة'))   c.followup++;
-            else if (s.includes('متأخر'))    c.late++;
+            if (s.includes('جديد'))         c.new++;
+            else if (s.includes('بانتظار')) c.pending++;
+            else if (s.includes('تم'))      c.approved++;
+            else if (s.includes('متابعة'))  c.followup++;
+            else if (s.includes('متأخر'))   c.late++;
         });
-        document.getElementById('c-total').textContent    = c.total;
-        document.getElementById('c-new').textContent      = c.new;
-        document.getElementById('c-pending').textContent  = c.pending;
-        document.getElementById('c-approved').textContent = c.approved;
-        document.getElementById('c-followup').textContent = c.followup;
-        document.getElementById('c-late').textContent     = c.late;
-    }
-
-    function updateContextBar(tasks) {
-        const icons  = { 'وارد': '📥', 'صادر': '📤' };
-        const counts = { 'وارد': 0, 'صادر': 0 };
-        tasks.forEach(t => {
-            const g = getDocGroup(t);
-            if (g === 'وارد' || g === 'صادر') counts[g]++;
-        });
-
-        const bar   = document.getElementById('context-bar');
-        const chips = document.getElementById('ctx-chips');
-        let html = `<span class="ctx-total">${tasks.length} معاملة</span><div class="ctx-divider"></div>`;
-        let hasChip = false;
-        Object.entries(counts).forEach(([group, count]) => {
-            if (!count) return;
-            hasChip = true;
-            const active = currentDocFilter === group ? 'active' : '';
-            html += `<button class="ctx-chip ${active}" onclick="filterDocType('${group}')">${icons[group]} ${group} <span class="ctx-count">${count}</span></button>`;
-        });
-        chips.innerHTML = html;
-        bar.style.display = 'flex';
+        document.getElementById('c-total').textContent   = c.total;
+        document.getElementById('c-new').textContent     = c.new;
+        document.getElementById('c-pending').textContent = c.pending;
+        document.getElementById('c-approved').textContent= c.approved;
+        document.getElementById('c-followup').textContent= c.followup;
+        document.getElementById('c-late').textContent    = c.late;
     }
 
     function renderTasks(tasks) {
@@ -692,6 +622,7 @@
             else if (t.status.includes('متأخر'))   bgClass = 'bg-late';
 
             const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
+            const isPending    = (t.status || '').includes('بانتظار');
             const isApproved   = (t.status || '').includes('تم');
             const missing      = getMissingFields(t);
             const hasMissing   = missing.length > 0;
@@ -704,6 +635,17 @@
                 caseBadge = `<span class="badge-missing">⚠ رقم القضية ناقص</span>`;
             }
 
+            // زر مسودة الرد — بانتظار الاعتماد فقط
+            let reportPdfBtn = '';
+            if (isPending) {
+                if (t.reportPdf && t.reportPdf.trim() && t.reportPdf !== 'undefined') {
+                    reportPdfBtn = `<button onclick="event.stopPropagation();window.open('${t.reportPdf}')" class="btn-archive-card btn-archive-view">📄 مسودة الرد</button>`;
+                } else {
+                    reportPdfBtn = `<button class="btn-archive-card" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;cursor:default">⏳ PDF قيد الإنشاء</button>`;
+                }
+            }
+
+            // زر الصادر — تم الاعتماد فقط
             let archiveBtn = '';
             if (isApproved) {
                 if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
@@ -737,13 +679,13 @@
                         <i data-lucide="user" class="w-4 h-4 flex-shrink-0 text-teal-600"></i>
                         <span class="font-bold text-teal-700 flex items-center gap-1 flex-wrap">${assigneeHtml}</span>
                     </div>
-                    ${(caseBadge || archiveBtn) ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}${archiveBtn}</div>` : ''}
+                    ${(caseBadge || reportPdfBtn || archiveBtn) ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}${reportPdfBtn}${archiveBtn}</div>` : ''}
                 </div>
                 <div class="tc-footer">
                     <button onclick="openModal('${t.id}')" class="btn-card bg-teal-50 border-teal-200 text-teal-800 hover:bg-teal-100 w-full">
                         <i data-lucide="edit" class="w-4 h-4"></i> إدارة ومعالجة
                     </button>
-                    ${t.attachment ? `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="btn-card btn-attach"><i data-lucide="paperclip" class="w-4 h-4"></i> ${(()=>{const tp=(t.transactionType||t.docType||'');if(tp.includes('وارد'))return'مرفق الوارد';if(tp.includes('صادر'))return'مرفق الصادر';if(tp.includes('تقرير')||tp.includes('مرور'))return'مرفقات التقرير';if(tp.includes('شكوى'))return'مرفق الشكوى';return'عرض المرفق';})()}</button>` : ''}
+                    ${t.attachment ? `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="btn-card btn-attach"><i data-lucide="paperclip" class="w-4 h-4"></i> المرفق</button>` : ''}
                 </div>
             </div>`;
         }).join('');
@@ -752,9 +694,11 @@
         tableBody.innerHTML = tasks.map(t => {
             const missing = getMissingFields(t);
             let missingTags = '';
-            if (missing.includes('assignee')) missingTags += '<span class="missing-tag missing-tag-assignee">المكلف</span>';
-            if (missing.includes('case'))     missingTags += '<span class="missing-tag missing-tag-case">القضية</span>';
-            if (missing.includes('archive'))  missingTags += '<span class="missing-tag missing-tag-archive">الصادر</span>';
+            if (missing.includes('assignee'))  missingTags += '<span class="missing-tag missing-tag-assignee">المكلف</span>';
+            if (missing.includes('case'))       missingTags += '<span class="missing-tag missing-tag-case">القضية</span>';
+            if (missing.includes('attachment')) missingTags += '<span class="missing-tag" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">مرفق الوارد</span>';
+            if (missing.includes('reportPdf'))  missingTags += '<span class="missing-tag" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">مسودة الرد</span>';
+            if (missing.includes('archive'))    missingTags += '<span class="missing-tag missing-tag-archive">الصادر</span>';
 
             return `
             <tr class="${missing.length ? 'row-missing' : ''}">
@@ -816,6 +760,17 @@
         }
 
         html += ed('الأهمية', 'importance', t.importance, 'عادي / عاجل / عاجل جداً');
+
+        // مسودة الرد PDF — بانتظار الاعتماد فقط
+        if ((t.status||'').includes('بانتظار')) {
+            if (t.reportPdf && t.reportPdf.trim() && t.reportPdf !== 'undefined') {
+                html += `<div class="data-item"><span class="data-label">مسودة الرد (PDF)</span>
+                    <p class="data-val"><a href="${t.reportPdf}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📄 فتح مسودة الرد</a></p></div>`;
+            } else {
+                html += `<div class="data-item"><span class="data-label">مسودة الرد (PDF) <span class="badge-missing" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">⏳ قيد الإنشاء</span></span>
+                    <p style="font-size:0.8rem;color:#92400e;margin:4px 0 0">سيظهر تلقائياً بعد إنشاء التقرير</p></div>`;
+            }
+        }
 
         if (isApproved) {
             if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
@@ -912,7 +867,7 @@
                 body: JSON.stringify({
                     action: 'uploadArchiveFile',
                     taskId, updatedBy,
-                    fileName  : `صادر_${taskId}\_${file.name}`,
+                    fileName  : `صادر_${taskId}_${file.name}`,
                     fileBase64: base64,
                     mimeType  : file.type
                 })
@@ -1016,7 +971,7 @@
         if (!dateStr) return null;
         if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
         const parts = dateStr.split('/');
-        if (parts.length === 3) return `${parts\[2\]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        if (parts.length === 3) return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
         return null;
     }
 
@@ -1028,7 +983,7 @@
         return d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 </script>
-
+```
 
 </body>
 </html>
