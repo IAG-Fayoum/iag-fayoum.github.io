@@ -65,14 +65,16 @@
         .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
         .stat-card-big { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .stat-card-big.active { background: #ccfbf1; border-color: var(--primary); border-width: 2px; box-shadow: 0 0 0 3px rgba(15,118,110,0.15); }
+        .stat-card-big.active { background: #ccfbf1; border-color: #0f766e; border-width: 2px; outline: 3px solid rgba(15,118,110,0.2); outline-offset: 1px; }
         .stat-card-big.active .lbl { color: #0f766e; }
+        .stat-card-big.active .num { color: #0f766e; }
         .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
         .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
 
         .stat-card-small { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; }
-        .stat-card-small.active { background: #ccfbf1; border-color: var(--primary); border-width: 2px; box-shadow: 0 0 0 3px rgba(15,118,110,0.15); }
+        .stat-card-small.active { background: #ccfbf1; border-color: #0f766e; border-width: 2px; outline: 3px solid rgba(15,118,110,0.2); outline-offset: 1px; }
         .stat-card-small.active .lbl { color: #0f766e; }
+        .stat-card-small.active .num { color: #0f766e; }
         .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
         .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
 
@@ -560,11 +562,8 @@
         // ── DocType helpers ──
         function getDocGroup(t) {
             const tp = (t.transactionType || t.docType || '').trim();
-            if (tp.includes('وارد'))                             return 'وارد';
-            if (tp.includes('صادر'))                             return 'صادر';
-            if (tp.includes('تقرير') || tp.includes('مرور'))    return 'تقارير';
-            if (tp.includes('شكوى'))                            return 'شكاوى';
-            return 'أخرى';
+            if (tp.includes('صادر')) return 'صادر';
+            return 'وارد'; // كل ما ليس صادراً صريحاً = وارد
         }
 
         function filterDocType(group) {
