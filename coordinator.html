@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -6,1025 +7,1050 @@
     <meta name="theme-color" content="#0f766e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
+
+```
+<title>المنسق | IAG System</title>
+<link rel="icon" type="image/png" href="assets/icons/favicon.png">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
     
-    <title>المنسق | IAG System</title>
-    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+    :root {
+        --primary: #0f766e;
+        --c-new: #3b82f6; --c-pending: #16a34a; --c-approved: #047857;   
+        --c-followup: #6b7280; --c-late: #dc2626;       
+    }
+
+    .main-header {
+        background: #115e59;
+        color: white; padding: 1rem 1.5rem 3.5rem;
+        border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+        box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
+        position: relative; z-index: 10;
+        padding-top: max(1rem, env(safe-area-inset-top));
+    }
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
+    .header-btn:hover { background: rgba(255,255,255,0.2); }
 
-    <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
-        
-        :root {
-            --primary: #0f766e;
-            --c-new: #3b82f6; --c-pending: #16a34a; --c-approved: #047857;   
-            --c-followup: #6b7280; --c-late: #dc2626;       
-        }
+    .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9; }
+    .breadcrumbs span { opacity: 0.7; }
+    .breadcrumbs strong { font-weight: 700; color: white; }
 
-        .main-header {
-            background: #115e59;
-            color: white; padding: 1rem 1.5rem 3.5rem;
-            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
-            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
-            position: relative; z-index: 10;
-            padding-top: max(1rem, env(safe-area-inset-top));
-        }
-        
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
-        .header-btn:hover { background: rgba(255,255,255,0.2); }
+    .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
+    .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
-        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9; }
-        .breadcrumbs span { opacity: 0.7; }
-        .breadcrumbs strong { font-weight: 700; color: white; }
+    .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+    .filter-grid { display: flex; flex-direction: column; gap: 12px; }
+    @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
 
-        .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
-        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
+    .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
+    .f-input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; }
+    .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
 
-        .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
-        .filter-grid { display: flex; flex-direction: column; gap: 12px; }
-        @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
+    .search-wrapper { position: relative; }
+    .search-input { padding-right: 12px; padding-left: 40px; background-color: #f8fafc; }
+    .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; color: #94a3b8; pointer-events: none; }
 
-        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
-        .f-input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; }
-        .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+    .btn-print { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 10px; height: 44px; width: 44px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
 
-        .search-wrapper { position: relative; }
-        .search-input { padding-right: 12px; padding-left: 40px; background-color: #f8fafc; }
-        .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; color: #94a3b8; pointer-events: none; }
+    .btn-missing { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 10px; height: 44px; padding: 0 12px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; font-family: 'Cairo', sans-serif; }
+    .btn-missing.active { background: #dc2626; color: white; border-color: #dc2626; }
 
-        .btn-print { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 10px; height: 44px; width: 44px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
+    .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+    .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
-        .btn-missing { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 10px; height: 44px; padding: 0 12px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; font-family: 'Cairo', sans-serif; }
-        .btn-missing.active { background: #dc2626; color: white; border-color: #dc2626; }
+    .stat-card-big { background: white; border-width: 1px; border-style: solid; border-color: #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.15s; }
+    .stat-card-big.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
+    .stat-card-big.active .lbl { color: #0f766e !important; }
+    .stat-card-big.active .num { color: #0f766e !important; }
+    .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+    .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
 
-        .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
-        .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .stat-card-small { background: white; border-width: 1px; border-style: solid; border-color: #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; transition: 0.15s; }
+    .stat-card-small.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
+    .stat-card-small.active .lbl { color: #0f766e !important; }
+    .stat-card-small.active .num { color: #0f766e !important; }
+    .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+    .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
 
-        .stat-card-big { background: white; border-width: 1px; border-style: solid; border-color: #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.15s; }
-        .stat-card-big.active { background: #ccfbf1; border-color: #0f766e; border-width: 2px; outline: 3px solid rgba(15,118,110,0.2); outline-offset: 1px; }
-        .stat-card-big.active .lbl { color: #0f766e; }
-        .stat-card-big.active .num { color: #0f766e; }
-        .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-        .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
+    .txt-total { color: #334155; } .txt-late { color: #dc2626; } .txt-new { color: #3b82f6; } .txt-pending { color: #16a34a; } .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
 
-        .stat-card-small { background: white; border-width: 1px; border-style: solid; border-color: #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; transition: 0.15s; }
-        .stat-card-small.active { background: #ccfbf1; border-color: #0f766e; border-width: 2px; outline: 3px solid rgba(15,118,110,0.2); outline-offset: 1px; }
-        .stat-card-small.active .lbl { color: #0f766e; }
-        .stat-card-small.active .num { color: #0f766e; }
-        .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
-        .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
+    /* --- Cards --- */
+    .cards-container { padding: 0 1rem 5rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; grid-template-columns: 1fr; }
+    @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
 
-        .txt-total { color: #334155; } .txt-late { color: #dc2626; } .txt-new { color: #3b82f6; } .txt-pending { color: #16a34a; } .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
+    .task-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb; display: flex; flex-direction: column; transition: transform 0.2s; }
+    .task-card.has-missing { border-right: 3px solid #f59e0b; }
+    .card-stripe { padding: 8px 12px; color: white; font-weight: 700; font-size: 0.75rem; display: flex; justify-content: space-between; }
+    
+    .bg-new { background-color: #3b82f6; } .bg-pending { background-color: #16a34a; } .bg-approved { background-color: #047857; } .bg-followup { background-color: #6b7280; } .bg-late { background-color: #dc2626; }
 
-        /* --- Cards --- */
-        .cards-container { padding: 0 1rem 5rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; grid-template-columns: 1fr; }
-        @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
+    .card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .tc-subject { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.5; }
+    .tc-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #475569; }
+    
+    .tc-footer { padding: 10px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap; }
+    .btn-card { flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569; min-width: 80px; }
+    .btn-attach { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+    
+    /* --- Side Menu --- */
+    .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+    .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+    .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+    
+    /* --- Modal --- */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+    .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+    .modal-box { background: white; width: 95%; max-width: 580px; max-height: 85vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
+    .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; flex-shrink: 0; }
+    .modal-body { padding: 1rem 1.25rem; overflow-y: auto; }
+    .modal-footer { padding: 1rem; border-top: 1px solid #e2e8f0; background: #f8fafc; display: flex; gap: 8px; justify-content: flex-end; }
+    
+    .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 6px; }
+    .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
+    .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
 
-        .task-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e5e7eb; display: flex; flex-direction: column; transition: transform 0.2s; }
-        .task-card.has-missing { border-right: 3px solid #f59e0b; }
-        .card-stripe { padding: 8px 12px; color: white; font-weight: 700; font-size: 0.75rem; display: flex; justify-content: space-between; }
-        
-        .bg-new { background-color: #3b82f6; } .bg-pending { background-color: #16a34a; } .bg-approved { background-color: #047857; } .bg-followup { background-color: #6b7280; } .bg-late { background-color: #dc2626; }
+    .edit-field { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+    .edit-input { flex: 1; height: 36px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 10px; font-size: 0.85rem; font-family: Cairo, sans-serif; outline: none; background: #fffbeb; }
+    .edit-input:focus { border-color: #0f766e; box-shadow: 0 0 0 2px rgba(15,118,110,0.1); background: #fff; }
+    .edit-btn { height: 36px; padding: 0 14px; border-radius: 8px; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; font-family: Cairo, sans-serif; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .edit-btn-save { background: #0f766e; color: white; }
+    .edit-btn-save:hover { background: #0d6b63; }
+    .edit-btn-save:disabled { background: #94a3b8; cursor: not-allowed; }
+    .badge-missing { display: inline-flex; align-items: center; gap: 3px; background: #fef3c7; color: #92400e; font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; border: 1px solid #fde68a; }
+    .badge-case { display: inline-flex; align-items: center; gap: 3px; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+    .badge-case-na { background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
+    .badge-case-sq { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .upload-area { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 16px; text-align: center; cursor: pointer; transition: 0.2s; background: #fefce8; margin-top: 4px; }
+    .upload-area:hover { border-color: #0f766e; background: #f0fdfa; }
+    .upload-area.uploading { opacity: 0.6; pointer-events: none; }
+    .btn-archive-card { font-size: 0.7rem; padding: 4px 10px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; border: none; }
+    .btn-archive-upload { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .btn-archive-view { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
 
-        .card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        .tc-subject { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.5; }
-        .tc-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #475569; }
-        
-        .tc-footer { padding: 10px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap; }
-        .btn-card { flex: 1; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border: 1px solid #e5e7eb; background: white; color: #475569; min-width: 80px; }
-        .btn-attach { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
-        
-        /* --- Side Menu --- */
-        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
-        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .menu-open .side-menu { right: 0; } .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
-        
-        /* --- Modal --- */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
-        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
-        .modal-box { background: white; width: 95%; max-width: 580px; max-height: 85vh; border-radius: 16px; overflow-y: auto; display: flex; flex-direction: column; }
-        .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; flex-shrink: 0; }
-        .modal-body { padding: 1rem 1.25rem; overflow-y: auto; }
-        .modal-footer { padding: 1rem; border-top: 1px solid #e2e8f0; background: #f8fafc; display: flex; gap: 8px; justify-content: flex-end; }
-        
-        .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 6px; }
-        .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
-        .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
+    .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
+    .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
 
-        .edit-field { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
-        .edit-input { flex: 1; height: 36px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 10px; font-size: 0.85rem; font-family: Cairo, sans-serif; outline: none; background: #fffbeb; }
-        .edit-input:focus { border-color: #0f766e; box-shadow: 0 0 0 2px rgba(15,118,110,0.1); background: #fff; }
-        .edit-btn { height: 36px; padding: 0 14px; border-radius: 8px; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; font-family: Cairo, sans-serif; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-        .edit-btn-save { background: #0f766e; color: white; }
-        .edit-btn-save:hover { background: #0d6b63; }
-        .edit-btn-save:disabled { background: #94a3b8; cursor: not-allowed; }
-        .badge-missing { display: inline-flex; align-items: center; gap: 3px; background: #fef3c7; color: #92400e; font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; border: 1px solid #fde68a; }
-        .badge-case { display: inline-flex; align-items: center; gap: 3px; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
-        .badge-case-na { background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
-        .badge-case-sq { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-        .upload-area { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 16px; text-align: center; cursor: pointer; transition: 0.2s; background: #fefce8; margin-top: 4px; }
-        .upload-area:hover { border-color: #0f766e; background: #f0fdfa; }
-        .upload-area.uploading { opacity: 0.6; pointer-events: none; }
-        .btn-archive-card { font-size: 0.7rem; padding: 4px 10px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; border: none; }
-        .btn-archive-upload { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-        .btn-archive-view { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    /* Bottom Nav */
+    .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+    .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+    .nav-btn.active { color: var(--primary); }
 
-        .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
-        .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
-
-        /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
-        .nav-btn.active { color: var(--primary); }
-
-        /* --- Table Mode --- */
-        .table-wrapper { padding: 0 1rem 5rem; max-width: 1200px; margin: 0 auto; }
-        .table-container { width: 100%; overflow-x: auto; background: white; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .data-table { width: 100%; text-align: right; border-collapse: collapse; }
-        .data-table th { background: #f8fafc; padding: 12px 14px; font-size: 0.8rem; color: #64748b; border-bottom: 2px solid #e2e8f0; white-space: nowrap; font-weight: 700; font-family: 'Cairo', sans-serif; }
-        .data-table td { padding: 11px 14px; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; font-family: 'Cairo', sans-serif; }
-        .data-table tr:last-child td { border-bottom: none; }
-        .data-table tr:hover td { background: #f8fafc; }
-        .data-table tr.row-missing td:first-child { border-right: 3px solid #f59e0b; }
-        .missing-tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; margin: 1px; }
-        .missing-tag-assignee { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-        .missing-tag-case { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
-        .missing-tag-archive { background: #fefce8; color: #92400e; border: 1px solid #fde68a; }
+    /* --- Table Mode --- */
+    .table-wrapper { padding: 0 1rem 5rem; max-width: 1200px; margin: 0 auto; }
+    .table-container { width: 100%; overflow-x: auto; background: white; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .data-table { width: 100%; text-align: right; border-collapse: collapse; }
+    .data-table th { background: #f8fafc; padding: 12px 14px; font-size: 0.8rem; color: #64748b; border-bottom: 2px solid #e2e8f0; white-space: nowrap; font-weight: 700; font-family: 'Cairo', sans-serif; }
+    .data-table td { padding: 11px 14px; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; font-family: 'Cairo', sans-serif; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #f8fafc; }
+    .data-table tr.row-missing td:first-child { border-right: 3px solid #f59e0b; }
+    .missing-tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; margin: 1px; }
+    .missing-tag-assignee { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .missing-tag-case { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .missing-tag-archive { background: #fefce8; color: #92400e; border: 1px solid #fde68a; }
 
 
-        /* --- Context Bar --- */
-        .context-bar { max-width: 1200px; margin: 0 1rem 10px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-        .ctx-label { font-size: 0.72rem; color: #94a3b8; font-weight: 700; white-space: nowrap; }
-        .ctx-total { font-size: 0.8rem; font-weight: 800; color: #334155; white-space: nowrap; }
-        .ctx-divider { width: 1px; height: 16px; background: #e2e8f0; flex-shrink: 0; }
-        .ctx-chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.15s; font-family: 'Cairo', sans-serif; background: #f1f5f9; color: #475569; white-space: nowrap; }
-        .ctx-chip:hover { background: #e2e8f0; }
-        .ctx-chip.active { background: #0f766e; color: white; border-color: #0f766e; }
-        .ctx-count { background: rgba(0,0,0,0.08); border-radius: 10px; padding: 0 5px; font-size: 0.7rem; }
-        .ctx-chip.active .ctx-count { background: rgba(255,255,255,0.25); }
-        @media (min-width: 1024px) { .context-bar { margin: 0 auto 10px; } }
+    /* --- Context Bar --- */
+    .context-bar { max-width: 1200px; margin: 0 1rem 10px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .ctx-label { font-size: 0.72rem; color: #94a3b8; font-weight: 700; white-space: nowrap; }
+    .ctx-total { font-size: 0.8rem; font-weight: 800; color: #334155; white-space: nowrap; }
+    .ctx-divider { width: 1px; height: 16px; background: #e2e8f0; flex-shrink: 0; }
+    .ctx-chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.15s; font-family: 'Cairo', sans-serif; background: #f1f5f9; color: #475569; white-space: nowrap; }
+    .ctx-chip:hover { background: #e2e8f0; }
+    .ctx-chip.active { background: #0f766e; color: white; border-color: #0f766e; }
+    .ctx-count { background: rgba(0,0,0,0.08); border-radius: 10px; padding: 0 5px; font-size: 0.7rem; }
+    .ctx-chip.active .ctx-count { background: rgba(255,255,255,0.25); }
+    @media (min-width: 1024px) { .context-bar { margin: 0 auto 10px; } }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .hidden { display: none !important; }
-    </style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .hidden { display: none !important; }
+</style>
+```
+
 </head>
 <body>
 
-    <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
-    <aside class="side-menu" id="side-menu">
-        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
-            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
-                <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
-            </div>
-            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
-            <p class="text-xs text-teal-600" id="menu-role">...</p>
+```
+<div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
+<aside class="side-menu" id="side-menu">
+    <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+        <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+            <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
         </div>
-        <nav class="flex-1 p-4 space-y-2">
-            <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
-            <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
-            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
-            <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
-        </nav>
-        <div class="p-4 border-t">
-            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
-                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+        <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
+        <p class="text-xs text-teal-600" id="menu-role">...</p>
+    </div>
+    <nav class="flex-1 p-4 space-y-2">
+        <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
+        <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
+        <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
+        <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
+    </nav>
+    <div class="p-4 border-t">
+        <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+            <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+        </button>
+    </div>
+</aside>
+
+<header class="main-header">
+    <div class="max-w-[1200px] mx-auto">
+        <div class="header-top">
+            <div class="flex gap-3">
+                <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
+            </div>
+            <div class="text-center">
+                <div class="breadcrumbs">
+                    <span>الرئيسية</span>
+                    <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
+                    <strong>صفحة المنسق</strong>
+                </div>
+                <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
+                <p class="dept-subtitle">Internal Audit & Governance Dept</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="window.location.href='notifications.html'" class="header-btn relative">
+                    <i data-lucide="bell" class="w-6 h-6"></i>
+                    <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="filter-container">
+    <div class="filter-grid">
+        <div class="filter-item-search">
+            <label class="f-label">بحث شامل</label>
+            <div class="search-wrapper">
+                <input type="text" id="f-search" class="f-input search-input" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
+                <i data-lucide="search" class="search-icon"></i>
+            </div>
+        </div>
+        <div class="filter-item">
+            <label class="f-label">الموظف المسؤول</label>
+            <select id="f-emp" class="f-input px-2" onchange="applyFilters()">
+                <option value="">عرض الكل</option>
+                <option value="ALL_ADMIN" class="font-bold bg-teal-50 text-teal-800">-- كل المالي والإداري --</option>
+                <option value="ALL_TECH" class="font-bold bg-blue-50 text-blue-800">-- كل الفني والطبي --</option>
+                <optgroup label="مراجع مالي وإداري" id="grp-admin"></optgroup>
+                <optgroup label="مراجع فني" id="grp-tech"></optgroup>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label class="f-label">الجهة الوارد منها</label>
+            <select id="f-source" class="f-input px-2" onchange="applyFilters()">
+                <option value="">كل الجهات</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label class="f-label">من تاريخ</label>
+            <input type="date" id="f-start" class="f-input px-2" onchange="applyFilters()">
+        </div>
+        <div class="filter-item">
+            <label class="f-label">إلى تاريخ</label>
+            <input type="date" id="f-end" class="f-input px-2" onchange="applyFilters()">
+        </div>
+        <div class="filter-item-btn flex gap-2 items-end">
+            <label class="f-label text-transparent hidden lg:block">.</label>
+            <!-- زر النواقص -->
+            <button onclick="toggleMissingData()" id="btn-missing" class="btn-missing" title="عرض النواقص فقط">
+                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                النواقص
+            </button>
+            <!-- زر تبديل العرض -->
+            <button onclick="toggleViewMode()" id="btn-view" class="btn-print" title="تبديل الجدول / الكروت">
+                <i data-lucide="table" id="icon-view" class="w-5 h-5"></i>
+            </button>
+            <!-- طباعة -->
+            <button onclick="window.print()" class="btn-print" title="طباعة">
+                <i data-lucide="printer" class="w-5 h-5"></i>
             </button>
         </div>
-    </aside>
+    </div>
+</div>
 
-    <header class="main-header">
-        <div class="max-w-[1200px] mx-auto">
-            <div class="header-top">
-                <div class="flex gap-3">
-                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
-                </div>
-                <div class="text-center">
-                    <div class="breadcrumbs">
-                        <span>الرئيسية</span>
-                        <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
-                        <strong>صفحة المنسق</strong>
-                    </div>
-                    <h1 class="dept-title">إدارة المراجعة الداخلية والحوكمة</h1>
-                    <p class="dept-subtitle">Internal Audit & Governance Dept</p>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="window.location.href='notifications.html'" class="header-btn relative">
-                        <i data-lucide="bell" class="w-6 h-6"></i>
-                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-teal-700"></span>
-                    </button>
-                </div>
-            </div>
+<div class="stats-wrapper">
+    <div class="stats-row-big">
+        <div class="stat-card-big active" onclick="filterStatus('')" id="st-total">
+            <span class="num txt-total" id="c-total">0</span><span class="lbl">الإجمالي</span>
         </div>
-    </header>
-
-    <div class="filter-container">
-        <div class="filter-grid">
-            <div class="filter-item-search">
-                <label class="f-label">بحث شامل</label>
-                <div class="search-wrapper">
-                    <input type="text" id="f-search" class="f-input search-input" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
-                    <i data-lucide="search" class="search-icon"></i>
-                </div>
-            </div>
-            <div class="filter-item">
-                <label class="f-label">الموظف المسؤول</label>
-                <select id="f-emp" class="f-input px-2" onchange="applyFilters()">
-                    <option value="">عرض الكل</option>
-                    <option value="ALL_ADMIN" class="font-bold bg-teal-50 text-teal-800">-- كل المالي والإداري --</option>
-                    <option value="ALL_TECH" class="font-bold bg-blue-50 text-blue-800">-- كل الفني والطبي --</option>
-                    <optgroup label="مراجع مالي وإداري" id="grp-admin"></optgroup>
-                    <optgroup label="مراجع فني" id="grp-tech"></optgroup>
-                </select>
-            </div>
-            <div class="filter-item">
-                <label class="f-label">الجهة الوارد منها</label>
-                <select id="f-source" class="f-input px-2" onchange="applyFilters()">
-                    <option value="">كل الجهات</option>
-                </select>
-            </div>
-            <div class="filter-item">
-                <label class="f-label">من تاريخ</label>
-                <input type="date" id="f-start" class="f-input px-2" onchange="applyFilters()">
-            </div>
-            <div class="filter-item">
-                <label class="f-label">إلى تاريخ</label>
-                <input type="date" id="f-end" class="f-input px-2" onchange="applyFilters()">
-            </div>
-            <div class="filter-item-btn flex gap-2 items-end">
-                <label class="f-label text-transparent hidden lg:block">.</label>
-                <!-- زر النواقص -->
-                <button onclick="toggleMissingData()" id="btn-missing" class="btn-missing" title="عرض النواقص فقط">
-                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-                    النواقص
-                </button>
-                <!-- زر تبديل العرض -->
-                <button onclick="toggleViewMode()" id="btn-view" class="btn-print" title="تبديل الجدول / الكروت">
-                    <i data-lucide="table" id="icon-view" class="w-5 h-5"></i>
-                </button>
-                <!-- طباعة -->
-                <button onclick="window.print()" class="btn-print" title="طباعة">
-                    <i data-lucide="printer" class="w-5 h-5"></i>
-                </button>
-            </div>
+        <div class="stat-card-big" onclick="filterStatus('متأخر')" id="st-late">
+            <span class="num txt-late" id="c-late">0</span><span class="lbl">متأخر</span>
         </div>
     </div>
-
-    <div class="stats-wrapper">
-        <div class="stats-row-big">
-            <div class="stat-card-big active" onclick="filterStatus('')" id="st-total">
-                <span class="num txt-total" id="c-total">0</span><span class="lbl">الإجمالي</span>
-            </div>
-            <div class="stat-card-big" onclick="filterStatus('متأخر')" id="st-late">
-                <span class="num txt-late" id="c-late">0</span><span class="lbl">متأخر</span>
-            </div>
+    <div class="stats-row-small">
+        <div class="stat-card-small" onclick="filterStatus('جديد')" id="st-new">
+            <span class="num txt-new" id="c-new">0</span><span class="lbl">جديد</span>
         </div>
-        <div class="stats-row-small">
-            <div class="stat-card-small" onclick="filterStatus('جديد')" id="st-new">
-                <span class="num txt-new" id="c-new">0</span><span class="lbl">جديد</span>
-            </div>
-            <div class="stat-card-small" onclick="filterStatus('بانتظار الاعتماد')" id="st-pending">
-                <span class="num txt-pending" id="c-pending">0</span><span class="lbl">بانتظار الاعتماد</span>
-            </div>
-            <div class="stat-card-small" onclick="filterStatus('تم الاعتماد والأرشفة')" id="st-approved">
-                <span class="num txt-approved" id="c-approved">0</span><span class="lbl">تم الاعتماد والأرشفة</span>
-            </div>
-            <div class="stat-card-small" onclick="filterStatus('بحاجة الي متابعة')" id="st-followup">
-                <span class="num txt-followup" id="c-followup">0</span><span class="lbl">بحاجة الي متابعة</span>
-            </div>
+        <div class="stat-card-small" onclick="filterStatus('بانتظار الاعتماد')" id="st-pending">
+            <span class="num txt-pending" id="c-pending">0</span><span class="lbl">بانتظار الاعتماد</span>
+        </div>
+        <div class="stat-card-small" onclick="filterStatus('تم الاعتماد والأرشفة')" id="st-approved">
+            <span class="num txt-approved" id="c-approved">0</span><span class="lbl">تم الاعتماد والأرشفة</span>
+        </div>
+        <div class="stat-card-small" onclick="filterStatus('بحاجة الي متابعة')" id="st-followup">
+            <span class="num txt-followup" id="c-followup">0</span><span class="lbl">بحاجة الي متابعة</span>
         </div>
     </div>
+</div>
 
-    <!-- Context Bar -->
-    <div class="context-bar" id="context-bar" style="display:none">
-        <span class="ctx-label">عرض:</span>
-        <div id="ctx-chips" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"></div>
+<!-- Context Bar -->
+<div class="context-bar" id="context-bar" style="display:none">
+    <span class="ctx-label">عرض:</span>
+    <div id="ctx-chips" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"></div>
+</div>
+
+<!-- Cards View -->
+<div class="cards-container" id="tasks-list">
+    <div class="loader-box">
+        <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i>
+        <p>جاري تحميل البيانات...</p>
     </div>
+</div>
 
-    <!-- Cards View -->
-    <div class="cards-container" id="tasks-list">
-        <div class="loader-box">
-            <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-teal-600"></i>
-            <p>جاري تحميل البيانات...</p>
+<!-- Table View -->
+<div class="table-wrapper hidden" id="tasks-table-container">
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>رقم</th>
+                    <th>الموضوع</th>
+                    <th>الجهة</th>
+                    <th>المكلف</th>
+                    <th>الحالة</th>
+                    <th>النواقص</th>
+                    <th style="text-align:center">إجراء</th>
+                </tr>
+            </thead>
+            <tbody id="tasks-table-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div>
+                <h3 class="font-bold text-lg text-gray-900">تفاصيل المعاملة</h3>
+                <p class="text-xs text-gray-500 font-mono" id="m-id">#...</p>
+            </div>
+            <button onclick="closeModal()" class="p-2 bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="flex flex-col gap-3" id="m-content"></div>
         </div>
     </div>
+</div>
 
-    <!-- Table View -->
-    <div class="table-wrapper hidden" id="tasks-table-container">
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>رقم</th>
-                        <th>الموضوع</th>
-                        <th>الجهة</th>
-                        <th>المكلف</th>
-                        <th>الحالة</th>
-                        <th>النواقص</th>
-                        <th style="text-align:center">إجراء</th>
-                    </tr>
-                </thead>
-                <tbody id="tasks-table-body"></tbody>
-            </table>
+<!-- Reassign Modal -->
+<div class="modal-overlay" id="modal-reassign" onclick="if(event.target===this)closeEnhancementModal('modal-reassign')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 class="font-bold text-lg">تغيير الموظف المكلف</h3>
+            <button onclick="closeEnhancementModal('modal-reassign')" class="p-2 rounded-full hover:bg-gray-100"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="reassign-task-id">
+            <label class="block text-sm font-bold text-gray-700 mb-2">اختر الموظف الجديد:</label>
+            <select id="reassign-select" class="w-full p-3 border rounded-lg bg-white mb-4 border-gray-300">
+                <option value="">-- اختر من القائمة --</option>
+            </select>
+            <p class="text-xs text-gray-500 bg-yellow-50 p-2 rounded border border-yellow-200">
+                <i data-lucide="alert-circle" class="w-3 h-3 inline"></i> سيتم إشعار الموظف الجديد تلقائياً.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button onclick="confirmReassign()" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700" id="btn-confirm-reassign">تأكيد التغيير</button>
+            <button onclick="closeEnhancementModal('modal-reassign')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
         </div>
     </div>
+</div>
 
-    <!-- Detail Modal -->
-    <div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeModal()">
-        <div class="modal-box">
-            <div class="modal-header">
-                <div>
-                    <h3 class="font-bold text-lg text-gray-900">تفاصيل المعاملة</h3>
-                    <p class="text-xs text-gray-500 font-mono" id="m-id">#...</p>
-                </div>
-                <button onclick="closeModal()" class="p-2 bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="modal-body">
-                <div class="flex flex-col gap-3" id="m-content"></div>
-            </div>
+<!-- Status Modal -->
+<div class="modal-overlay" id="modal-status" onclick="if(event.target===this)closeEnhancementModal('modal-status')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 class="font-bold text-lg">تغيير حالة المعاملة</h3>
+            <button onclick="closeEnhancementModal('modal-status')" class="p-2 rounded-full hover:bg-gray-100"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="status-task-id">
+            <label class="block text-sm font-bold text-gray-700 mb-2">اختر الحالة الجديدة:</label>
+            <select id="status-select" class="w-full p-3 border rounded-lg bg-white mb-4 border-gray-300">
+                <option value="جديد">جديد</option>
+                <option value="بانتظار الاعتماد">بانتظار الاعتماد</option>
+                <option value="تم الاعتماد والأرشفة">تم الاعتماد والأرشفة</option>
+                <option value="بحاجة الي متابعة">بحاجة الي متابعة</option>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button onclick="confirmStatusChange()" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700" id="btn-confirm-status">حفظ الحالة</button>
+            <button onclick="closeEnhancementModal('modal-status')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
         </div>
     </div>
+</div>
 
-    <!-- Reassign Modal -->
-    <div class="modal-overlay" id="modal-reassign" onclick="if(event.target===this)closeEnhancementModal('modal-reassign')">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3 class="font-bold text-lg">تغيير الموظف المكلف</h3>
-                <button onclick="closeEnhancementModal('modal-reassign')" class="p-2 rounded-full hover:bg-gray-100"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="reassign-task-id">
-                <label class="block text-sm font-bold text-gray-700 mb-2">اختر الموظف الجديد:</label>
-                <select id="reassign-select" class="w-full p-3 border rounded-lg bg-white mb-4 border-gray-300">
-                    <option value="">-- اختر من القائمة --</option>
-                </select>
-                <p class="text-xs text-gray-500 bg-yellow-50 p-2 rounded border border-yellow-200">
-                    <i data-lucide="alert-circle" class="w-3 h-3 inline"></i> سيتم إشعار الموظف الجديد تلقائياً.
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button onclick="confirmReassign()" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700" id="btn-confirm-reassign">تأكيد التغيير</button>
-                <button onclick="closeEnhancementModal('modal-reassign')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
-            </div>
-        </div>
-    </div>
+<nav class="bottom-nav lg:hidden">
+    <a href="coordinator.html" class="nav-btn active"><i data-lucide="users"></i> المنسق</a>
+    <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
+    <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
+    <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
+</nav>
 
-    <!-- Status Modal -->
-    <div class="modal-overlay" id="modal-status" onclick="if(event.target===this)closeEnhancementModal('modal-status')">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3 class="font-bold text-lg">تغيير حالة المعاملة</h3>
-                <button onclick="closeEnhancementModal('modal-status')" class="p-2 rounded-full hover:bg-gray-100"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="status-task-id">
-                <label class="block text-sm font-bold text-gray-700 mb-2">اختر الحالة الجديدة:</label>
-                <select id="status-select" class="w-full p-3 border rounded-lg bg-white mb-4 border-gray-300">
-                    <option value="جديد">جديد</option>
-                    <option value="بانتظار الاعتماد">بانتظار الاعتماد</option>
-                    <option value="تم الاعتماد والأرشفة">تم الاعتماد والأرشفة</option>
-                    <option value="بحاجة الي متابعة">بحاجة الي متابعة</option>
-                </select>
-            </div>
-            <div class="modal-footer">
-                <button onclick="confirmStatusChange()" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700" id="btn-confirm-status">حفظ الحالة</button>
-                <button onclick="closeEnhancementModal('modal-status')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
-            </div>
-        </div>
-    </div>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+    lucide.createIcons();
 
-    <nav class="bottom-nav lg:hidden">
-        <a href="coordinator.html" class="nav-btn active"><i data-lucide="users"></i> المنسق</a>
-        <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
-        <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
-        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
-    </nav>
+    let allTasks      = [];
+    let allEmployees  = [];
+    let adminList     = [];
+    let techList      = [];
+    let currentStatusFilter = '';
+    let currentDocFilter    = '';
+    let showMissingOnly = false;
+    let isTableView     = false;
 
-    <script src="assets/js/config.js"></script>
-    <script src="assets/js/auth.js"></script>
-    <script>
+    const CASE_ENTITIES = ['النيابة الإدارية', 'نيابة', 'الشؤون القانونية', 'شئون قانونية', 'ش.ق', 'ش ق'];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (typeof auth === 'undefined') { window.location.href = 'index.html'; return; }
+        const user = auth.checkAuth();
+        if (!user) { window.location.href = 'index.html'; return; }
+
+        document.getElementById('menu-user').textContent = user.name;
+        document.getElementById('menu-role').textContent = user.role;
+
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const lastDay = new Date(y, now.getMonth() + 1, 0).getDate();
+        document.getElementById('f-start').value = `${y}-${m}-01`;
+        document.getElementById('f-end').value = `${y}-${m}-${lastDay}`;
+
+        await loadData(user.name);
+    });
+
+    function toggleMenu() { document.body.classList.toggle('menu-open'); }
+    
+    function logout() {
+        localStorage.removeItem('iag_user');
+        localStorage.removeItem('iag_last_page');
+        window.location.href = 'index.html';
+    }
+
+    function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
+    function closeEnhancementModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    // ── Toggle View Mode ──
+    function toggleViewMode() {
+        isTableView = !isTableView;
+        const iconEl = document.getElementById('icon-view');
+        iconEl.setAttribute('data-lucide', isTableView ? 'layout-grid' : 'table');
+        lucide.createIcons();
+        document.getElementById('tasks-list').classList.toggle('hidden', isTableView);
+        document.getElementById('tasks-table-container').classList.toggle('hidden', !isTableView);
+    }
+
+    function toggleMissingData() {
+        showMissingOnly = !showMissingOnly;
+        document.getElementById('btn-missing').classList.toggle('active', showMissingOnly);
+        applyFilters();
+    }
+
+    async function loadData(username) {
+        const container = document.getElementById('tasks-list');
+        container.innerHTML = `
+            <div class="loader-box">
+                <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto mb-3 text-teal-600"></i>
+                <p class="font-bold text-gray-500">جاري الاتصال بقاعدة البيانات...</p>
+            </div>`;
         lucide.createIcons();
 
-        let allTasks      = [];
-        let allEmployees  = [];
-        let adminList     = [];
-        let techList      = [];
-        let currentStatusFilter = '';
-        let currentDocFilter    = '';
-        let showMissingOnly = false;
-        let isTableView     = false;
+        try {
+            const res = await fetch(CONFIG.API_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: 'getAllData', role: 'مدير', name: username }) 
+            });
+            const data = await res.json();
 
-        const CASE_ENTITIES = ['النيابة الإدارية', 'نيابة', 'الشؤون القانونية', 'شئون قانونية', 'ش.ق', 'ش ق'];
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            if (typeof auth === 'undefined') { window.location.href = 'index.html'; return; }
-            const user = auth.checkAuth();
-            if (!user) { window.location.href = 'index.html'; return; }
-
-            document.getElementById('menu-user').textContent = user.name;
-            document.getElementById('menu-role').textContent = user.role;
-
-            const now = new Date();
-            const y = now.getFullYear();
-            const m = String(now.getMonth() + 1).padStart(2, '0');
-            const lastDay = new Date(y, now.getMonth() + 1, 0).getDate();
-            document.getElementById('f-start').value = `${y}-${m}-01`;
-            document.getElementById('f-end').value = `${y}-${m}-${lastDay}`;
-
-            await loadData(user.name);
-        });
-
-        function toggleMenu() { document.body.classList.toggle('menu-open'); }
-        
-        function logout() {
-            localStorage.removeItem('iag_user');
-            localStorage.removeItem('iag_last_page');
-            window.location.href = 'index.html';
-        }
-
-        function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
-        function closeEnhancementModal(id) { document.getElementById(id).classList.remove('open'); }
-
-        // ── Toggle View Mode ──
-        function toggleViewMode() {
-            isTableView = !isTableView;
-            const iconEl = document.getElementById('icon-view');
-            iconEl.setAttribute('data-lucide', isTableView ? 'layout-grid' : 'table');
-            lucide.createIcons();
-            document.getElementById('tasks-list').classList.toggle('hidden', isTableView);
-            document.getElementById('tasks-table-container').classList.toggle('hidden', !isTableView);
-        }
-
-        function toggleMissingData() {
-            showMissingOnly = !showMissingOnly;
-            document.getElementById('btn-missing').classList.toggle('active', showMissingOnly);
-            applyFilters();
-        }
-
-        async function loadData(username) {
-            const container = document.getElementById('tasks-list');
-            container.innerHTML = `
-                <div class="loader-box">
-                    <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto mb-3 text-teal-600"></i>
-                    <p class="font-bold text-gray-500">جاري الاتصال بقاعدة البيانات...</p>
-                </div>`;
-            lucide.createIcons();
-
-            try {
-                const res = await fetch(CONFIG.API_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ action: 'getAllData', role: 'مدير', name: username }) 
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    allTasks = data.tasks || [];
-                    if (data.stats && data.stats.employees) allEmployees = data.stats.employees;
-                    populateDropdowns();
-                    applyFilters();
-                } else {
-                    container.innerHTML = `<div class="empty-box"><i data-lucide="alert-circle" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i><p>${data.error || 'لا توجد بيانات'}</p></div>`;
-                    lucide.createIcons();
-                }
-            } catch (e) {
-                container.innerHTML = `<div class="empty-box text-red-500"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2"></i><p>خطأ في الاتصال بالخادم</p></div>`;
+            if (data.success) {
+                allTasks = data.tasks || [];
+                if (data.stats && data.stats.employees) allEmployees = data.stats.employees;
+                populateDropdowns();
+                applyFilters();
+            } else {
+                container.innerHTML = `<div class="empty-box"><i data-lucide="alert-circle" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i><p>${data.error || 'لا توجد بيانات'}</p></div>`;
                 lucide.createIcons();
             }
-        }
-
-        function populateDropdowns() {
-            const grpAdmin      = document.getElementById('grp-admin');
-            const grpTech       = document.getElementById('grp-tech');
-            const reassignSelect = document.getElementById('reassign-select');
-            
-            grpAdmin.innerHTML = ''; grpTech.innerHTML = '';
-            adminList = []; techList = [];
-            if (reassignSelect) reassignSelect.innerHTML = '<option value="">-- اختر من القائمة --</option>';
-
-            allEmployees.sort((a, b) => a.name.localeCompare(b.name)).forEach(e => {
-                const title = (e.jobTitle || '').trim();
-                if (title === 'مراجع فني') {
-                    techList.push(e.name);
-                    grpTech.innerHTML += `<option value="${e.name}">${e.name}</option>`;
-                    if (reassignSelect) reassignSelect.innerHTML += `<option value="${e.name}">${e.name}</option>`;
-                } else if (title === 'مراجع مالي وإداري') {
-                    adminList.push(e.name);
-                    grpAdmin.innerHTML += `<option value="${e.name}">${e.name}</option>`;
-                    if (reassignSelect) reassignSelect.innerHTML += `<option value="${e.name}">${e.name}</option>`;
-                }
-            });
-
-            const srcSelect = document.getElementById('f-source');
-            const sources = new Set(allTasks.map(t => t.source).filter(s => s));
-            Array.from(sources).sort().forEach(s => {
-                srcSelect.innerHTML += `<option value="${s}">${s}</option>`;
-            });
-        }
-
-        function filterStatus(status) {
-            // toggle: ضغط على المربع النشط يرجع للإجمالي
-            if (status && currentStatusFilter === status) {
-                currentStatusFilter = ''; // إلغاء الفلتر إذا تم الضغط على نفس الكارت
-            } else {
-                currentStatusFilter = status;
-            }
-            
-            // تحديث الشكل البصري للكروت فوراً
-            updateActiveStatCard();
-            
-            // تطبيق الفلاتر
-            applyFilters();
-        }
-
-        // دالة جديدة ومستقلة لتحديث الشكل البصري للكروت بناءً على currentStatusFilter
-        function updateActiveStatCard() {
-            // 1. مسح الكلاس active من كل الكروت
-            document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
-            
-            // 2. خريطة مطابقة النصوص لـ IDs الكروت
-            const map = { 
-                '': 'st-total', 
-                'جديد': 'st-new', 
-                'بانتظار الاعتماد': 'st-pending', // التعديل هنا: استخدام النص الكامل لضمان دقة المطابقة
-                'تم الاعتماد والأرشفة': 'st-approved', 
-                'بحاجة الي متابعة': 'st-followup', 
-                'متأخر': 'st-late' 
-            };
-
-            // 3. تحديد الـ ID الذي يجب أن يكون نشطاً
-            // إذا كان currentStatusFilter فارغاً (الإجمالي) سيأخذ st-total
-            let activeId = map[currentStatusFilter] || 'st-total'; 
-
-            // 4. إضافة الكلاس active للكارت الهدف
-            const activeCard = document.getElementById(activeId);
-            if(activeCard) {
-                activeCard.classList.add('active');
-            }
-        }
-
-        function getMissingFields(t) {
-            const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
-            const isApproved   = (t.status || '').includes('تم');
-            const missing = [];
-            if (!t.assignee || t.assignee.trim() === '')                                       missing.push('assignee');
-            if (isCaseEntity && (!t.caseNumber || t.caseNumber.toString().trim() === ''))      missing.push('case');
-            if (isApproved  && (!t.archive  || t.archive.toString().trim()  === 'undefined' || t.archive.toString().trim() === '')) missing.push('archive');
-            return missing;
-        }
-
-        // ── DocType helpers ──
-        function getDocGroup(t) {
-            const tp = (t.transactionType || t.docType || '').trim();
-            if (tp.includes('صادر')) return 'صادر';
-            return 'وارد'; // كل ما ليس صادراً صريحاً = وارد
-        }
-
-        function filterDocType(group) {
-            currentDocFilter = (currentDocFilter === group) ? '' : group;
-            applyFilters();
-        }
-
-        function applyFilters() {
-            const empVal = document.getElementById('f-emp').value;
-            const src    = document.getElementById('f-source').value;
-            const search = document.getElementById('f-search').value.toLowerCase();
-            const start  = document.getElementById('f-start').value;
-            const end    = document.getElementById('f-end').value;
-
-            // baseFiltered: كل الفلاتر ما عدا الحالة ونوع المستند
-            const baseFiltered = allTasks.filter(t => {
-                if (search && !(t.subject + t.id + t.source).toLowerCase().includes(search)) return false;
-                if (src && t.source !== src) return false;
-                if (empVal) {
-                    if (empVal === 'ALL_ADMIN') { if (!adminList.includes(t.assignee)) return false; }
-                    else if (empVal === 'ALL_TECH') { if (!techList.includes(t.assignee)) return false; }
-                    else { if (t.assignee !== empVal) return false; }
-                }
-                if (start && end && t.date) {
-                    const isoDate = parseDateToISO(t.date);
-                    if (isoDate && (isoDate < start || isoDate > end)) return false;
-                }
-                if (showMissingOnly && getMissingFields(t).length === 0) return false;
-                return true;
-            });
-
-            // الأرقام الـ 6 من baseFiltered (مش متأثرة بالحالة)
-            updateStatsContext(baseFiltered);
-
-            // الكروت = baseFiltered + status + docType
-            const displayFiltered = baseFiltered.filter(t => {
-                if (currentStatusFilter && !(t.status || '').includes(currentStatusFilter)) return false;
-                if (currentDocFilter && getDocGroup(t) !== currentDocFilter) return false;
-                return true;
-            });
-
-            // context bar يتبع displayFiltered
-            updateContextBar(displayFiltered);
-
-            renderTasks(displayFiltered);
-        }
-
-        function updateStatsContext(tasks) {
-            let c = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
-            tasks.forEach(t => {
-                c.total++;
-                const s = (t.status || '');
-                if      (s.includes('جديد'))     c.new++;
-                else if (s.includes('بانتظار'))  c.pending++;
-                else if (s.includes('تم'))       c.approved++;
-                else if (s.includes('متابعة'))   c.followup++;
-                else if (s.includes('متأخر'))    c.late++;
-            });
-            document.getElementById('c-total').textContent    = c.total;
-            document.getElementById('c-new').textContent      = c.new;
-            document.getElementById('c-pending').textContent  = c.pending;
-            document.getElementById('c-approved').textContent = c.approved;
-            document.getElementById('c-followup').textContent = c.followup;
-            document.getElementById('c-late').textContent     = c.late;
-        }
-
-        function updateContextBar(tasks) {
-            const icons  = { 'وارد': '📥', 'صادر': '📤' };
-            const counts = { 'وارد': 0, 'صادر': 0 };
-            tasks.forEach(t => {
-                const g = getDocGroup(t);
-                if (g === 'وارد' || g === 'صادر') counts[g]++;
-            });
-
-            const bar   = document.getElementById('context-bar');
-            const chips = document.getElementById('ctx-chips');
-            let html = `<span class="ctx-total">${tasks.length} معاملة</span><div class="ctx-divider"></div>`;
-            let hasChip = false;
-            Object.entries(counts).forEach(([group, count]) => {
-                if (!count) return;
-                hasChip = true;
-                const active = currentDocFilter === group ? 'active' : '';
-                html += `<button class="ctx-chip ${active}" onclick="filterDocType('${group}')">${icons[group]} ${group} <span class="ctx-count">${count}</span></button>`;
-            });
-            chips.innerHTML = html;
-            bar.style.display = 'flex';
-        }
-
-        function renderTasks(tasks) {
-            const container  = document.getElementById('tasks-list');
-            const tableBody  = document.getElementById('tasks-table-body');
-
-            if (tasks.length === 0) {
-                const emptyHtml = `<div class="empty-box">لا توجد نتائج مطابقة</div>`;
-                container.innerHTML = emptyHtml;
-                tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:3rem;color:#64748b">لا توجد نتائج</td></tr>`;
-                return;
-            }
-
-            // ── Cards ──
-            container.innerHTML = tasks.map(t => {
-                let bgClass = 'bg-new';
-                if (t.status.includes('بانتظار')) bgClass = 'bg-pending';
-                else if (t.status.includes('تم'))      bgClass = 'bg-approved';
-                else if (t.status.includes('متابعة'))  bgClass = 'bg-followup';
-                else if (t.status.includes('متأخر'))   bgClass = 'bg-late';
-
-                const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
-                const isApproved   = (t.status || '').includes('تم');
-                const missing      = getMissingFields(t);
-                const hasMissing   = missing.length > 0;
-
-                let caseBadge = '';
-                if (isCaseEntity && t.caseNumber && t.caseNumber.toString().trim()) {
-                    const isNA = (t.source || '').includes('نيابة');
-                    caseBadge = `<span class="${isNA ? 'badge-case-na' : 'badge-case-sq'} badge-case">⚖️ ${isNA ? 'ن.إ' : 'ش.ق'}: ${t.caseNumber}/${t.caseYear || ''}</span>`;
-                } else if (isCaseEntity && missing.includes('case')) {
-                    caseBadge = `<span class="badge-missing">⚠ رقم القضية ناقص</span>`;
-                }
-
-                let archiveBtn = '';
-                if (isApproved) {
-                    if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
-                        archiveBtn = `<button onclick="event.stopPropagation();window.open('${t.archive}')" class="btn-archive-card btn-archive-view">📎 الصادر</button>`;
-                    } else {
-                        archiveBtn = `<button onclick="event.stopPropagation();openArchiveUpload('${t.id}')" class="btn-archive-card" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca">⚠ الصادر ناقص</button>`;
-                    }
-                }
-
-                const assigneeHtml = t.assignee
-                    ? `${t.assignee} <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-gray-100 border border-gray-300 px-2 py-1 rounded hover:bg-gray-200 text-gray-700" title="تغيير المكلف">تغيير</button>`
-                    : `<span style="color:#dc2626">⚠ غير موزع</span> <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-red-100 border border-red-300 px-2 py-1 rounded text-red-700">تعيين</button>`;
-
-                return `
-                <div class="task-card ${hasMissing ? 'has-missing' : ''}">
-                    <div class="card-stripe ${bgClass}">
-                        <span>#${t.id}</span>
-                        <span>${t.status}</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="tc-subject">${t.subject}</h3>
-                        <div class="tc-row">
-                            <i data-lucide="building-2" class="w-4 h-4 flex-shrink-0"></i>
-                            <span>${t.source || 'غير محدد'}</span>
-                        </div>
-                        <div class="tc-row">
-                            <i data-lucide="calendar" class="w-4 h-4 flex-shrink-0"></i>
-                            <span>${formatArabicDate(t.date)}</span>
-                        </div>
-                        <div class="tc-row">
-                            <i data-lucide="user" class="w-4 h-4 flex-shrink-0 text-teal-600"></i>
-                            <span class="font-bold text-teal-700 flex items-center gap-1 flex-wrap">${assigneeHtml}</span>
-                        </div>
-                        ${(caseBadge || archiveBtn) ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}${archiveBtn}</div>` : ''}
-                    </div>
-                    <div class="tc-footer">
-                        <button onclick="openModal('${t.id}')" class="btn-card bg-teal-50 border-teal-200 text-teal-800 hover:bg-teal-100 w-full">
-                            <i data-lucide="edit" class="w-4 h-4"></i> إدارة ومعالجة
-                        </button>
-                        ${t.attachment ? `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="btn-card btn-attach"><i data-lucide="paperclip" class="w-4 h-4"></i> ${(()=>{const tp=(t.transactionType||t.docType||'');if(tp.includes('وارد'))return'مرفق الوارد';if(tp.includes('صادر'))return'مرفق الصادر';if(tp.includes('تقرير')||tp.includes('مرور'))return'مرفقات التقرير';if(tp.includes('شكوى'))return'مرفق الشكوى';return'عرض المرفق';})()}</button>` : ''}
-                    </div>
-                </div>`;
-            }).join('');
-
-            // ── Table ──
-            tableBody.innerHTML = tasks.map(t => {
-                const missing = getMissingFields(t);
-                let missingTags = '';
-                if (missing.includes('assignee')) missingTags += '<span class="missing-tag missing-tag-assignee">المكلف</span>';
-                if (missing.includes('case'))     missingTags += '<span class="missing-tag missing-tag-case">القضية</span>';
-                if (missing.includes('archive'))  missingTags += '<span class="missing-tag missing-tag-archive">الصادر</span>';
-
-                return `
-                <tr class="${missing.length ? 'row-missing' : ''}">
-                    <td class="font-mono text-gray-500 font-bold text-xs">#${t.id}</td>
-                    <td class="font-bold text-gray-800" style="max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${t.subject}">${t.subject}</td>
-                    <td class="text-gray-600 text-xs">${t.source || '-'}</td>
-                    <td class="font-bold text-xs ${t.assignee ? 'text-teal-700' : 'text-red-500'}">${t.assignee || 'غير موزع'}</td>
-                    <td><span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-bold">${t.status}</span></td>
-                    <td>${missingTags || '<span style="color:#d1d5db">—</span>'}</td>
-                    <td style="text-align:center">
-                        <button onclick="openModal('${t.id}')" class="bg-teal-50 text-teal-700 hover:bg-teal-600 hover:text-white p-2 rounded transition-colors" title="فتح التفاصيل">
-                            <i data-lucide="edit" class="w-4 h-4"></i>
-                        </button>
-                    </td>
-                </tr>`;
-            }).join('');
-
+        } catch (e) {
+            container.innerHTML = `<div class="empty-box text-red-500"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2"></i><p>خطأ في الاتصال بالخادم</p></div>`;
             lucide.createIcons();
         }
+    }
 
-        // ── Details Modal ──
-        function openModal(id) {
-            const t = allTasks.find(x => x.id == id);
-            if (!t) return;
-            document.getElementById('m-id').textContent = '#' + t.id;
+    function populateDropdowns() {
+        const grpAdmin      = document.getElementById('grp-admin');
+        const grpTech       = document.getElementById('grp-tech');
+        const reassignSelect = document.getElementById('reassign-select');
+        
+        grpAdmin.innerHTML = ''; grpTech.innerHTML = '';
+        adminList = []; techList = [];
+        if (reassignSelect) reassignSelect.innerHTML = '<option value="">-- اختر من القائمة --</option>';
 
-            const ro = (label, val) =>
-                `<div class="data-item"><span class="data-label">${label}</span><p class="data-val">${val || '-'}</p></div>`;
+        allEmployees.sort((a, b) => a.name.localeCompare(b.name)).forEach(e => {
+            const title = (e.jobTitle || '').trim();
+            if (title === 'مراجع فني') {
+                techList.push(e.name);
+                grpTech.innerHTML += `<option value="${e.name}">${e.name}</option>`;
+                if (reassignSelect) reassignSelect.innerHTML += `<option value="${e.name}">${e.name}</option>`;
+            } else if (title === 'مراجع مالي وإداري') {
+                adminList.push(e.name);
+                grpAdmin.innerHTML += `<option value="${e.name}">${e.name}</option>`;
+                if (reassignSelect) reassignSelect.innerHTML += `<option value="${e.name}">${e.name}</option>`;
+            }
+        });
 
-            const ed = (label, field, val, placeholder) => {
-                if (val && val.toString().trim() !== '' && val !== 'undefined') return ro(label, val);
-                return `<div class="data-item">
-                    <span class="data-label">${label} <span class="badge-missing">⚠ ناقص</span></span>
-                    <div class="edit-field">
-                        <input type="text" class="edit-input" id="edit-${field}-${t.id}" placeholder="${placeholder || ''}">
-                        <button class="edit-btn edit-btn-save" onclick="saveFieldUpdate('${t.id}','${field}',this)">حفظ</button>
-                    </div>
-                </div>`;
-            };
+        const srcSelect = document.getElementById('f-source');
+        const sources = new Set(allTasks.map(t => t.source).filter(s => s));
+        Array.from(sources).sort().forEach(s => {
+            srcSelect.innerHTML += `<option value="${s}">${s}</option>`;
+        });
+    }
+
+    function filterStatus(status) {
+        // toggle: ضغط على المربع النشط يرجع للإجمالي
+        if (status && currentStatusFilter === status) status = '';
+        currentStatusFilter = status;
+        document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
+        const map = { '': 'st-total', 'جديد': 'st-new', 'بانتظار': 'st-pending', 'تم': 'st-approved', 'متابعة': 'st-followup', 'متأخر': 'st-late' };
+        let activeId = 'st-total';
+        if (status) {
+            const key = Object.keys(map).find(k => status.includes(k));
+            if (key) activeId = map[key];
+        }
+        document.getElementById(activeId).classList.add('active');
+        applyFilters();
+    }
+
+    function getMissingFields(t) {
+        const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
+        const status       = (t.status || '');
+        const isNew        = status.includes('جديد');
+        const isPending    = status.includes('بانتظار');
+        const isApproved   = status.includes('تم');
+        const isOutgoing   = (t.transactionType || t.docType || '').includes('صادر');
+        const missing = [];
+
+        if (!t.assignee || t.assignee.trim() === '') missing.push('assignee');
+        if (isCaseEntity && (!t.caseNumber || t.caseNumber.toString().trim() === '')) missing.push('case');
+
+        // مرفق الوارد: ناقص فقط لو وارد وحالته جديد
+        if (!isOutgoing && isNew && (!t.attachment || t.attachment.trim() === '' || t.attachment === 'undefined'))
+            missing.push('attachment');
+
+        // مسودة الرد (PDF): ناقص فقط لو في انتظار الاعتماد
+        if (isPending && (!t.reportPdf || t.reportPdf.trim() === '' || t.reportPdf === 'undefined'))
+            missing.push('reportPdf');
+
+        // مرفق الصادر: ناقص فقط لو تم الاعتماد والأرشفة
+        if (isApproved && (!t.archive || t.archive.trim() === '' || t.archive === 'undefined'))
+            missing.push('archive');
+
+        return missing;
+    }
+
+    // ── DocType helpers ──
+    function getDocGroup(t) {
+        const tp = (t.transactionType || t.docType || '').trim();
+        if (tp.includes('صادر')) return 'صادر';
+        return 'وارد'; // كل ما ليس صادراً صريحاً = وارد
+    }
+
+    function filterDocType(group) {
+        currentDocFilter = (currentDocFilter === group) ? '' : group;
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const empVal = document.getElementById('f-emp').value;
+        const src    = document.getElementById('f-source').value;
+        const search = document.getElementById('f-search').value.toLowerCase();
+        const start  = document.getElementById('f-start').value;
+        const end    = document.getElementById('f-end').value;
+
+        // baseFiltered: كل الفلاتر ما عدا الحالة ونوع المستند
+        const baseFiltered = allTasks.filter(t => {
+            if (search && !(t.subject + t.id + t.source).toLowerCase().includes(search)) return false;
+            if (src && t.source !== src) return false;
+            if (empVal) {
+                if (empVal === 'ALL_ADMIN') { if (!adminList.includes(t.assignee)) return false; }
+                else if (empVal === 'ALL_TECH') { if (!techList.includes(t.assignee)) return false; }
+                else { if (t.assignee !== empVal) return false; }
+            }
+            if (start && end && t.date) {
+                const isoDate = parseDateToISO(t.date);
+                if (isoDate && (isoDate < start || isoDate > end)) return false;
+            }
+            if (showMissingOnly && getMissingFields(t).length === 0) return false;
+            return true;
+        });
+
+        // الأرقام الـ 6 من baseFiltered (مش متأثرة بالحالة)
+        updateStatsContext(baseFiltered);
+
+        // الكروت = baseFiltered + status + docType
+        const displayFiltered = baseFiltered.filter(t => {
+            if (currentStatusFilter && !(t.status || '').includes(currentStatusFilter)) return false;
+            if (currentDocFilter && getDocGroup(t) !== currentDocFilter) return false;
+            return true;
+        });
+
+        // context bar يتبع displayFiltered
+        updateContextBar(displayFiltered);
+
+        renderTasks(displayFiltered);
+    }
+
+    function updateStatsContext(tasks) {
+        let c = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
+        tasks.forEach(t => {
+            c.total++;
+            const s = (t.status || '');
+            if      (s.includes('جديد'))     c.new++;
+            else if (s.includes('بانتظار'))  c.pending++;
+            else if (s.includes('تم'))       c.approved++;
+            else if (s.includes('متابعة'))   c.followup++;
+            else if (s.includes('متأخر'))    c.late++;
+        });
+        document.getElementById('c-total').textContent    = c.total;
+        document.getElementById('c-new').textContent      = c.new;
+        document.getElementById('c-pending').textContent  = c.pending;
+        document.getElementById('c-approved').textContent = c.approved;
+        document.getElementById('c-followup').textContent = c.followup;
+        document.getElementById('c-late').textContent     = c.late;
+    }
+
+    function updateContextBar(tasks) {
+        const icons  = { 'وارد': '📥', 'صادر': '📤' };
+        const counts = { 'وارد': 0, 'صادر': 0 };
+        tasks.forEach(t => {
+            const g = getDocGroup(t);
+            if (g === 'وارد' || g === 'صادر') counts[g]++;
+        });
+
+        const bar   = document.getElementById('context-bar');
+        const chips = document.getElementById('ctx-chips');
+        let html = `<span class="ctx-total">${tasks.length} معاملة</span><div class="ctx-divider"></div>`;
+        let hasChip = false;
+        Object.entries(counts).forEach(([group, count]) => {
+            if (!count) return;
+            hasChip = true;
+            const active = currentDocFilter === group ? 'active' : '';
+            html += `<button class="ctx-chip ${active}" onclick="filterDocType('${group}')">${icons[group]} ${group} <span class="ctx-count">${count}</span></button>`;
+        });
+        chips.innerHTML = html;
+        bar.style.display = 'flex';
+    }
+
+    function renderTasks(tasks) {
+        const container  = document.getElementById('tasks-list');
+        const tableBody  = document.getElementById('tasks-table-body');
+
+        if (tasks.length === 0) {
+            const emptyHtml = `<div class="empty-box">لا توجد نتائج مطابقة</div>`;
+            container.innerHTML = emptyHtml;
+            tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:3rem;color:#64748b">لا توجد نتائج</td></tr>`;
+            return;
+        }
+
+        // ── Cards ──
+        container.innerHTML = tasks.map(t => {
+            let bgClass = 'bg-new';
+            if (t.status.includes('بانتظار')) bgClass = 'bg-pending';
+            else if (t.status.includes('تم'))      bgClass = 'bg-approved';
+            else if (t.status.includes('متابعة'))  bgClass = 'bg-followup';
+            else if (t.status.includes('متأخر'))   bgClass = 'bg-late';
 
             const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
             const isApproved   = (t.status || '').includes('تم');
+            const missing      = getMissingFields(t);
+            const hasMissing   = missing.length > 0;
 
-            let html = '';
-            html += ro('الموضوع', `<span style="font-weight:800;line-height:1.6">${t.subject}</span>`);
-            html += ro('الجهة الواردة', t.source);
-            html += ro('محل التنفيذ', t.entity);
-            html += ro('نوع المعاملة', t.transactionType || t.docType || '-');
-            html += ro('تاريخ الوارد', formatArabicDate(t.date));
-            html += ro('تاريخ التكليف', formatArabicDate(t.assignDate));
-            html += ro('تاريخ الإنجاز', t.completionDate ? formatArabicDate(t.completionDate) : '-');
-            html += ed('الموظف المكلف', 'assignee', t.assignee, 'اسم الموظف');
-            html += ro('الحالة', t.status);
-
-            if (isCaseEntity) {
+            let caseBadge = '';
+            if (isCaseEntity && t.caseNumber && t.caseNumber.toString().trim()) {
                 const isNA = (t.source || '').includes('نيابة');
-                html += ed(isNA ? 'رقم قضية النيابة الإدارية' : 'رقم قضية الشؤون القانونية', 'caseNumber', t.caseNumber, 'رقم القضية');
-                html += ed('لسنة', 'caseYear', t.caseYear, new Date().getFullYear().toString());
+                caseBadge = `<span class="${isNA ? 'badge-case-na' : 'badge-case-sq'} badge-case">⚖️ ${isNA ? 'ن.إ' : 'ش.ق'}: ${t.caseNumber}/${t.caseYear || ''}</span>`;
+            } else if (isCaseEntity && missing.includes('case')) {
+                caseBadge = `<span class="badge-missing">⚠ رقم القضية ناقص</span>`;
             }
 
-            html += ed('الأهمية', 'importance', t.importance, 'عادي / عاجل / عاجل جداً');
+            const isPending  = (t.status || '').includes('بانتظار');
+            const isApproved = (t.status || '').includes('تم');
 
+            // زر مسودة الرد PDF — يظهر في حالة بانتظار الاعتماد
+            let reportPdfBtn = '';
+            if (isPending) {
+                if (t.reportPdf && t.reportPdf.trim() && t.reportPdf !== 'undefined') {
+                    reportPdfBtn = `<button onclick="event.stopPropagation();window.open('${t.reportPdf}')" class="btn-archive-card btn-archive-view">📄 مسودة الرد</button>`;
+                } else {
+                    reportPdfBtn = `<button class="btn-archive-card" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;cursor:default">⏳ PDF قيد الإنشاء</button>`;
+                }
+            }
+
+            // زر مرفق الصادر — يظهر فقط في تم الاعتماد والأرشفة
+            let archiveBtn = '';
             if (isApproved) {
                 if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
-                    html += `<div class="data-item"><span class="data-label">الصادر النهائي (الأرشيف)</span>
-                        <p class="data-val"><a href="${t.archive}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p></div>`;
+                    archiveBtn = `<button onclick="event.stopPropagation();window.open('${t.archive}')" class="btn-archive-card btn-archive-view">📎 الصادر</button>`;
                 } else {
-                    html += `<div class="data-item">
-                        <span class="data-label">الصادر النهائي (الأرشيف) <span class="badge-missing">⚠ ناقص</span></span>
-                        <div class="upload-area" id="upload-area-${t.id}" onclick="document.getElementById('file-${t.id}').click()">
-                            <input type="file" id="file-${t.id}" style="display:none" onchange="uploadArchiveFile('${t.id}',this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            <p style="font-size:0.85rem;font-weight:700;color:#92400e;margin:0">📤 اضغط لرفع ملف الصادر</p>
-                            <p style="font-size:0.7rem;color:#94a3b8;margin:4px 0 0">PDF, Word, أو صورة</p>
-                        </div>
-                        <p id="upload-status-${t.id}" style="font-size:0.75rem;margin-top:4px;display:none"></p>
-                    </div>`;
+                    archiveBtn = `<button onclick="event.stopPropagation();openArchiveUpload('${t.id}')" class="btn-archive-card" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca">⚠ الصادر ناقص</button>`;
                 }
             }
 
-            if (t.notes) {
-                html += `<div class="bg-yellow-50 p-2 rounded text-sm border border-yellow-200">
-                    <span class="data-label text-yellow-700">ملاحظات</span>
-                    <p class="data-val text-gray-700">${t.notes}</p></div>`;
-            }
-            if (t.attachment) {
-                html += `<div style="margin-top:8px">
-                    <a href="${t.attachment}" target="_blank" class="btn-card btn-attach" style="display:inline-flex;width:auto;padding:8px 16px">
-                        <i data-lucide="paperclip" class="w-4 h-4"></i> مرفق الوارد
-                    </a></div>`;
-            }
+            const assigneeHtml = t.assignee
+                ? `${t.assignee} <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-gray-100 border border-gray-300 px-2 py-1 rounded hover:bg-gray-200 text-gray-700" title="تغيير المكلف">تغيير</button>`
+                : `<span style="color:#dc2626">⚠ غير موزع</span> <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-red-100 border border-red-300 px-2 py-1 rounded text-red-700">تعيين</button>`;
 
-            document.getElementById('m-content').innerHTML = html;
-            document.getElementById('detail-modal').classList.add('open');
-            lucide.createIcons();
+            return `
+            <div class="task-card ${hasMissing ? 'has-missing' : ''}">
+                <div class="card-stripe ${bgClass}">
+                    <span>#${t.id}</span>
+                    <span>${t.status}</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="tc-subject">${t.subject}</h3>
+                    <div class="tc-row">
+                        <i data-lucide="building-2" class="w-4 h-4 flex-shrink-0"></i>
+                        <span>${t.source || 'غير محدد'}</span>
+                    </div>
+                    <div class="tc-row">
+                        <i data-lucide="calendar" class="w-4 h-4 flex-shrink-0"></i>
+                        <span>${formatArabicDate(t.date)}</span>
+                    </div>
+                    <div class="tc-row">
+                        <i data-lucide="user" class="w-4 h-4 flex-shrink-0 text-teal-600"></i>
+                        <span class="font-bold text-teal-700 flex items-center gap-1 flex-wrap">${assigneeHtml}</span>
+                    </div>
+                    ${(caseBadge || reportPdfBtn || archiveBtn) ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}${reportPdfBtn}${archiveBtn}</div>` : ''}
+                </div>
+                <div class="tc-footer">
+                    <button onclick="openModal('${t.id}')" class="btn-card bg-teal-50 border-teal-200 text-teal-800 hover:bg-teal-100 w-full">
+                        <i data-lucide="edit" class="w-4 h-4"></i> إدارة ومعالجة
+                    </button>
+                    ${t.attachment ? `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="btn-card btn-attach"><i data-lucide="paperclip" class="w-4 h-4"></i> ${(()=>{const tp=(t.transactionType||t.docType||'');if(tp.includes('وارد'))return'مرفق الوارد';if(tp.includes('صادر'))return'مرفق الصادر';if(tp.includes('تقرير')||tp.includes('مرور'))return'مرفقات التقرير';if(tp.includes('شكوى'))return'مرفق الشكوى';return'عرض المرفق';})()}</button>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+
+        // ── Table ──
+        tableBody.innerHTML = tasks.map(t => {
+            const missing = getMissingFields(t);
+            let missingTags = '';
+            if (missing.includes('assignee'))   missingTags += '<span class="missing-tag missing-tag-assignee">المكلف</span>';
+            if (missing.includes('case'))        missingTags += '<span class="missing-tag missing-tag-case">القضية</span>';
+            if (missing.includes('attachment'))  missingTags += '<span class="missing-tag" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">مرفق الوارد</span>';
+            if (missing.includes('reportPdf'))   missingTags += '<span class="missing-tag" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">مسودة الرد</span>';
+            if (missing.includes('archive'))     missingTags += '<span class="missing-tag missing-tag-archive">الصادر</span>';
+
+            return `
+            <tr class="${missing.length ? 'row-missing' : ''}">
+                <td class="font-mono text-gray-500 font-bold text-xs">#${t.id}</td>
+                <td class="font-bold text-gray-800" style="max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${t.subject}">${t.subject}</td>
+                <td class="text-gray-600 text-xs">${t.source || '-'}</td>
+                <td class="font-bold text-xs ${t.assignee ? 'text-teal-700' : 'text-red-500'}">${t.assignee || 'غير موزع'}</td>
+                <td><span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-bold">${t.status}</span></td>
+                <td>${missingTags || '<span style="color:#d1d5db">—</span>'}</td>
+                <td style="text-align:center">
+                    <button onclick="openModal('${t.id}')" class="bg-teal-50 text-teal-700 hover:bg-teal-600 hover:text-white p-2 rounded transition-colors" title="فتح التفاصيل">
+                        <i data-lucide="edit" class="w-4 h-4"></i>
+                    </button>
+                </td>
+            </tr>`;
+        }).join('');
+
+        lucide.createIcons();
+    }
+
+    // ── Details Modal ──
+    function openModal(id) {
+        const t = allTasks.find(x => x.id == id);
+        if (!t) return;
+        document.getElementById('m-id').textContent = '#' + t.id;
+
+        const ro = (label, val) =>
+            `<div class="data-item"><span class="data-label">${label}</span><p class="data-val">${val || '-'}</p></div>`;
+
+        const ed = (label, field, val, placeholder) => {
+            if (val && val.toString().trim() !== '' && val !== 'undefined') return ro(label, val);
+            return `<div class="data-item">
+                <span class="data-label">${label} <span class="badge-missing">⚠ ناقص</span></span>
+                <div class="edit-field">
+                    <input type="text" class="edit-input" id="edit-${field}-${t.id}" placeholder="${placeholder || ''}">
+                    <button class="edit-btn edit-btn-save" onclick="saveFieldUpdate('${t.id}','${field}',this)">حفظ</button>
+                </div>
+            </div>`;
+        };
+
+        const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
+        const isApproved   = (t.status || '').includes('تم');
+
+        let html = '';
+        html += ro('الموضوع', `<span style="font-weight:800;line-height:1.6">${t.subject}</span>`);
+        html += ro('الجهة الواردة', t.source);
+        html += ro('محل التنفيذ', t.entity);
+        html += ro('نوع المعاملة', t.transactionType || t.docType || '-');
+        html += ro('تاريخ الوارد', formatArabicDate(t.date));
+        html += ro('تاريخ التكليف', formatArabicDate(t.assignDate));
+        html += ro('تاريخ الإنجاز', t.completionDate ? formatArabicDate(t.completionDate) : '-');
+        html += ed('الموظف المكلف', 'assignee', t.assignee, 'اسم الموظف');
+        html += ro('الحالة', t.status);
+
+        if (isCaseEntity) {
+            const isNA = (t.source || '').includes('نيابة');
+            html += ed(isNA ? 'رقم قضية النيابة الإدارية' : 'رقم قضية الشؤون القانونية', 'caseNumber', t.caseNumber, 'رقم القضية');
+            html += ed('لسنة', 'caseYear', t.caseYear, new Date().getFullYear().toString());
         }
 
-        // ── Save Field Update ──
-        async function saveFieldUpdate(taskId, fieldName, btnEl) {
-            const input = document.getElementById(`edit-${fieldName}-${taskId}`);
-            if (!input) return;
-            const value = input.value.trim();
-            if (!value) { alert('يرجى إدخال القيمة أولاً'); return; }
+        html += ed('الأهمية', 'importance', t.importance, 'عادي / عاجل / عاجل جداً');
 
-            const origText = btnEl.textContent;
-            btnEl.textContent = 'جاري...'; btnEl.disabled = true;
+        // مسودة الرد — في حالة بانتظار الاعتماد
+        const isPending_ = (t.status || '').includes('بانتظار');
+        if (isPending_) {
+            if (t.reportPdf && t.reportPdf.trim() && t.reportPdf !== 'undefined') {
+                html += `<div class="data-item"><span class="data-label">مسودة الرد (PDF)</span>
+                    <p class="data-val"><a href="${t.reportPdf}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📄 فتح مسودة الرد</a></p></div>`;
+            } else {
+                html += `<div class="data-item"><span class="data-label">مسودة الرد (PDF) <span class="badge-missing">⏳ قيد الإنشاء</span></span>
+                    <p style="font-size:0.8rem;color:#92400e">لم يتم إنشاء الـ PDF بعد — سيظهر تلقائياً بعد إنشاء التقرير</p></div>`;
+            }
+        }
 
-            try {
-                const userStr   = localStorage.getItem('iag_user');
-                const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
+        if (isApproved) {
+            if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
+                html += `<div class="data-item"><span class="data-label">الصادر النهائي (الأرشيف)</span>
+                    <p class="data-val"><a href="${t.archive}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p></div>`;
+            } else {
+                html += `<div class="data-item">
+                    <span class="data-label">الصادر النهائي (الأرشيف) <span class="badge-missing">⚠ ناقص</span></span>
+                    <div class="upload-area" id="upload-area-${t.id}" onclick="document.getElementById('file-${t.id}').click()">
+                        <input type="file" id="file-${t.id}" style="display:none" onchange="uploadArchiveFile('${t.id}',this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                        <p style="font-size:0.85rem;font-weight:700;color:#92400e;margin:0">📤 اضغط لرفع ملف الصادر</p>
+                        <p style="font-size:0.7rem;color:#94a3b8;margin:4px 0 0">PDF, Word, أو صورة</p>
+                    </div>
+                    <p id="upload-status-${t.id}" style="font-size:0.75rem;margin-top:4px;display:none"></p>
+                </div>`;
+            }
+        }
 
-                const res  = await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName, fieldValue: value, updatedBy })
-                });
-                const data = await res.json();
+        if (t.notes) {
+            html += `<div class="bg-yellow-50 p-2 rounded text-sm border border-yellow-200">
+                <span class="data-label text-yellow-700">ملاحظات</span>
+                <p class="data-val text-gray-700">${t.notes}</p></div>`;
+        }
+        if (t.attachment) {
+            html += `<div style="margin-top:8px">
+                <a href="${t.attachment}" target="_blank" class="btn-card btn-attach" style="display:inline-flex;width:auto;padding:8px 16px">
+                    <i data-lucide="paperclip" class="w-4 h-4"></i> مرفق الوارد
+                </a></div>`;
+        }
 
-                if (data.success) {
-                    const task = allTasks.find(x => x.id == taskId);
-                    if (task) task[fieldName] = value;
-                    const parent = input.closest('.data-item');
-                    const label  = parent.querySelector('.data-label').textContent.replace('⚠ ناقص', '').trim();
-                    parent.innerHTML = `<span class="data-label">${label} ✅</span><p class="data-val">${value}</p>`;
-                    applyFilters();
-                } else {
-                    alert('❌ ' + (data.error || 'فشل الحفظ'));
-                    btnEl.textContent = origText; btnEl.disabled = false;
-                }
-            } catch (e) {
-                alert('❌ خطأ في الاتصال');
+        document.getElementById('m-content').innerHTML = html;
+        document.getElementById('detail-modal').classList.add('open');
+        lucide.createIcons();
+    }
+
+    // ── Save Field Update ──
+    async function saveFieldUpdate(taskId, fieldName, btnEl) {
+        const input = document.getElementById(`edit-${fieldName}-${taskId}`);
+        if (!input) return;
+        const value = input.value.trim();
+        if (!value) { alert('يرجى إدخال القيمة أولاً'); return; }
+
+        const origText = btnEl.textContent;
+        btnEl.textContent = 'جاري...'; btnEl.disabled = true;
+
+        try {
+            const userStr   = localStorage.getItem('iag_user');
+            const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
+
+            const res  = await fetch(CONFIG.API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName, fieldValue: value, updatedBy })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                const task = allTasks.find(x => x.id == taskId);
+                if (task) task[fieldName] = value;
+                const parent = input.closest('.data-item');
+                const label  = parent.querySelector('.data-label').textContent.replace('⚠ ناقص', '').trim();
+                parent.innerHTML = `<span class="data-label">${label} ✅</span><p class="data-val">${value}</p>`;
+                applyFilters();
+            } else {
+                alert('❌ ' + (data.error || 'فشل الحفظ'));
                 btnEl.textContent = origText; btnEl.disabled = false;
             }
+        } catch (e) {
+            alert('❌ خطأ في الاتصال');
+            btnEl.textContent = origText; btnEl.disabled = false;
         }
+    }
 
-        // ── Upload Archive File ──
-        async function uploadArchiveFile(taskId, inputEl) {
-            const file = inputEl.files[0];
-            if (!file) return;
-            if (file.size > 10 * 1024 * 1024) { alert('حجم الملف أكبر من 10 ميجا'); return; }
+    // ── Upload Archive File ──
+    async function uploadArchiveFile(taskId, inputEl) {
+        const file = inputEl.files[0];
+        if (!file) return;
+        if (file.size > 10 * 1024 * 1024) { alert('حجم الملف أكبر من 10 ميجا'); return; }
 
-            const area   = document.getElementById(`upload-area-${taskId}`);
-            const status = document.getElementById(`upload-status-${taskId}`);
-            area.classList.add('uploading');
-            area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#0f766e">⏳ جاري الرفع...</p>';
-            status.style.display = 'block';
-            status.textContent = `📁 ${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
-            status.style.color = '#64748b';
+        const area   = document.getElementById(`upload-area-${taskId}`);
+        const status = document.getElementById(`upload-status-${taskId}`);
+        area.classList.add('uploading');
+        area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#0f766e">⏳ جاري الرفع...</p>';
+        status.style.display = 'block';
+        status.textContent = `📁 ${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
+        status.style.color = '#64748b';
 
+        try {
+            const base64    = await fileToBase64(file);
+            const userStr   = localStorage.getItem('iag_user');
+            const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
+
+            const res  = await fetch(CONFIG.API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'uploadArchiveFile',
+                    taskId, updatedBy,
+                    fileName  : `صادر_${taskId}_${file.name}`,
+                    fileBase64: base64,
+                    mimeType  : file.type
+                })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                const task = allTasks.find(x => x.id == taskId);
+                if (task) task.archive = data.fileUrl;
+                const parent = area.closest('.data-item');
+                parent.innerHTML = `<span class="data-label">الصادر النهائي (الأرشيف) ✅</span>
+                    <p class="data-val"><a href="${data.fileUrl}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p>`;
+                applyFilters();
+            } else {
+                alert('❌ ' + (data.error || 'فشل الرفع'));
+                area.classList.remove('uploading');
+                area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ فشل الرفع — اضغط للمحاولة مرة أخرى</p>';
+            }
+        } catch (e) {
+            alert('❌ خطأ في الاتصال');
+            area.classList.remove('uploading');
+            area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ خطأ — اضغط للمحاولة</p>';
+        }
+    }
+
+    function openArchiveUpload(taskId) { openModal(taskId); }
+
+    function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload  = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function openReassignModal(taskId) {
+        document.getElementById('reassign-task-id').value = taskId;
+        document.getElementById('modal-reassign').classList.add('open');
+    }
+
+    function openStatusModal(taskId) {
+        document.getElementById('status-task-id').value = taskId;
+        document.getElementById('modal-status').classList.add('open');
+    }
+
+    async function confirmReassign() {
+        const taskId = document.getElementById('reassign-task-id').value;
+        const newEmp = document.getElementById('reassign-select').value;
+        const btn    = document.getElementById('btn-confirm-reassign');
+        if (!newEmp) { alert('يرجى اختيار موظف'); return; }
+
+        if (confirm(`هل أنت متأكد من تغيير المكلف إلى ${newEmp}؟`)) {
+            btn.textContent = 'جاري الاتصال...'; btn.disabled = true;
             try {
-                const base64    = await fileToBase64(file);
-                const userStr   = localStorage.getItem('iag_user');
-                const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
-
+                const userStr    = localStorage.getItem('iag_user');
+                const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
                 const res  = await fetch(CONFIG.API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({
-                        action: 'uploadArchiveFile',
-                        taskId, updatedBy,
-                        fileName  : `صادر_${taskId}_${file.name}`,
-                        fileBase64: base64,
-                        mimeType  : file.type
-                    })
+                    body: JSON.stringify({ action: 'reassignTask', taskId, newEmployee: newEmp, updatedBy: currentUser })
                 });
                 const data = await res.json();
-
                 if (data.success) {
-                    const task = allTasks.find(x => x.id == taskId);
-                    if (task) task.archive = data.fileUrl;
-                    const parent = area.closest('.data-item');
-                    parent.innerHTML = `<span class="data-label">الصادر النهائي (الأرشيف) ✅</span>
-                        <p class="data-val"><a href="${data.fileUrl}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p>`;
-                    applyFilters();
-                } else {
-                    alert('❌ ' + (data.error || 'فشل الرفع'));
-                    area.classList.remove('uploading');
-                    area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ فشل الرفع — اضغط للمحاولة مرة أخرى</p>';
-                }
-            } catch (e) {
-                alert('❌ خطأ في الاتصال');
-                area.classList.remove('uploading');
-                area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ خطأ — اضغط للمحاولة</p>';
-            }
+                    alert('✅ تم تغيير المكلف بنجاح.');
+                    closeEnhancementModal('modal-reassign');
+                    const u = JSON.parse(localStorage.getItem('iag_user'));
+                    loadData(u.name);
+                } else { alert('❌ ' + (data.error || 'لم يتم التعديل')); }
+            } catch (err) { alert('❌ خطأ في الاتصال بالخادم'); }
+            finally { btn.textContent = 'تأكيد التغيير'; btn.disabled = false; }
         }
+    }
 
-        function openArchiveUpload(taskId) { openModal(taskId); }
+    async function confirmStatusChange() {
+        const taskId    = document.getElementById('status-task-id').value;
+        const newStatus = document.getElementById('status-select').value;
+        const btn       = document.getElementById('btn-confirm-status');
 
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload  = () => resolve(reader.result.split(',')[1]);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
+        if (confirm(`هل أنت متأكد من تغيير الحالة إلى "${newStatus}"؟`)) {
+            btn.textContent = 'جاري الحفظ...'; btn.disabled = true;
+            try {
+                const userStr    = localStorage.getItem('iag_user');
+                const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
+                const res  = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'updateStatus', taskId, newStatus, updatedBy: currentUser })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('✅ تم تحديث الحالة بنجاح.');
+                    closeEnhancementModal('modal-status');
+                    const u = JSON.parse(localStorage.getItem('iag_user'));
+                    loadData(u.name);
+                } else { alert('❌ ' + (data.error || 'لم يتم التعديل')); }
+            } catch (err) { alert('❌ خطأ في الاتصال بالخادم'); }
+            finally { btn.textContent = 'حفظ الحالة'; btn.disabled = false; }
         }
+    }
 
-        function openReassignModal(taskId) {
-            document.getElementById('reassign-task-id').value = taskId;
-            document.getElementById('modal-reassign').classList.add('open');
-        }
+    function parseDateToISO(dateStr) {
+        if (!dateStr) return null;
+        if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
+        const parts = dateStr.split('/');
+        if (parts.length === 3) return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        return null;
+    }
 
-        function openStatusModal(taskId) {
-            document.getElementById('status-task-id').value = taskId;
-            document.getElementById('modal-status').classList.add('open');
-        }
+    function formatArabicDate(dateStr) {
+        if (!dateStr) return '-';
+        const parts = dateStr.split('/');
+        if (parts.length !== 3) return dateStr;
+        const d = new Date(parts[2], parts[1] - 1, parts[0]);
+        return d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+</script>
+```
 
-        async function confirmReassign() {
-            const taskId = document.getElementById('reassign-task-id').value;
-            const newEmp = document.getElementById('reassign-select').value;
-            const btn    = document.getElementById('btn-confirm-reassign');
-            if (!newEmp) { alert('يرجى اختيار موظف'); return; }
-
-            if (confirm(`هل أنت متأكد من تغيير المكلف إلى ${newEmp}؟`)) {
-                btn.textContent = 'جاري الاتصال...'; btn.disabled = true;
-                try {
-                    const userStr    = localStorage.getItem('iag_user');
-                    const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
-                    const res  = await fetch(CONFIG.API_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'reassignTask', taskId, newEmployee: newEmp, updatedBy: currentUser })
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        alert('✅ تم تغيير المكلف بنجاح.');
-                        closeEnhancementModal('modal-reassign');
-                        const u = JSON.parse(localStorage.getItem('iag_user'));
-                        loadData(u.name);
-                    } else { alert('❌ ' + (data.error || 'لم يتم التعديل')); }
-                } catch (err) { alert('❌ خطأ في الاتصال بالخادم'); }
-                finally { btn.textContent = 'تأكيد التغيير'; btn.disabled = false; }
-            }
-        }
-
-        async function confirmStatusChange() {
-            const taskId    = document.getElementById('status-task-id').value;
-            const newStatus = document.getElementById('status-select').value;
-            const btn       = document.getElementById('btn-confirm-status');
-
-            if (confirm(`هل أنت متأكد من تغيير الحالة إلى "${newStatus}"؟`)) {
-                btn.textContent = 'جاري الحفظ...'; btn.disabled = true;
-                try {
-                    const userStr    = localStorage.getItem('iag_user');
-                    const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
-                    const res  = await fetch(CONFIG.API_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'updateStatus', taskId, newStatus, updatedBy: currentUser })
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        alert('✅ تم تحديث الحالة بنجاح.');
-                        closeEnhancementModal('modal-status');
-                        const u = JSON.parse(localStorage.getItem('iag_user'));
-                        loadData(u.name);
-                    } else { alert('❌ ' + (data.error || 'لم يتم التعديل')); }
-                } catch (err) { alert('❌ خطأ في الاتصال بالخادم'); }
-                finally { btn.textContent = 'حفظ الحالة'; btn.disabled = false; }
-            }
-        }
-
-        function parseDateToISO(dateStr) {
-            if (!dateStr) return null;
-            if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
-            const parts = dateStr.split('/');
-            if (parts.length === 3) return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-            return null;
-        }
-
-        function formatArabicDate(dateStr) {
-            if (!dateStr) return '-';
-            const parts = dateStr.split('/');
-            if (parts.length !== 3) return dateStr;
-            const d = new Date(parts[2], parts[1] - 1, parts[0]);
-            return d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
-        }
-    </script>
 </body>
 </html>
