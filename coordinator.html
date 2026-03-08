@@ -59,6 +59,7 @@
         .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
 
         .btn-missing { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 10px; height: 44px; padding: 0 12px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; font-family: 'Cairo', sans-serif; }
+        .btn-missing.active { background: #dc2626; color: white; border-color: #dc2626; }
 
         .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
         .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -260,7 +261,7 @@
                 <!-- زر النواقص -->
                 <button onclick="toggleMissingData()" id="btn-missing" class="btn-missing" title="عرض النواقص فقط">
                     <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-                    <span class="hidden lg:inline">النواقص</span>
+                    النواقص
                 </button>
                 <!-- زر تبديل العرض -->
                 <button onclick="toggleViewMode()" id="btn-view" class="btn-print" title="تبديل الجدول / الكروت">
@@ -461,16 +462,7 @@
 
         function toggleMissingData() {
             showMissingOnly = !showMissingOnly;
-            const btn = document.getElementById('btn-missing');
-            if (showMissingOnly) {
-                btn.classList.replace('bg-red-50', 'bg-red-600');
-                btn.classList.replace('text-red-600', 'text-white');
-                btn.classList.replace('border-red-200', 'border-red-600');
-            } else {
-                btn.classList.replace('bg-red-600', 'bg-red-50');
-                btn.classList.replace('text-white', 'text-red-600');
-                btn.classList.replace('border-red-600', 'border-red-200');
-            }
+            document.getElementById('btn-missing').classList.toggle('active', showMissingOnly);
             applyFilters();
         }
 
