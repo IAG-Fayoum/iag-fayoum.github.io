@@ -65,14 +65,14 @@
         .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
-        .stat-card-big { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .stat-card-big { background: white; border-width: 1px; border-style: solid; border-color: #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.15s; }
         .stat-card-big.active { background: #ccfbf1; border-color: #0f766e; border-width: 2px; outline: 3px solid rgba(15,118,110,0.2); outline-offset: 1px; }
         .stat-card-big.active .lbl { color: #0f766e; }
         .stat-card-big.active .num { color: #0f766e; }
         .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
         .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
 
-        .stat-card-small { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; }
+        .stat-card-small { background: white; border-width: 1px; border-style: solid; border-color: #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; transition: 0.15s; }
         .stat-card-small.active { background: #ccfbf1; border-color: #0f766e; border-width: 2px; outline: 3px solid rgba(15,118,110,0.2); outline-offset: 1px; }
         .stat-card-small.active .lbl { color: #0f766e; }
         .stat-card-small.active .num { color: #0f766e; }
@@ -587,9 +587,8 @@
                 return true;
             });
 
-            // الأرقام الـ 6 + context bar من baseFiltered فقط
+            // الأرقام الـ 6 من baseFiltered (مش متأثرة بالحالة)
             updateStatsContext(baseFiltered);
-            updateContextBar(baseFiltered);
 
             // الكروت = baseFiltered + status + docType
             const displayFiltered = baseFiltered.filter(t => {
@@ -597,6 +596,9 @@
                 if (currentDocFilter && getDocGroup(t) !== currentDocFilter) return false;
                 return true;
             });
+
+            // context bar يتبع displayFiltered
+            updateContextBar(displayFiltered);
 
             renderTasks(displayFiltered);
         }
