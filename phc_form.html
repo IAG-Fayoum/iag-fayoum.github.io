@@ -363,264 +363,688 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <button class="btn-nav btn-prev" id="btn-prev" onclick="prevPage()" style="display:none">&#8594; السابق</button>
     <button class="btn-nav btn-next" id="btn-next" onclick="nextPage()">التالي &#8592;</button>
   </div>
-</div>
-<script>
+</div><script>
 const TOTAL_PAGES = 17;
-const CASCADE     = {"بندر الفيوم": ["مركز طبى الحادقة", "مركز طبى السد العالى", "مركز طبى الشيخ حسن", "مركز طبى الكيمان فارس", "المشتل", "الحواتم", "رعاية طفل أول", "مكتب صحة أول", "مكتب صحة ثالث"], "مركز الفيوم": ["اللاهون", "العزب", "دمو القديمة", "دسيا", "الزاوية", "دمشقين", "هوارة المقطع", "سنوفر", "ابجيج", "السنباط", "مناشي الخطيب", "تلات", "الشيخ فضل", "المندرة", "بني صالح", "منشأة عبدالله", "الإعلام", "العامرية", "العدوة", "سيلا", "الصالحية", "البسيونية", "الناصرية", "كفور النيل", "أبو السعود", "منشأة سكران", "دمو الجديدة", "منشأة العشيري", "منشأة كمال", "أبو عش", "البيضا", "الزهيري", "الفيوم الجديدة"], "سنورس": ["المركز الطبى بسنورس", "سنهور القبلية", "فيديمين", "التوفيقية", "مطرطارس", "منشأة بنى عتمان", "منشأة سنورس", "منشأة طنطاوى", "ترسا", "ابهيت", "السعيدية", "نقاليفة", "سنهور البحرية", "جرفس", "جبلة", "دوار جبلة", "منشأة دكم", "بيهمو", "الكعابى الجديدة", "رعاية طفل سنورس"], "اطسا": ["مركز طبى إطسا", "مركز طبى دفنو", "مركز طبى الغرق", "تطون", "أبو جندير", "الحجر", "قلمشاة", "قلهانة", "الجعافرة", "السعدة", "المحمودية", "عتامنة المزارعة", "الونايسة", "جردو", "شدموه", "عزبة قلمشاة", "قصر الباسل", "القاسمية", "مطول", "منشأة رحمي", "منشأة عبدالمجيد", "منشأة فيصل", "منية الحيط", "نوارة", "محمد فهمي السيد", "دانيال", "أبو صير", "خلف", "سويكر", "الحسينية", "الخمسين", "بحر أبو المير", "عبدربه", "محجوب يادم", "سعداوي", "فاطمة الزهراء", "منشأة ظافر", "خليل الجندي", "سلام", "الزعفراني"], "طامية": ["مركز طبى طامية", "كوم أوشيم", "سرسنا", "قصر رشوان", "دار السلام", "العزيزية", "منشأة الجمال", "كفر محفوظ", "سعد الروبي", "كفر عميرة", "أبو طالب", "خليفة يونس", "فرقص", "الروضة", "الروبيات", "البراني", "بنوة", "الكومي", "السبعين", "المظاطلي", "فانوس", "الفهمية", "فتح ب"], "ابشواى": ["أبو جنشو", "أبو شنب", "أبوكساه", "العجميين", "أبو دنقاش", "العلوية", "النصارية", "زيد", "الصفراية", "سنرو القبلية", "شكشوك", "طبهار", "قصر بياض", "كفر عبود", "منشأة هويدي", "سنرو البحرية", "الجيلاني", "الياس"], "يوسف الصديق": ["قوته", "الشواشنة", "الحامولي", "النزلة", "المقراني", "قصر الجبالي", "رواق", "الريان", "شعلان", "حنا حبيب", "الخواجات", "أبو صايم", "الفقي", "بركة", "بطن هريت", "القرية الثانية", "الرواشدية", "العقيلي", "كحك بحري", "كحك قبلي", "الصعايدة", "الصبيحي", "مشرك بحري", "مشرك قبلي", "بريشة", "والي ميزار", "الشيمي", "قارون", "منشأة قارون", "يوسف الصديق", "سيدنا الخضر", "زكي صالح"]};
-const FORM_KEY    = 'phc_form_draft';
-const SUBMIT_URL  = 'https://script.google.com/macros/s/AKfycbxnLLFQBN2pZ6tO5VAg9WMTd4zWiHYpOQzkKuDL_VRJQk7HGOtlTMDZ5LqtjRBf9bgC/exec';
-let currentPage = 0;
+const CASCADE = {
+  "بندر الفيوم": ["مركز طبى الحادقة", "مركز طبى السد العالى", "مركز طبى الشيخ حسن", "مركز طبى الكيمان فارس", "المشتل", "الحواتم", "رعاية طفل أول", "مكتب صحة أول", "مكتب صحة ثالث"],
+  "مركز الفيوم": ["اللاهون", "العزب", "دمو القديمة", "دسيا", "الزاوية", "دمشقين", "هوارة المقطع", "سنوفر", "ابجيج", "السنباط", "مناشي الخطيب", "تلات", "الشيخ فضل", "المندرة", "بني صالح", "منشأة عبدالله", "الإعلام", "العامرية", "العدوة", "سيلا", "الصالحية", "البسيونية", "الناصرية", "كفور النيل", "أبو السعود", "منشأة سكران", "دمو الجديدة", "منشأة العشيري", "منشأة كمال", "أبو عش", "البيضا", "الزهيري", "الفيوم الجديدة"],
+  "سنورس": ["المركز الطبى بسنورس", "سنهور القبلية", "فيديمين", "التوفيقية", "مطرطارس", "منشأة بنى عتمان", "منشأة سنورس", "منشأة طنطاوى", "ترسا", "ابهيت", "السعيدية", "نقاليفة", "سنهور البحرية", "جرفس", "جبلة", "دوار جبلة", "منشأة دكم", "بيهمو", "الكعابى الجديدة", "رعاية طفل سنورس"],
+  "اطسا": ["مركز طبى إطسا", "مركز طبى دفنو", "مركز طبى الغرق", "تطون", "أبو جندير", "الحجر", "قلمشاة", "قلهانة", "الجعافرة", "السعدة", "المحمودية", "عتامنة المزارعة", "الونايسة", "جردو", "شدموه", "عزبة قلمشاة", "قصر الباسل", "القاسمية", "مطول", "منشأة رحمي", "منشأة عبدالمجيد", "منشأة فيصل", "منية الحيط", "نوارة", "محمد فهمي السيد", "دانيال", "أبو صير", "خلف", "سويكر", "الحسينية", "الخمسين", "بحر أبو المير", "عبدربه", "محجوب يادم", "سعداوي", "فاطمة الزهراء", "منشأة ظافر", "خليل الجندي", "سلام", "الزعفراني"],
+  "طامية": ["مركز طبى طامية", "كوم أوشيم", "سرسنا", "قصر رشوان", "دار السلام", "العزيزية", "منشأة الجمال", "كفر محفوظ", "سعد الروبي", "كفر عميرة", "أبو طالب", "خليفة يونس", "فرقص", "الروضة", "الروبيات", "البراني", "بنوة", "الكومي", "السبعين", "المظاطلي", "فانوس", "الفهمية", "فتح ب"],
+  "ابشواى": ["أبو جنشو", "أبو شنب", "أبوكساه", "العجميين", "أبو دنقاش", "العلوية", "النصارية", "زيد", "الصفراية", "سنرو القبلية", "شكشوك", "طبهار", "قصر بياض", "كفر عبود", "منشأة هويدي", "سنرو البحرية", "الجيلاني", "الياس"],
+  "يوسف الصديق": ["قوته", "الشواشنة", "الحامولي", "النزلة", "المقراني", "قصر الجبالي", "رواق", "الريان", "شعلان", "حنا حبيب", "الخواجات", "أبو صايم", "الفقي", "بركة", "بطن هريت", "القرية الثانية", "الرواشدية", "العقيلي", "كحك بحري", "كحك قبلي", "الصعايدة", "الصبيحي", "مشرك بحري", "مشرك قبلي", "بريشة", "والي ميزار", "الشيمي", "قارون", "منشأة قارون", "يوسف الصديق", "سيدنا الخضر", "زكي صالح"]
+};
 
-// ── Fix 1: Visit UUID ──
+const FORM_KEY = 'phc_form_draft';
+const VISIT_KEY = 'phc_visit_id';
+const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbxnLLFQBN2pZ6tO5VAg9WMTd4zWiHYpOQzkKuDL_VRJQk7HGOtlTMDZ5LqtjRBf9bgC/exec';
+const UPLOAD_CACHE_PREFIX = 'phc_upload_cache_';
+
+let currentPage = 0;
+let isSubmitting = false;
+
+// الحقول/البلوكات التي تظهر فقط عند تحقق شرط محدد
+const CONDITIONAL_RULES = [
+  {
+    triggerName: 'q_PHC_REC_SH_001',
+    type: 'radioEquals',
+    expected: 'نعم',
+    targets: ['q_PHC_REC_SH_001_details', 'block_q_PHC_REC_SH_002']
+  },
+  {
+    triggerName: 'q_PHC_REC_SH_003',
+    type: 'radioEquals',
+    expected: 'نعم',
+    targets: ['q_PHC_REC_SH_003_details', 'block_q_PHC_REC_SH_004']
+  },
+  {
+    triggerName: 'q_PHC_ADM_MIN_001',
+    type: 'checkboxChecked',
+    targets: ['block_q_PHC_ADM_MIN_010']
+  },
+  {
+    triggerName: 'q_PHC_ER_MIN_001',
+    type: 'checkboxChecked',
+    targets: ['block_q_PHC_ER_MIN_002']
+  },
+  {
+    triggerName: 'q_PHC_ER_MIN_003',
+    type: 'checkboxChecked',
+    targets: ['block_q_PHC_ER_MIN_004']
+  },
+  {
+    triggerName: 'q_PHC_ER_MIN_005',
+    type: 'checkboxChecked',
+    targets: ['block_q_PHC_ER_MIN_006']
+  },
+  {
+    triggerName: 'q_PHC_PH_MED_009',
+    type: 'radioEquals',
+    expected: 'نعم',
+    targets: ['q_PHC_PH_MED_009_details', 'block_q_PHC_PH_MED_010']
+  },
+  {
+    triggerName: 'q_PHC_FP_MED_001',
+    type: 'checkboxChecked',
+    targets: ['block_q_PHC_FP_MIN_003']
+  },
+  {
+    triggerName: 'q_PHC_DEN_MIN_003',
+    type: 'checkboxChecked',
+    targets: ['block_q_PHC_DEN_MIN_004']
+  },
+  {
+    triggerName: 'q_PHC_RAD_MIN_002',
+    type: 'checkboxChecked',
+    targets: ['block_q_PHC_RAD_MIN_003']
+  }
+];
+
+// تحقق رقمي بسيط وآمن
+const NUMERIC_RULES = {
+  q_PHC_MCH_OP_003: { min: 0, max: 100, label: 'نسبة تغطية فحص الغدة الدرقية' }
+};
+
 function getVisitId() {
-    let id = localStorage.getItem('phc_visit_id');
-    if (!id) {
-        id = 'PHC-' + Date.now() + '-' + Math.random().toString(36).slice(2,8).toUpperCase();
-        localStorage.setItem('phc_visit_id', id);
-    }
-    return id;
+  let id = localStorage.getItem(VISIT_KEY);
+  if (!id) {
+    id = 'PHC-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+    localStorage.setItem(VISIT_KEY, id);
+  }
+  return id;
+}
+
+function getUploadCacheKey_(visitId) {
+  return UPLOAD_CACHE_PREFIX + visitId;
+}
+
+function loadUploadCache_(visitId) {
+  try {
+    const raw = localStorage.getItem(getUploadCacheKey_(visitId));
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveUploadCache_(visitId, cache) {
+  try {
+    localStorage.setItem(getUploadCacheKey_(visitId), JSON.stringify(cache || {}));
+  } catch (e) {}
+}
+
+function clearUploadCache_(visitId) {
+  try {
+    localStorage.removeItem(getUploadCacheKey_(visitId));
+  } catch (e) {}
+}
+
+function fileSignature_(inputId, file) {
+  return [
+    inputId || 'file',
+    file.name || '',
+    file.size || 0,
+    file.lastModified || 0,
+    file.type || ''
+  ].join('::');
 }
 
 function onIdaraChange(idara) {
-    const sel = document.getElementById('q_PHC_MASTER_007');
-    if (!sel) return;
-    sel.innerHTML = '<option value="">اختر الوحدة...</option>';
-    (CASCADE[idara]||[]).forEach(u => { const o=document.createElement('option'); o.value=u; o.textContent=u; sel.appendChild(o); });
+  const sel = document.getElementById('q_PHC_MASTER_007');
+  if (!sel) return;
+  const currentValue = sel.value;
+  sel.innerHTML = '<option value="">اختر الوحدة...</option>';
+  (CASCADE[idara] || []).forEach(u => {
+    const o = document.createElement('option');
+    o.value = u;
+    o.textContent = u;
+    sel.appendChild(o);
+  });
+  if (currentValue && (CASCADE[idara] || []).includes(currentValue)) {
+    sel.value = currentValue;
+  }
 }
-function showCond(id,show) {
-    const el=document.getElementById(id);
-    if(!el)return;
-    el.style.display=show?'block':'none';
-    // toggle required: الحقل الشرطي يبقى required بس لو ظاهر
-    if(el.tagName==='TEXTAREA'||el.tagName==='INPUT') el.required = show;
+
+function markOriginalRequired_() {
+  document.querySelectorAll('.page [name]').forEach(el => {
+    if (!el.dataset.origRequired) {
+      el.dataset.origRequired = el.required ? '1' : '0';
+    }
+  });
+
+  // هذا الحقل "أدوية أخرى" لا يصح أن يظل required دائمًا
+  const otherDrug = document.getElementById('q_PHC_PH_SH_999');
+  if (otherDrug) {
+    otherDrug.required = false;
+    otherDrug.dataset.origRequired = '0';
+  }
+}
+
+function setRequiredByOriginal_(el, shouldRequire) {
+  if (!el) return;
+  const orig = el.dataset.origRequired === '1';
+  el.required = shouldRequire && orig;
+}
+
+function toggleElementState_(el, show) {
+  if (!el) return;
+
+  const isBlock = el.classList.contains('q-block');
+  el.style.display = show ? '' : 'none';
+
+  const controls = isBlock ? el.querySelectorAll('[name]') : [el];
+
+  controls.forEach(ctrl => {
+    if (!ctrl) return;
+    ctrl.disabled = !show;
+    if (!show) {
+      ctrl.required = false;
+    } else {
+      setRequiredByOriginal_(ctrl, true);
+    }
+  });
+}
+
+function isRuleMatched_(rule) {
+  const els = document.querySelectorAll('[name="' + rule.triggerName + '"]');
+  if (!els.length) return false;
+
+  if (rule.type === 'radioEquals') {
+    const checked = Array.from(els).find(el => el.checked);
+    return !!checked && checked.value === rule.expected;
+  }
+
+  if (rule.type === 'checkboxChecked') {
+    return Array.from(els).some(el => el.checked);
+  }
+
+  return false;
+}
+
+function applyConditionalRules() {
+  CONDITIONAL_RULES.forEach(rule => {
+    const matched = isRuleMatched_(rule);
+    rule.targets.forEach(id => {
+      const target = document.getElementById(id);
+      toggleElementState_(target, matched);
+    });
+  });
+
+  updateAllSteps_();
+}
+
+function showCond(id, show) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  toggleElementState_(el, show);
+  applyConditionalRules();
 }
 
 function isPageComplete(idx) {
-    const page = document.getElementById('page_'+idx);
-    if (!page) return false;
-    // required text/select/textarea
-    for (const el of page.querySelectorAll('input[required]:not([type=radio]):not([type=checkbox]), select[required], textarea[required]')) {
-        if (!el.value||!el.value.trim()) return false;
-    }
-    // required radio groups — each group must have one checked
-    const groups = {};
-    page.querySelectorAll('input[type=radio][required]').forEach(r => {
-        if (!groups[r.name]) groups[r.name] = false;
-        if (r.checked) groups[r.name] = true;
-    });
-    for (const v of Object.values(groups)) { if (!v) return false; }
-    return true;
+  const page = document.getElementById('page_' + idx);
+  if (!page) return false;
+
+  for (const el of page.querySelectorAll('input[required]:not([type=radio]):not([type=checkbox]), select[required], textarea[required]')) {
+    if (el.disabled) continue;
+    if (!el.value || !el.value.trim()) return false;
+    if (!validateNumericField_(el)) return false;
+  }
+
+  const groups = {};
+  page.querySelectorAll('input[type=radio][required]:not(:disabled)').forEach(r => {
+    if (!groups[r.name]) groups[r.name] = false;
+    if (r.checked) groups[r.name] = true;
+  });
+
+  for (const v of Object.values(groups)) {
+    if (!v) return false;
+  }
+
+  return true;
 }
 
 function updateStepDone(idx) {
-    const step = document.getElementById('step_'+idx);
-    if (!step) return;
-    if (idx === currentPage) { step.classList.add('active'); step.classList.remove('done'); return; }
-    if (isPageComplete(idx)) { step.classList.add('done'); step.classList.remove('active'); }
-    else { step.classList.remove('done','active'); }
+  const step = document.getElementById('step_' + idx);
+  if (!step) return;
+
+  if (idx === currentPage) {
+    step.classList.add('active');
+    step.classList.remove('done');
+    return;
+  }
+
+  if (isPageComplete(idx)) {
+    step.classList.add('done');
+    step.classList.remove('active');
+  } else {
+    step.classList.remove('done', 'active');
+  }
+}
+
+function updateAllSteps_() {
+  for (let i = 0; i < TOTAL_PAGES; i++) {
+    updateStepDone(i);
+  }
 }
 
 function attachListeners(idx) {
-    const page = document.getElementById('page_'+idx);
-    if (!page||page.dataset.ls) return;
-    page.dataset.ls='1';
-    page.addEventListener('input', ()=>updateStepDone(idx));
-    page.addEventListener('change', ()=>updateStepDone(idx));
+  const page = document.getElementById('page_' + idx);
+  if (!page || page.dataset.ls) return;
+
+  page.dataset.ls = '1';
+  page.addEventListener('input', () => {
+    applyConditionalRules();
+    updateStepDone(idx);
+    saveLocal();
+  });
+  page.addEventListener('change', () => {
+    applyConditionalRules();
+    updateStepDone(idx);
+    saveLocal();
+  });
 }
 
 function goToPage(idx) {
-    if (idx<0||idx>=TOTAL_PAGES) return;
-    updateStepDone(currentPage);
-    document.getElementById('page_'+currentPage).classList.remove('active');
-    currentPage = idx;
-    document.getElementById('page_'+currentPage).classList.add('active');
-    document.getElementById('step_'+currentPage).classList.remove('done');
-    document.getElementById('step_'+currentPage).classList.add('active');
-    attachListeners(currentPage);
-    updateNav(); updateProgress();
-    window.scrollTo({top:0,behavior:'smooth'});
-    saveLocal();
+  if (idx < 0 || idx >= TOTAL_PAGES) return;
+
+  updateStepDone(currentPage);
+  document.getElementById('page_' + currentPage).classList.remove('active');
+
+  currentPage = idx;
+
+  document.getElementById('page_' + currentPage).classList.add('active');
+  document.getElementById('step_' + currentPage).classList.remove('done');
+  document.getElementById('step_' + currentPage).classList.add('active');
+
+  attachListeners(currentPage);
+  updateNav();
+  updateProgress();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  saveLocal();
 }
 
 function nextPage() {
-    if (!validatePage()) return;
-    updateStepDone(currentPage);
-    if (currentPage>=TOTAL_PAGES-1) { submitForm(); return; }
-    goToPage(currentPage+1);
+  if (!validatePage(currentPage, true)) return;
+  updateStepDone(currentPage);
+
+  if (currentPage >= TOTAL_PAGES - 1) {
+    submitForm();
+    return;
+  }
+
+  goToPage(currentPage + 1);
 }
-function prevPage() { goToPage(currentPage-1); }
+
+function prevPage() {
+  goToPage(currentPage - 1);
+}
 
 function updateNav() {
-    document.getElementById('btn-prev').style.display = currentPage===0?'none':'flex';
-    const btn=document.getElementById('btn-next');
-    if (currentPage===TOTAL_PAGES-1) { btn.innerHTML='إرسال ✓'; btn.classList.add('btn-submit'); }
-    else { btn.innerHTML='التالي &#8592;'; btn.classList.remove('btn-submit'); }
-}
-function updateProgress() {
-    const pct=Math.round(((currentPage+1)/TOTAL_PAGES)*100);
-    document.getElementById('progress-fill').style.width=pct+'%';
-    document.getElementById('progress-label').textContent='القسم '+(currentPage+1)+' من '+TOTAL_PAGES;
-    document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('btn-prev').style.display = currentPage === 0 ? 'none' : 'flex';
+  const btn = document.getElementById('btn-next');
+  if (currentPage === TOTAL_PAGES - 1) {
+    btn.innerHTML = 'إرسال ✓';
+    btn.classList.add('btn-submit');
+  } else {
+    btn.innerHTML = 'التالي &#8592;';
+    btn.classList.remove('btn-submit');
+  }
 }
 
-function validatePage() {
-    const page=document.getElementById('page_'+currentPage);
-    let valid=true;
-    page.querySelectorAll('.q-block').forEach(b=>b.classList.remove('required-error'));
-    page.querySelectorAll('input[required]:not([type=radio]):not([type=checkbox]),select[required],textarea[required]').forEach(el=>{
-        if(!el.value||!el.value.trim()){ el.closest('.q-block').classList.add('required-error'); valid=false; }
-    });
-    const groups={};
-    page.querySelectorAll('input[type=radio][required]').forEach(r=>{
-        if(!groups[r.name])groups[r.name]={checked:false,block:r.closest('.q-block')};
-        if(r.checked)groups[r.name].checked=true;
-    });
-    Object.values(groups).forEach(g=>{ if(!g.checked){g.block.classList.add('required-error');valid=false;} });
-    if(!valid) page.querySelector('.required-error')?.scrollIntoView({behavior:'smooth',block:'center'});
-    return valid;
+function updateProgress() {
+  const pct = Math.round(((currentPage + 1) / TOTAL_PAGES) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = 'القسم ' + (currentPage + 1) + ' من ' + TOTAL_PAGES;
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+function validateNumericField_(el) {
+  if (!el || el.disabled || el.value === '') return true;
+  const rule = NUMERIC_RULES[el.name];
+  if (!rule) return true;
+
+  const num = Number(el.value);
+  if (Number.isNaN(num)) return false;
+  if (typeof rule.min === 'number' && num < rule.min) return false;
+  if (typeof rule.max === 'number' && num > rule.max) return false;
+  return true;
+}
+
+function validatePage(idx, scrollToError) {
+  const page = document.getElementById('page_' + idx);
+  if (!page) return true;
+
+  let valid = true;
+  page.querySelectorAll('.q-block').forEach(b => b.classList.remove('required-error'));
+
+  page.querySelectorAll('input[required]:not([type=radio]):not([type=checkbox]), select[required], textarea[required]').forEach(el => {
+    if (el.disabled) return;
+    const isEmpty = !el.value || !el.value.trim();
+    const isBadNumber = !isEmpty && !validateNumericField_(el);
+    if (isEmpty || isBadNumber) {
+      el.closest('.q-block')?.classList.add('required-error');
+      valid = false;
+    }
+  });
+
+  const groups = {};
+  page.querySelectorAll('input[type=radio][required]:not(:disabled)').forEach(r => {
+    if (!groups[r.name]) groups[r.name] = { checked: false, block: r.closest('.q-block') };
+    if (r.checked) groups[r.name].checked = true;
+  });
+
+  Object.values(groups).forEach(g => {
+    if (!g.checked) {
+      g.block?.classList.add('required-error');
+      valid = false;
+    }
+  });
+
+  if (!valid && scrollToError) {
+    page.querySelector('.required-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  return valid;
+}
+
+function validateAllPages_() {
+  for (let i = 0; i < TOTAL_PAGES; i++) {
+    if (!validatePage(i, false)) return i;
+  }
+  return -1;
 }
 
 function handleFiles(input) {
-    const p=document.getElementById('files_preview_'+input.id);
-    if(!p)return;
-    p.innerHTML='';
-    Array.from(input.files).slice(0,10).forEach(f=>{ const c=document.createElement('div'); c.className='file-chip'; c.textContent=f.name; p.appendChild(c); });
+  const p = document.getElementById('files_preview_' + input.id);
+  if (!p) return;
+
+  p.innerHTML = '';
+  Array.from(input.files || []).slice(0, 10).forEach(f => {
+    const c = document.createElement('div');
+    c.className = 'file-chip';
+    c.textContent = f.name;
+    p.appendChild(c);
+  });
+
+  saveLocal();
 }
 
 function collectFormData() {
-    const fd={};
-    document.querySelectorAll('.page [name]').forEach(el=>{
-        if(!el.name)return;
-        if(el.type==='checkbox'){ if(!fd[el.name])fd[el.name]=[]; if(el.checked)fd[el.name].push(el.value); }
-        else if(el.type==='radio'){ if(el.checked)fd[el.name]=el.value; }
-        else if(el.type==='file'){} // handled separately in uploadAllFiles
-        else fd[el.name]=el.value;
-    });
-    return fd;
+  const fd = {};
+
+  document.querySelectorAll('.page [name]').forEach(el => {
+    if (!el.name || el.disabled) return;
+
+    if (el.type === 'checkbox') {
+      if (el.checked) {
+        if (!fd[el.name]) fd[el.name] = [];
+        fd[el.name].push(el.value);
+      }
+    } else if (el.type === 'radio') {
+      if (el.checked) fd[el.name] = el.value;
+    } else if (el.type === 'file') {
+      // handled separately
+    } else {
+      fd[el.name] = el.value;
+    }
+  });
+
+  return fd;
 }
 
-// ── File upload helpers ──
 function fileToBase64(file) {
-    return new Promise((res,rej)=>{
-        const r=new FileReader();
-        r.onload=()=>res(r.result.split(',')[1]);
-        r.onerror=()=>rej(new Error('قراءة الملف فشلت'));
-        r.readAsDataURL(file);
-    });
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = () => rej(new Error('قراءة الملف فشلت'));
+    r.readAsDataURL(file);
+  });
 }
 
 async function uploadAllFiles(visitId) {
-    const fileInputs = document.querySelectorAll('.page input[type=file]');
-    const results = [];
-    for (const input of fileInputs) {
-        if (!input.files || !input.files.length) continue;
-        for (const file of Array.from(input.files).slice(0,10)) {
-            try {
-                const b64 = await fileToBase64(file);
-                const res = await fetch(SUBMIT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        _action    : 'upload_file',
-                        _visit_id  : visitId,
-                        _file_name : file.name,
-                        _mime_type : file.type || 'application/octet-stream',
-                        _file_data : b64
-                    })
-                });
-                const json = await res.json().catch(()=>({}));
-                if (json.status === 'ok') results.push(json.file_url);
-            } catch(e) {
-                console.warn('file upload failed:', file.name, e.message);
-            }
+  const fileInputs = document.querySelectorAll('.page input[type=file]');
+  const cache = loadUploadCache_(visitId);
+  const urls = new Set(Object.values(cache));
+  let uploadedNew = 0;
+  let reused = 0;
+  let failed = 0;
+
+  for (const input of fileInputs) {
+    if (!input.files || !input.files.length) continue;
+
+    for (const file of Array.from(input.files).slice(0, 10)) {
+      const sig = fileSignature_(input.id, file);
+
+      if (cache[sig]) {
+        urls.add(cache[sig]);
+        reused++;
+        continue;
+      }
+
+      try {
+        const b64 = await fileToBase64(file);
+
+        const res = await fetch(SUBMIT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            _action: 'upload_file',
+            _visit_id: visitId,
+            _file_name: file.name,
+            _mime_type: file.type || 'application/octet-stream',
+            _file_data: b64
+          })
+        });
+
+        const json = await res.json().catch(() => ({}));
+        const fileUrl = json.file_url || json.url || '';
+
+        if (res.ok && json.status === 'ok' && fileUrl) {
+          cache[sig] = fileUrl;
+          urls.add(fileUrl);
+          uploadedNew++;
+          saveUploadCache_(visitId, cache);
+        } else {
+          failed++;
+          console.warn('file upload failed:', file.name, json.message || res.status);
         }
+      } catch (e) {
+        failed++;
+        console.warn('file upload failed:', file.name, e.message);
+      }
     }
-    return results; // array of Drive URLs
+  }
+
+  return {
+    urls: Array.from(urls),
+    uploadedNew,
+    reused,
+    failed
+  };
 }
 
 function saveLocal() {
-    try{
-        localStorage.setItem(FORM_KEY,JSON.stringify(collectFormData()));
-        const b=document.getElementById('save-badge');
-        b.textContent='✓ محفوظ'; b.style.background='rgba(255,255,255,0.3)';
-        setTimeout(()=>{b.textContent='💾 حفظ';b.style.background='';},1500);
-    }catch(e){}
+  try {
+    const draft = collectFormData();
+    draft._visit_id = getVisitId();
+    localStorage.setItem(FORM_KEY, JSON.stringify(draft));
+
+    const b = document.getElementById('save-badge');
+    b.textContent = '✓ محفوظ';
+    b.style.background = 'rgba(255,255,255,0.3)';
+    setTimeout(() => {
+      b.textContent = '💾 حفظ';
+      b.style.background = '';
+    }, 1500);
+  } catch (e) {}
 }
 
 function loadLocal() {
-    try{
-        const saved=localStorage.getItem(FORM_KEY);
-        if(!saved)return;
-        const fd=JSON.parse(saved);
-        Object.entries(fd).forEach(([name,val])=>{
-            const els=document.querySelectorAll('[name="'+name+'"]');
-            if(!els.length)return;
-            if(els[0].type==='checkbox'){ els.forEach(el=>{el.checked=Array.isArray(val)&&val.includes(el.value);});}
-            else if(els[0].type==='radio'){ els.forEach(el=>{ if(el.value===val){el.checked=true; if(name==='q_PHC_MASTER_006')onIdaraChange(val);} }); }
-            else{els[0].value=val;}
+  try {
+    const saved = localStorage.getItem(FORM_KEY);
+    if (!saved) return;
+
+    const fd = JSON.parse(saved);
+
+    if (fd._visit_id) {
+      localStorage.setItem(VISIT_KEY, fd._visit_id);
+    }
+
+    if (fd.q_PHC_MASTER_006) {
+      onIdaraChange(fd.q_PHC_MASTER_006);
+    }
+
+    Object.entries(fd).forEach(([name, val]) => {
+      if (name.startsWith('_')) return;
+
+      const els = document.querySelectorAll('[name="' + name + '"]');
+      if (!els.length) return;
+
+      if (els[0].type === 'checkbox') {
+        els.forEach(el => {
+          el.checked = Array.isArray(val) && val.includes(el.value);
         });
-        for(let i=0;i<TOTAL_PAGES;i++)updateStepDone(i);
-    }catch(e){}
+      } else if (els[0].type === 'radio') {
+        els.forEach(el => {
+          if (el.value === val) el.checked = true;
+        });
+      } else if (els[0].type !== 'file') {
+        els[0].value = val;
+      }
+    });
+
+    applyConditionalRules();
+    updateAllSteps_();
+  } catch (e) {}
 }
 
 async function submitForm() {
-    if(!validatePage())return;
-    const btn=document.getElementById('btn-next');
-    const visitId = getVisitId();
+  if (isSubmitting) return;
 
-    // ── Step 1: رفع الملفات أولاً ──
-    const hasFiles = [...document.querySelectorAll('.page input[type=file]')]
-                       .some(i=>i.files&&i.files.length);
-    if (hasFiles) {
-        btn.textContent='⏳ جاري رفع الصور...'; btn.disabled=true;
-    } else {
-        btn.textContent='⏳ جاري الإرسال...'; btn.disabled=true;
-    }
+  applyConditionalRules();
 
-    let attachmentUrls = [];
-    try {
-        attachmentUrls = await uploadAllFiles(visitId);
-    } catch(e) {
-        console.warn('file upload error:', e);
-        // مش بنوقف الإرسال لو الصور فشلت — بس بنسجل
-    }
+  const invalidPage = validateAllPages_();
+  if (invalidPage !== -1) {
+    goToPage(invalidPage);
+    validatePage(invalidPage, true);
+    return;
+  }
 
-    // ── Step 2: إرسال البيانات ──
-    btn.textContent='⏳ جاري الإرسال...';
-    const payload          = collectFormData();
-    payload._action        = 'submit';
-    payload._visit_id      = visitId;
-    payload._submitted_at  = new Date().toISOString();
-    payload._form_type     = 'PHC_WALKTHROUGH';
-    payload._attachments   = attachmentUrls.join(' | ');
+  isSubmitting = true;
 
-    try{
-        const res  = await fetch(SUBMIT_URL,{method:'POST',body:JSON.stringify(payload)});
-        const json = await res.json().catch(()=>({}));
-        if(res.ok && json.status === 'ok'){
-            localStorage.removeItem(FORM_KEY);
-            localStorage.removeItem('phc_visit_id');
-            document.getElementById('main-form').style.display='none';
-            document.getElementById('nav-bar').style.display='none';
-            // عرض عدد المرفقات في شاشة النجاح
-            const attachNote = document.getElementById('attach-note');
-            if (attachNote) attachNote.textContent = attachmentUrls.length
-                ? '📎 تم رفع ' + attachmentUrls.length + ' مرفق بنجاح'
-                : '';
-            document.getElementById('success-screen').style.display='block';
-        }else{
-            throw new Error(json.message || 'HTTP '+res.status);
+  const btn = document.getElementById('btn-next');
+  const visitId = getVisitId();
+
+  const cachedBefore = Object.values(loadUploadCache_(visitId)).length;
+  const hasSelectedFiles = [...document.querySelectorAll('.page input[type=file]')].some(i => i.files && i.files.length);
+  const hasAnyAttachments = hasSelectedFiles || cachedBefore > 0;
+
+  btn.disabled = true;
+  btn.textContent = hasAnyAttachments ? '⏳ جاري رفع الصور...' : '⏳ جاري الإرسال...';
+
+  let uploadResult = { urls: [], uploadedNew: 0, reused: 0, failed: 0 };
+
+  try {
+    uploadResult = await uploadAllFiles(visitId);
+  } catch (e) {
+    console.warn('file upload error:', e.message);
+  }
+
+  btn.textContent = '⏳ جاري الإرسال...';
+
+  const payload = collectFormData();
+  payload._action = 'submit';
+  payload._visit_id = visitId;
+  payload._submitted_at = new Date().toISOString();
+  payload._form_type = 'PHC_WALKTHROUGH';
+  payload._attachments = uploadResult.urls.join(' | ');
+
+  try {
+    const res = await fetch(SUBMIT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    const json = await res.json().catch(() => ({}));
+
+    if (res.ok && json.status === 'ok') {
+      localStorage.removeItem(FORM_KEY);
+      localStorage.removeItem(VISIT_KEY);
+      clearUploadCache_(visitId);
+
+      document.getElementById('main-form').style.display = 'none';
+      document.getElementById('nav-bar').style.display = 'none';
+
+      const attachNote = document.getElementById('attach-note');
+      if (attachNote) {
+        const totalAttached = uploadResult.urls.length;
+        if (totalAttached > 0) {
+          let msg = '📎 تم ربط ' + totalAttached + ' مرفق';
+          if (uploadResult.failed > 0) {
+            msg += ' — وفشل رفع ' + uploadResult.failed + ' ملف';
+          }
+          attachNote.textContent = msg;
+        } else {
+          attachNote.textContent = '';
         }
-    }catch(e){
-        saveLocal();
-        alert('⚠ فشل الإرسال — تم الحفظ محلياً\n' + e.message);
-        btn.textContent='إرسال ✓'; btn.disabled=false;
+      }
+
+      document.getElementById('success-screen').style.display = 'block';
+    } else {
+      throw new Error(json.message || 'فشل حفظ البيانات');
     }
+  } catch (e) {
+    saveLocal();
+
+    let msg = '⚠ فشل الإرسال النهائي — تم حفظ البيانات النصية محليًا';
+    if (uploadResult.urls.length > 0) {
+      msg += '\nتم الاحتفاظ بروابط ' + uploadResult.urls.length + ' مرفق لهذه الزيارة';
+    }
+    if (uploadResult.failed > 0) {
+      msg += '\nفشل رفع ' + uploadResult.failed + ' ملف';
+    }
+    msg += '\n' + e.message;
+
+    alert(msg);
+    btn.textContent = 'إرسال ✓';
+    btn.disabled = false;
+  } finally {
+    isSubmitting = false;
+  }
 }
-function resetForm(){ localStorage.removeItem(FORM_KEY); location.reload(); }
-window.addEventListener('online',()=>document.getElementById('offline-bar').classList.remove('show'));
-window.addEventListener('offline',()=>document.getElementById('offline-bar').classList.add('show'));
-if(!navigator.onLine)document.getElementById('offline-bar').classList.add('show');
-document.addEventListener('DOMContentLoaded',()=>{ attachListeners(0); loadLocal(); updateNav(); updateProgress(); });
+
+function resetForm() {
+  const visitId = localStorage.getItem(VISIT_KEY);
+  localStorage.removeItem(FORM_KEY);
+  localStorage.removeItem(VISIT_KEY);
+  if (visitId) clearUploadCache_(visitId);
+  location.reload();
+}
+
+window.addEventListener('online', () => {
+  document.getElementById('offline-bar').classList.remove('show');
+});
+
+window.addEventListener('offline', () => {
+  document.getElementById('offline-bar').classList.add('show');
+});
+
+if (!navigator.onLine) {
+  document.getElementById('offline-bar').classList.add('show');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  markOriginalRequired_();
+
+  for (let i = 0; i < TOTAL_PAGES; i++) {
+    attachListeners(i);
+  }
+
+  loadLocal();
+  applyConditionalRules();
+  updateNav();
+  updateProgress();
+});
 </script>
 </body>
 </html>
