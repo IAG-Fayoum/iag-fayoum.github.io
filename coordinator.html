@@ -579,18 +579,21 @@
 
 
         function getMissingFields(t) {
-            const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
-            const isFullyDone  = (t.status || '') === 'تم الاعتماد والأرشفة';
-            const missing = [];
-            if (!t.assignee || t.assignee.trim() === '')
-                missing.push('assignee');
-            if (isCaseEntity && (!t.caseNumber || t.caseNumber.toString().trim() === ''))
-                missing.push('case');
-            // الصادر النهائي مطلوب فقط بعد الاعتماد الكامل
-            if (isFullyDone && (!t.archive || t.archive.toString().trim() === '' || t.archive.toString().trim() === 'undefined'))
-                missing.push('archive');
-            return missing;
-        }
+    const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
+    const isFullyDone  = (t.status || '') === 'تم الاعتماد والأرشفة';
+    const isOutgoing   = (t.transactionType || t.docType || '').includes('صادر'); // ← جديد
+    const missing = [];
+    if (!t.assignee || t.assignee.trim() === '')
+        missing.push('assignee');
+    if (isCaseEntity && (!t.caseNumber || t.caseNumber.toString().trim() === ''))
+        missing.push('case');
+    if (isFullyDone && (!t.archive || t.archive.toString().trim() === '' || t.archive.toString().trim() === 'undefined'))
+        missing.push('archive');
+    // مرفق الوارد ناقص فقط للوارد — مش للصادر ← جديد
+    if (!isOutgoing && (!t.attachment || t.attachment.toString().trim() === '' || t.attachment.toString().trim() === 'undefined'))
+        missing.push('attachment');
+    return missing;
+}
 
         // ── DocType helpers ──
         function getDocGroup(t) {
@@ -729,9 +732,15 @@
                 const hasAttach = t.attachment && t.attachment.toString().trim() && t.attachment !== 'undefined';
 
                 // 📥 مرفق الوارد
-                const btnAttach = hasAttach
-                    ? `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="attach-pill attach-green">📥 الوارد</button>`
-                    : `<span class="attach-pill attach-missing" style="background:#fef2f2;color:#dc2626;border-color:#fecaca">⚠ الوارد ناقص</span>`;
+let btnAttach;
+if (hasAttach) {
+    btnAttach = `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="attach-pill attach-green">📥 الوارد</button>`;
+} else if (isOutgoing) {
+    // الصادر: المرفق موجود في الوارد المرتبط — مش ناقص
+    btnAttach = `<span class="attach-pill attach-grey">📥 الوارد</span>`;
+} else {
+    btnAttach = `<button onclick="event.stopPropagation();openModal('${t.id}')" class="attach-pill" style="background:#fef2f2;color:#dc2626;border-color:#fecaca;border:1px solid">⚠ الوارد ناقص</button>`;
+}
 
                 // 📄 ملف المراجعة
                 let btnReview;
