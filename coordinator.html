@@ -530,23 +530,11 @@
 
     function getMissingFields(t) {
         const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
-        const status       = t.status || '';
-        const isOutgoing   = (t.transactionType || t.docType || '').includes('صادر');
-        const isNew        = status.includes('جديد');
-        const isPending    = status.includes('بانتظار');
-        const isApproved   = status.includes('تم');
+        const isApproved   = (t.status || '').includes('تم');
         const missing = [];
-        if (!t.assignee || t.assignee.trim() === '') missing.push('assignee');
-        if (isCaseEntity && (!t.caseNumber || t.caseNumber.toString().trim() === '')) missing.push('case');
-        // مرفق الوارد: ناقص فقط لو وارد + جديد
-        if (!isOutgoing && isNew && (!t.attachment || t.attachment.trim() === '' || t.attachment === 'undefined'))
-            missing.push('attachment');
-        // مسودة الرد PDF: ناقص فقط لو بانتظار الاعتماد
-        if (isPending && (!t.reportPdf || t.reportPdf.trim() === '' || t.reportPdf === 'undefined'))
-            missing.push('reportPdf');
-        // مرفق الصادر: ناقص فقط لو تم الاعتماد والأرشفة
-        if (isApproved && (!t.archive || t.archive.trim() === '' || t.archive === 'undefined'))
-            missing.push('archive');
+        if (!t.assignee || t.assignee.trim() === '')                                       missing.push('assignee');
+        if (isCaseEntity && (!t.caseNumber || t.caseNumber.toString().trim() === ''))      missing.push('case');
+        if (isApproved  && (!t.archive  || t.archive.toString().trim()  === 'undefined' || t.archive.toString().trim() === '')) missing.push('archive');
         return missing;
     }
 
@@ -622,7 +610,6 @@
             else if (t.status.includes('متأخر'))   bgClass = 'bg-late';
 
             const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
-            const isPending    = (t.status || '').includes('بانتظار');
             const isApproved   = (t.status || '').includes('تم');
             const missing      = getMissingFields(t);
             const hasMissing   = missing.length > 0;
@@ -635,17 +622,6 @@
                 caseBadge = `<span class="badge-missing">⚠ رقم القضية ناقص</span>`;
             }
 
-            // زر مسودة الرد — بانتظار الاعتماد فقط
-            let reportPdfBtn = '';
-            if (isPending) {
-                if (t.reportPdf && t.reportPdf.trim() && t.reportPdf !== 'undefined') {
-                    reportPdfBtn = `<button onclick="event.stopPropagation();window.open('${t.reportPdf}')" class="btn-archive-card btn-archive-view">📄 مسودة الرد</button>`;
-                } else {
-                    reportPdfBtn = `<button class="btn-archive-card" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;cursor:default">⏳ PDF قيد الإنشاء</button>`;
-                }
-            }
-
-            // زر الصادر — تم الاعتماد فقط
             let archiveBtn = '';
             if (isApproved) {
                 if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
@@ -679,7 +655,7 @@
                         <i data-lucide="user" class="w-4 h-4 flex-shrink-0 text-teal-600"></i>
                         <span class="font-bold text-teal-700 flex items-center gap-1 flex-wrap">${assigneeHtml}</span>
                     </div>
-                    ${(caseBadge || reportPdfBtn || archiveBtn) ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}${reportPdfBtn}${archiveBtn}</div>` : ''}
+                    ${(caseBadge || archiveBtn) ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}${archiveBtn}</div>` : ''}
                 </div>
                 <div class="tc-footer">
                     <button onclick="openModal('${t.id}')" class="btn-card bg-teal-50 border-teal-200 text-teal-800 hover:bg-teal-100 w-full">
@@ -694,11 +670,9 @@
         tableBody.innerHTML = tasks.map(t => {
             const missing = getMissingFields(t);
             let missingTags = '';
-            if (missing.includes('assignee'))  missingTags += '<span class="missing-tag missing-tag-assignee">المكلف</span>';
-            if (missing.includes('case'))       missingTags += '<span class="missing-tag missing-tag-case">القضية</span>';
-            if (missing.includes('attachment')) missingTags += '<span class="missing-tag" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">مرفق الوارد</span>';
-            if (missing.includes('reportPdf'))  missingTags += '<span class="missing-tag" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">مسودة الرد</span>';
-            if (missing.includes('archive'))    missingTags += '<span class="missing-tag missing-tag-archive">الصادر</span>';
+            if (missing.includes('assignee')) missingTags += '<span class="missing-tag missing-tag-assignee">المكلف</span>';
+            if (missing.includes('case'))     missingTags += '<span class="missing-tag missing-tag-case">القضية</span>';
+            if (missing.includes('archive'))  missingTags += '<span class="missing-tag missing-tag-archive">الصادر</span>';
 
             return `
             <tr class="${missing.length ? 'row-missing' : ''}">
@@ -760,17 +734,6 @@
         }
 
         html += ed('الأهمية', 'importance', t.importance, 'عادي / عاجل / عاجل جداً');
-
-        // مسودة الرد PDF — بانتظار الاعتماد فقط
-        if ((t.status||'').includes('بانتظار')) {
-            if (t.reportPdf && t.reportPdf.trim() && t.reportPdf !== 'undefined') {
-                html += `<div class="data-item"><span class="data-label">مسودة الرد (PDF)</span>
-                    <p class="data-val"><a href="${t.reportPdf}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📄 فتح مسودة الرد</a></p></div>`;
-            } else {
-                html += `<div class="data-item"><span class="data-label">مسودة الرد (PDF) <span class="badge-missing" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">⏳ قيد الإنشاء</span></span>
-                    <p style="font-size:0.8rem;color:#92400e;margin:4px 0 0">سيظهر تلقائياً بعد إنشاء التقرير</p></div>`;
-            }
-        }
 
         if (isApproved) {
             if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
