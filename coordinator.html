@@ -715,7 +715,7 @@
                 if (isPending) {
                     stageBtn = hasReview
                         ? `<button onclick="event.stopPropagation();window.open('${t.reviewFile}')" class="btn-archive-card btn-archive-view">📄 ملف المراجعة</button>`
-                        : `<span class="btn-archive-card" style="background:#f1f5f9;color:#94a3b8;border:1px solid #e2e8f0;cursor:default">📄 لم يُولَّد بعد</span>`;
+                        : `<button onclick="event.stopPropagation();openModal('${t.id}')" class="btn-archive-card" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">⚠ ملف المراجعة ناقص</button>`;
                 } else if (isFullyDone) {
                     stageBtn = hasArchive
                         ? `<button onclick="event.stopPropagation();window.open('${t.archive}')" class="btn-archive-card btn-archive-view">📎 الصادر النهائي</button>`
@@ -840,7 +840,7 @@
                 } else {
                     html += `<div class="data-item">
                         <span class="data-label">ملف المراجعة (للاطلاع)</span>
-                        <p class="data-val" style="color:#94a3b8;font-size:0.85rem">⬜ لم يُولَّد بعد — سيظهر هنا تلقائياً بعد إنشاء التقرير</p>
+                        <p class="data-val" style="color:#92400e;font-size:0.85rem;font-weight:700">⚠ ملف المراجعة ناقص — يرجى إنشاء التقرير أولاً</p>
                     </div>`;
                 }
             } else if (isFullyDone) {
