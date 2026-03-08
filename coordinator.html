@@ -65,12 +65,14 @@
         .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
         .stat-card-big { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .stat-card-big.active { background: #f0fdfa; border-color: var(--primary); border-width: 2px; }
+        .stat-card-big.active { background: #ccfbf1; border-color: var(--primary); border-width: 2px; box-shadow: 0 0 0 3px rgba(15,118,110,0.15); }
+        .stat-card-big.active .lbl { color: #0f766e; }
         .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
         .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
 
         .stat-card-small { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; }
-        .stat-card-small.active { background: #f0fdfa; border-color: var(--primary); border-width: 2px; }
+        .stat-card-small.active { background: #ccfbf1; border-color: var(--primary); border-width: 2px; box-shadow: 0 0 0 3px rgba(15,118,110,0.15); }
+        .stat-card-small.active .lbl { color: #0f766e; }
         .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
         .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
 
@@ -470,6 +472,7 @@
                     allTasks = data.tasks || [];
                     if (data.stats && data.stats.employees) allEmployees = data.stats.employees;
                     populateDropdowns();
+                    computeFullStats();
                     applyFilters();
                 } else {
                     container.innerHTML = `<div class="empty-box"><i data-lucide="alert-circle" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i><p>${data.error || 'لا توجد بيانات'}</p></div>`;
@@ -566,9 +569,10 @@
             renderTasks(filtered);
         }
 
-        function updateStatsContext(filtered) {
+        // ── Stats: computed once on load, frozen after that ──
+        function computeFullStats() {
             let c = { total: 0, new: 0, pending: 0, approved: 0, followup: 0, late: 0 };
-            filtered.forEach(t => {
+            allTasks.forEach(t => {
                 c.total++;
                 const s = (t.status || '');
                 if (s.includes('جديد'))         c.new++;
@@ -583,6 +587,10 @@
             document.getElementById('c-approved').textContent= c.approved;
             document.getElementById('c-followup').textContent= c.followup;
             document.getElementById('c-late').textContent    = c.late;
+        }
+
+        function updateStatsContext(filtered) {
+            // أرقام ثابتة — لا تُحدَّث عند الفلترة
         }
 
         function renderTasks(tasks) {
@@ -630,6 +638,15 @@
                     ? `${t.assignee} <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-gray-100 border border-gray-300 px-2 py-1 rounded hover:bg-gray-200 text-gray-700" title="تغيير المكلف">تغيير</button>`
                     : `<span style="color:#dc2626">⚠ غير موزع</span> <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-red-100 border border-red-300 px-2 py-1 rounded text-red-700">تعيين</button>`;
 
+                const attachLabel = (() => {
+                    const type = (t.transactionType || t.docType || '').trim();
+                    if (type.includes('وارد'))                                return 'مرفق الوارد';
+                    if (type.includes('صادر'))                                return 'مرفق الصادر';
+                    if (type.includes('تقرير') || type.includes('مرور'))     return 'مرفقات التقرير';
+                    if (type.includes('شكوى'))                               return 'مرفق الشكوى';
+                    return 'عرض المرفق';
+                })();
+
                 return `
                 <div class="task-card ${hasMissing ? 'has-missing' : ''}">
                     <div class="card-stripe ${bgClass}">
@@ -656,7 +673,7 @@
                         <button onclick="openModal('${t.id}')" class="btn-card bg-teal-50 border-teal-200 text-teal-800 hover:bg-teal-100 w-full">
                             <i data-lucide="edit" class="w-4 h-4"></i> إدارة ومعالجة
                         </button>
-                        ${t.attachment ? `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="btn-card btn-attach"><i data-lucide="paperclip" class="w-4 h-4"></i> المرفق</button>` : ''}
+                        ${t.attachment ? `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="btn-card btn-attach"><i data-lucide="paperclip" class="w-4 h-4"></i> ${attachLabel}</button>` : ''}
                     </div>
                 </div>`;
             }).join('');
