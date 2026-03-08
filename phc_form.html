@@ -353,7 +353,8 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
   <div style="text-align:center;padding:3rem 1rem">
     <div style="font-size:4rem;margin-bottom:1rem">✅</div>
     <h2 style="font-size:1.3rem;font-weight:800;color:#065f46;margin-bottom:8px">تم الإرسال بنجاح</h2>
-    <p style="color:#64748b;font-size:0.9rem;margin-bottom:1.5rem">تم حفظ بيانات المرور في قاعدة البيانات</p>
+    <p style="color:#64748b;font-size:0.9rem;margin-bottom:0.5rem">تم حفظ بيانات المرور في قاعدة البيانات</p>
+    <p id="attach-note" style="color:#059669;font-size:0.85rem;font-weight:700;margin-bottom:1.5rem"></p>
     <button onclick="resetForm()" style="background:#0f766e;color:white;border:none;border-radius:12px;padding:12px 28px;font-size:1rem;font-weight:800;font-family:Cairo,sans-serif;cursor:pointer">مرور جديد</button>
   </div>
 </div>
@@ -492,10 +493,48 @@ function collectFormData() {
         if(!el.name)return;
         if(el.type==='checkbox'){ if(!fd[el.name])fd[el.name]=[]; if(el.checked)fd[el.name].push(el.value); }
         else if(el.type==='radio'){ if(el.checked)fd[el.name]=el.value; }
-        else if(el.type==='file'){}
+        else if(el.type==='file'){} // handled separately in uploadAllFiles
         else fd[el.name]=el.value;
     });
     return fd;
+}
+
+// ── File upload helpers ──
+function fileToBase64(file) {
+    return new Promise((res,rej)=>{
+        const r=new FileReader();
+        r.onload=()=>res(r.result.split(',')[1]);
+        r.onerror=()=>rej(new Error('قراءة الملف فشلت'));
+        r.readAsDataURL(file);
+    });
+}
+
+async function uploadAllFiles(visitId) {
+    const fileInputs = document.querySelectorAll('.page input[type=file]');
+    const results = [];
+    for (const input of fileInputs) {
+        if (!input.files || !input.files.length) continue;
+        for (const file of Array.from(input.files).slice(0,10)) {
+            try {
+                const b64 = await fileToBase64(file);
+                const res = await fetch(SUBMIT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        _action    : 'upload_file',
+                        _visit_id  : visitId,
+                        _file_name : file.name,
+                        _mime_type : file.type || 'application/octet-stream',
+                        _file_data : b64
+                    })
+                });
+                const json = await res.json().catch(()=>({}));
+                if (json.status === 'ok') results.push(json.file_url);
+            } catch(e) {
+                console.warn('file upload failed:', file.name, e.message);
+            }
+        }
+    }
+    return results; // array of Drive URLs
 }
 
 function saveLocal() {
@@ -526,20 +565,47 @@ function loadLocal() {
 async function submitForm() {
     if(!validatePage())return;
     const btn=document.getElementById('btn-next');
-    btn.textContent='⏳ جاري الإرسال...'; btn.disabled=true;
-    const payload=collectFormData();
-    payload._visit_id      = getVisitId();
+    const visitId = getVisitId();
+
+    // ── Step 1: رفع الملفات أولاً ──
+    const hasFiles = [...document.querySelectorAll('.page input[type=file]')]
+                       .some(i=>i.files&&i.files.length);
+    if (hasFiles) {
+        btn.textContent='⏳ جاري رفع الصور...'; btn.disabled=true;
+    } else {
+        btn.textContent='⏳ جاري الإرسال...'; btn.disabled=true;
+    }
+
+    let attachmentUrls = [];
+    try {
+        attachmentUrls = await uploadAllFiles(visitId);
+    } catch(e) {
+        console.warn('file upload error:', e);
+        // مش بنوقف الإرسال لو الصور فشلت — بس بنسجل
+    }
+
+    // ── Step 2: إرسال البيانات ──
+    btn.textContent='⏳ جاري الإرسال...';
+    const payload          = collectFormData();
+    payload._action        = 'submit';
+    payload._visit_id      = visitId;
     payload._submitted_at  = new Date().toISOString();
     payload._form_type     = 'PHC_WALKTHROUGH';
+    payload._attachments   = attachmentUrls.join(' | ');
+
     try{
         const res  = await fetch(SUBMIT_URL,{method:'POST',body:JSON.stringify(payload)});
         const json = await res.json().catch(()=>({}));
-        // ── Fix 3: تحقق من نجاح المعالجة الفعلي لا من HTTP فقط ──
         if(res.ok && json.status === 'ok'){
             localStorage.removeItem(FORM_KEY);
             localStorage.removeItem('phc_visit_id');
             document.getElementById('main-form').style.display='none';
             document.getElementById('nav-bar').style.display='none';
+            // عرض عدد المرفقات في شاشة النجاح
+            const attachNote = document.getElementById('attach-note');
+            if (attachNote) attachNote.textContent = attachmentUrls.length
+                ? '📎 تم رفع ' + attachmentUrls.length + ' مرفق بنجاح'
+                : '';
             document.getElementById('success-screen').style.display='block';
         }else{
             throw new Error(json.message || 'HTTP '+res.status);
