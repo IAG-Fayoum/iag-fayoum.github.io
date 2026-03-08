@@ -1,6 +1,5 @@
-<!DOCTYPE html>
 
-<html lang="ar" dir="rtl">
+<!DOCTYPE html><html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -8,7 +7,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
 
-```
 <title>المنسق | IAG System</title>
 <link rel="icon" type="image/png" href="assets/icons/favicon.png">
 
@@ -68,16 +66,16 @@
     .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
     .stat-card-big { background: white; border-width: 1px; border-style: solid; border-color: #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.15s; }
-    .stat-card-big.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
-    .stat-card-big.active .lbl { color: #0f766e !important; }
-    .stat-card-big.active .num { color: #0f766e !important; }
+    .stat-card-big.active { background: #ccfbf1; border-color: #0f766e; border-width: 2px; outline: 3px solid rgba(15,118,110,0.2); outline-offset: 1px; }
+    .stat-card-big.active .lbl { color: #0f766e; }
+    .stat-card-big.active .num { color: #0f766e; }
     .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
     .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
 
     .stat-card-small { background: white; border-width: 1px; border-style: solid; border-color: #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; transition: 0.15s; }
-    .stat-card-small.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
-    .stat-card-small.active .lbl { color: #0f766e !important; }
-    .stat-card-small.active .num { color: #0f766e !important; }
+    .stat-card-small.active { background: #ccfbf1; border-color: #0f766e; border-width: 2px; outline: 3px solid rgba(15,118,110,0.2); outline-offset: 1px; }
+    .stat-card-small.active .lbl { color: #0f766e; }
+    .stat-card-small.active .num { color: #0f766e; }
     .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
     .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
 
@@ -175,12 +173,11 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     .hidden { display: none !important; }
 </style>
-```
+
 
 </head>
 <body>
 
-```
 <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
 <aside class="side-menu" id="side-menu">
     <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
@@ -533,43 +530,52 @@
 
     function filterStatus(status) {
         // toggle: ضغط على المربع النشط يرجع للإجمالي
-        if (status && currentStatusFilter === status) status = '';
-        currentStatusFilter = status;
-        document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
-        const map = { '': 'st-total', 'جديد': 'st-new', 'بانتظار': 'st-pending', 'تم': 'st-approved', 'متابعة': 'st-followup', 'متأخر': 'st-late' };
-        let activeId = 'st-total';
-        if (status) {
-            const key = Object.keys(map).find(k => status.includes(k));
-            if (key) activeId = map[key];
+        if (status && currentStatusFilter === status) {
+            currentStatusFilter = ''; // إلغاء الفلتر إذا تم الضغط على نفس الكارت
+        } else {
+            currentStatusFilter = status;
         }
-        document.getElementById(activeId).classList.add('active');
+        
+        // تحديث الشكل البصري للكروت فوراً
+        updateActiveStatCard();
+        
+        // تطبيق الفلاتر
         applyFilters();
+    }
+
+    // دالة جديدة ومستقلة لتحديث الشكل البصري للكروت بناءً على currentStatusFilter
+    function updateActiveStatCard() {
+        // 1. مسح الكلاس active من كل الكروت
+        document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
+        
+        // 2. خريطة مطابقة النصوص لـ IDs الكروت
+        const map = { 
+            '': 'st-total', 
+            'جديد': 'st-new', 
+            'بانتظار الاعتماد': 'st-pending', // التعديل هنا: استخدام النص الكامل لضمان دقة المطابقة
+            'تم الاعتماد والأرشفة': 'st-approved', 
+            'بحاجة الي متابعة': 'st-followup', 
+            'متأخر': 'st-late' 
+        };
+
+        // 3. تحديد الـ ID الذي يجب أن يكون نشطاً
+        // إذا كان currentStatusFilter فارغاً (الإجمالي) سيأخذ st-total
+        let activeId = map[currentStatusFilter] || 'st-total'; 
+
+        // 4. إضافة الكلاس active للكارت الهدف
+        const activeCard = document.getElementById(activeId);
+        if(activeCard) {
+            activeCard.classList.add('active');
+        }
     }
 
     function getMissingFields(t) {
         const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
-        const status       = (t.status || '');
-        const isNew        = status.includes('جديد');
-        const isPending    = status.includes('بانتظار');
-        const isApproved   = status.includes('تم');
-        const isOutgoing   = (t.transactionType || t.docType || '').includes('صادر');
+        const isApproved   = (t.status || '').includes('تم');
         const missing = [];
-
-        if (!t.assignee || t.assignee.trim() === '') missing.push('assignee');
-        if (isCaseEntity && (!t.caseNumber || t.caseNumber.toString().trim() === '')) missing.push('case');
-
-        // مرفق الوارد: ناقص فقط لو وارد وحالته جديد
-        if (!isOutgoing && isNew && (!t.attachment || t.attachment.trim() === '' || t.attachment === 'undefined'))
-            missing.push('attachment');
-
-        // مسودة الرد (PDF): ناقص فقط لو في انتظار الاعتماد
-        if (isPending && (!t.reportPdf || t.reportPdf.trim() === '' || t.reportPdf === 'undefined'))
-            missing.push('reportPdf');
-
-        // مرفق الصادر: ناقص فقط لو تم الاعتماد والأرشفة
-        if (isApproved && (!t.archive || t.archive.trim() === '' || t.archive === 'undefined'))
-            missing.push('archive');
-
+        if (!t.assignee || t.assignee.trim() === '')                                       missing.push('assignee');
+        if (isCaseEntity && (!t.caseNumber || t.caseNumber.toString().trim() === ''))      missing.push('case');
+        if (isApproved  && (!t.archive  || t.archive.toString().trim()  === 'undefined' || t.archive.toString().trim() === '')) missing.push('archive');
         return missing;
     }
 
@@ -698,20 +704,6 @@
                 caseBadge = `<span class="badge-missing">⚠ رقم القضية ناقص</span>`;
             }
 
-            const isPending  = (t.status || '').includes('بانتظار');
-            const isApproved = (t.status || '').includes('تم');
-
-            // زر مسودة الرد PDF — يظهر في حالة بانتظار الاعتماد
-            let reportPdfBtn = '';
-            if (isPending) {
-                if (t.reportPdf && t.reportPdf.trim() && t.reportPdf !== 'undefined') {
-                    reportPdfBtn = `<button onclick="event.stopPropagation();window.open('${t.reportPdf}')" class="btn-archive-card btn-archive-view">📄 مسودة الرد</button>`;
-                } else {
-                    reportPdfBtn = `<button class="btn-archive-card" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;cursor:default">⏳ PDF قيد الإنشاء</button>`;
-                }
-            }
-
-            // زر مرفق الصادر — يظهر فقط في تم الاعتماد والأرشفة
             let archiveBtn = '';
             if (isApproved) {
                 if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
@@ -745,7 +737,7 @@
                         <i data-lucide="user" class="w-4 h-4 flex-shrink-0 text-teal-600"></i>
                         <span class="font-bold text-teal-700 flex items-center gap-1 flex-wrap">${assigneeHtml}</span>
                     </div>
-                    ${(caseBadge || reportPdfBtn || archiveBtn) ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}${reportPdfBtn}${archiveBtn}</div>` : ''}
+                    ${(caseBadge || archiveBtn) ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}${archiveBtn}</div>` : ''}
                 </div>
                 <div class="tc-footer">
                     <button onclick="openModal('${t.id}')" class="btn-card bg-teal-50 border-teal-200 text-teal-800 hover:bg-teal-100 w-full">
@@ -760,11 +752,9 @@
         tableBody.innerHTML = tasks.map(t => {
             const missing = getMissingFields(t);
             let missingTags = '';
-            if (missing.includes('assignee'))   missingTags += '<span class="missing-tag missing-tag-assignee">المكلف</span>';
-            if (missing.includes('case'))        missingTags += '<span class="missing-tag missing-tag-case">القضية</span>';
-            if (missing.includes('attachment'))  missingTags += '<span class="missing-tag" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">مرفق الوارد</span>';
-            if (missing.includes('reportPdf'))   missingTags += '<span class="missing-tag" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">مسودة الرد</span>';
-            if (missing.includes('archive'))     missingTags += '<span class="missing-tag missing-tag-archive">الصادر</span>';
+            if (missing.includes('assignee')) missingTags += '<span class="missing-tag missing-tag-assignee">المكلف</span>';
+            if (missing.includes('case'))     missingTags += '<span class="missing-tag missing-tag-case">القضية</span>';
+            if (missing.includes('archive'))  missingTags += '<span class="missing-tag missing-tag-archive">الصادر</span>';
 
             return `
             <tr class="${missing.length ? 'row-missing' : ''}">
@@ -826,18 +816,6 @@
         }
 
         html += ed('الأهمية', 'importance', t.importance, 'عادي / عاجل / عاجل جداً');
-
-        // مسودة الرد — في حالة بانتظار الاعتماد
-        const isPending_ = (t.status || '').includes('بانتظار');
-        if (isPending_) {
-            if (t.reportPdf && t.reportPdf.trim() && t.reportPdf !== 'undefined') {
-                html += `<div class="data-item"><span class="data-label">مسودة الرد (PDF)</span>
-                    <p class="data-val"><a href="${t.reportPdf}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📄 فتح مسودة الرد</a></p></div>`;
-            } else {
-                html += `<div class="data-item"><span class="data-label">مسودة الرد (PDF) <span class="badge-missing">⏳ قيد الإنشاء</span></span>
-                    <p style="font-size:0.8rem;color:#92400e">لم يتم إنشاء الـ PDF بعد — سيظهر تلقائياً بعد إنشاء التقرير</p></div>`;
-            }
-        }
 
         if (isApproved) {
             if (t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
@@ -934,7 +912,7 @@
                 body: JSON.stringify({
                     action: 'uploadArchiveFile',
                     taskId, updatedBy,
-                    fileName  : `صادر_${taskId}_${file.name}`,
+                    fileName  : `صادر_${taskId}\_${file.name}`,
                     fileBase64: base64,
                     mimeType  : file.type
                 })
@@ -1038,7 +1016,7 @@
         if (!dateStr) return null;
         if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
         const parts = dateStr.split('/');
-        if (parts.length === 3) return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        if (parts.length === 3) return `${parts\[2\]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
         return null;
     }
 
@@ -1050,7 +1028,7 @@
         return d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 </script>
-```
+
 
 </body>
 </html>
