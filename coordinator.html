@@ -533,6 +533,8 @@
         }
 
         function filterStatus(status) {
+            // toggle: ضغط على المربع النشط يرجع للإجمالي
+            if (status && currentStatusFilter === status) status = '';
             currentStatusFilter = status;
             document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
             const map = { '': 'st-total', 'جديد': 'st-new', 'بانتظار': 'st-pending', 'تم': 'st-approved', 'متابعة': 'st-followup', 'متأخر': 'st-late' };
@@ -628,9 +630,12 @@
         }
 
         function updateContextBar(tasks) {
-            const icons  = { 'وارد': '📥', 'صادر': '📤', 'تقارير': '📋', 'شكاوى': '📩', 'أخرى': '📄' };
-            const counts = { 'وارد': 0, 'صادر': 0, 'تقارير': 0, 'شكاوى': 0, 'أخرى': 0 };
-            tasks.forEach(t => counts[getDocGroup(t)]++);
+            const icons  = { 'وارد': '📥', 'صادر': '📤' };
+            const counts = { 'وارد': 0, 'صادر': 0 };
+            tasks.forEach(t => {
+                const g = getDocGroup(t);
+                if (g === 'وارد' || g === 'صادر') counts[g]++;
+            });
 
             const bar   = document.getElementById('context-bar');
             const chips = document.getElementById('ctx-chips');
@@ -643,7 +648,7 @@
                 html += `<button class="ctx-chip ${active}" onclick="filterDocType('${group}')">${icons[group]} ${group} <span class="ctx-count">${count}</span></button>`;
             });
             chips.innerHTML = html;
-            bar.style.display = hasChip ? 'flex' : 'none';
+            bar.style.display = 'flex';
         }
 
         function renderTasks(tasks) {
