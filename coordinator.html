@@ -135,6 +135,16 @@
         .btn-archive-upload { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
         .btn-archive-view { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
 
+        /* ── Attach Pills ── */
+        .attach-pills { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+        .attach-pill { font-size: 0.68rem; font-weight: 700; padding: 4px 9px; border-radius: 20px; display: inline-flex; align-items: center; gap: 3px; cursor: pointer; border: 1px solid transparent; white-space: nowrap; font-family: 'Cairo', sans-serif; }
+        .attach-green  { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
+        .attach-green:hover { background: #a7f3d0; }
+        .attach-warn   { background: #fef3c7; color: #92400e; border-color: #fde68a; cursor: pointer; }
+        .attach-danger { background: #fef2f2; color: #dc2626; border-color: #fecaca; cursor: pointer; }
+        .attach-grey   { background: #f1f5f9; color: #94a3b8; border-color: #e2e8f0; cursor: default; }
+        .linked-in { font-size: 0.65rem; color: #64748b; background: #f1f5f9; border-radius: 6px; padding: 2px 7px; font-weight: 700; border: 1px solid #e2e8f0; }
+
         .loader-box { grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8; }
         .empty-box { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
 
@@ -702,6 +712,7 @@
                 const hasReview    = t.reviewFile && t.reviewFile.toString().trim() && t.reviewFile !== 'undefined';
                 const hasArchive   = t.archive && t.archive.toString().trim() && t.archive !== 'undefined';
 
+                // badge القضية
                 let caseBadge = '';
                 if (isCaseEntity && t.caseNumber && t.caseNumber.toString().trim()) {
                     const isNA = (t.source || '').includes('نيابة');
@@ -710,16 +721,36 @@
                     caseBadge = `<span class="badge-missing">⚠ رقم القضية ناقص</span>`;
                 }
 
-                // زرار المرفق حسب مرحلة المعاملة
-                let stageBtn = '';
-                if (isPending) {
-                    stageBtn = hasReview
-                        ? `<button onclick="event.stopPropagation();window.open('${t.reviewFile}')" class="btn-archive-card btn-archive-view">📄 ملف المراجعة</button>`
-                        : `<button onclick="event.stopPropagation();openModal('${t.id}')" class="btn-archive-card" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">⚠ ملف المراجعة ناقص</button>`;
+                // رقم الوارد المرتبط للصادر
+                const isOutgoing = (t.transactionType || t.docType || '').includes('صادر');
+                const linkedIn   = isOutgoing ? t.id.replace(/^OUT-/, 'IN-') : null;
+
+                // ── الأيقونات الثلاثة ──
+                const hasAttach = t.attachment && t.attachment.toString().trim() && t.attachment !== 'undefined';
+
+                // 📥 مرفق الوارد
+                const btnAttach = hasAttach
+                    ? `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="attach-pill attach-green">📥 الوارد</button>`
+                    : `<span class="attach-pill attach-missing" style="background:#fef2f2;color:#dc2626;border-color:#fecaca">⚠ الوارد ناقص</span>`;
+
+                // 📄 ملف المراجعة
+                let btnReview;
+                if (hasReview) {
+                    btnReview = `<button onclick="event.stopPropagation();window.open('${t.reviewFile}')" class="attach-pill attach-green">📄 المراجعة</button>`;
+                } else if (isPending) {
+                    btnReview = `<button onclick="event.stopPropagation();openModal('${t.id}')" class="attach-pill attach-warn">⚠ المراجعة ناقصة</button>`;
+                } else {
+                    btnReview = `<span class="attach-pill attach-grey">📄 المراجعة</span>`;
+                }
+
+                // 📎 الصادر النهائي
+                let btnArchive;
+                if (hasArchive) {
+                    btnArchive = `<button onclick="event.stopPropagation();window.open('${t.archive}')" class="attach-pill attach-green">📎 الصادر</button>`;
                 } else if (isFullyDone) {
-                    stageBtn = hasArchive
-                        ? `<button onclick="event.stopPropagation();window.open('${t.archive}')" class="btn-archive-card btn-archive-view">📎 الصادر النهائي</button>`
-                        : `<button onclick="event.stopPropagation();openArchiveUpload('${t.id}')" class="btn-archive-card" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca">⚠ الصادر ناقص</button>`;
+                    btnArchive = `<button onclick="event.stopPropagation();openArchiveUpload('${t.id}')" class="attach-pill attach-danger">⚠ الصادر ناقص</button>`;
+                } else {
+                    btnArchive = `<span class="attach-pill attach-grey">📎 الصادر</span>`;
                 }
 
                 const assigneeHtml = t.assignee
@@ -729,7 +760,7 @@
                 return `
                 <div class="task-card ${hasMissing ? 'has-missing' : ''}">
                     <div class="card-stripe ${bgClass}">
-                        <span>#${t.id}</span>
+                        <span>#${t.id}${linkedIn ? ` <span class="linked-in" style="background:rgba(255,255,255,0.2);color:white;border-color:rgba(255,255,255,0.3)">← ${linkedIn}</span>` : ''}</span>
                         <span>${t.status}</span>
                     </div>
                     <div class="card-body">
@@ -746,13 +777,13 @@
                             <i data-lucide="user" class="w-4 h-4 flex-shrink-0 text-teal-600"></i>
                             <span class="font-bold text-teal-700 flex items-center gap-1 flex-wrap">${assigneeHtml}</span>
                         </div>
-                        ${(caseBadge || stageBtn) ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}${stageBtn}</div>` : ''}
+                        ${caseBadge ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}</div>` : ''}
+                        <div class="attach-pills">${btnAttach}${btnReview}${btnArchive}</div>
                     </div>
                     <div class="tc-footer">
                         <button onclick="openModal('${t.id}')" class="btn-card bg-teal-50 border-teal-200 text-teal-800 hover:bg-teal-100 w-full">
                             <i data-lucide="edit" class="w-4 h-4"></i> إدارة ومعالجة
                         </button>
-                        ${t.attachment ? `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="btn-card btn-attach"><i data-lucide="paperclip" class="w-4 h-4"></i> ${(()=>{const tp=(t.transactionType||t.docType||'');if(tp.includes('وارد'))return'مرفق الوارد';if(tp.includes('صادر'))return'مرفق الصادر';if(tp.includes('تقرير')||tp.includes('مرور'))return'مرفقات التقرير';if(tp.includes('شكوى'))return'مرفق الشكوى';return'عرض المرفق';})()}</button>` : ''}
                     </div>
                 </div>`;
             }).join('');
@@ -840,7 +871,7 @@
                 } else {
                     html += `<div class="data-item">
                         <span class="data-label">ملف المراجعة (للاطلاع)</span>
-                        <p class="data-val" style="color:#92400e;font-size:0.85rem;font-weight:700">⚠ ملف المراجعة ناقص — يرجى إنشاء التقرير أولاً</p>
+                        <p class="data-val" style="color:#94a3b8;font-size:0.85rem">⬜ لم يُولَّد بعد — سيظهر هنا تلقائياً بعد إنشاء التقرير</p>
                     </div>`;
                 }
             } else if (isFullyDone) {
