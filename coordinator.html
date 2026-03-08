@@ -736,8 +736,12 @@ let btnAttach;
 if (hasAttach) {
     btnAttach = `<button onclick="event.stopPropagation();window.open('${t.attachment}')" class="attach-pill attach-green">📥 الوارد</button>`;
 } else if (isOutgoing) {
-    // الصادر: المرفق موجود في الوارد المرتبط — مش ناقص
-    btnAttach = `<span class="attach-pill attach-grey">📥 الوارد</span>`;
+    const linkedId   = t.id.replace(/^OUT-/, 'IN-');
+    const linkedTask = allTasks.find(x => x.id === linkedId);
+    const linkedUrl  = linkedTask && linkedTask.attachment;
+    btnAttach = linkedUrl
+        ? `<button onclick="event.stopPropagation();window.open('${linkedUrl}')" class="attach-pill attach-green">📥 الوارد</button>`
+        : `<span class="attach-pill attach-grey">📥 الوارد</span>`;
 } else {
     btnAttach = `<button onclick="event.stopPropagation();openModal('${t.id}')" class="attach-pill" style="background:#fef2f2;color:#dc2626;border-color:#fecaca;border:1px solid">⚠ الوارد ناقص</button>`;
 }
