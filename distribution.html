@@ -299,34 +299,15 @@
 
         <div id="view-employees">
             <div class="stats-grid" id="stats-emp"></div>
-            <!-- شريط الإجراءات الشاملة -->
-            <div style="background:white;border:1px solid #e2e8f0;border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-                <span style="font-size:0.75rem;font-weight:800;color:#64748b;flex-shrink:0;">طباعة جماعية:</span>
-                <button onclick="printAllEmps('all')" style="background:#0f766e;color:white;border:none;border-radius:8px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:800;display:flex;align-items:center;gap:5px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                    الكل
+            <!-- زرارا الإجراء الشامل -->
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+                <button onclick="printAllEmps()" style="flex:1;background:#0f766e;color:white;border:none;border-radius:10px;padding:9px 0;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                    طباعة PDF
                 </button>
-                <button onclick="printAllEmps('admin')" style="background:#0369a1;color:white;border:none;border-radius:8px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:800;display:flex;align-items:center;gap:5px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                    مالي وإداري
-                </button>
-                <button onclick="printAllEmps('tech')" style="background:#7c3aed;color:white;border:none;border-radius:8px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:800;display:flex;align-items:center;gap:5px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                    فني وطبي
-                </button>
-                <div style="width:1px;height:22px;background:#e2e8f0;margin:0 2px;"></div>
-                <span style="font-size:0.75rem;font-weight:800;color:#64748b;flex-shrink:0;">تذكير جماعي:</span>
-                <button onclick="remindAllEmps('all')" style="background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:8px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:800;display:flex;align-items:center;gap:5px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                    الكل
-                </button>
-                <button onclick="remindAllEmps('admin')" style="background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;border-radius:8px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:800;display:flex;align-items:center;gap:5px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                    مالي وإداري
-                </button>
-                <button onclick="remindAllEmps('tech')" style="background:#f5f3ff;border:1px solid #ddd6fe;color:#7c3aed;border-radius:8px;padding:7px 12px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:800;display:flex;align-items:center;gap:5px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                    فني وطبي
+                <button onclick="remindAllEmps()" style="flex:1;background:#0369a1;color:white;border:none;border-radius:10px;padding:9px 0;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    إرسال إيميل
                 </button>
             </div>
             <div class="cards-list" id="list-emp">
@@ -412,10 +393,12 @@
             lucide.createIcons(); // Refresh icons
             // -------------------------------
 
-            // ضبط تلقائي: السنة والشهر الحالي
+            // ضبط تلقائي: السنة والربع الحالي
             const _now = new Date();
+            const _month = _now.getMonth() + 1; // 1-12
+            const _quarter = _month <= 3 ? 'Q1' : _month <= 6 ? 'Q2' : _month <= 9 ? 'Q3' : 'Q4';
             document.getElementById('f-year').value   = _now.getFullYear().toString();
-            document.getElementById('f-period').value = (_now.getMonth()+1).toString();
+            document.getElementById('f-period').value = _quarter;
 
             await loadData();
         });
@@ -998,33 +981,68 @@
             } catch(e) { alert('❌ خطأ في الاتصال'); }
         }
 
-        function printAllEmps(group) {
-            let emps = allData;
-            let label = 'الكل';
-            if (group==='admin'){emps=allData.filter(e=>(e.dept||'')==='مراجع مالي وإداري');label='مالي وإداري';}
-            if (group==='tech') {emps=allData.filter(e=>(e.dept||'')==='مراجع فني');label='فني وطبي';}
+        function printAllEmps() {
+            const emps = allData;
             if (!emps.length) { alert('لا توجد بيانات'); return; }
+            const period = document.getElementById('f-period').value;
+            const group  = document.getElementById('f-group').value;
+            const statF  = document.getElementById('f-stat') ? document.getElementById('f-stat').value : '';
+            const periodNames = {Q1:'الربع الأول',Q2:'الربع الثاني',Q3:'الربع الثالث',Q4:'الربع الرابع'};
+            const groupNames  = {admin:'مالي وإداري',tech:'فني وطبي'};
+            const statNames   = {late:'متأخر',new:'جديد',pending:'بانتظار الاعتماد',approved:'معتمد',followup:'بحاجة متابعة'};
+            const label = [groupNames[group]||'الكل', periodNames[period]||period||'كل الفترات', statNames[activeStatFilter]||''].filter(Boolean).join(' | ');
+            // إذا فيه فلتر حالة نطبق فلترة إضافية على مهام كل موظف
+            const today = new Date(); today.setHours(0,0,0,0);
+            const filteredEmps = emps.map(emp => {
+                let tasks = emp.tasks || [];
+                if (activeStatFilter) {
+                    tasks = tasks.filter(t => {
+                        const st = (t.status||'');
+                        const done = st.includes('تم')||st.includes('مكتمل');
+                        if(activeStatFilter==='late'){if(done)return false;const p=t.dueDate?.split('/');if(!p)return false;const due=new Date(+p[2],+p[1]-1,+p[0]);return !isNaN(due)&&due<today;}
+                        if(activeStatFilter==='new') return st.includes('جديد');
+                        if(activeStatFilter==='pending') return st.includes('بانتظار');
+                        if(activeStatFilter==='approved') return st.includes('تم')||st.includes('مكتمل');
+                        if(activeStatFilter==='followup') return st.includes('متابعة');
+                        return true;
+                    });
+                }
+                return {...emp, tasks};
+            }).filter(e => e.tasks.length > 0);
+            if (!filteredEmps.length) { alert('لا توجد معاملات للطباعة'); return; }
             const w = window.open('','_blank');
-            w.document.write(buildPrintHtml(emps, label));
+            w.document.write(buildPrintHtml(filteredEmps, label));
             w.document.close(); setTimeout(()=>w.print(),500);
         }
 
-        async function remindAllEmps(group) {
-            let emps = allData;
-            let label = 'الكل';
-            if (group==='admin'){emps=allData.filter(e=>(e.dept||'')==='مراجع مالي وإداري');label='مالي وإداري';}
-            if (group==='tech') {emps=allData.filter(e=>(e.dept||'')==='مراجع فني');label='فني وطبي';}
+        async function remindAllEmps() {
+            const emps = allData;
             if (!emps.length) { alert('لا توجد بيانات'); return; }
-            if (!confirm('إرسال تذكير لـ ' + emps.length + ' موظف (' + label + ')؟')) return;
+            const today = new Date(); today.setHours(0,0,0,0);
+            // فلترة المهام حسب activeStatFilter
+            const toSend = emps.map(emp => {
+                let tasks = (emp.tasks||[]).filter(t=>{const st=t.status||'';return !st.includes('تم')&&!st.includes('مكتمل');});
+                if (activeStatFilter && activeStatFilter !== null) {
+                    tasks = tasks.filter(t => {
+                        const st=(t.status||'');
+                        if(activeStatFilter==='late'){const p=t.dueDate?.split('/');if(!p)return false;const due=new Date(+p[2],+p[1]-1,+p[0]);return !isNaN(due)&&due<today;}
+                        if(activeStatFilter==='new') return st.includes('جديد');
+                        if(activeStatFilter==='pending') return st.includes('بانتظار');
+                        if(activeStatFilter==='followup') return st.includes('متابعة');
+                        return true;
+                    });
+                }
+                return {...emp, tasks};
+            }).filter(e => e.tasks.length > 0);
+            if (!toSend.length) { alert('لا توجد معاملات للإرسال'); return; }
+            if (!confirm('إرسال إيميل لـ ' + toSend.length + ' موظف؟')) return;
             const user = JSON.parse(localStorage.getItem('iag_user')||'{}');
             let sent=0, failed=0;
-            for (const emp of emps) {
-                const pending = (emp.tasks||[]).filter(t=>{const st=t.status||'';return !st.includes('تم')&&!st.includes('مكتمل');});
-                if (!pending.length) continue;
+            for (const emp of toSend) {
                 try {
                     const res = await fetch(CONFIG.API_URL,{method:'POST',body:JSON.stringify({
                         action:'sendReminderNotification', empName:emp.name, sentBy:user.name||'المنسق',
-                        tasks:pending.map(t=>({id:t.id,subject:t.subject,status:t.status,dueDate:t.dueDate}))
+                        tasks:emp.tasks.map(t=>({id:t.id,subject:t.subject,status:t.status,dueDate:t.dueDate}))
                     })});
                     const d = await res.json();
                     if(d.success) sent++; else failed++;
