@@ -71,6 +71,7 @@
         .stat-card.active { border-color: var(--primary); background: #f0fdfa; box-shadow: 0 0 0 2px var(--primary); }
         .stat-num { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
         .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
+        @media (max-width: 480px) { .hide-xs { display: none; } }
 
         .c-total { color: #334155; } .c-late { color: #dc2626; }
         .c-new { color: #3b82f6; } .c-pending { color: #16a34a; }
@@ -224,9 +225,10 @@
             <div>
                 <label class="f-label">السنة</label>
                 <select id="f-year" class="f-input" onchange="loadData()">
+                    <option value="" selected>الكل</option>
                     <option value="2024">2024</option>
                     <option value="2025">2025</option>
-                    <option value="2026" selected>2026</option>
+                    <option value="2026">2026</option>
                     <option value="2027">2027</option>
                     <option value="2028">2028</option>
                     <option value="2029">2029</option>
@@ -296,11 +298,19 @@
         <div id="view-followup" class="hidden" style="padding:0 0 1rem">
             <!-- فلاتر المتابعة -->
             <div style="background:white;border-radius:12px;border:1px solid #e2e8f0;padding:14px;margin-bottom:14px;">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">
                     <div>
                         <label class="f-label">الموظف</label>
                         <select id="fu-emp" class="f-input" onchange="renderFollowup()">
                             <option value="">الكل</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="f-label">المجموعة</label>
+                        <select id="fu-group" class="f-input" onchange="populateFuEmployees();renderFollowup()">
+                            <option value="">الكل</option>
+                            <option value="admin">مالي وإداري</option>
+                            <option value="tech">فني وطبي</option>
                         </select>
                     </div>
                     <div>
@@ -310,25 +320,29 @@
                             <option value="متأخر" selected>متأخر</option>
                             <option value="جديد">جديد</option>
                             <option value="بانتظار">بانتظار الاعتماد</option>
+                            <option value="تم">تم الاعتماد والأرشفة</option>
                             <option value="متابعة">بحاجة متابعة</option>
+                            <option value="مكتمل">مكتمل</option>
                         </select>
                     </div>
                 </div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                    <button onclick="printFollowup()" style="background:#0f766e;color:white;border:none;padding:9px 18px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;">
-                        🖨️ طباعة (كل موظف صفحة)
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                    <button onclick="printFollowup()" title="طباعة — كل موظف صفحة" style="background:#0f766e;color:white;border:none;padding:9px 16px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        <span class="hide-xs">طباعة PDF</span>
                     </button>
-                    <button onclick="sendReminders()" id="btn-remind" style="background:#0369a1;color:white;border:none;padding:9px 18px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;">
-                        📤 إرسال تذكير بالإيميل
+                    <button onclick="sendReminders()" id="btn-remind" title="إرسال تذكير بالإيميل" style="background:#0369a1;color:white;border:none;padding:9px 16px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <span class="hide-xs">إرسال تذكير</span>
                     </button>
-                    <span id="fu-count" style="font-size:0.78rem;color:#64748b;align-self:center;margin-right:4px;"></span>
+                    <span id="fu-count" style="font-size:0.82rem;color:#0f766e;font-weight:800;background:#f0fdfa;padding:5px 12px;border-radius:20px;border:1px solid #ccfbf1;"></span>
                 </div>
             </div>
             <!-- الجدول -->
-            <div id="fu-table-wrap" style="background:white;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden;">
-                <table style="width:100%;border-collapse:collapse;font-size:0.8rem;" id="fu-table">
+            <div id="fu-table-wrap" style="background:white;border-radius:12px;border:1px solid #e2e8f0;overflow:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem;min-width:560px;" id="fu-table">
                     <thead>
-                        <tr style="background:#f0fdfa;color:#0f766e;font-weight:800;">
+                        <tr style="background:#f0fdfa;color:#0f766e;font-weight:800;position:sticky;top:0;">
                             <th style="padding:10px 12px;text-align:right;border-bottom:2px solid #ccfbf1;">#</th>
                             <th style="padding:10px 12px;text-align:right;border-bottom:2px solid #ccfbf1;">رقم المعاملة</th>
                             <th style="padding:10px 12px;text-align:right;border-bottom:2px solid #ccfbf1;">الموضوع</th>
@@ -339,7 +353,7 @@
                         </tr>
                     </thead>
                     <tbody id="fu-tbody">
-                        <tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8;">اختر فلتر لعرض البيانات</td></tr>
+                        <tr><td colspan="7" style="text-align:center;padding:32px;color:#94a3b8;">اختر فلتر لعرض البيانات</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -860,10 +874,22 @@
         // ══════════════════════════════════════
 
         function populateFuEmployees() {
-            const sel = document.getElementById('fu-emp');
+            const sel   = document.getElementById('fu-emp');
+            const group = document.getElementById('fu-group').value;
             const current = sel.value;
             sel.innerHTML = '<option value="">الكل</option>';
-            const names = [...new Set(allData.map(e => e.name).filter(Boolean))].sort();
+
+            let emps = allData;
+            if (group) {
+                emps = allData.filter(e => {
+                    const t = (e.dept || '').trim();
+                    if (group === 'admin') return t === 'مراجع مالي وإداري';
+                    if (group === 'tech')  return t === 'مراجع فني';
+                    return true;
+                });
+            }
+
+            const names = [...new Set(emps.map(e => e.name).filter(Boolean))].sort();
             names.forEach(n => {
                 const o = document.createElement('option');
                 o.value = n; o.textContent = n;
@@ -875,11 +901,18 @@
         function getFollowupTasks() {
             const empFilter    = document.getElementById('fu-emp').value;
             const statusFilter = document.getElementById('fu-status').value;
+            const groupFilter  = document.getElementById('fu-group').value;
             const today        = new Date(); today.setHours(0,0,0,0);
             const rows = [];
 
             allData.forEach(emp => {
                 if (empFilter && emp.name !== empFilter) return;
+                // فلتر المجموعة
+                if (groupFilter) {
+                    const t = (emp.dept || '').trim();
+                    if (groupFilter === 'admin' && t !== 'مراجع مالي وإداري') return;
+                    if (groupFilter === 'tech'  && t !== 'مراجع فني') return;
+                }
                 if (!emp.tasks) return;
                 emp.tasks.forEach(t => {
                     const st = (t.status || '');
@@ -889,13 +922,17 @@
                     } else if (statusFilter === 'متأخر') {
                         const due = t.dueDate ? new Date(t.dueDate.split('/').reverse().join('-')) : null;
                         match = due && !isNaN(due) && due < today && !st.includes('تم') && !st.includes('مكتمل');
-                    } else if (statusFilter === 'جديد')     match = st.includes('جديد');
-                    else if (statusFilter === 'بانتظار')    match = st.includes('بانتظار');
-                    else if (statusFilter === 'متابعة')     match = st.includes('متابعة');
-                    if (match) rows.push({ emp: emp.name, task: t });
+                    } else if (statusFilter === 'جديد')    match = st.includes('جديد');
+                    else if (statusFilter === 'بانتظار')   match = st.includes('بانتظار');
+                    else if (statusFilter === 'تم')        match = st.includes('تم') || st.includes('مكتمل');
+                    else if (statusFilter === 'متابعة')    match = st.includes('متابعة');
+                    else if (statusFilter === 'مكتمل')     match = st.includes('مكتمل');
+                    if (match) rows.push({ emp: emp.name, dept: emp.dept||'', task: t });
                 });
             });
             return rows;
+        }
+
         }
 
         function renderFollowup() {
