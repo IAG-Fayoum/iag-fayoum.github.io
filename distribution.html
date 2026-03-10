@@ -68,7 +68,7 @@
             background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px;
             text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: center;
         }
-        .stat-card.active { border-color: var(--primary); background: #f0fdfa; ring: 2px solid var(--primary); }
+        .stat-card.active { border-color: var(--primary); background: #f0fdfa; box-shadow: 0 0 0 2px var(--primary); }
         .stat-num { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
         .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
@@ -320,6 +320,7 @@
         lucide.createIcons();
         let allData = [];
         let currentTab = 'employees';
+        let activeStatFilter = null; // null = الكل
         let currentSourceFilter = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -367,6 +368,7 @@
         function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
         async function loadData() {
+            activeStatFilter = null; // reset الفلتر عند تغيير السنة
             const year = document.getElementById('f-year').value;
             const period = document.getElementById('f-period').value;
             
@@ -400,14 +402,35 @@
 
         function switchTab() { setTab(currentTab); }
 
+        function setStatFilter(filter) {
+            activeStatFilter = (activeStatFilter === filter) ? null : filter;
+            renderEmployeeAnalysis();
+        }
+
         function getFilteredEmployees() {
             const group = document.getElementById('f-group').value;
-            return allData.filter(e => {
+            let emps = allData.filter(e => {
                 const title = (e.dept || e.jobTitle || '').trim();
                 if (title !== 'مراجع فني' && title !== 'مراجع مالي وإداري') return false;
                 if (group === 'tech') return title === 'مراجع فني';
                 if (group === 'admin') return title === 'مراجع مالي وإداري';
                 return true;
+            });
+
+            if (!activeStatFilter) return emps;
+
+            // فلتر بناءً على الكارت المضغوط
+            return emps.filter(e => {
+                if (activeStatFilter === 'late') return (e.overdue || 0) > 0;
+                if (!e.tasks) return false;
+                return e.tasks.some(t => {
+                    const st = (t.status || '');
+                    if (activeStatFilter === 'new')      return st.includes('جديد');
+                    if (activeStatFilter === 'pending')   return st.includes('بانتظار');
+                    if (activeStatFilter === 'approved')  return st.includes('تم') || st.includes('منتهي');
+                    if (activeStatFilter === 'followup')  return st.includes('متابعة');
+                    return false;
+                });
             });
         }
 
@@ -438,12 +461,12 @@
             });
 
             document.getElementById('stats-emp').innerHTML = `
-                <div class="stat-card"><div class="stat-num c-total">${s.total}</div><div class="stat-lbl">الإجمالي</div></div>
-                <div class="stat-card"><div class="stat-num c-late">${s.late}</div><div class="stat-lbl">متأخر</div></div>
-                <div class="stat-card"><div class="stat-num c-new">${s.new}</div><div class="stat-lbl">جديد</div></div>
-                <div class="stat-card"><div class="stat-num c-pending">${s.pending}</div><div class="stat-lbl">بانتظار</div></div>
-                <div class="stat-card"><div class="stat-num c-approved">${s.approved}</div><div class="stat-lbl">معتمد</div></div>
-                <div class="stat-card"><div class="stat-num c-followup">${s.followup}</div><div class="stat-lbl">متابعة</div></div>
+                <div class="stat-card cursor-pointer ${activeStatFilter===null?'active':''}" onclick="setStatFilter(null)"><div class="stat-num c-total">${s.total}</div><div class="stat-lbl">الإجمالي</div></div>
+                <div class="stat-card cursor-pointer ${activeStatFilter==='late'?'active':''}" onclick="setStatFilter('late')"><div class="stat-num c-late">${s.late}</div><div class="stat-lbl">متأخر</div></div>
+                <div class="stat-card cursor-pointer ${activeStatFilter==='new'?'active':''}" onclick="setStatFilter('new')"><div class="stat-num c-new">${s.new}</div><div class="stat-lbl">جديد</div></div>
+                <div class="stat-card cursor-pointer ${activeStatFilter==='pending'?'active':''}" onclick="setStatFilter('pending')"><div class="stat-num c-pending">${s.pending}</div><div class="stat-lbl">بانتظار</div></div>
+                <div class="stat-card cursor-pointer ${activeStatFilter==='approved'?'active':''}" onclick="setStatFilter('approved')"><div class="stat-num c-approved">${s.approved}</div><div class="stat-lbl">معتمد</div></div>
+                <div class="stat-card cursor-pointer ${activeStatFilter==='followup'?'active':''}" onclick="setStatFilter('followup')"><div class="stat-num c-followup">${s.followup}</div><div class="stat-lbl">متابعة</div></div>
             `;
 
             const list = document.getElementById('list-emp');
