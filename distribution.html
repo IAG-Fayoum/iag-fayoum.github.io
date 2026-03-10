@@ -442,6 +442,18 @@
             renderEmployeeAnalysis();
         }
 
+        function getBaseEmployees() {
+            // نفس getFilteredEmployees بس بدون activeStatFilter — للأرقام الثابتة
+            const group = document.getElementById('f-group').value;
+            return allData.filter(e => {
+                const title = (e.dept || e.jobTitle || '').trim();
+                if (title !== 'مراجع فني' && title !== 'مراجع مالي وإداري') return false;
+                if (group === 'tech') return title === 'مراجع فني';
+                if (group === 'admin') return title === 'مراجع مالي وإداري';
+                return true;
+            });
+        }
+
         function getFilteredEmployees() {
             const group = document.getElementById('f-group').value;
             let emps = allData.filter(e => {
@@ -481,10 +493,13 @@
 
         // --- TAB 1: EMPLOYEES + PERCENTAGE ---
         function renderEmployeeAnalysis() {
-            const employees = getFilteredEmployees();
-            
+            // الأرقام دايماً من كل الموظفين بغض النظر عن activeStatFilter
+            const allEmps = getBaseEmployees();
+            const employees = getFilteredEmployees(); // للكروت فقط
+
             let s = { total:0, late:0, new:0, pending:0, approved:0, followup:0 };
-            employees.forEach(e => {
+            const today = new Date(); today.setHours(0,0,0,0);
+            allEmps.forEach(e => {
                 s.total += e.total||0; s.late += e.overdue||0;
                 if(e.tasks) e.tasks.forEach(t => {
                     const st = (t.status||'');
