@@ -71,7 +71,6 @@
         .stat-card.active { border-color: var(--primary); background: #f0fdfa; box-shadow: 0 0 0 2px var(--primary); }
         .stat-num { font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
         .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
-        @media (max-width: 480px) { .hide-xs { display: none; } }
 
         .c-total { color: #334155; } .c-late { color: #dc2626; }
         .c-new { color: #3b82f6; } .c-pending { color: #16a34a; }
@@ -225,10 +224,9 @@
             <div>
                 <label class="f-label">السنة</label>
                 <select id="f-year" class="f-input" onchange="loadData()">
-                    <option value="">الكل</option>
                     <option value="2024">2024</option>
                     <option value="2025">2025</option>
-                    <option value="2026">2026</option>
+                    <option value="2026" selected>2026</option>
                     <option value="2027">2027</option>
                     <option value="2028">2028</option>
                     <option value="2029">2029</option>
@@ -276,7 +274,7 @@
         <div class="tabs-container">
             <div onclick="setTab('employees')" id="tab-emp" class="tab-btn active">أداء الموظفين</div>
             <div onclick="setTab('sources')" id="tab-src" class="tab-btn">تحليل الجهات</div>
-            <div onclick="setTab('followup')" id="tab-fu" class="tab-btn">📋 متابعة & تبليغ</div>
+            <div onclick="setTab('followup')" id="tab-fu" class="tab-btn">📋 متابعة</div>
         </div>
 
         <div id="view-employees">
@@ -294,20 +292,17 @@
             </div>
         </div>
 
-        <!-- تاب المتابعة والتبليغ -->
-        <div id="view-followup" class="hidden" style="padding:0 0 1rem">
-            <!-- فلاتر المتابعة -->
-            <div style="background:white;border-radius:12px;border:1px solid #e2e8f0;padding:14px;margin-bottom:14px;">
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">
+        <!-- تاب المتابعة -->
+        <div id="view-followup" class="hidden" style="padding-bottom:1rem">
+            <div style="background:white;border-radius:12px;border:1px solid #e2e8f0;padding:14px;margin-bottom:12px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
                     <div>
                         <label class="f-label">الموظف</label>
-                        <select id="fu-emp" class="f-input" onchange="renderFollowup()">
-                            <option value="">الكل</option>
-                        </select>
+                        <select id="fu-emp" class="f-input" onchange="renderFollowup()"><option value="">الكل</option></select>
                     </div>
                     <div>
                         <label class="f-label">المجموعة</label>
-                        <select id="fu-group" class="f-input" onchange="populateFuEmployees();renderFollowup()">
+                        <select id="fu-group" class="f-input" onchange="fuGroupChanged()">
                             <option value="">الكل</option>
                             <option value="admin">مالي وإداري</option>
                             <option value="tech">فني وطبي</option>
@@ -326,34 +321,33 @@
                         </select>
                     </div>
                 </div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-                    <button onclick="printFollowup()" title="طباعة — كل موظف صفحة" style="background:#0f766e;color:white;border:none;padding:9px 16px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                        <span class="hide-xs">طباعة PDF</span>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <button onclick="printFollowup()" style="background:#0f766e;color:white;border:none;padding:8px 14px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        طباعة PDF
                     </button>
-                    <button onclick="sendReminders()" id="btn-remind" title="إرسال تذكير بالإيميل" style="background:#0369a1;color:white;border:none;padding:9px 16px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                        <span class="hide-xs">إرسال تذكير</span>
+                    <button onclick="sendReminders()" id="btn-remind" style="background:#0369a1;color:white;border:none;padding:8px 14px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        إرسال تذكير
                     </button>
-                    <span id="fu-count" style="font-size:0.82rem;color:#0f766e;font-weight:800;background:#f0fdfa;padding:5px 12px;border-radius:20px;border:1px solid #ccfbf1;"></span>
+                    <span id="fu-count" style="font-size:0.82rem;color:#0f766e;font-weight:800;background:#f0fdfa;padding:4px 12px;border-radius:20px;border:1px solid #ccfbf1;"></span>
                 </div>
             </div>
-            <!-- الجدول -->
-            <div id="fu-table-wrap" style="background:white;border-radius:12px;border:1px solid #e2e8f0;overflow:auto;">
-                <table style="width:100%;border-collapse:collapse;font-size:0.8rem;min-width:560px;" id="fu-table">
+            <div style="background:white;border-radius:12px;border:1px solid #e2e8f0;overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:0.8rem;min-width:550px;">
                     <thead>
-                        <tr style="background:#f0fdfa;color:#0f766e;font-weight:800;position:sticky;top:0;">
-                            <th style="padding:10px 12px;text-align:right;border-bottom:2px solid #ccfbf1;">#</th>
-                            <th style="padding:10px 12px;text-align:right;border-bottom:2px solid #ccfbf1;">رقم المعاملة</th>
-                            <th style="padding:10px 12px;text-align:right;border-bottom:2px solid #ccfbf1;">الموضوع</th>
-                            <th style="padding:10px 12px;text-align:right;border-bottom:2px solid #ccfbf1;">الجهة</th>
-                            <th style="padding:10px 12px;text-align:right;border-bottom:2px solid #ccfbf1;">الموظف</th>
-                            <th style="padding:10px 12px;text-align:right;border-bottom:2px solid #ccfbf1;">الحالة</th>
-                            <th style="padding:10px 12px;text-align:right;border-bottom:2px solid #ccfbf1;">الموعد</th>
+                        <tr style="background:#f0fdfa;color:#0f766e;font-weight:800;">
+                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">#</th>
+                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">رقم المعاملة</th>
+                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">الموضوع</th>
+                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">الجهة</th>
+                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">الموظف</th>
+                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">الحالة</th>
+                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">الموعد</th>
                         </tr>
                     </thead>
                     <tbody id="fu-tbody">
-                        <tr><td colspan="7" style="text-align:center;padding:32px;color:#94a3b8;">اختر فلتر لعرض البيانات</td></tr>
+                        <tr><td colspan="7" style="text-align:center;padding:28px;color:#94a3b8;">اختر فلتر لعرض البيانات</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -428,12 +422,11 @@
             lucide.createIcons(); // Refresh icons
             // -------------------------------
 
-            await loadData();
+            // ضبط تلقائي: السنة والشهر الحالي
+            const _now = new Date();
+            document.getElementById('f-year').value   = _now.getFullYear().toString();
+            document.getElementById('f-period').value = (_now.getMonth()+1).toString();
 
-            // ضبط الافتراضي: السنة والشهر الحالي
-            const now = new Date();
-            document.getElementById('f-year').value = now.getFullYear().toString();
-            document.getElementById('f-period').value = (now.getMonth()+1).toString();
             await loadData();
         });
 
@@ -463,18 +456,13 @@
             currentTab = tab;
             document.getElementById('tab-emp').classList.toggle('active', tab === 'employees');
             document.getElementById('tab-src').classList.toggle('active', tab === 'sources');
-            document.getElementById('tab-fu').classList.toggle('active', tab === 'followup');
+            document.getElementById('tab-fu').classList.toggle('active',  tab === 'followup');
             document.getElementById('view-employees').classList.toggle('hidden', tab !== 'employees');
-            document.getElementById('view-sources').classList.toggle('hidden', tab !== 'sources');
-            document.getElementById('view-followup').classList.toggle('hidden', tab !== 'followup');
-            if (tab === 'followup') { populateFuEmployees(); renderFollowup(); }
-            
-            if(tab === 'sources') {
-                currentSourceFilter = null;
-                renderSourceAnalysis();
-            } else {
-                renderEmployeeAnalysis();
-            }
+            document.getElementById('view-sources').classList.toggle('hidden',   tab !== 'sources');
+            document.getElementById('view-followup').classList.toggle('hidden',  tab !== 'followup');
+            if (tab === 'sources')  renderSourceAnalysis();
+            if (tab === 'employees') renderEmployeeAnalysis();
+            if (tab === 'followup') { fuPopulateEmployees(); renderFollowup(); }
         }
 
         function switchTab() { setTab(currentTab); }
@@ -871,208 +859,153 @@
                     <div style="padding:1rem 1.25rem;display:flex;flex-direction:column;gap:0">${html}</div>
                 </div>
             `;
-
             overlay.style.display = 'flex';
         }
 
-        // ══════════════════════════════════════
-        // تاب المتابعة & التبليغ
-        // ══════════════════════════════════════
+        // ══════════════════════════════════
+        // دوال تاب المتابعة
+        // ══════════════════════════════════
 
-        function populateFuEmployees() {
+        function fuGroupChanged() {
+            fuPopulateEmployees();
+            renderFollowup();
+        }
+
+        function fuPopulateEmployees() {
             const sel   = document.getElementById('fu-emp');
             const group = document.getElementById('fu-group').value;
-            const current = sel.value;
+            const prev  = sel.value;
             sel.innerHTML = '<option value="">الكل</option>';
-
             let emps = allData;
-            if (group) {
-                emps = allData.filter(e => {
-                    const t = (e.dept || '').trim();
-                    if (group === 'admin') return t === 'مراجع مالي وإداري';
-                    if (group === 'tech')  return t === 'مراجع فني';
-                    return true;
-                });
-            }
-
-            const names = [...new Set(emps.map(e => e.name).filter(Boolean))].sort();
-            names.forEach(n => {
+            if (group === 'admin') emps = allData.filter(e => (e.dept||'') === 'مراجع مالي وإداري');
+            if (group === 'tech')  emps = allData.filter(e => (e.dept||'') === 'مراجع فني');
+            [...new Set(emps.map(e => e.name).filter(Boolean))].sort().forEach(n => {
                 const o = document.createElement('option');
                 o.value = n; o.textContent = n;
-                if (n === current) o.selected = true;
+                if (n === prev) o.selected = true;
                 sel.appendChild(o);
             });
         }
 
-        function getFollowupTasks() {
-            const empFilter    = document.getElementById('fu-emp').value;
-            const statusFilter = document.getElementById('fu-status').value;
-            const groupFilter  = document.getElementById('fu-group').value;
-            const today        = new Date(); today.setHours(0,0,0,0);
-            const rows = [];
-
+        function fuGetTasks() {
+            const empF    = document.getElementById('fu-emp').value;
+            const groupF  = document.getElementById('fu-group').value;
+            const statF   = document.getElementById('fu-status').value;
+            const today   = new Date(); today.setHours(0,0,0,0);
+            const out     = [];
             allData.forEach(emp => {
-                if (empFilter && emp.name !== empFilter) return;
-                // فلتر المجموعة
-                if (groupFilter) {
-                    const t = (emp.dept || '').trim();
-                    if (groupFilter === 'admin' && t !== 'مراجع مالي وإداري') return;
-                    if (groupFilter === 'tech'  && t !== 'مراجع فني') return;
-                }
-                if (!emp.tasks) return;
-                emp.tasks.forEach(t => {
-                    const st = (t.status || '');
-                    let match = false;
-                    if (!statusFilter) {
-                        match = true;
-                    } else if (statusFilter === 'متأخر') {
+                if (empF && emp.name !== empF) return;
+                if (groupF === 'admin' && (emp.dept||'') !== 'مراجع مالي وإداري') return;
+                if (groupF === 'tech'  && (emp.dept||'') !== 'مراجع فني') return;
+                (emp.tasks||[]).forEach(t => {
+                    const st = t.status || '';
+                    let ok = false;
+                    if (!statF) { ok = true; }
+                    else if (statF === 'متأخر') {
                         const due = t.dueDate ? new Date(t.dueDate.split('/').reverse().join('-')) : null;
-                        match = due && !isNaN(due) && due < today && !st.includes('تم') && !st.includes('مكتمل');
-                    } else if (statusFilter === 'جديد')    match = st.includes('جديد');
-                    else if (statusFilter === 'بانتظار')   match = st.includes('بانتظار');
-                    else if (statusFilter === 'تم')        match = st.includes('تم') || st.includes('مكتمل');
-                    else if (statusFilter === 'متابعة')    match = st.includes('متابعة');
-                    else if (statusFilter === 'مكتمل')     match = st.includes('مكتمل');
-                    if (match) rows.push({ emp: emp.name, dept: emp.dept||'', task: t });
+                        ok = due && !isNaN(due) && due < today && !st.includes('تم') && !st.includes('مكتمل');
+                    }
+                    else if (statF === 'جديد')   ok = st.includes('جديد');
+                    else if (statF === 'بانتظار') ok = st.includes('بانتظار');
+                    else if (statF === 'تم')      ok = st.includes('تم') || st.includes('مكتمل');
+                    else if (statF === 'متابعة')  ok = st.includes('متابعة');
+                    else if (statF === 'مكتمل')   ok = st.includes('مكتمل');
+                    if (ok) out.push({ name: emp.name, dept: emp.dept||'', task: t });
                 });
             });
-            return rows;
-        }
-
+            return out;
         }
 
         function renderFollowup() {
-            const rows  = getFollowupTasks();
+            const rows  = fuGetTasks();
             const today = new Date(); today.setHours(0,0,0,0);
-            document.getElementById('fu-count').textContent = rows.length ? `${rows.length} معاملة` : '';
-
+            const cnt   = document.getElementById('fu-count');
+            cnt.textContent = rows.length ? rows.length + ' معاملة' : '';
             if (!rows.length) {
                 document.getElementById('fu-tbody').innerHTML =
-                    '<tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8;">لا توجد معاملات</td></tr>';
+                    '<tr><td colspan="7" style="text-align:center;padding:28px;color:#94a3b8;">لا توجد معاملات</td></tr>';
                 return;
             }
-
-            document.getElementById('fu-tbody').innerHTML = rows.map((r, i) => {
-                const t   = r.task;
+            document.getElementById('fu-tbody').innerHTML = rows.map((r,i) => {
+                const t = r.task;
                 const due = t.dueDate ? new Date(t.dueDate.split('/').reverse().join('-')) : null;
-                const isLate = due && !isNaN(due) && due < today && !( (t.status||'').includes('تم') );
-                const rowBg = isLate ? '#fff5f5' : (i%2===0 ? '#fff' : '#f8fafc');
-                const statusColor = isLate ? '#dc2626' : '#0f766e';
-                return `<tr style="background:${rowBg};border-bottom:1px solid #f1f5f9;">
-                    <td style="padding:8px 12px;color:#94a3b8;font-size:0.75rem;">${i+1}</td>
-                    <td style="padding:8px 12px;font-weight:700;font-size:0.78rem;">${t.id||'-'}</td>
-                    <td style="padding:8px 12px;max-width:200px;">${t.subject||'-'}</td>
-                    <td style="padding:8px 12px;font-size:0.78rem;color:#475569;">${t.source||'-'}</td>
-                    <td style="padding:8px 12px;font-weight:700;color:#0f766e;">${r.emp}</td>
-                    <td style="padding:8px 12px;font-weight:800;color:${statusColor};">${t.status||'-'}</td>
-                    <td style="padding:8px 12px;font-size:0.78rem;color:${isLate?'#dc2626':'#475569'};font-weight:${isLate?'800':'400'};">${t.dueDate||'-'}</td>
+                const late = due && !isNaN(due) && due < today && !(t.status||'').includes('تم');
+                const bg   = late ? '#fff5f5' : (i%2===0?'#fff':'#f8fafc');
+                const sc   = late ? '#dc2626' : '#0f766e';
+                return `<tr style="background:${bg};border-bottom:1px solid #f1f5f9">
+                    <td style="padding:8px 10px;color:#94a3b8;font-size:0.75rem">${i+1}</td>
+                    <td style="padding:8px 10px;font-weight:700;font-size:0.78rem">${t.id||'-'}</td>
+                    <td style="padding:8px 10px">${t.subject||'-'}</td>
+                    <td style="padding:8px 10px;font-size:0.78rem;color:#475569">${t.source||'-'}</td>
+                    <td style="padding:8px 10px;font-weight:700;color:#0f766e">${r.name}</td>
+                    <td style="padding:8px 10px;font-weight:800;color:${sc}">${t.status||'-'}</td>
+                    <td style="padding:8px 10px;font-size:0.78rem;color:${late?'#dc2626':'#475569'};font-weight:${late?800:400}">${t.dueDate||'-'}</td>
                 </tr>`;
             }).join('');
         }
 
         function printFollowup() {
-            const rows  = getFollowupTasks();
+            const rows = fuGetTasks();
             if (!rows.length) { alert('لا توجد معاملات للطباعة'); return; }
-            const today = new Date(); today.setHours(0,0,0,0);
-
-            // تجميع حسب الموظف
-            const byEmp = {};
-            rows.forEach(r => {
-                if (!byEmp[r.emp]) byEmp[r.emp] = [];
-                byEmp[r.emp].push(r.task);
-            });
-
-            const statusFilter = document.getElementById('fu-status').value || 'الكل';
+            const today  = new Date(); today.setHours(0,0,0,0);
+            const byEmp  = {};
+            rows.forEach(r => { if(!byEmp[r.name]) byEmp[r.name]=[]; byEmp[r.name].push(r.task); });
+            const statF  = document.getElementById('fu-status').value || 'الكل';
             const dateStr = new Date().toLocaleDateString('ar-EG');
-
-            let html = `<!DOCTYPE html><html lang="ar" dir="rtl">
-            <head><meta charset="UTF-8">
-            <style>
-                body{font-family:Arial,sans-serif;margin:0;padding:0;direction:rtl}
-                .page{padding:28px 32px;page-break-after:always;}
-                .page:last-child{page-break-after:avoid;}
-                h2{color:#0f766e;font-size:1rem;margin:0 0 4px}
-                .sub{color:#64748b;font-size:0.78rem;margin-bottom:16px;}
-                table{width:100%;border-collapse:collapse;font-size:0.82rem;}
-                th{background:#f0fdfa;color:#0f766e;padding:8px 10px;text-align:right;border:1px solid #ccfbf1;}
-                td{padding:7px 10px;border:1px solid #e2e8f0;}
-                tr:nth-child(even){background:#f8fafc;}
-                .late{color:#dc2626;font-weight:800;}
-                .header{border-bottom:2px solid #0f766e;padding-bottom:10px;margin-bottom:14px;}
-                .org{font-size:0.75rem;color:#64748b;}
-                @media print{@page{margin:15mm}}
-            </style></head><body>`;
-
-            Object.entries(byEmp).forEach(([empName, tasks]) => {
-                html += `<div class="page">
-                <div class="header">
-                    <div class="org">وزارة الصحة — مديرية الشئون الصحية بالفيوم — إدارة المراجعة الداخلية والحوكمة</div>
-                    <h2>تذكير بالمهام — ${empName}</h2>
-                    <div class="sub">الحالة: ${statusFilter} | تاريخ التقرير: ${dateStr} | عدد المعاملات: ${tasks.length}</div>
-                </div>
-                <table>
-                    <thead><tr><th>#</th><th>رقم المعاملة</th><th>الموضوع</th><th>الجهة</th><th>الحالة</th><th>الموعد</th></tr></thead>
-                    <tbody>`;
-                tasks.forEach((t, i) => {
-                    const due = t.dueDate ? new Date(t.dueDate.split('/').reverse().join('-')) : null;
-                    const isLate = due && !isNaN(due) && due < today;
-                    html += `<tr>
-                        <td>${i+1}</td>
-                        <td>${t.id||'-'}</td>
-                        <td>${t.subject||'-'}</td>
-                        <td>${t.source||'-'}</td>
-                        <td class="${isLate?'late':''}">${t.status||'-'}</td>
-                        <td class="${isLate?'late':''}">${t.dueDate||'-'}</td>
-                    </tr>`;
+            let html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
+            <style>body{font-family:Arial,sans-serif;margin:0;direction:rtl}
+            .pg{padding:24px 28px;page-break-after:always}.pg:last-child{page-break-after:avoid}
+            h3{color:#0f766e;margin:0 0 3px;font-size:1rem}
+            .sub{color:#64748b;font-size:0.76rem;margin-bottom:14px}
+            table{width:100%;border-collapse:collapse;font-size:0.8rem}
+            th{background:#f0fdfa;color:#0f766e;padding:7px 9px;text-align:right;border:1px solid #ccfbf1}
+            td{padding:6px 9px;border:1px solid #e2e8f0}
+            tr:nth-child(even){background:#f8fafc}
+            .late{color:#dc2626;font-weight:800}
+            .hdr{border-bottom:2px solid #0f766e;padding-bottom:8px;margin-bottom:12px}
+            .org{font-size:0.72rem;color:#64748b;margin-bottom:4px}
+            @media print{@page{margin:12mm}}</style></head><body>`;
+            Object.entries(byEmp).forEach(([n,tasks])=>{
+                html+=`<div class="pg"><div class="hdr"><div class="org">وزارة الصحة — مديرية الشئون الصحية بالفيوم — إدارة المراجعة الداخلية والحوكمة</div>
+                <h3>تذكير بالمهام — ${n}</h3>
+                <div class="sub">الحالة: ${statF} | التاريخ: ${dateStr} | العدد: ${tasks.length}</div></div>
+                <table><thead><tr><th>#</th><th>رقم المعاملة</th><th>الموضوع</th><th>الجهة</th><th>الحالة</th><th>الموعد</th></tr></thead><tbody>`;
+                tasks.forEach((t,i)=>{
+                    const due=t.dueDate?new Date(t.dueDate.split('/').reverse().join('-')):null;
+                    const late=due&&!isNaN(due)&&due<today;
+                    html+=`<tr><td>${i+1}</td><td>${t.id||'-'}</td><td>${t.subject||'-'}</td>
+                    <td>${t.source||'-'}</td><td class="${late?'late':''}">${t.status||'-'}</td>
+                    <td class="${late?'late':''}">${t.dueDate||'-'}</td></tr>`;
                 });
-                html += `</tbody></table></div>`;
+                html+=`</tbody></table></div>`;
             });
-
-            html += `</body></html>`;
-            const w = window.open('', '_blank');
-            w.document.write(html);
-            w.document.close();
-            setTimeout(() => w.print(), 500);
+            html+=`</body></html>`;
+            const w=window.open('','_blank'); w.document.write(html); w.document.close();
+            setTimeout(()=>w.print(),500);
         }
 
         async function sendReminders() {
-            const rows = getFollowupTasks();
+            const rows = fuGetTasks();
             if (!rows.length) { alert('لا توجد معاملات للإرسال'); return; }
-
             const byEmp = {};
-            rows.forEach(r => {
-                if (!byEmp[r.emp]) byEmp[r.emp] = [];
-                byEmp[r.emp].push(r.task);
-            });
-
-            const empCount = Object.keys(byEmp).length;
-            if (!confirm(`سيتم إرسال تذكير لـ ${empCount} موظف — هل تريد المتابعة؟`)) return;
-
+            rows.forEach(r => { if(!byEmp[r.name]) byEmp[r.name]=[]; byEmp[r.name].push(r.task); });
+            if (!confirm('سيتم إرسال تذكير لـ ' + Object.keys(byEmp).length + ' موظف — متأكد؟')) return;
             const btn = document.getElementById('btn-remind');
-            btn.disabled = true; btn.textContent = '⏳ جاري الإرسال...';
-
-            const userStr = localStorage.getItem('iag_user');
-            const user    = userStr ? JSON.parse(userStr) : {};
-            let sent = 0, failed = 0;
-
-            for (const [empName, tasks] of Object.entries(byEmp)) {
+            btn.disabled=true; btn.textContent='⏳ جاري الإرسال...';
+            const user = JSON.parse(localStorage.getItem('iag_user')||'{}');
+            let sent=0, failed=0;
+            for (const [empName,tasks] of Object.entries(byEmp)) {
                 try {
-                    const res = await fetch(CONFIG.API_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            action: 'sendReminderNotification',
-                            empName: empName,
-                            tasks: tasks.map(t => ({ id: t.id, subject: t.subject, status: t.status, dueDate: t.dueDate })),
-                            sentBy: user.name || 'المنسق'
-                        })
-                    });
+                    const res = await fetch(CONFIG.API_URL,{method:'POST',body:JSON.stringify({
+                        action:'sendReminderNotification', empName, sentBy:user.name||'المنسق',
+                        tasks: tasks.map(t=>({id:t.id,subject:t.subject,status:t.status,dueDate:t.dueDate}))
+                    })});
                     const d = await res.json();
-                    if (d.success) sent++; else failed++;
-                } catch(e) { failed++; }
+                    if(d.success) sent++; else failed++;
+                } catch(e){failed++;}
             }
-
-            btn.disabled = false; btn.textContent = '📤 إرسال تذكير بالإيميل';
-            alert(`✅ تم الإرسال لـ ${sent} موظف${failed ? ` | ❌ فشل ${failed}` : ''}`);
+            btn.disabled=false; btn.textContent='إرسال تذكير';
+            alert('✅ تم الإرسال لـ '+sent+' موظف'+(failed?' | ❌ فشل '+failed:''));
         }
     </script>
 </body>
