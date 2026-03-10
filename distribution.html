@@ -225,7 +225,7 @@
             <div>
                 <label class="f-label">السنة</label>
                 <select id="f-year" class="f-input" onchange="loadData()">
-                    <option value="" selected>الكل</option>
+                    <option value="">الكل</option>
                     <option value="2024">2024</option>
                     <option value="2025">2025</option>
                     <option value="2026">2026</option>
@@ -428,6 +428,12 @@
             lucide.createIcons(); // Refresh icons
             // -------------------------------
 
+            await loadData();
+
+            // ضبط الافتراضي: السنة والشهر الحالي
+            const now = new Date();
+            document.getElementById('f-year').value = now.getFullYear().toString();
+            document.getElementById('f-period').value = (now.getMonth()+1).toString();
             await loadData();
         });
 
