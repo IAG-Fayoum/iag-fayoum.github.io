@@ -74,17 +74,16 @@
         /* ══ ملفاتي — DRIVE TREE ══ */
         .files-container { padding: 0 1rem 5rem; max-width: 1200px; margin: 0 auto; }
 
-        /* شريط البحث + فلتر النوع */
-        .files-toolbar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-        .files-search { flex: 1; min-width: 200px; position: relative; }
-        .files-search input { width: 100%; height: 44px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0 44px 0 12px; font-size: 0.88rem; font-family: 'Cairo', sans-serif; background: white; outline: none; color: #1e293b; transition: 0.2s; }
-        .files-search input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
-        .files-search-icon { position: absolute; right: 14px; top: 12px; color: #94a3b8; pointer-events: none; }
-        .files-type-btns { display: flex; gap: 6px; }
-        .type-filter-btn { height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid #e2e8f0; background: white; font-size: 0.8rem; font-weight: 700; color: #64748b; cursor: pointer; font-family: 'Cairo', sans-serif; transition: 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
-        .type-filter-btn.active-all   { background: #f0fdfa; color: #0f766e; border-color: #99f6e4; }
-        .type-filter-btn.active-insp  { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
-        .type-filter-btn.active-comp  { background: #faf5ff; color: #7c3aed; border-color: #e9d5ff; }
+        /* فلتر الملفات — داخل نفس filter-container */
+        .files-filter-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .files-search-box { flex: 1; min-width: 180px; position: relative; }
+        .files-search-box input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0 44px 0 12px; font-size: 0.9rem; font-family: 'Cairo', sans-serif; background: #f8fafc; outline: none; color: #1e293b; transition: 0.2s; }
+        .files-search-box input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); background: white; }
+        .files-search-box .fsi { position: absolute; right: 14px; top: 12px; width: 18px; height: 18px; color: #94a3b8; pointer-events: none; }
+        .type-filter-btn { height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #cbd5e1; background: white; font-size: 0.82rem; font-weight: 700; color: #64748b; cursor: pointer; font-family: 'Cairo', sans-serif; transition: 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+        .type-filter-btn.active-all  { background: #f0fdfa; color: #0f766e; border-color: #99f6e4; }
+        .type-filter-btn.active-insp { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
+        .type-filter-btn.active-comp { background: #faf5ff; color: #7c3aed; border-color: #e9d5ff; }
 
         /* شجرة الملفات */
         .tree-section { background: white; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
@@ -230,9 +229,11 @@
     </div>
 </header>
 
-<!-- FILTERS (مهامي فقط) -->
+<!-- FILTER CONTAINER (shared) -->
 <div class="filter-container" id="filter-bar">
-    <div class="filter-grid">
+
+    <!-- فلتر مهامي -->
+    <div id="filter-tasks-view" class="filter-grid">
         <div class="filter-item-search">
             <label class="f-label">بحث شامل</label>
             <div class="search-wrapper">
@@ -260,6 +261,18 @@
             </button>
         </div>
     </div>
+
+    <!-- فلتر ملفاتي -->
+    <div id="filter-files-view" class="files-filter-row hidden">
+        <div class="files-search-box">
+            <i data-lucide="search" class="fsi"></i>
+            <input type="text" id="files-search" placeholder="ابحث في ملفاتك..." oninput="renderFilesTree()">
+        </div>
+        <button class="type-filter-btn active-all" id="ftype-all"  onclick="setFileType('all')">الكل</button>
+        <button class="type-filter-btn"            id="ftype-insp" onclick="setFileType('insp')">🔍 مرور</button>
+        <button class="type-filter-btn"            id="ftype-comp" onclick="setFileType('comp')">📣 شكاوى</button>
+    </div>
+
 </div>
 
 <!-- STATS (مهامي فقط) -->
@@ -311,20 +324,6 @@
 <!-- ملفاتي VIEW -->
 <div id="view-myfiles" class="hidden">
     <div class="files-container">
-
-        <!-- شريط البحث والفلتر -->
-        <div class="files-toolbar">
-            <div class="files-search">
-                <i data-lucide="search" class="files-search-icon" style="width:18px;height:18px"></i>
-                <input type="text" id="files-search" placeholder="ابحث في ملفاتك..." oninput="renderFilesTree()">
-            </div>
-            <div class="files-type-btns">
-                <button class="type-filter-btn active-all" id="ftype-all"   onclick="setFileType('all')">  الكل</button>
-                <button class="type-filter-btn"            id="ftype-insp"  onclick="setFileType('insp')"> 🔍 مرور</button>
-                <button class="type-filter-btn"            id="ftype-comp"  onclick="setFileType('comp')"> 📣 شكاوى</button>
-            </div>
-        </div>
-
         <!-- محتوى الشجرة -->
         <div id="files-tree-content">
             <div class="empty-files">
@@ -332,7 +331,6 @@
                 <p class="font-bold">جاري تحميل ملفاتك من Drive...</p>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -422,10 +420,16 @@ async function loadTasks(username) {
     }
 }
 
-/* ══ LOAD FILES من Drive ══ */
+/* ══ LOAD FILES من Drive (الهيكل الجديد) ══ */
 async function loadFiles(username) {
     if (filesLoaded) return;
     const container = document.getElementById('files-tree-content');
+    container.innerHTML = `
+        <div class="empty-files">
+            <i data-lucide="loader-2" style="width:32px;height:32px;display:block;margin:0 auto 10px;color:#0f766e" class="animate-spin"></i>
+            <p class="font-bold">جاري تحميل ملفاتك من Drive...</p>
+        </div>`;
+    lucide.createIcons();
     try {
         const res  = await fetch(CONFIG.API_URL, {
             method: 'POST',
@@ -433,7 +437,10 @@ async function loadFiles(username) {
         });
         const data = await res.json();
         if (data.success) {
-            myFiles = { inspections: data.inspections || [], complaints: data.complaints || [] };
+            myFiles = {
+                inspections: data.inspections || [],
+                complaints:  data.complaints  || []
+            };
             filesLoaded = true;
             renderFilesTree();
         } else {
@@ -455,7 +462,10 @@ function switchTab(tab) {
     document.getElementById('view-tasks').classList.toggle('hidden', !isTask);
     document.getElementById('view-myfiles').classList.toggle('hidden', isTask);
     document.getElementById('stats-wrapper').classList.toggle('hidden', !isTask);
-    document.getElementById('filter-bar').classList.toggle('hidden', !isTask);
+
+    // تبديل محتوى الـ filter container بدل إخفائه
+    document.getElementById('filter-tasks-view').classList.toggle('hidden', !isTask);
+    document.getElementById('filter-files-view').classList.toggle('hidden', isTask);
 
     if (tab === 'myfiles') loadFiles(currentUser.name);
 }
