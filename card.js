@@ -106,7 +106,7 @@ function renderCard(t, role) {
 
         <div class="iag-row">
             ${_icon('building-2')}
-            <span>${t.source || 'غير محدد'}</span>
+            ${isCoord ? _sourceCoord(t) : `<span>${t.source || 'غير محدد'}</span>`}
         </div>
 
         ${t.entity && t.entity !== t.source ? `
@@ -270,6 +270,17 @@ function _assigneeCoord(t) {
     </span>`;
 }
 
+function _sourceCoord(t) {
+    const src = t.source || '';
+    return `<span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:#334155;font-weight:600">
+        ${src || '<span style="color:#94a3b8">غير محدد</span>'}
+        <button onclick="event.stopPropagation();iagEditSource('${t.id}')"
+            style="font-size:0.65rem;background:#f1f5f9;border:1px solid #e2e8f0;padding:2px 8px;border-radius:6px;cursor:pointer;color:#475569;font-family:'Cairo',sans-serif;font-weight:700">
+            تعديل
+        </button>
+    </span>`;
+}
+
 function _buildEditFields(t, missing, isCaseEnt) {
     let html = '';
     if (missing.includes('assignee')) {
@@ -315,6 +326,7 @@ function _fmtDate(d) {
    iagOpenModal(id)          ← فتح modal التفاصيل
    iagOpenReassign(id)       ← modal إعادة التكليف (منسق فقط)
    iagOpenArchiveUpload(id)  ← رفع الصادر (منسق فقط)
+   iagEditSource(id)         ← تعديل الجهة الواردة (منسق فقط)
    iagSaveField(id, field, btn)     ← حفظ حقل ناقص
    iagSaveCaseField(id, btn)        ← حفظ رقم القضية
    ════════════════════════════════════════ */
