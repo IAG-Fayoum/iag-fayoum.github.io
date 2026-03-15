@@ -848,6 +848,18 @@ if (hasAttach) {
                 </div>`;
             };
 
+            /* حقل قابل للتعديل دايماً مع القيمة الحالية */
+            const edEdit = (label, field, val, placeholder) =>
+                `<div class="data-item">
+                    <span class="data-label">${label}</span>
+                    <div class="edit-field">
+                        <input type="text" class="edit-input" id="edit-${field}-${t.id}"
+                               value="${(val || '').toString().replace(/"/g,'&quot;')}"
+                               placeholder="${placeholder || ''}">
+                        <button class="edit-btn edit-btn-save" onclick="saveFieldUpdate('${t.id}','${field}',this)">حفظ</button>
+                    </div>
+                </div>`;
+
             const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
             const isPending    = (t.status || '').includes('بانتظار');
             const isFullyDone  = (t.status || '') === 'تم الاعتماد والأرشفة';
@@ -856,7 +868,7 @@ if (hasAttach) {
 
             let html = '';
             html += ro('الموضوع', `<span style="font-weight:800;line-height:1.6">${t.subject}</span>`);
-            html += ro('الجهة الواردة', t.source);
+            html += edEdit('الجهة الواردة', 'source', t.source, 'اسم الجهة');
             html += ro('محل التنفيذ', t.entity);
             html += ro('نوع المعاملة', t.transactionType || t.docType || '-');
             html += ro('تاريخ الوارد', formatArabicDate(t.date));
@@ -1010,6 +1022,19 @@ if (hasAttach) {
         }
 
         function openArchiveUpload(taskId) { openModal(taskId); }
+
+        /* ── iag hooks (card.js) ── */
+        function iagOpenModal(id)          { openModal(id); }
+        function iagOpenReassign(id)       { openReassignModal(id); }
+        function iagOpenArchiveUpload(id)  { openArchiveUpload(id); }
+        function iagEditSource(id)         { openModal(id); }
+        function iagSaveField(id, f, btn)  { saveFieldUpdate(id, f, btn); }
+        function iagSaveCaseField(id, btn) {
+            const num  = document.getElementById('edit-caseNumber-' + id);
+            const year = document.getElementById('edit-caseYear-'   + id);
+            if (num  && num.value.trim())  saveFieldUpdate(id, 'caseNumber', btn);
+            if (year && year.value.trim()) saveFieldUpdate(id, 'caseYear',   btn);
+        }
 
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
