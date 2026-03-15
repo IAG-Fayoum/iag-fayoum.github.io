@@ -974,6 +974,33 @@ function buildSection(files, sType, title, hasEntity) {
 }
 
 /* ══ بناء عنصر ملف ══ */
+/* ══ تحليل اسم الملف لعرض معلومات واضحة ══ */
+function _parseFileName(name) {
+    if (!name) return { title: name, sub: '' };
+
+    // شكوى: COMP-{num} - {جهة} - {تاريخ}
+    const compMatch = name.match(/^COMP-(\S+)\s*-\s*(.+?)\s*-\s*(.+)$/);
+    if (compMatch) {
+        return {
+            title: 'شكوى #' + compMatch[1],
+            sub:   compMatch[2].trim() + ' • ' + compMatch[3].trim()
+        };
+    }
+
+    // مرور: تقرير مرور ... - {جهة} - {تاريخ}
+    const mroMatch = name.match(/^(.+?)\s*-\s*(.+?)\s*-\s*(\d.+)$/);
+    if (mroMatch) {
+        // العنوان = آخر جزء من نوع التقرير (اختصار)
+        const typeShort = mroMatch[1].replace('تقرير مرور فني ', '').replace('تقرير ', '').trim();
+        return {
+            title: mroMatch[2].trim(),
+            sub:   typeShort + ' • ' + mroMatch[3].trim()
+        };
+    }
+
+    return { title: name, sub: '' };
+}
+
 function buildFileItem(f) {
     const isDoc   = f.isDoc || f.mimeType === 'application/vnd.google-apps.document' ||
                     f.mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
@@ -991,14 +1018,17 @@ function buildFileItem(f) {
                <i data-lucide="eye" style="width:12px;height:12px"></i> عرض
            </a>`;
 
-    const sizeStr = f.size > 0 ? _fmtSize(f.size) : '';
+    const parsed = _parseFileName(f.name);
+    const metaParts = [];
+    if (parsed.sub)    metaParts.push(parsed.sub);
+    if (f.modified)    metaParts.push(f.modified);
 
     return `
     <div class="file-item">
         <div class="file-icon ${fiCls}">${icon}</div>
         <div class="file-info">
-            <div class="file-name" title="${f.name}">${f.name}</div>
-            <div class="file-meta">${f.modified || ''}${sizeStr ? ' • ' + sizeStr : ''}</div>
+            <div class="file-name" title="${f.name}">${parsed.title}</div>
+            ${metaParts.length ? `<div class="file-meta">${metaParts.join(' • ')}</div>` : ''}
         </div>
         <div class="file-actions">${btnHtml}</div>
     </div>`;
