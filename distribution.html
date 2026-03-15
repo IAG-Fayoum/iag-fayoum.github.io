@@ -73,8 +73,8 @@
         .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
         .c-total { color: #334155; } .c-late { color: #dc2626; }
-        .c-new { color: #3b82f6; } .c-pending { color: #16a34a; }
-        .c-approved { color: #047857; } .c-followup { color: #6b7280; }
+        .c-new { color: #2563eb; } .c-pending { color: #d97706; }
+        .c-approved { color: #16a34a; } .c-followup { color: #7c3aed; }
 
         /* EMPLOYEE CARD */
         .cards-list { display: grid; gap: 12px; grid-template-columns: 1fr; }
@@ -119,9 +119,29 @@
         .emp-footer { padding: 8px; border-top: 1px solid #f1f5f9; }
         .btn-details {
             width: 100%; padding: 8px; background: white; border: 1px solid #cbd5e1;
-            border-radius: 8px; font-size: 0.8rem; font-weight: 700; color: #475569;
+            border-radius: 8px; font-size: 0.8rem; font-weight: 700; color: #0f766e;
             display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
+            transition: background 0.15s;
         }
+        .btn-details:hover { background: #f0fdfa; }
+        .emp-tasks-section { display: none; border-top: 2px solid #f0fdfa; }
+        .emp-tasks-section.open { display: block; }
+        .tasks-filter-bar { padding: 8px 12px; background: #f8fafc; display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid #f1f5f9; }
+        .tf-btn { font-size: 0.68rem; padding: 3px 10px; border-radius: 20px; cursor: pointer; border: none; background: white; color: #475569; box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-family: inherit; font-weight: 500; transition: all 0.15s; }
+        .tf-btn.active { background: #0f766e; color: white; font-weight: 800; }
+        .tasks-table-wrap { overflow-x: auto; }
+        .tasks-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; min-width: 480px; }
+        .tasks-table th { padding: 7px 10px; text-align: right; background: #f0fdfa; color: #0f766e; font-weight: 800; border-bottom: 2px solid #ccfbf1; }
+        .tasks-table td { padding: 7px 10px; border-bottom: 1px solid #f1f5f9; }
+        .tasks-table tr:nth-child(even) td { background: #f8fafc; }
+        .case-badge { background: #f0fdfa; border: 1px solid #ccfbf1; padding: 1px 6px; border-radius: 10px; color: #0f766e; font-weight: 800; font-size: 0.65rem; display: inline-block; margin-top: 2px; }
+        .st-badge { padding: 3px 8px; border-radius: 20px; font-weight: 800; font-size: 0.68rem; white-space: nowrap; }
+        .st-late { color: #dc2626; background: #fff5f5; }
+        .st-new { color: #2563eb; background: #eff6ff; }
+        .st-pending { color: #d97706; background: #fffbeb; }
+        .st-done { color: #16a34a; background: #f0fdf4; }
+        .st-followup { color: #7c3aed; background: #f5f3ff; }
+        .days-late { font-size: 0.62rem; color: #dc2626; font-weight: 700; margin-top: 2px; }
 
         .source-item { 
             background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px;
@@ -274,11 +294,22 @@
         <div class="tabs-container">
             <div onclick="setTab('employees')" id="tab-emp" class="tab-btn active">أداء الموظفين</div>
             <div onclick="setTab('sources')" id="tab-src" class="tab-btn">تحليل الجهات</div>
-            <div onclick="setTab('followup')" id="tab-fu" class="tab-btn">📋 متابعة</div>
+            
         </div>
 
         <div id="view-employees">
             <div class="stats-grid" id="stats-emp"></div>
+            <!-- زرارا الإجراء الشامل -->
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+                <button onclick="printAllEmps()" style="flex:1;background:#0f766e;color:white;border:none;border-radius:10px;padding:9px 0;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                    طباعة PDF
+                </button>
+                <button onclick="remindAllEmps()" style="flex:1;background:#0369a1;color:white;border:none;border-radius:10px;padding:9px 0;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    إرسال إيميل
+                </button>
+            </div>
             <div class="cards-list" id="list-emp">
                 <div class="loader-box">جاري التحميل...</div>
             </div>
@@ -292,66 +323,6 @@
             </div>
         </div>
 
-        <!-- تاب المتابعة -->
-        <div id="view-followup" class="hidden" style="padding-bottom:1rem">
-            <div style="background:white;border-radius:12px;border:1px solid #e2e8f0;padding:14px;margin-bottom:12px;">
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
-                    <div>
-                        <label class="f-label">الموظف</label>
-                        <select id="fu-emp" class="f-input" onchange="renderFollowup()"><option value="">الكل</option></select>
-                    </div>
-                    <div>
-                        <label class="f-label">المجموعة</label>
-                        <select id="fu-group" class="f-input" onchange="fuGroupChanged()">
-                            <option value="">الكل</option>
-                            <option value="admin">مالي وإداري</option>
-                            <option value="tech">فني وطبي</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="f-label">الحالة</label>
-                        <select id="fu-status" class="f-input" onchange="renderFollowup()">
-                            <option value="">الكل</option>
-                            <option value="متأخر" selected>متأخر</option>
-                            <option value="جديد">جديد</option>
-                            <option value="بانتظار">بانتظار الاعتماد</option>
-                            <option value="تم">تم الاعتماد والأرشفة</option>
-                            <option value="متابعة">بحاجة متابعة</option>
-                            <option value="مكتمل">مكتمل</option>
-                        </select>
-                    </div>
-                </div>
-                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                    <button onclick="printFollowup()" style="background:#0f766e;color:white;border:none;padding:8px 14px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                        طباعة PDF
-                    </button>
-                    <button onclick="sendReminders()" id="btn-remind" style="background:#0369a1;color:white;border:none;padding:8px 14px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                        إرسال تذكير
-                    </button>
-                    <span id="fu-count" style="font-size:0.82rem;color:#0f766e;font-weight:800;background:#f0fdfa;padding:4px 12px;border-radius:20px;border:1px solid #ccfbf1;"></span>
-                </div>
-            </div>
-            <div style="background:white;border-radius:12px;border:1px solid #e2e8f0;overflow-x:auto;">
-                <table style="width:100%;border-collapse:collapse;font-size:0.8rem;min-width:550px;">
-                    <thead>
-                        <tr style="background:#f0fdfa;color:#0f766e;font-weight:800;">
-                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">#</th>
-                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">رقم المعاملة</th>
-                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">الموضوع</th>
-                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">الجهة</th>
-                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">الموظف</th>
-                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">الحالة</th>
-                            <th style="padding:9px 10px;text-align:right;border-bottom:2px solid #ccfbf1;">الموعد</th>
-                        </tr>
-                    </thead>
-                    <tbody id="fu-tbody">
-                        <tr><td colspan="7" style="text-align:center;padding:28px;color:#94a3b8;">اختر فلتر لعرض البيانات</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 
     <div class="modal-overlay" id="detail-modal">
@@ -394,7 +365,7 @@
 
             // --- Dynamic Navigation Setup ---
             let homeUrl = 'employee.html';
-            let homeText = 'صفحتي';
+            let homeText = 'مهامي';
             let homeIcon = 'user';
 
             if (user.role === 'مدير' || user.role === 'Admin') {
@@ -422,10 +393,12 @@
             lucide.createIcons(); // Refresh icons
             // -------------------------------
 
-            // ضبط تلقائي: السنة والشهر الحالي
+            // ضبط تلقائي: السنة والربع الحالي
             const _now = new Date();
+            const _month = _now.getMonth() + 1; // 1-12
+            const _quarter = _month <= 3 ? 'Q1' : _month <= 6 ? 'Q2' : _month <= 9 ? 'Q3' : 'Q4';
             document.getElementById('f-year').value   = _now.getFullYear().toString();
-            document.getElementById('f-period').value = (_now.getMonth()+1).toString();
+            document.getElementById('f-period').value = _quarter;
 
             await loadData();
         });
@@ -456,20 +429,29 @@
             currentTab = tab;
             document.getElementById('tab-emp').classList.toggle('active', tab === 'employees');
             document.getElementById('tab-src').classList.toggle('active', tab === 'sources');
-            document.getElementById('tab-fu').classList.toggle('active',  tab === 'followup');
-            document.getElementById('view-employees').classList.toggle('hidden', tab !== 'employees');
+                        document.getElementById('view-employees').classList.toggle('hidden', tab !== 'employees');
             document.getElementById('view-sources').classList.toggle('hidden',   tab !== 'sources');
-            document.getElementById('view-followup').classList.toggle('hidden',  tab !== 'followup');
-            if (tab === 'sources')  renderSourceAnalysis();
+                        if (tab === 'sources')  renderSourceAnalysis();
             if (tab === 'employees') renderEmployeeAnalysis();
-            if (tab === 'followup') { fuPopulateEmployees(); renderFollowup(); }
-        }
+                    }
 
         function switchTab() { setTab(currentTab); }
 
         function setStatFilter(filter) {
             activeStatFilter = (activeStatFilter === filter) ? null : filter;
             renderEmployeeAnalysis();
+        }
+
+        function getBaseEmployees() {
+            // نفس getFilteredEmployees بس بدون activeStatFilter — للأرقام الثابتة
+            const group = document.getElementById('f-group').value;
+            return allData.filter(e => {
+                const title = (e.dept || e.jobTitle || '').trim();
+                if (title !== 'مراجع فني' && title !== 'مراجع مالي وإداري') return false;
+                if (group === 'tech') return title === 'مراجع فني';
+                if (group === 'admin') return title === 'مراجع مالي وإداري';
+                return true;
+            });
         }
 
         function getFilteredEmployees() {
@@ -511,10 +493,13 @@
 
         // --- TAB 1: EMPLOYEES + PERCENTAGE ---
         function renderEmployeeAnalysis() {
-            const employees = getFilteredEmployees();
-            
+            // الأرقام دايماً من كل الموظفين بغض النظر عن activeStatFilter
+            const allEmps = getBaseEmployees();
+            const employees = getFilteredEmployees(); // للكروت فقط
+
             let s = { total:0, late:0, new:0, pending:0, approved:0, followup:0 };
-            employees.forEach(e => {
+            const today = new Date(); today.setHours(0,0,0,0);
+            allEmps.forEach(e => {
                 s.total += e.total||0; s.late += e.overdue||0;
                 if(e.tasks) e.tasks.forEach(t => {
                     const st = (t.status||'');
@@ -585,9 +570,45 @@
                         </div>
                     </div>
                     <div class="emp-footer">
-                        <button onclick="openModal('${emp.name}')" class="btn-details">عرض التفاصيل</button>
+                        <div style="display:flex;gap:6px;align-items:center;">
+                            <button onclick="toggleEmpTasks(this, '${emp.name}')" class="btn-details" style="flex:1">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                                المهام (${emp.total})
+                            </button>
+                            <button onclick="printEmpTasks('${emp.name}')" title="طباعة PDF" style="background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:8px;padding:7px 10px;cursor:pointer;display:flex;align-items:center;gap:4px;font-size:0.72rem;font-weight:800;font-family:inherit;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                                PDF
+                            </button>
+                            <button onclick="remindEmp('${emp.name}')" title="إرسال تذكير" style="background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;border-radius:8px;padding:7px 10px;cursor:pointer;display:flex;align-items:center;gap:4px;font-size:0.72rem;font-weight:800;font-family:inherit;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                تذكير
+                            </button>
+                        </div>
                     </div>
-                </div>`;
+                    <div class="emp-tasks-section" id="tasks-${emp.name.replace(/\s+/g,'_')}">
+                        <div class="tasks-filter-bar">
+                            <button class="tf-btn active" onclick="filterEmpTasks(this,'${emp.name.replace(/\s+/g,'_')}','all')">الكل (${emp.total})</button>
+                            ${(emp.overdue||0)>0?`<button class="tf-btn" onclick="filterEmpTasks(this,'${emp.name.replace(/\s+/g,'_')}','late')">⚠️ متأخر (${emp.overdue})</button>`:''}
+                            ${subStats.new>0?`<button class="tf-btn" onclick="filterEmpTasks(this,'${emp.name.replace(/\s+/g,'_')}','new')">🔵 جديد (${subStats.new})</button>`:''}
+                            ${subStats.pending>0?`<button class="tf-btn" onclick="filterEmpTasks(this,'${emp.name.replace(/\s+/g,'_')}','pending')">⏳ بانتظار (${subStats.pending})</button>`:''}
+                            ${subStats.app>0?`<button class="tf-btn" onclick="filterEmpTasks(this,'${emp.name.replace(/\s+/g,'_')}','done')">✅ معتمد (${subStats.app})</button>`:''}
+                            ${subStats.foll>0?`<button class="tf-btn" onclick="filterEmpTasks(this,'${emp.name.replace(/\s+/g,'_')}','followup')">👁 متابعة (${subStats.foll})</button>`:''}
+                        </div>
+                        <div class="tasks-table-wrap">
+                            <table class="tasks-table">
+                                <thead><tr>
+                                    <th>رقم المعاملة</th>
+                                    <th>الموضوع</th>
+                                    <th>الجهة / القضية</th>
+                                    <th>الحالة</th>
+                                    <th>الموعد</th>
+                                </tr></thead>
+                                <tbody id="tbody-${emp.name.replace(/\s+/g,'_')}">
+                                    ${buildTaskRows_(emp.tasks, 'all')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>`;
             }).join('');
         }
 
@@ -717,19 +738,19 @@
 
             const statusRowStyle = (st) => {
                 if (st.includes('تم الاعتماد')) return 'background:#f0fdf4;border-right:3px solid #16a34a';
-                if (st.includes('بانتظار'))     return 'background:#f0fdf4;border-right:3px solid #16a34a';
-                if (st.includes('متأخر'))        return 'background:#fef2f2;border-right:3px solid #dc2626';
-                if (st.includes('جديد'))         return 'background:#eff6ff;border-right:3px solid #3b82f6';
-                if (st.includes('متابعة'))       return 'background:#f9fafb;border-right:3px solid #6b7280';
+                if (st.includes('بانتظار'))     return 'background:#fffbeb;border-right:3px solid #d97706';
+                if (st.includes('متأخر'))        return 'background:#fff5f5;border-right:3px solid #dc2626';
+                if (st.includes('جديد'))         return 'background:#eff6ff;border-right:3px solid #2563eb';
+                if (st.includes('متابعة'))       return 'background:#f5f3ff;border-right:3px solid #7c3aed';
                 return 'background:white';
             };
 
             const statusDot = (st) => {
-                if (st.includes('تم الاعتماد')) return '<span style="color:#047857;font-size:0.7rem;font-weight:700">✔ معتمد</span>';
-                if (st.includes('بانتظار'))     return '<span style="color:#16a34a;font-size:0.7rem;font-weight:700">⏳ انتظار</span>';
-                if (st.includes('متأخر'))        return '<span style="color:#dc2626;font-size:0.7rem;font-weight:700">⚠ متأخر</span>';
-                if (st.includes('جديد'))         return '<span style="color:#3b82f6;font-size:0.7rem;font-weight:700">🔵 جديد</span>';
-                if (st.includes('متابعة'))       return '<span style="color:#6b7280;font-size:0.7rem;font-weight:700">↻ متابعة</span>';
+                if (st.includes('تم الاعتماد')) return '<span style="color:#16a34a;font-size:0.7rem;font-weight:700">✅ معتمد</span>';
+                if (st.includes('بانتظار'))     return '<span style="color:#d97706;font-size:0.7rem;font-weight:700">⏳ بانتظار</span>';
+                if (st.includes('متأخر'))        return '<span style="color:#dc2626;font-size:0.7rem;font-weight:700">⚠️ متأخر</span>';
+                if (st.includes('جديد'))         return '<span style="color:#2563eb;font-size:0.7rem;font-weight:700">🔵 جديد</span>';
+                if (st.includes('متابعة'))       return '<span style="color:#7c3aed;font-size:0.7rem;font-weight:700">👁 متابعة</span>';
                 return '';
             };
 
@@ -863,149 +884,272 @@
         }
 
         // ══════════════════════════════════
-        // دوال تاب المتابعة
+        // طباعة وتذكير — فردي وجماعي
         // ══════════════════════════════════
 
-        function fuGroupChanged() {
-            fuPopulateEmployees();
-            renderFollowup();
-        }
-
-        function fuPopulateEmployees() {
-            const sel   = document.getElementById('fu-emp');
-            const group = document.getElementById('fu-group').value;
-            const prev  = sel.value;
-            sel.innerHTML = '<option value="">الكل</option>';
-            let emps = allData;
-            if (group === 'admin') emps = allData.filter(e => (e.dept||'') === 'مراجع مالي وإداري');
-            if (group === 'tech')  emps = allData.filter(e => (e.dept||'') === 'مراجع فني');
-            [...new Set(emps.map(e => e.name).filter(Boolean))].sort().forEach(n => {
-                const o = document.createElement('option');
-                o.value = n; o.textContent = n;
-                if (n === prev) o.selected = true;
-                sel.appendChild(o);
-            });
-        }
-
-        function fuGetTasks() {
-            const empF    = document.getElementById('fu-emp').value;
-            const groupF  = document.getElementById('fu-group').value;
-            const statF   = document.getElementById('fu-status').value;
-            const today   = new Date(); today.setHours(0,0,0,0);
-            const out     = [];
-            allData.forEach(emp => {
-                if (empF && emp.name !== empF) return;
-                if (groupF === 'admin' && (emp.dept||'') !== 'مراجع مالي وإداري') return;
-                if (groupF === 'tech'  && (emp.dept||'') !== 'مراجع فني') return;
-                (emp.tasks||[]).forEach(t => {
-                    const st = t.status || '';
-                    let ok = false;
-                    if (!statF) { ok = true; }
-                    else if (statF === 'متأخر') {
-                        const due = t.dueDate ? new Date(t.dueDate.split('/').reverse().join('-')) : null;
-                        ok = due && !isNaN(due) && due < today && !st.includes('تم') && !st.includes('مكتمل');
-                    }
-                    else if (statF === 'جديد')   ok = st.includes('جديد');
-                    else if (statF === 'بانتظار') ok = st.includes('بانتظار');
-                    else if (statF === 'تم')      ok = st.includes('تم') || st.includes('مكتمل');
-                    else if (statF === 'متابعة')  ok = st.includes('متابعة');
-                    else if (statF === 'مكتمل')   ok = st.includes('مكتمل');
-                    if (ok) out.push({ name: emp.name, dept: emp.dept||'', task: t });
-                });
-            });
-            return out;
-        }
-
-        function renderFollowup() {
-            const rows  = fuGetTasks();
+        function buildPrintHtml(emps, filterLabel) {
             const today = new Date(); today.setHours(0,0,0,0);
-            const cnt   = document.getElementById('fu-count');
-            cnt.textContent = rows.length ? rows.length + ' معاملة' : '';
-            if (!rows.length) {
-                document.getElementById('fu-tbody').innerHTML =
-                    '<tr><td colspan="7" style="text-align:center;padding:28px;color:#94a3b8;">لا توجد معاملات</td></tr>';
-                return;
-            }
-            document.getElementById('fu-tbody').innerHTML = rows.map((r,i) => {
-                const t = r.task;
-                const due = t.dueDate ? new Date(t.dueDate.split('/').reverse().join('-')) : null;
-                const late = due && !isNaN(due) && due < today && !(t.status||'').includes('تم');
-                const bg   = late ? '#fff5f5' : (i%2===0?'#fff':'#f8fafc');
-                const sc   = late ? '#dc2626' : '#0f766e';
-                return `<tr style="background:${bg};border-bottom:1px solid #f1f5f9">
-                    <td style="padding:8px 10px;color:#94a3b8;font-size:0.75rem">${i+1}</td>
-                    <td style="padding:8px 10px;font-weight:700;font-size:0.78rem">${t.id||'-'}</td>
-                    <td style="padding:8px 10px">${t.subject||'-'}</td>
-                    <td style="padding:8px 10px;font-size:0.78rem;color:#475569">${t.source||'-'}</td>
-                    <td style="padding:8px 10px;font-weight:700;color:#0f766e">${r.name}</td>
-                    <td style="padding:8px 10px;font-weight:800;color:${sc}">${t.status||'-'}</td>
-                    <td style="padding:8px 10px;font-size:0.78rem;color:${late?'#dc2626':'#475569'};font-weight:${late?800:400}">${t.dueDate||'-'}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        function printFollowup() {
-            const rows = fuGetTasks();
-            if (!rows.length) { alert('لا توجد معاملات للطباعة'); return; }
-            const today  = new Date(); today.setHours(0,0,0,0);
-            const byEmp  = {};
-            rows.forEach(r => { if(!byEmp[r.name]) byEmp[r.name]=[]; byEmp[r.name].push(r.task); });
-            const statF  = document.getElementById('fu-status').value || 'الكل';
             const dateStr = new Date().toLocaleDateString('ar-EG');
             let html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
-            <style>body{font-family:Arial,sans-serif;margin:0;direction:rtl}
-            .pg{padding:24px 28px;page-break-after:always}.pg:last-child{page-break-after:avoid}
-            h3{color:#0f766e;margin:0 0 3px;font-size:1rem}
-            .sub{color:#64748b;font-size:0.76rem;margin-bottom:14px}
-            table{width:100%;border-collapse:collapse;font-size:0.8rem}
-            th{background:#f0fdfa;color:#0f766e;padding:7px 9px;text-align:right;border:1px solid #ccfbf1}
-            td{padding:6px 9px;border:1px solid #e2e8f0}
-            tr:nth-child(even){background:#f8fafc}
-            .late{color:#dc2626;font-weight:800}
+            <style>
+            body{font-family:Arial,sans-serif;margin:0;direction:rtl;font-size:12px}
+            .pg{padding:20px 24px;page-break-after:always}.pg:last-child{page-break-after:avoid}
             .hdr{border-bottom:2px solid #0f766e;padding-bottom:8px;margin-bottom:12px}
-            .org{font-size:0.72rem;color:#64748b;margin-bottom:4px}
-            @media print{@page{margin:12mm}}</style></head><body>`;
-            Object.entries(byEmp).forEach(([n,tasks])=>{
-                html+=`<div class="pg"><div class="hdr"><div class="org">وزارة الصحة — مديرية الشئون الصحية بالفيوم — إدارة المراجعة الداخلية والحوكمة</div>
-                <h3>تذكير بالمهام — ${n}</h3>
-                <div class="sub">الحالة: ${statF} | التاريخ: ${dateStr} | العدد: ${tasks.length}</div></div>
-                <table><thead><tr><th>#</th><th>رقم المعاملة</th><th>الموضوع</th><th>الجهة</th><th>الحالة</th><th>الموعد</th></tr></thead><tbody>`;
-                tasks.forEach((t,i)=>{
-                    const due=t.dueDate?new Date(t.dueDate.split('/').reverse().join('-')):null;
-                    const late=due&&!isNaN(due)&&due<today;
-                    html+=`<tr><td>${i+1}</td><td>${t.id||'-'}</td><td>${t.subject||'-'}</td>
-                    <td>${t.source||'-'}</td><td class="${late?'late':''}">${t.status||'-'}</td>
-                    <td class="${late?'late':''}">${t.dueDate||'-'}</td></tr>`;
+            .org{font-size:0.72rem;color:#64748b;margin-bottom:3px}
+            h3{color:#0f766e;margin:0 0 2px;font-size:1rem}
+            .sub{color:#64748b;font-size:0.72rem;margin-bottom:12px}
+            table{width:100%;border-collapse:collapse}
+            th{background:#f0fdfa;color:#0f766e;padding:6px 8px;text-align:right;border:1px solid #ccfbf1;font-size:11px}
+            td{padding:6px 8px;border:1px solid #e2e8f0;font-size:11px}
+            tr:nth-child(even){background:#f8fafc}
+            .late{color:#dc2626;font-weight:800}.done{color:#16a34a}
+            .pend{color:#d97706}.new2{color:#2563eb}.foll{color:#7c3aed}
+            @media print{@page{margin:10mm}}
+            </style></head><body>`;
+            emps.forEach(emp => {
+                const tasks = emp.tasks || [];
+                const today2 = new Date(); today2.setHours(0,0,0,0);
+                html += `<div class="pg"><div class="hdr">
+                    <div class="org">وزارة الصحة — مديرية الشئون الصحية بالفيوم — إدارة المراجعة الداخلية والحوكمة</div>
+                    <h3>تقرير متابعة مهام — ${emp.name}</h3>
+                    <div class="sub">${emp.dept} | التاريخ: ${dateStr} | إجمالي: ${tasks.length} معاملة | ${filterLabel}</div>
+                </div>
+                <table><thead><tr><th>#</th><th>رقم المعاملة</th><th>الموضوع</th><th>الجهة</th><th>رقم القضية</th><th>الحالة</th><th>الموعد</th></tr></thead><tbody>`;
+                tasks.forEach((t,i) => {
+                    const st = t.status||'';
+                    const done = st.includes('تم')||st.includes('مكتمل');
+                    let lbl = st; let cls = '';
+                    if (!done && t.dueDate) {
+                        const p=t.dueDate.split('/');
+                        const due=new Date(+p[2],+p[1]-1,+p[0]);
+                        if(!isNaN(due)&&due<today2){lbl='⚠️ متأخر';cls='late';}
+                    }
+                    if(!cls){
+                        if(st.includes('تم')||st.includes('مكتمل')){lbl='✅ معتمد';cls='done';}
+                        else if(st.includes('بانتظار')){lbl='⏳ بانتظار';cls='pend';}
+                        else if(st.includes('جديد')){lbl='🔵 جديد';cls='new2';}
+                        else if(st.includes('متابعة')){lbl='👁 متابعة';cls='foll';}
+                    }
+                    const caseNum = t.caseNumber ? t.caseNumber+'/'+(t.caseYear||'') : '-';
+                    html += `<tr><td>${i+1}</td><td>${t.id||'-'}</td><td>${t.subject||'-'}</td><td>${t.source||'-'}</td><td>${caseNum}</td><td class="${cls}">${lbl}</td><td class="${cls.includes('late')?'late':''}">${t.dueDate||'-'}</td></tr>`;
                 });
-                html+=`</tbody></table></div>`;
+                html += `</tbody></table></div>`;
             });
-            html+=`</body></html>`;
-            const w=window.open('','_blank'); w.document.write(html); w.document.close();
-            setTimeout(()=>w.print(),500);
+            html += `</body></html>`;
+            return html;
         }
 
-        async function sendReminders() {
-            const rows = fuGetTasks();
-            if (!rows.length) { alert('لا توجد معاملات للإرسال'); return; }
-            const byEmp = {};
-            rows.forEach(r => { if(!byEmp[r.name]) byEmp[r.name]=[]; byEmp[r.name].push(r.task); });
-            if (!confirm('سيتم إرسال تذكير لـ ' + Object.keys(byEmp).length + ' موظف — متأكد؟')) return;
-            const btn = document.getElementById('btn-remind');
-            btn.disabled=true; btn.textContent='⏳ جاري الإرسال...';
+        function printEmpTasks(empName) {
+            const emp = allData.find(e => e.name === empName);
+            if (!emp) return;
+            const sectionId = 'tasks-' + empName.replace(/\s+/g,'_');
+            const sec = document.getElementById(sectionId);
+            let tasks = emp.tasks || [];
+            let filterLabel = 'الكل';
+            if (sec && sec.classList.contains('open')) {
+                const activeBtn = sec.querySelector('.tf-btn.active');
+                if (activeBtn) filterLabel = activeBtn.textContent.replace(/\(\d+\)/,'').trim();
+                const onclickVal = activeBtn ? activeBtn.getAttribute('onclick') : null;
+                const filterMatch = onclickVal ? onclickVal.match(/'([^']+)'\)$/) : null;
+                const filter = filterMatch ? filterMatch[1] : 'all';
+                if (filter && filter !== 'all') {
+                    const today = new Date(); today.setHours(0,0,0,0);
+                    tasks = tasks.filter(t => {
+                        const st = (t.status||'');
+                        const done = st.includes('تم')||st.includes('مكتمل');
+                        if (filter==='late') {
+                            if(done) return false;
+                            const p=t.dueDate?t.dueDate.split('/'):null; if(!p) return false;
+                            const due=new Date(+p[2],+p[1]-1,+p[0]);
+                            return !isNaN(due)&&due<today;
+                        }
+                        if(filter==='new') return st.includes('جديد');
+                        if(filter==='pending') return st.includes('بانتظار');
+                        if(filter==='done') return st.includes('تم')||st.includes('مكتمل');
+                        if(filter==='followup') return st.includes('متابعة');
+                        return true;
+                    });
+                }
+            }
+            const w = window.open('','_blank');
+            w.document.write(buildPrintHtml([{...emp, tasks}], filterLabel));
+            w.document.close(); setTimeout(()=>w.print(),500);
+        }
+
+        async function remindEmp(empName) {
+            const emp = allData.find(e => e.name === empName);
+            if (!emp) return;
+            const pending = (emp.tasks||[]).filter(t => {
+                const st = t.status||'';
+                return !st.includes('تم')&&!st.includes('مكتمل');
+            });
+            if (!pending.length) { alert('لا توجد مهام معلقة لـ ' + empName); return; }
+            if (!confirm('إرسال تذكير لـ ' + empName + ' (' + pending.length + ' معاملة)؟')) return;
+            const user = JSON.parse(localStorage.getItem('iag_user')||'{}');
+            try {
+                const res = await fetch(CONFIG.API_URL, {method:'POST', body: JSON.stringify({
+                    action:'sendReminderNotification', empName, sentBy: user.name||'المنسق',
+                    tasks: pending.map(t=>({id:t.id,subject:t.subject,status:t.status,dueDate:t.dueDate}))
+                })});
+                const d = await res.json();
+                alert(d.success ? '✅ تم إرسال التذكير لـ ' + empName : '❌ فشل الإرسال');
+            } catch(e) { alert('❌ خطأ في الاتصال'); }
+        }
+
+        function printAllEmps() {
+            const emps = allData;
+            if (!emps.length) { alert('لا توجد بيانات'); return; }
+            const period = document.getElementById('f-period').value;
+            const group  = document.getElementById('f-group').value;
+            const statF  = document.getElementById('f-stat') ? document.getElementById('f-stat').value : '';
+            const periodNames = {Q1:'الربع الأول',Q2:'الربع الثاني',Q3:'الربع الثالث',Q4:'الربع الرابع'};
+            const groupNames  = {admin:'مالي وإداري',tech:'فني وطبي'};
+            const statNames   = {late:'متأخر',new:'جديد',pending:'بانتظار الاعتماد',approved:'معتمد',followup:'بحاجة متابعة'};
+            const label = [groupNames[group]||'الكل', periodNames[period]||period||'كل الفترات', statNames[activeStatFilter]||''].filter(Boolean).join(' | ');
+            // إذا فيه فلتر حالة نطبق فلترة إضافية على مهام كل موظف
+            const today = new Date(); today.setHours(0,0,0,0);
+            const filteredEmps = emps.map(emp => {
+                let tasks = emp.tasks || [];
+                if (activeStatFilter) {
+                    tasks = tasks.filter(t => {
+                        const st = (t.status||'');
+                        const done = st.includes('تم')||st.includes('مكتمل');
+                        if(activeStatFilter==='late'){if(done)return false;const p=t.dueDate?.split('/');if(!p)return false;const due=new Date(+p[2],+p[1]-1,+p[0]);return !isNaN(due)&&due<today;}
+                        if(activeStatFilter==='new') return st.includes('جديد');
+                        if(activeStatFilter==='pending') return st.includes('بانتظار');
+                        if(activeStatFilter==='approved') return st.includes('تم')||st.includes('مكتمل');
+                        if(activeStatFilter==='followup') return st.includes('متابعة');
+                        return true;
+                    });
+                }
+                return {...emp, tasks};
+            }).filter(e => e.tasks.length > 0);
+            if (!filteredEmps.length) { alert('لا توجد معاملات للطباعة'); return; }
+            const w = window.open('','_blank');
+            w.document.write(buildPrintHtml(filteredEmps, label));
+            w.document.close(); setTimeout(()=>w.print(),500);
+        }
+
+        async function remindAllEmps() {
+            const emps = allData;
+            if (!emps.length) { alert('لا توجد بيانات'); return; }
+            const today = new Date(); today.setHours(0,0,0,0);
+            // فلترة المهام حسب activeStatFilter
+            const toSend = emps.map(emp => {
+                let tasks = (emp.tasks||[]).filter(t=>{const st=t.status||'';return !st.includes('تم')&&!st.includes('مكتمل');});
+                if (activeStatFilter && activeStatFilter !== null) {
+                    tasks = tasks.filter(t => {
+                        const st=(t.status||'');
+                        if(activeStatFilter==='late'){const p=t.dueDate?.split('/');if(!p)return false;const due=new Date(+p[2],+p[1]-1,+p[0]);return !isNaN(due)&&due<today;}
+                        if(activeStatFilter==='new') return st.includes('جديد');
+                        if(activeStatFilter==='pending') return st.includes('بانتظار');
+                        if(activeStatFilter==='followup') return st.includes('متابعة');
+                        return true;
+                    });
+                }
+                return {...emp, tasks};
+            }).filter(e => e.tasks.length > 0);
+            if (!toSend.length) { alert('لا توجد معاملات للإرسال'); return; }
+            if (!confirm('إرسال إيميل لـ ' + toSend.length + ' موظف؟')) return;
             const user = JSON.parse(localStorage.getItem('iag_user')||'{}');
             let sent=0, failed=0;
-            for (const [empName,tasks] of Object.entries(byEmp)) {
+            for (const emp of toSend) {
                 try {
                     const res = await fetch(CONFIG.API_URL,{method:'POST',body:JSON.stringify({
-                        action:'sendReminderNotification', empName, sentBy:user.name||'المنسق',
-                        tasks: tasks.map(t=>({id:t.id,subject:t.subject,status:t.status,dueDate:t.dueDate}))
+                        action:'sendReminderNotification', empName:emp.name, sentBy:user.name||'المنسق',
+                        tasks:emp.tasks.map(t=>({id:t.id,subject:t.subject,status:t.status,dueDate:t.dueDate}))
                     })});
                     const d = await res.json();
                     if(d.success) sent++; else failed++;
                 } catch(e){failed++;}
             }
-            btn.disabled=false; btn.textContent='إرسال تذكير';
             alert('✅ تم الإرسال لـ '+sent+' موظف'+(failed?' | ❌ فشل '+failed:''));
+        }
+
+        // ══════════════════════════════════
+        // جدول مهام الموظف inline
+        // ══════════════════════════════════
+
+        function toggleEmpTasks(btn, empName) {
+            const id  = 'tasks-' + empName.replace(/\s+/g,'_');
+            const sec = document.getElementById(id);
+            if (!sec) return;
+            const open = sec.classList.toggle('open');
+            btn.querySelector('svg').style.transform = open ? 'rotate(180deg)' : '';
+            btn.style.color = open ? '#0f766e' : '#475569';
+        }
+
+        function filterEmpTasks(btn, empId, filter) {
+            // reset active
+            btn.closest('.tasks-filter-bar').querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            // إيجاد بيانات الموظف
+            const emp = allData.find(e => e.name.replace(/\s+/g,'_') === empId);
+            if (!emp) return;
+            document.getElementById('tbody-'+empId).innerHTML = buildTaskRows_(emp.tasks, filter);
+        }
+
+        function buildTaskRows_(tasks, filter) {
+            if (!tasks || !tasks.length) return '<tr><td colspan="5" style="text-align:center;padding:16px;color:#94a3b8">لا توجد مهام</td></tr>';
+            const today = new Date(); today.setHours(0,0,0,0);
+
+            function resolveStatus(t) {
+                const st = t.status || '';
+                const done = st.includes('تم') || st.includes('مكتمل');
+                if (!done && t.dueDate) {
+                    const p = t.dueDate.split('/');
+                    const due = new Date(+p[2],+p[1]-1,+p[0]);
+                    if (!isNaN(due) && due < today) return 'late';
+                }
+                if (st.includes('جديد'))     return 'new';
+                if (st.includes('بانتظار'))  return 'pending';
+                if (st.includes('تم') || st.includes('مكتمل')) return 'done';
+                if (st.includes('متابعة'))   return 'followup';
+                return 'other';
+            }
+
+            function stBadge(t) {
+                const r = resolveStatus(t);
+                const map = {
+                    late:    ['⚠️ متأخر',    'st-late'],
+                    new:     ['🔵 جديد',      'st-new'],
+                    pending: ['⏳ بانتظار',   'st-pending'],
+                    done:    ['✅ معتمد',      'st-done'],
+                    followup:['👁 متابعة',    'st-followup'],
+                    other:   [t.status||'-',  'st-new'],
+                };
+                return map[r] || map.other;
+            }
+
+            function daysLate(dueDate) {
+                if (!dueDate) return 0;
+                const p = dueDate.split('/');
+                const due = new Date(+p[2],+p[1]-1,+p[0]);
+                if (isNaN(due)) return 0;
+                return Math.max(0, Math.floor((today - due)/(1000*60*60*24)));
+            }
+
+            const filtered = filter === 'all'
+                ? tasks
+                : tasks.filter(t => resolveStatus(t) === filter);
+
+            if (!filtered.length) return '<tr><td colspan="5" style="text-align:center;padding:16px;color:#94a3b8">لا توجد معاملات</td></tr>';
+
+            return filtered.map((t,i) => {
+                const [label,cls] = stBadge(t);
+                const late = daysLate(t.dueDate);
+                const caseInfo = t.caseNumber ? `<span class="case-badge">ق ${t.caseNumber} / ${t.caseYear||'—'}</span>` : '';
+                return `<tr>
+                    <td style="font-weight:700;color:#0f766e;white-space:nowrap">${t.id||'-'}</td>
+                    <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(t.subject||'').replace(/"/g,"'")}">${t.subject||'-'}</td>
+                    <td>${t.source||'-'}<br>${caseInfo}</td>
+                    <td>
+                        <span class="st-badge ${cls}">${label}</span>
+                        ${late>0?`<div class="days-late">منذ ${late} يوم</div>`:''}
+                    </td>
+                    <td style="white-space:nowrap;color:${late>0?'#dc2626':'#475569'};font-weight:${late>0?800:400}">${t.dueDate||'-'}</td>
+                </tr>`;
+            }).join('');
         }
     </script>
 </body>
