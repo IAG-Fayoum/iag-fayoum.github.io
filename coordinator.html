@@ -849,16 +849,52 @@ if (hasAttach) {
             };
 
             /* حقل قابل للتعديل دايماً مع القيمة الحالية */
-            const edEdit = (label, field, val, placeholder) =>
-                `<div class="data-item">
-                    <span class="data-label">${label}</span>
-                    <div class="edit-field">
-                        <input type="text" class="edit-input" id="edit-${field}-${t.id}"
-                               value="${(val || '').toString().replace(/"/g,'&quot;')}"
-                               placeholder="${placeholder || ''}">
-                        <button class="edit-btn edit-btn-save" onclick="saveFieldUpdate('${t.id}','${field}',this)">حفظ</button>
+            const SOURCE_OPTIONS = [
+                'النيابة الإدارية',
+                'ديوان الوزارة',
+                'هيئة الرقابة الإدارية',
+                'ديوان المحافظة',
+                'الجهاز المركزي',
+                'التنظيم والإدارة',
+                'المديرية المالية',
+                'محليات اخري',
+                'وكيل الوزارة',
+                'وكيل الوزارة (فحص مبادرات)',
+                'وكيل الوزارة (الشؤون القانونية)'
+            ];
+
+            const edSource = (currentVal) => {
+                const opts = SOURCE_OPTIONS.map(o =>
+                    `<option value="${o}" ${o === currentVal ? 'selected' : ''}>${o}</option>`
+                ).join('');
+                return `<div class="data-item">
+                    <span class="data-label">الجهة الواردة</span>
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                        <span class="data-val" style="flex:1">${currentVal || 'غير محدد'}</span>
+                        <button onclick="openSourcePicker('${t.id}','${(currentVal||'').replace(/'/g,"\\'")}',this)"
+                            style="font-size:0.72rem;background:#f1f5f9;border:1px solid #cbd5e1;padding:4px 10px;border-radius:8px;cursor:pointer;color:#475569;font-family:'Cairo',sans-serif;font-weight:700;display:flex;align-items:center;gap:4px">
+                            <i data-lucide="pencil" style="width:12px;height:12px"></i> تعديل
+                        </button>
+                    </div>
+                    <div id="source-picker-${t.id}" style="display:none;margin-top:8px">
+                        <select id="source-select-${t.id}"
+                            style="width:100%;height:40px;border:1px solid #0f766e;border-radius:10px;padding:0 8px;font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;background:white;color:#1e293b">
+                            <option value="">— اختر الجهة —</option>
+                            ${opts}
+                        </select>
+                        <div style="display:flex;gap:6px;margin-top:8px">
+                            <button onclick="confirmSourceUpdate('${t.id}',this)"
+                                style="flex:1;height:38px;background:#0f766e;color:white;border:none;border-radius:10px;font-family:'Cairo',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">
+                                حفظ
+                            </button>
+                            <button onclick="document.getElementById('source-picker-${t.id}').style.display='none'"
+                                style="height:38px;padding:0 14px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:10px;font-family:'Cairo',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">
+                                إلغاء
+                            </button>
+                        </div>
                     </div>
                 </div>`;
+            };
 
             const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
             const isPending    = (t.status || '').includes('بانتظار');
@@ -868,7 +904,7 @@ if (hasAttach) {
 
             let html = '';
             html += ro('الموضوع', `<span style="font-weight:800;line-height:1.6">${t.subject}</span>`);
-            html += edEdit('الجهة الواردة', 'source', t.source, 'اسم الجهة');
+            html += edSource(t.source);
             html += ro('محل التنفيذ', t.entity);
             html += ro('نوع المعاملة', t.transactionType || t.docType || '-');
             html += ro('تاريخ الوارد', formatArabicDate(t.date));
@@ -932,6 +968,57 @@ if (hasAttach) {
             document.getElementById('m-content').innerHTML = html;
             document.getElementById('detail-modal').classList.add('open');
             lucide.createIcons();
+        }
+
+        // ── Source Picker ──
+        function openSourcePicker(taskId, currentVal, btnEl) {
+            const picker = document.getElementById('source-picker-' + taskId);
+            if (!picker) return;
+            picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function confirmSourceUpdate(taskId, btnEl) {
+            const sel   = document.getElementById('source-select-' + taskId);
+            const value = sel ? sel.value.trim() : '';
+            if (!value) { alert('يرجى اختيار الجهة أولاً'); return; }
+
+            const confirmed = confirm('تأكيد تغيير الجهة إلى:\n"' + value + '"');
+            if (!confirmed) return;
+
+            const origText = btnEl.textContent;
+            btnEl.textContent = 'جاري...'; btnEl.disabled = true;
+
+            try {
+                const userStr   = localStorage.getItem('iag_user');
+                const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
+
+                const res  = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName: 'source', fieldValue: value, updatedBy })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    const task = allTasks.find(x => x.id == taskId);
+                    if (task) task.source = value;
+                    // تحديث العرض في الـ modal
+                    const picker = document.getElementById('source-picker-' + taskId);
+                    if (picker) {
+                        const item  = picker.closest('.data-item');
+                        const valEl = item.querySelector('.data-val');
+                        if (valEl) valEl.textContent = value;
+                        picker.style.display = 'none';
+                    }
+                    alert('✅ تم تحديث الجهة بنجاح');
+                    applyFilters();
+                } else {
+                    alert('❌ ' + (data.error || 'فشل الحفظ'));
+                    btnEl.textContent = origText; btnEl.disabled = false;
+                }
+            } catch (e) {
+                alert('❌ خطأ في الاتصال');
+                btnEl.textContent = origText; btnEl.disabled = false;
+            }
         }
 
         // ── Save Field Update ──
