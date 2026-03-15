@@ -30,24 +30,16 @@
         .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
         /* FILTER */
-        .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 0.875rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
-        /* موبايل: صفين مضغوطين */
-        .filter-grid { display: flex; flex-direction: column; gap: 8px; }
-        .filter-row-1 { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
-        .filter-row-2 { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
-        @media (min-width: 1024px) {
-            .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; }
-            .filter-grid { flex-direction: row; gap: 10px; }
-            .filter-row-1 { grid-template-columns: 2fr 1fr; flex: 3; }
-            .filter-row-2 { grid-template-columns: 1fr 1fr auto; flex: 3; }
-        }
-        .f-label { font-size: 0.7rem; font-weight: 700; color: #64748b; margin-bottom: 4px; display: block; }
-        .f-input { width: 100%; height: 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.85rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; font-family: 'Cairo', sans-serif; }
+        .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+        .filter-grid { display: flex; flex-direction: column; gap: 12px; }
+        @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
+        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
+        .f-input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; font-family: 'Cairo', sans-serif; }
         .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
         .search-wrapper { position: relative; }
-        .search-input { padding-right: 12px; padding-left: 38px; background-color: #f8fafc; }
-        .search-icon { position: absolute; left: 10px; top: 10px; width: 18px; height: 18px; color: #94a3b8; pointer-events: none; }
-        .btn-print { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 10px; height: 40px; width: 40px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .search-input { padding-right: 12px; padding-left: 40px; background-color: #f8fafc; }
+        .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; color: #94a3b8; pointer-events: none; }
+        .btn-print { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 10px; height: 44px; width: 44px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
 
         /* STATS */
@@ -242,34 +234,30 @@
 
     <!-- فلتر مهامي -->
     <div id="filter-tasks-view" class="filter-grid">
-        <!-- صف أول: بحث + جهة -->
-        <div class="filter-row-1">
-            <div>
-                <label class="f-label">بحث شامل</label>
-                <div class="search-wrapper">
-                    <input type="text" id="f-search" class="f-input search-input" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
-                    <i data-lucide="search" class="search-icon"></i>
-                </div>
-            </div>
-            <div>
-                <label class="f-label">الجهة</label>
-                <select id="f-source" class="f-input px-2" onchange="applyFilters()">
-                    <option value="">الكل</option>
-                </select>
+        <div class="filter-item-search">
+            <label class="f-label">بحث شامل</label>
+            <div class="search-wrapper">
+                <input type="text" id="f-search" class="f-input search-input" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
+                <i data-lucide="search" class="search-icon"></i>
             </div>
         </div>
-        <!-- صف ثاني: من تاريخ + إلى تاريخ + طباعة -->
-        <div class="filter-row-2">
-            <div>
-                <label class="f-label">من تاريخ</label>
-                <input type="date" id="f-start" class="f-input px-2" onchange="applyFilters()">
-            </div>
-            <div>
-                <label class="f-label">إلى تاريخ</label>
-                <input type="date" id="f-end" class="f-input px-2" onchange="applyFilters()">
-            </div>
+        <div class="filter-item">
+            <label class="f-label">الجهة</label>
+            <select id="f-source" class="f-input px-2" onchange="applyFilters()">
+                <option value="">كل الجهات</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label class="f-label">من تاريخ</label>
+            <input type="date" id="f-start" class="f-input px-2" onchange="applyFilters()">
+        </div>
+        <div class="filter-item">
+            <label class="f-label">إلى تاريخ</label>
+            <input type="date" id="f-end" class="f-input px-2" onchange="applyFilters()">
+        </div>
+        <div class="flex gap-2 items-end">
             <button onclick="window.print()" class="btn-print" title="طباعة">
-                <i data-lucide="printer" class="w-4 h-4"></i>
+                <i data-lucide="printer" class="w-5 h-5"></i>
             </button>
         </div>
     </div>
