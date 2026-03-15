@@ -429,11 +429,17 @@ async function loadTasks(username) {
             const sources = [...new Set(myTasks.map(t => t.source).filter(Boolean))].sort();
             const sel = document.getElementById('f-source');
             sources.forEach(s => { sel.innerHTML += `<option value="${s}">${s}</option>`; });
-            applyFilters();
+            try {
+                applyFilters();
+            } catch(renderErr) {
+                console.error('renderCard error:', renderErr);
+                showEmpty('خطأ في عرض البيانات: ' + renderErr.message);
+            }
         } else {
             showEmpty('لا توجد بيانات');
         }
     } catch(e) {
+        console.error('loadTasks network error:', e);
         showEmpty('خطأ في الاتصال بالخادم');
     }
 }
