@@ -612,40 +612,59 @@
             }).join('');
         }
 
-        // --- TAB 2: SOURCE ANALYSIS + PERCENTAGE ---
+        // ── ثوابت الجهات ──
+        const SOURCE_DEFS = [
+            { key: 'نيابة',    label: 'النيابة الإدارية',        match: ['\u0646\u064a\u0627\u0628\u0629'] },
+            { key: 'رقابة',    label: 'هيئة الرقابة الإدارية',   match: ['\u0631\u0642\u0627\u0628\u0629'] },
+            { key: 'ديوان_وز', label: 'ديوان الوزارة',            match: ['\u062f\u064a\u0648\u0627\u0646 \u0627\u0644\u0648\u0632\u0627\u0631\u0629', '\u062f\u064a\u0648\u0627\u0646 \u0648\u0632\u0627\u0631\u0629'] },
+            { key: 'ديوان_مح', label: 'ديوان المحافظة',           match: ['\u062f\u064a\u0648\u0627\u0646 \u0627\u0644\u0645\u062d\u0627\u0641\u0638\u0629', '\u0645\u062d\u0627\u0641\u0638\u0629'] },
+            { key: 'جهاز',     label: 'الجهاز المركزي',           match: ['\u062c\u0647\u0627\u0632 \u0627\u0644\u0645\u0631\u0643\u0632\u064a', '\u062c\u0647\u0627\u0632 \u0645\u0631\u0643\u0632'] },
+            { key: 'تنظيم',    label: 'التنظيم والإدارة',          match: ['\u062a\u0646\u0638\u064a\u0645'] },
+            { key: 'مالية',    label: 'المديرية المالية',          match: ['\u0645\u062f\u064a\u0631\u064a\u0629 \u0627\u0644\u0645\u0627\u0644\u064a\u0629', '\u0645\u0627\u0644\u064a\u0629'] },
+            { key: 'محليات',   label: 'محليات',                    match: ['\u0645\u062d\u0644\u064a\u0627\u062a'] },
+            { key: 'وكيل',     label: 'مكتب وكيل الوزارة',         match: ['\u0648\u0643\u064a\u0644'] },
+            { key: 'قانونية',  label: 'الشؤون القانونية',          match: ['\u0642\u0627\u0646\u0648\u0646'] },
+            { key: 'أخرى',     label: 'جهات أخرى',                 match: [] }
+        ];
+
+        function matchSourceKey(src) {
+            const n = normalizeArabic(src);
+            for (const def of SOURCE_DEFS) {
+                if (def.key === 'أخرى') continue;
+                for (const m of def.match) {
+                    if (n.includes(normalizeArabic(m))) return def.key;
+                }
+            }
+            return 'أخرى';
+        }
+
+        // --- TAB 2: SOURCE ANALYSIS ---
         function renderSourceAnalysis() {
             const employees = getFilteredEmployees();
-            let sources = { 'نيابة':0, 'قانونية':0, 'وكيل':0, 'أخرى':0 };
+            const counts = {};
+            SOURCE_DEFS.forEach(d => counts[d.key] = 0);
             let total = 0;
 
             employees.forEach(e => {
-                if(e.tasks) e.tasks.forEach(t => {
+                if (e.tasks) e.tasks.forEach(t => {
                     total++;
-                    // التعديل: البحث بالأولوية (مصدر الفورم > مصدر الباك > احتياطي)
-                    const rawSrc = t['الجهة (الوارد) منها'] || t['الجهة'] || t.source || t.entity || '';
-                    const src = normalizeArabic(rawSrc);
-
-                    if(src.includes(normalizeArabic('نيابة'))) sources['نيابة']++;
-                    else if(src.includes(normalizeArabic('قانونية'))) sources['قانونية']++;
-                    else if(src.includes(normalizeArabic('وكيل'))) sources['وكيل']++;
-                    else sources['أخرى']++;
+                    const raw = t['\u0627\u0644\u062c\u0647\u0629 (\u0627\u0644\u0648\u0627\u0631\u062f) \u0645\u0646\u0647\u0627'] || t['\u0627\u0644\u062c\u0647\u0629'] || t.source || t.entity || '';
+                    counts[matchSourceKey(raw)]++;
                 });
             });
 
-            const keys = ['نيابة', 'قانونية', 'وكيل', 'أخرى'];
-            const labels = ['النيابة الإدارية', 'الشؤون القانونية', 'مكتب الوكيل', 'جهات أخرى'];
-            
-            let html = '';
-            keys.forEach((k, i) => {
-                const activeClass = currentSourceFilter === k ? 'active' : '';
-                html += `
-                <div class="stat-card ${activeClass}" onclick="filterBySource('${k}')">
-                    <div class="stat-num text-teal-700">${sources[k]}</div>
-                    <div class="stat-lbl">${labels[i]}</div>
+            let html = `<div class="stat-card col-span-2 bg-teal-50 border-teal-200"><div class="stat-num text-teal-900">${total}</div><div class="stat-lbl">\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u0648\u0627\u0631\u062f</div></div>`;
+
+            SOURCE_DEFS.forEach(def => {
+                if (counts[def.key] === 0 && def.key === 'أخرى' && total === 0) return;
+                if (counts[def.key] === 0 && def.key !== 'أخرى') return; // أخفِ الفارغة
+                const activeClass = currentSourceFilter === def.key ? 'active' : '';
+                html += `<div class="stat-card ${activeClass}" onclick="filterBySource('${def.key}')">
+                    <div class="stat-num text-teal-700">${counts[def.key]}</div>
+                    <div class="stat-lbl">${def.label}</div>
                 </div>`;
             });
-            html = `<div class="stat-card col-span-2 bg-teal-50 border-teal-200"><div class="stat-num text-teal-900">${total}</div><div class="stat-lbl">إجمالي الوارد</div></div>` + html;
-            
+
             document.getElementById('stats-src').innerHTML = html;
             renderSourceList();
         }
@@ -656,58 +675,32 @@
         }
 
         function renderSourceList() {
-            if(!currentSourceFilter) {
+            if (!currentSourceFilter) {
                 document.getElementById('list-src').innerHTML = '';
-                document.getElementById('src-filter-label').textContent = 'اضغط على جهة لعرض توزيعها على الموظفين';
+                document.getElementById('src-filter-label').textContent = '\u0627\u0636\u063a\u0637 \u0639\u0644\u0649 \u062c\u0647\u0629 \u0644\u0639\u0631\u0636 \u062a\u0648\u0632\u064a\u0639\u0647\u0627 \u0639\u0644\u0649 \u0627\u0644\u0645\u0648\u0638\u0641\u064a\u0646';
                 return;
             }
 
-            const labelMap = {'نيابة':'النيابة الإدارية', 'قانونية':'الشؤون القانونية', 'وكيل':'مكتب الوكيل', 'أخرى':'جهات أخرى'};
-            document.getElementById('src-filter-label').textContent = `توزيع ملفات: ${labelMap[currentSourceFilter]}`;
+            const def = SOURCE_DEFS.find(d => d.key === currentSourceFilter);
+            document.getElementById('src-filter-label').textContent = '\u062a\u0648\u0632\u064a\u0639 \u0645\u0644\u0641\u0627\u062a: ' + (def ? def.label : currentSourceFilter);
 
             const employees = getFilteredEmployees();
-            
             let totalForSource = 0;
             employees.forEach(emp => {
-                if(emp.tasks) emp.tasks.forEach(t => {
-                    const rawSrc = t['الجهة (الوارد) منها'] || t['الجهة'] || t.source || t.entity || '';
-                    const src = normalizeArabic(rawSrc);
-                    
-                    let match = false;
-                    const nNyaba = normalizeArabic('نيابة');
-                    const nQanoon = normalizeArabic('قانونية');
-                    const nWakeel = normalizeArabic('وكيل');
-
-                    if(currentSourceFilter === 'أخرى') { 
-                        if(!src.includes(nNyaba) && !src.includes(nQanoon) && !src.includes(nWakeel)) match = true; 
-                    }
-                    else if(src.includes(normalizeArabic(currentSourceFilter))) { match = true; }
-                    
-                    if(match) totalForSource++;
+                if (emp.tasks) emp.tasks.forEach(t => {
+                    const raw = t['\u0627\u0644\u062c\u0647\u0629 (\u0627\u0644\u0648\u0627\u0631\u062f) \u0645\u0646\u0647\u0627'] || t['\u0627\u0644\u062c\u0647\u0629'] || t.source || t.entity || '';
+                    if (matchSourceKey(raw) === currentSourceFilter) totalForSource++;
                 });
             });
 
             let listHtml = '';
             employees.forEach(emp => {
                 let count = 0;
-                if(emp.tasks) emp.tasks.forEach(t => {
-                    const rawSrc = t['الجهة (الوارد) منها'] || t['الجهة'] || t.source || t.entity || '';
-                    const src = normalizeArabic(rawSrc);
-                    
-                    let match = false;
-                    const nNyaba = normalizeArabic('نيابة');
-                    const nQanoon = normalizeArabic('قانونية');
-                    const nWakeel = normalizeArabic('وكيل');
-
-                    if(currentSourceFilter === 'أخرى') { 
-                        if(!src.includes(nNyaba) && !src.includes(nQanoon) && !src.includes(nWakeel)) match = true; 
-                    }
-                    else if(src.includes(normalizeArabic(currentSourceFilter))) { match = true; }
-                    
-                    if(match) count++;
+                if (emp.tasks) emp.tasks.forEach(t => {
+                    const raw = t['\u0627\u0644\u062c\u0647\u0629 (\u0627\u0644\u0648\u0627\u0631\u062f) \u0645\u0646\u0647\u0627'] || t['\u0627\u0644\u062c\u0647\u0629'] || t.source || t.entity || '';
+                    if (matchSourceKey(raw) === currentSourceFilter) count++;
                 });
-
-                if(count > 0) {
+                if (count > 0) {
                     const pct = totalForSource > 0 ? Math.round((count / totalForSource) * 100) : 0;
                     listHtml += `
                     <div class="source-item">
@@ -723,7 +716,7 @@
                 }
             });
 
-            document.getElementById('list-src').innerHTML = listHtml || '<div class="col-span-full text-center py-4 text-gray-400">لا يوجد موظفين لديهم ملفات من هذه الجهة</div>';
+            document.getElementById('list-src').innerHTML = listHtml || '<div class="col-span-full text-center py-4 text-gray-400">\u0644\u0627 \u064a\u0648\u062c\u062f \u0645\u0648\u0638\u0641\u064a\u0646 \u0644\u062f\u064a\u0647\u0645 \u0645\u0644\u0641\u0627\u062a \u0645\u0646 \u0647\u0630\u0647 \u0627\u0644\u062c\u0647\u0629</div>';
         }
 
         // --- MODAL ---
