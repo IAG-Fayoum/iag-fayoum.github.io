@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -10,186 +9,182 @@
     <title>ملف الموظف | IAG System</title>
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
 
-```
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="card.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="card.css">
 
-<style>
-    body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
-    :root { --primary: #0f766e; }
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        :root { --primary: #0f766e; }
 
-    /* HEADER */
-    .main-header { background: #115e59; color: white; padding: 1rem 1.5rem 3.5rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 4px 15px rgba(15,118,110,0.2); position: relative; z-index: 10; padding-top: max(1rem, env(safe-area-inset-top)); }
-    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-    .header-btn:hover { background: rgba(255,255,255,0.2); }
-    .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9; }
-    .breadcrumbs span { opacity: 0.7; }
-    .breadcrumbs strong { font-weight: 700; color: white; }
-    .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
-    .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
+        /* HEADER */
+        .main-header { background: #115e59; color: white; padding: 1rem 1.5rem 3.5rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 4px 15px rgba(15,118,110,0.2); position: relative; z-index: 10; padding-top: max(1rem, env(safe-area-inset-top)); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .header-btn:hover { background: rgba(255,255,255,0.2); }
+        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9; }
+        .breadcrumbs span { opacity: 0.7; }
+        .breadcrumbs strong { font-weight: 700; color: white; }
+        .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
-    /* FILTER */
-    .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
-    .filter-grid { display: flex; flex-direction: column; gap: 12px; }
-    @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
-    .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
-    .f-input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; font-family: 'Cairo', sans-serif; }
-    .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
-    .search-wrapper { position: relative; }
-    .search-input { padding-right: 12px; padding-left: 40px; background-color: #f8fafc; }
-    .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; color: #94a3b8; pointer-events: none; }
-    .btn-print { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 10px; height: 44px; width: 44px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
+        /* FILTER */
+        .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+        .filter-grid { display: flex; flex-direction: column; gap: 12px; }
+        @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
+        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
+        .f-input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; font-family: 'Cairo', sans-serif; }
+        .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
+        .search-wrapper { position: relative; }
+        .search-input { padding-right: 12px; padding-left: 40px; background-color: #f8fafc; }
+        .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; color: #94a3b8; pointer-events: none; }
+        .btn-print { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 10px; height: 44px; width: 44px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
 
-    /* STATS */
-    .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
-    .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .stat-card-big { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.15s; }
-    .stat-card-big.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
-    .stat-card-big.active .lbl, .stat-card-big.active .num { color: #0f766e !important; }
-    .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-    .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
-    .stat-card-small { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; transition: 0.15s; }
-    .stat-card-small.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
-    .stat-card-small.active .lbl, .stat-card-small.active .num { color: #0f766e !important; }
-    .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
-    .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
-    .txt-total { color: #334155; } .txt-late { color: #dc2626; } .txt-new { color: #3b82f6; }
-    .txt-pending { color: #16a34a; } .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
+        /* STATS */
+        .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+        .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .stat-card-big { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.15s; }
+        .stat-card-big.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
+        .stat-card-big.active .lbl, .stat-card-big.active .num { color: #0f766e !important; }
+        .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+        .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
+        .stat-card-small { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; transition: 0.15s; }
+        .stat-card-small.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
+        .stat-card-small.active .lbl, .stat-card-small.active .num { color: #0f766e !important; }
+        .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+        .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
+        .txt-total { color: #334155; } .txt-late { color: #dc2626; } .txt-new { color: #3b82f6; }
+        .txt-pending { color: #16a34a; } .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
 
-    /* TABS */
-    .tabs-bar { max-width: 1200px; margin: 0 1rem 10px; background: white; border: 1px solid #e2e8f0; border-radius: 14px; display: flex; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
-    @media (min-width: 1024px) { .tabs-bar { margin: 0 auto 10px; } }
-    .tab-btn { flex: 1; height: 46px; font-size: 0.82rem; font-weight: 700; color: #64748b; background: none; border: none; cursor: pointer; font-family: 'Cairo', sans-serif; border-bottom: 2.5px solid transparent; transition: 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0fdfa; }
-    .tab-btn:not(:last-child) { border-left: 1px solid #f1f5f9; }
+        /* TABS */
+        .tabs-bar { max-width: 1200px; margin: 0 1rem 10px; background: white; border: 1px solid #e2e8f0; border-radius: 14px; display: flex; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        @media (min-width: 1024px) { .tabs-bar { margin: 0 auto 10px; } }
+        .tab-btn { flex: 1; height: 46px; font-size: 0.82rem; font-weight: 700; color: #64748b; background: none; border: none; cursor: pointer; font-family: 'Cairo', sans-serif; border-bottom: 2.5px solid transparent; transition: 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0fdfa; }
+        .tab-btn:not(:last-child) { border-left: 1px solid #f1f5f9; }
 
-    /* CARDS GRID */
-    .cards-container { padding: 0 1rem 5rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; grid-template-columns: 1fr; }
-    @media (min-width: 768px)  { .cards-container { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
+        /* CARDS GRID */
+        .cards-container { padding: 0 1rem 5rem; display: grid; gap: 12px; max-width: 1200px; margin: 0 auto; grid-template-columns: 1fr; }
+        @media (min-width: 768px)  { .cards-container { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
 
-    /* ══ ملفاتي — DRIVE TREE ══ */
-    .files-container { padding: 0 1rem 5rem; max-width: 1200px; margin: 0 auto; }
+        /* ══ ملفاتي — DRIVE TREE ══ */
+        .files-container { padding: 0 1rem 5rem; max-width: 1200px; margin: 0 auto; }
 
-    /* فلتر الملفات — داخل نفس filter-container */
-    .files-filter-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .files-search-box { flex: 1; min-width: 180px; position: relative; }
-    .files-search-box input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0 44px 0 12px; font-size: 0.9rem; font-family: 'Cairo', sans-serif; background: #f8fafc; outline: none; color: #1e293b; transition: 0.2s; }
-    .files-search-box input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); background: white; }
-    .files-search-box .fsi { position: absolute; right: 14px; top: 12px; width: 18px; height: 18px; color: #94a3b8; pointer-events: none; }
-    .type-filter-btn { height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #cbd5e1; background: white; font-size: 0.82rem; font-weight: 700; color: #64748b; cursor: pointer; font-family: 'Cairo', sans-serif; transition: 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
-    .type-filter-btn.active-all  { background: #f0fdfa; color: #0f766e; border-color: #99f6e4; }
-    .type-filter-btn.active-insp { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
-    .type-filter-btn.active-comp { background: #faf5ff; color: #7c3aed; border-color: #e9d5ff; }
+        /* فلتر الملفات — داخل نفس filter-container */
+        .files-filter-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .files-search-box { flex: 1; min-width: 180px; position: relative; }
+        .files-search-box input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0 44px 0 12px; font-size: 0.9rem; font-family: 'Cairo', sans-serif; background: #f8fafc; outline: none; color: #1e293b; transition: 0.2s; }
+        .files-search-box input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); background: white; }
+        .files-search-box .fsi { position: absolute; right: 14px; top: 12px; width: 18px; height: 18px; color: #94a3b8; pointer-events: none; }
+        .type-filter-btn { height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #cbd5e1; background: white; font-size: 0.82rem; font-weight: 700; color: #64748b; cursor: pointer; font-family: 'Cairo', sans-serif; transition: 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+        .type-filter-btn.active-all  { background: #f0fdfa; color: #0f766e; border-color: #99f6e4; }
+        .type-filter-btn.active-insp { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
+        .type-filter-btn.active-comp { background: #faf5ff; color: #7c3aed; border-color: #e9d5ff; }
 
-    /* شجرة الملفات */
-    .tree-section { background: white; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        /* شجرة الملفات */
+        .tree-section { background: white; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
 
-    /* رأس القسم (تقارير المرور / فحص الشكاوى) */
-    .tree-section-head { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-    .tree-section-head.insp { background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-bottom: 1px solid #fed7aa; }
-    .tree-section-head.comp { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-bottom: 1px solid #e9d5ff; }
-    .tree-section-title { font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 9px; }
-    .tree-section-title.insp { color: #c2410c; }
-    .tree-section-title.comp { color: #7c3aed; }
-    .tree-count { font-size: 0.7rem; font-weight: 700; padding: 2px 10px; border-radius: 10px; }
-    .tree-count.insp { background: #fed7aa; color: #92400e; }
-    .tree-count.comp { background: #e9d5ff; color: #6d28d9; }
+        /* رأس القسم (تقارير المرور / فحص الشكاوى) */
+        .tree-section-head { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+        .tree-section-head.insp { background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-bottom: 1px solid #fed7aa; }
+        .tree-section-head.comp { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-bottom: 1px solid #e9d5ff; }
+        .tree-section-title { font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 9px; }
+        .tree-section-title.insp { color: #c2410c; }
+        .tree-section-title.comp { color: #7c3aed; }
+        .tree-count { font-size: 0.7rem; font-weight: 700; padding: 2px 10px; border-radius: 10px; }
+        .tree-count.insp { background: #fed7aa; color: #92400e; }
+        .tree-count.comp { background: #e9d5ff; color: #6d28d9; }
 
-    /* السنة */
-    .year-row { padding: 10px 16px 10px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #f8fafc; border-bottom: 1px solid #f1f5f9; transition: background 0.15s; }
-    .year-row:hover { background: #f1f5f9; }
-    .year-label { font-size: 0.88rem; font-weight: 800; color: #334155; display: flex; align-items: center; gap: 7px; }
-    .year-count-pill { font-size: 0.65rem; font-weight: 700; background: #e2e8f0; color: #64748b; padding: 1px 8px; border-radius: 10px; }
+        /* السنة */
+        .year-row { padding: 10px 16px 10px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #f8fafc; border-bottom: 1px solid #f1f5f9; transition: background 0.15s; }
+        .year-row:hover { background: #f1f5f9; }
+        .year-label { font-size: 0.88rem; font-weight: 800; color: #334155; display: flex; align-items: center; gap: 7px; }
+        .year-count-pill { font-size: 0.65rem; font-weight: 700; background: #e2e8f0; color: #64748b; padding: 1px 8px; border-radius: 10px; }
 
-    /* الشهر */
-    .month-row { padding: 8px 16px 8px 28px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid #f8fafc; transition: background 0.15s; }
-    .month-row:hover { background: #f8fafc; }
-    .month-label { font-size: 0.82rem; font-weight: 700; color: #475569; display: flex; align-items: center; gap: 7px; }
-    .month-count-pill { font-size: 0.63rem; font-weight: 700; background: #ccfbf1; color: #0f766e; padding: 1px 8px; border-radius: 10px; }
+        /* الشهر */
+        .month-row { padding: 8px 16px 8px 28px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid #f8fafc; transition: background 0.15s; }
+        .month-row:hover { background: #f8fafc; }
+        .month-label { font-size: 0.82rem; font-weight: 700; color: #475569; display: flex; align-items: center; gap: 7px; }
+        .month-count-pill { font-size: 0.63rem; font-weight: 700; background: #ccfbf1; color: #0f766e; padding: 1px 8px; border-radius: 10px; }
 
-    /* الجهة (للمرور فقط) */
-    .entity-row { padding: 7px 16px 7px 36px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid #f8fafc; transition: background 0.15s; }
-    .entity-row:hover { background: #f8fafc; }
-    .entity-label { font-size: 0.8rem; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 6px; }
-    .entity-count-pill { font-size: 0.6rem; font-weight: 700; background: #fff7ed; color: #c2410c; padding: 1px 7px; border-radius: 10px; }
+        /* الجهة (للمرور فقط) */
+        .entity-row { padding: 7px 16px 7px 36px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid #f8fafc; transition: background 0.15s; }
+        .entity-row:hover { background: #f8fafc; }
+        .entity-label { font-size: 0.8rem; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 6px; }
+        .entity-count-pill { font-size: 0.6rem; font-weight: 700; background: #fff7ed; color: #c2410c; padding: 1px 7px; border-radius: 10px; }
 
-    /* الملفات */
-    .files-list { display: none; }
-    .files-list.open { display: block; }
+        /* الملفات */
+        .files-list { display: none; }
+        .files-list.open { display: block; }
 
-    .file-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 44px; border-bottom: 1px solid #f8fafc; transition: background 0.1s; }
-    .file-item:last-child { border-bottom: none; }
-    .file-item:hover { background: #f8fafc; }
-    .file-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; }
-    .fi-doc   { background: #eff6ff; }
-    .fi-sheet { background: #f0fdf4; }
-    .fi-pdf   { background: #fef2f2; }
-    .fi-other { background: #f8fafc; }
-    .file-info { flex: 1; min-width: 0; }
-    .file-name { font-size: 0.8rem; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .file-meta { font-size: 0.63rem; color: #94a3b8; font-weight: 600; margin-top: 2px; }
-    .file-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .btn-file-open { display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid; cursor: pointer; font-family: 'Cairo', sans-serif; transition: 0.15s; white-space: nowrap; }
-    .btn-edit { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
-    .btn-edit:hover { background: #dbeafe; }
-    .btn-view { background: #f0fdf4; color: #047857; border-color: #a7f3d0; }
-    .btn-view:hover { background: #dcfce7; }
+        .file-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 44px; border-bottom: 1px solid #f8fafc; transition: background 0.1s; }
+        .file-item:last-child { border-bottom: none; }
+        .file-item:hover { background: #f8fafc; }
+        .file-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; }
+        .fi-doc   { background: #eff6ff; }
+        .fi-sheet { background: #f0fdf4; }
+        .fi-pdf   { background: #fef2f2; }
+        .fi-other { background: #f8fafc; }
+        .file-info { flex: 1; min-width: 0; }
+        .file-name { font-size: 0.8rem; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-meta { font-size: 0.63rem; color: #94a3b8; font-weight: 600; margin-top: 2px; }
+        .file-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .btn-file-open { display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid; cursor: pointer; font-family: 'Cairo', sans-serif; transition: 0.15s; white-space: nowrap; }
+        .btn-edit { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+        .btn-edit:hover { background: #dbeafe; }
+        .btn-view { background: #f0fdf4; color: #047857; border-color: #a7f3d0; }
+        .btn-view:hover { background: #dcfce7; }
 
-    /* فولدر مرفقات */
-    .att-folder-row { display: flex; align-items: center; gap: 8px; padding: 7px 16px 7px 44px; background: #fffbeb; border-bottom: 1px solid #fef3c7; cursor: pointer; transition: background 0.15s; }
-    .att-folder-row:hover { background: #fef9c3; }
-    .att-folder-label { font-size: 0.78rem; font-weight: 700; color: #92400e; display: flex; align-items: center; gap: 6px; }
+        /* فولدر مرفقات */
+        .att-folder-row { display: flex; align-items: center; gap: 8px; padding: 7px 16px 7px 44px; background: #fffbeb; border-bottom: 1px solid #fef3c7; cursor: pointer; transition: background 0.15s; }
+        .att-folder-row:hover { background: #fef9c3; }
+        .att-folder-label { font-size: 0.78rem; font-weight: 700; color: #92400e; display: flex; align-items: center; gap: 6px; }
 
-    /* SIDE MENU */
-    .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
-    .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
-    .menu-open .side-menu { right: 0; }
-    .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+        /* SIDE MENU */
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu { right: 0; }
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
 
-    /* BOTTOM SHEET MODAL */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(3px); padding-bottom: env(safe-area-inset-bottom); }
-    .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
-    @media (min-width: 640px) { .modal-overlay { align-items: center; } }
-    .modal-box { background: white; width: 100%; max-width: 580px; max-height: 90vh; border-radius: 22px 22px 0 0; overflow: hidden; display: flex; flex-direction: column; animation: slideUp 0.28s ease; }
-    @media (min-width: 640px) { .modal-box { border-radius: 18px; width: 95%; max-height: 85vh; animation: fadeIn 0.2s; } }
-    .sheet-handle { width: 40px; height: 4px; background: #e2e8f0; border-radius: 4px; margin: 10px auto 0; flex-shrink: 0; }
-    @media (min-width: 640px) { .sheet-handle { display: none; } }
-    .modal-header { padding: 14px 1.25rem 12px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; flex-shrink: 0; }
-    .modal-body { padding: 1rem 1.25rem; overflow-y: auto; }
-    .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 6px; }
-    .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
-    .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
+        /* BOTTOM SHEET MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(3px); padding-bottom: env(safe-area-inset-bottom); }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+        @media (min-width: 640px) { .modal-overlay { align-items: center; } }
+        .modal-box { background: white; width: 100%; max-width: 580px; max-height: 90vh; border-radius: 22px 22px 0 0; overflow: hidden; display: flex; flex-direction: column; animation: slideUp 0.28s ease; }
+        @media (min-width: 640px) { .modal-box { border-radius: 18px; width: 95%; max-height: 85vh; animation: fadeIn 0.2s; } }
+        .sheet-handle { width: 40px; height: 4px; background: #e2e8f0; border-radius: 4px; margin: 10px auto 0; flex-shrink: 0; }
+        @media (min-width: 640px) { .sheet-handle { display: none; } }
+        .modal-header { padding: 14px 1.25rem 12px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; flex-shrink: 0; }
+        .modal-body { padding: 1rem 1.25rem; overflow-y: auto; }
+        .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 6px; }
+        .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
+        .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
 
-    /* BOTTOM NAV */
-    .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
-    .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
-    .nav-btn.active { color: var(--primary); }
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+        .nav-btn.active { color: var(--primary); }
 
-    .loader-box { grid-column: 1/-1; text-align: center; padding: 4rem; color: #94a3b8; }
-    .empty-box { grid-column: 1/-1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
-    .empty-files { text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
+        .loader-box { grid-column: 1/-1; text-align: center; padding: 4rem; color: #94a3b8; }
+        .empty-box { grid-column: 1/-1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
+        .empty-files { text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
 
-    @keyframes fadeIn  { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    @keyframes spin    { to { transform: rotate(360deg); } }
-    .animate-spin { animation: spin 1s linear infinite; }
-    .hidden { display: none !important; }
-    .chev { transition: transform 0.2s; }
-    .chev.open { transform: rotate(180deg); }
-</style>
-```
-
+        @keyframes fadeIn  { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes spin    { to { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; }
+        .hidden { display: none !important; }
+        .chev { transition: transform 0.2s; }
+        .chev.open { transform: rotate(180deg); }
+    </style>
 </head>
 <body>
 
 <!-- SIDE MENU -->
-
 <div class="side-menu-overlay" onclick="toggleMenu()"></div>
 <aside class="side-menu">
     <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
@@ -213,7 +208,6 @@
 </aside>
 
 <!-- HEADER -->
-
 <header class="main-header">
     <div class="max-w-[1200px] mx-auto">
         <div class="header-top">
@@ -236,56 +230,52 @@
 </header>
 
 <!-- FILTER CONTAINER (shared) -->
-
 <div class="filter-container" id="filter-bar">
 
-```
-<!-- فلتر مهامي -->
-<div id="filter-tasks-view" class="filter-grid">
-    <div class="filter-item-search">
-        <label class="f-label">بحث شامل</label>
-        <div class="search-wrapper">
-            <input type="text" id="f-search" class="f-input search-input" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
-            <i data-lucide="search" class="search-icon"></i>
+    <!-- فلتر مهامي -->
+    <div id="filter-tasks-view" class="filter-grid">
+        <div class="filter-item-search">
+            <label class="f-label">بحث شامل</label>
+            <div class="search-wrapper">
+                <input type="text" id="f-search" class="f-input search-input" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
+                <i data-lucide="search" class="search-icon"></i>
+            </div>
+        </div>
+        <div class="filter-item">
+            <label class="f-label">الجهة</label>
+            <select id="f-source" class="f-input px-2" onchange="applyFilters()">
+                <option value="">كل الجهات</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label class="f-label">من تاريخ</label>
+            <input type="date" id="f-start" class="f-input px-2" onchange="applyFilters()">
+        </div>
+        <div class="filter-item">
+            <label class="f-label">إلى تاريخ</label>
+            <input type="date" id="f-end" class="f-input px-2" onchange="applyFilters()">
+        </div>
+        <div class="flex gap-2 items-end">
+            <button onclick="window.print()" class="btn-print" title="طباعة">
+                <i data-lucide="printer" class="w-5 h-5"></i>
+            </button>
         </div>
     </div>
-    <div class="filter-item">
-        <label class="f-label">الجهة</label>
-        <select id="f-source" class="f-input px-2" onchange="applyFilters()">
-            <option value="">كل الجهات</option>
-        </select>
-    </div>
-    <div class="filter-item">
-        <label class="f-label">من تاريخ</label>
-        <input type="date" id="f-start" class="f-input px-2" onchange="applyFilters()">
-    </div>
-    <div class="filter-item">
-        <label class="f-label">إلى تاريخ</label>
-        <input type="date" id="f-end" class="f-input px-2" onchange="applyFilters()">
-    </div>
-    <div class="flex gap-2 items-end">
-        <button onclick="window.print()" class="btn-print" title="طباعة">
-            <i data-lucide="printer" class="w-5 h-5"></i>
-        </button>
-    </div>
-</div>
 
-<!-- فلتر ملفاتي -->
-<div id="filter-files-view" class="files-filter-row hidden">
-    <div class="files-search-box">
-        <i data-lucide="search" class="fsi"></i>
-        <input type="text" id="files-search" placeholder="ابحث في ملفاتك..." oninput="renderFilesTree()">
+    <!-- فلتر ملفاتي -->
+    <div id="filter-files-view" class="files-filter-row hidden">
+        <div class="files-search-box">
+            <i data-lucide="search" class="fsi"></i>
+            <input type="text" id="files-search" placeholder="ابحث في ملفاتك..." oninput="renderFilesTree()">
+        </div>
+        <button class="type-filter-btn active-all" id="ftype-all"  onclick="setFileType('all')">الكل</button>
+        <button class="type-filter-btn"            id="ftype-insp" onclick="setFileType('insp')">🔍 مرور</button>
+        <button class="type-filter-btn"            id="ftype-comp" onclick="setFileType('comp')">📣 شكاوى</button>
     </div>
-    <button class="type-filter-btn active-all" id="ftype-all"  onclick="setFileType('all')">الكل</button>
-    <button class="type-filter-btn"            id="ftype-insp" onclick="setFileType('insp')">🔍 مرور</button>
-    <button class="type-filter-btn"            id="ftype-comp" onclick="setFileType('comp')">📣 شكاوى</button>
-</div>
-```
 
 </div>
 
 <!-- STATS (مهامي فقط) -->
-
 <div class="stats-wrapper" id="stats-wrapper">
     <div class="stats-row-big">
         <div class="stat-card-big active" onclick="filterStatus('')" id="st-total">
@@ -312,7 +302,6 @@
 </div>
 
 <!-- TABS -->
-
 <div class="tabs-bar">
     <button class="tab-btn active" id="tab-tasks" onclick="switchTab('tasks')">
         <i data-lucide="list-checks" class="w-4 h-4"></i> مهامي
@@ -323,7 +312,6 @@
 </div>
 
 <!-- TASKS VIEW -->
-
 <div id="view-tasks">
     <div class="cards-container" id="tasks-list">
         <div class="loader-box">
@@ -334,7 +322,6 @@
 </div>
 
 <!-- ملفاتي VIEW -->
-
 <div id="view-myfiles" class="hidden">
     <div class="files-container">
         <!-- محتوى الشجرة -->
@@ -348,7 +335,6 @@
 </div>
 
 <!-- BOTTOM SHEET MODAL -->
-
 <div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeModal()">
     <div class="modal-box">
         <div class="sheet-handle"></div>
@@ -366,7 +352,6 @@
 </div>
 
 <!-- BOTTOM NAV -->
-
 <nav class="bottom-nav lg:hidden">
     <a href="employee.html" class="nav-btn active"><i data-lucide="user-circle"></i><span>صفحتي</span></a>
     <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i><span>المؤشرات</span></a>
@@ -375,11 +360,8 @@
 </nav>
 
 <script src="assets/js/config.js"></script>
-
 <script src="assets/js/auth.js"></script>
-
 <script src="card.js"></script>
-
 <script>
 lucide.createIcons();
 
@@ -874,6 +856,5 @@ function _fmtSize(bytes) {
     return (bytes/1024/1024).toFixed(1) + ' MB';
 }
 </script>
-
 </body>
 </html>
