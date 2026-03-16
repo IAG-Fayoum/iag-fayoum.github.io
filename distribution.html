@@ -613,25 +613,27 @@
         }
 
         // ── ثوابت الجهات ──
+        // الأكثر تحديداً أولاً — قبل الأقل تحديداً
         const SOURCE_DEFS = [
-            { key: 'نيابة',      label: 'النيابة الإدارية',              match: ['\u0646\u064a\u0627\u0628\u0629 \u0627\u0644\u0627\u062f\u0627\u0631\u064a\u0629', '\u0646\u064a\u0627\u0628\u0629 \u0627\u0644\u0625\u062f\u0627\u0631\u064a\u0629', '\u0646\u064a\u0627\u0628\u0629 \u0627\u0644\u0627\u062f\u0627\u0631\u064a'] },
-            { key: 'وكيل',       label: 'وكيل الوزارة',                   match: ['\u0648\u0643\u064a\u0644 \u0627\u0644\u0648\u0632\u0627\u0631\u0629'] },
-            { key: 'مبادرات',    label: 'وكيل الوزارة (فحص مبادرات)',     match: ['\u0641\u062d\u0635 \u0645\u0628\u0627\u062f\u0631\u0627\u062a', '\u0645\u0628\u0627\u062f\u0631\u0627\u062a'] },
-            { key: 'لجان',       label: 'اللجان',                         match: ['\u0644\u062c\u0627\u0646', '\u0644\u062c\u0646\u0629'] },
-            { key: 'جهاز',       label: 'الجهاز المركزي',                 match: ['\u062c\u0647\u0627\u0632 \u0627\u0644\u0645\u0631\u0643\u0632\u064a', '\u062c\u0647\u0627\u0632 \u0645\u0631\u0643\u0632\u064a', '\u062c\u0647\u0627\u0632 \u0645\u0631\u0643\u0632'] },
-            { key: 'تنظيم',      label: 'التنظيم والإدارة',               match: ['\u062a\u0646\u0638\u064a\u0645 \u0648\u0627\u0644\u0627\u062f\u0627\u0631\u0629', '\u062a\u0646\u0638\u064a\u0645 \u0648\u0627\u0644\u0625\u062f\u0627\u0631\u0629'] },
-            { key: 'مالية',      label: 'المديرية المالية',               match: ['\u0645\u062f\u064a\u0631\u064a\u0629 \u0627\u0644\u0645\u0627\u0644\u064a\u0629'] },
-            { key: 'ديوان_مح',   label: 'ديوان المحافظة',                 match: ['\u062f\u064a\u0648\u0627\u0646 \u0627\u0644\u0645\u062d\u0627\u0641\u0638\u0629'] },
-            { key: 'محليات',     label: 'محليات أخرى',                    match: ['\u0645\u062d\u0644\u064a\u0627\u062a'] },
-            { key: 'رقابة',      label: 'هيئة الرقابة الإدارية',          match: ['\u0631\u0642\u0627\u0628\u0629 \u0627\u0644\u0627\u062f\u0627\u0631\u064a\u0629', '\u0631\u0642\u0627\u0628\u0629 \u0627\u0644\u0625\u062f\u0627\u0631\u064a\u0629', '\u0647\u064a\u0626\u0629 \u0627\u0644\u0631\u0642\u0627\u0628\u0629'] },
-            { key: 'طب_علاجي',   label: 'الطب العلاجي',                   match: ['\u0637\u0628 \u0627\u0644\u0639\u0644\u0627\u062c\u064a', '\u0637\u0628\u064a \u0639\u0644\u0627\u062c'] },
-            { key: 'طب_وقائي',   label: 'الطب الوقائي',                   match: ['\u0637\u0628 \u0627\u0644\u0648\u0642\u0627\u0626\u064a', '\u0637\u0628\u064a \u0648\u0642\u0627\u0626\u064a'] },
-            { key: 'ديوان_وز',   label: 'ديوان الوزارة',                  match: ['\u062f\u064a\u0648\u0627\u0646 \u0627\u0644\u0648\u0632\u0627\u0631\u0629'] },
-            { key: 'قانونية',    label: 'الشؤون القانونية',               match: ['\u0634\u0624\u0648\u0646 \u0627\u0644\u0642\u0627\u0646\u0648\u0646\u064a\u0629', '\u0642\u0627\u0646\u0648\u0646\u064a\u0629', '\u0634\u0626\u0648\u0646 \u0642\u0627\u0646\u0648\u0646'] },
-            { key: 'أخرى',       label: 'جهات أخرى',                      match: [] }
+            { key: 'مبادرات',  label: 'وكيل الوزارة (فحص مبادرات)',      match: ['فحص مبادرات', 'مبادرات'] },
+            { key: 'قانونية',  label: 'وكيل الوزارة (الشؤون القانونية)', match: ['شؤون القانونية', 'شئون القانونية', 'الشؤون القانون', 'قانونية'] },
+            { key: 'نيابة',    label: 'النيابة الإدارية',                 match: ['نيابة الادارية', 'نيابة الإدارية', 'نيابة'] },
+            { key: 'رقابة',    label: 'هيئة الرقابة الإدارية',           match: ['رقابة الادارية', 'رقابة الإدارية', 'هيئة الرقابة', 'رقابة'] },
+            { key: 'ديوان_مح', label: 'ديوان المحافظة',                   match: ['ديوان المحافظة'] },
+            { key: 'ديوان_وز', label: 'ديوان الوزارة',                    match: ['ديوان الوزارة'] },
+            { key: 'جهاز',     label: 'الجهاز المركزي',                   match: ['جهاز المركزي', 'جهاز مركزي'] },
+            { key: 'تنظيم',    label: 'التنظيم والإدارة',                 match: ['تنظيم والادارة', 'تنظيم والإدارة', 'التنظيم'] },
+            { key: 'مالية',    label: 'المديرية المالية',                 match: ['مديرية المالية', 'مالية'] },
+            { key: 'محليات',   label: 'محليات أخرى',                      match: ['محليات'] },
+            { key: 'وكيل',     label: 'وكيل الوزارة',                     match: ['وكيل الوزارة', 'وكيل'] },
+            { key: 'لجان',     label: 'اللجان',                           match: ['لجان', 'لجنة'] },
+            { key: 'طب_علاجي', label: 'الطب العلاجي',                     match: ['طب العلاجي', 'طبي علاج'] },
+            { key: 'طب_وقائي', label: 'الطب الوقائي',                     match: ['طب الوقائي', 'طبي وقائي'] },
+            { key: 'أخرى',     label: 'جهات أخرى',                        match: [] }
         ];
 
         function matchSourceKey(src) {
+            if (!src || !src.trim()) return 'أخرى';
             const n = normalizeArabic(src);
             for (const def of SOURCE_DEFS) {
                 if (def.key === 'أخرى') continue;
@@ -643,6 +645,38 @@
         }
 
         // --- TAB 2: SOURCE ANALYSIS ---
+        function renderSourceAnalysis() {
+            const employees = getFilteredEmployees();
+            const counts = {};
+            SOURCE_DEFS.forEach(d => counts[d.key] = 0);
+            let total = 0;
+
+            employees.forEach(e => {
+                if (e.tasks) e.tasks.forEach(t => {
+                    total++;
+                    const raw = t['الجهة (الوارد) منها'] || t['الجهة'] || t.source || t.entity || '';
+                    counts[matchSourceKey(raw)]++;
+                });
+            });
+
+            let html = `<div class="stat-card col-span-2 bg-teal-50 border-teal-200"><div class="stat-num text-teal-900">${total}</div><div class="stat-lbl">إجمالي الوارد</div></div>`;
+
+            SOURCE_DEFS.forEach(def => {
+                // "جهات أخرى" تظهر فقط لو فيها بيانات
+                if (def.key === 'أخرى' && counts[def.key] === 0) return;
+                // باقي الجهات تظهر دايماً — الصفر بيبقى رمادي
+                const activeClass = currentSourceFilter === def.key ? 'active' : '';
+                const isEmpty     = counts[def.key] === 0;
+                html += `<div class="stat-card ${activeClass}" onclick="filterBySource('${def.key}')"
+                    style="${isEmpty ? 'opacity:0.45;cursor:default' : ''}">
+                    <div class="stat-num" style="color:${isEmpty ? '#cbd5e1' : '#0f766e'}">${counts[def.key]}</div>
+                    <div class="stat-lbl">${def.label}</div>
+                </div>`;
+            });
+
+            document.getElementById('stats-src').innerHTML = html;
+            renderSourceList();
+        }
         function renderSourceAnalysis() {
             const employees = getFilteredEmployees();
             const counts = {};
