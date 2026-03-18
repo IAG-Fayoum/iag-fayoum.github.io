@@ -715,11 +715,6 @@
                 const hasReview    = t.reviewFile && t.reviewFile.toString().trim() && t.reviewFile !== 'undefined';
                 const hasArchive   = t.archive && t.archive.toString().trim() && t.archive !== 'undefined';
 
-                // badge الربط بمعاملة أصل
-                const linkedParent = t.parentId && t.parentId.toString().trim()
-                    ? `<span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:20px;padding:2px 10px;font-size:0.72rem;font-weight:700">🔗 مرتبطة بـ ${t.parentId}</span>`
-                    : '';
-
                 // badge القضية
                 let caseBadge = '';
                 if (isCaseEntity && t.caseNumber && t.caseNumber.toString().trim()) {
@@ -796,7 +791,6 @@ if (hasAttach) {
                             <span class="font-bold text-teal-700 flex items-center gap-1 flex-wrap">${assigneeHtml}</span>
                         </div>
                         ${caseBadge ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}</div>` : ''}
-                        ${linkedParent ? `<div class="tc-row">${linkedParent}</div>` : ''}
                         <div class="attach-pills">${btnAttach}${btnReview}${btnArchive}</div>
                     </div>
                     <div class="tc-footer">
@@ -911,40 +905,6 @@ if (hasAttach) {
             let html = '';
             html += ro('الموضوع', `<span style="font-weight:800;line-height:1.6">${t.subject}</span>`);
             html += edSource(t.source);
-
-            // ── حقل ربط المعاملة بأصل ──
-            const edParent = () => {
-                const curParent = t.parentId && t.parentId.toString().trim();
-                return `<div class="data-item">
-                    <span class="data-label">مرتبطة بمعاملة أصل</span>
-                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-                        <span class="data-val" id="parent-val-${t.id}" style="flex:1;color:${curParent ? '#1d4ed8' : '#94a3b8'}">
-                            ${curParent ? '🔗 ' + curParent : '— غير مرتبطة'}
-                        </span>
-                        <button onclick="openParentPicker('${t.id}',this)"
-                            style="font-size:0.72rem;background:#eff6ff;border:1px solid #bfdbfe;padding:4px 10px;border-radius:8px;cursor:pointer;color:#1d4ed8;font-family:'Cairo',sans-serif;font-weight:700;display:flex;align-items:center;gap:4px">
-                            <i data-lucide="link" style="width:12px;height:12px"></i> ${curParent ? 'تعديل' : 'ربط'}
-                        </button>
-                        ${curParent ? `<button onclick="clearParentId('${t.id}',this)"
-                            style="font-size:0.72rem;background:#fef2f2;border:1px solid #fecaca;padding:4px 8px;border-radius:8px;cursor:pointer;color:#dc2626;font-family:'Cairo',sans-serif;font-weight:700">
-                            ✕
-                        </button>` : ''}
-                    </div>
-                    <div id="parent-picker-${t.id}" style="display:none;margin-top:8px">
-                        <input type="text" id="parent-search-${t.id}" placeholder="ابحث برقم المعاملة أو الموضوع..."
-                            oninput="filterParentList('${t.id}')"
-                            style="width:100%;height:38px;border:1px solid #0f766e;border-radius:10px;padding:0 10px;font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;box-sizing:border-box">
-                        <div id="parent-list-${t.id}"
-                            style="max-height:180px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;background:white;font-size:0.82rem;font-family:'Cairo',sans-serif">
-                        </div>
-                        <button onclick="document.getElementById('parent-picker-${t.id}').style.display='none'"
-                            style="margin-top:6px;height:32px;padding:0 14px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;cursor:pointer">
-                            إلغاء
-                        </button>
-                    </div>
-                </div>`;
-            };
-            html += edParent();
             html += ro('محل التنفيذ', t.entity);
             html += ro('نوع المعاملة', t.transactionType || t.docType || '-');
             html += ro('تاريخ الوارد', formatArabicDate(t.date));
@@ -1059,101 +1019,6 @@ if (hasAttach) {
                 alert('❌ خطأ في الاتصال');
                 btnEl.textContent = origText; btnEl.disabled = false;
             }
-        }
-
-        // ── Parent Task Picker ──
-        function openParentPicker(taskId, btnEl) {
-            const picker = document.getElementById('parent-picker-' + taskId);
-            if (!picker) return;
-            const isOpen = picker.style.display !== 'none';
-            picker.style.display = isOpen ? 'none' : 'block';
-            if (!isOpen) {
-                const input = document.getElementById('parent-search-' + taskId);
-                if (input) { input.value = ''; filterParentList(taskId); input.focus(); }
-            }
-        }
-
-        function filterParentList(taskId) {
-            const input = document.getElementById('parent-search-' + taskId);
-            const list  = document.getElementById('parent-list-' + taskId);
-            if (!input || !list) return;
-
-            const q = input.value.trim().toLowerCase();
-            // استبعاد المعاملة الحالية نفسها
-            const filtered = allTasks.filter(t =>
-                t.id != taskId &&
-                (!q || t.id.toString().toLowerCase().includes(q) ||
-                       (t.subject || '').toLowerCase().includes(q) ||
-                       (t.source  || '').toLowerCase().includes(q))
-            ).slice(0, 30);
-
-            if (!filtered.length) {
-                list.innerHTML = '<div style="padding:10px 12px;color:#94a3b8;text-align:center">لا توجد نتائج</div>';
-                return;
-            }
-            list.innerHTML = filtered.map(t => `
-                <div onclick="selectParentTask('${taskId}','${t.id}')"
-                    style="padding:8px 12px;cursor:pointer;border-bottom:1px solid #f1f5f9;display:flex;gap:8px;align-items:center"
-                    onmouseover="this.style.background='#f0fdfa'" onmouseout="this.style.background='white'">
-                    <span style="font-weight:800;color:#0f766e;min-width:60px">#${t.id}</span>
-                    <span style="color:#1e293b;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
-                        title="${(t.subject||'').replace(/"/g,'')}">${t.subject || '-'}</span>
-                    <span style="color:#64748b;font-size:0.75rem;white-space:nowrap">${t.assignee || ''}</span>
-                </div>`).join('');
-        }
-
-        async function selectParentTask(taskId, parentTaskId) {
-            const parentTask = allTasks.find(x => x.id == parentTaskId);
-            if (!parentTask) return;
-            const parentIdVal = 'IN-' + parentTaskId;
-
-            const confirmed = confirm('تأكيد الربط بالمعاملة:\n#' + parentTaskId + ' — ' + (parentTask.subject || ''));
-            if (!confirmed) return;
-
-            try {
-                const userStr   = localStorage.getItem('iag_user');
-                const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
-
-                const res  = await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName: 'parentId', fieldValue: parentIdVal, updatedBy })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    const task = allTasks.find(x => x.id == taskId);
-                    if (task) task.parentId = parentIdVal;
-                    const valEl = document.getElementById('parent-val-' + taskId);
-                    if (valEl) { valEl.textContent = '🔗 ' + parentIdVal; valEl.style.color = '#1d4ed8'; }
-                    document.getElementById('parent-picker-' + taskId).style.display = 'none';
-                    applyFilters();
-                } else {
-                    alert('❌ ' + (data.error || 'فشل الحفظ'));
-                }
-            } catch(e) { alert('❌ خطأ في الاتصال'); }
-        }
-
-        async function clearParentId(taskId, btnEl) {
-            const confirmed = confirm('هل تريد إزالة الربط بالمعاملة الأصلية؟');
-            if (!confirmed) return;
-            try {
-                const userStr   = localStorage.getItem('iag_user');
-                const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
-
-                const res  = await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName: 'parentId', fieldValue: ' ', updatedBy })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    const task = allTasks.find(x => x.id == taskId);
-                    if (task) task.parentId = '';
-                    const valEl = document.getElementById('parent-val-' + taskId);
-                    if (valEl) { valEl.textContent = '— غير مرتبطة'; valEl.style.color = '#94a3b8'; }
-                    applyFilters();
-                } else { alert('❌ ' + (data.error || 'فشل الحذف')); }
-            } catch(e) { alert('❌ خطأ في الاتصال'); }
         }
 
         // ── Save Field Update ──
