@@ -615,9 +615,7 @@
             const end    = document.getElementById('f-end').value;
 
             // baseFiltered: كل الفلاتر ما عدا الحالة ونوع المستند
-            // ✅ الصادرات مخفية دائماً — تظهر فقط كـ badge داخل كارت الوارد
             const baseFiltered = allTasks.filter(t => {
-                if (getDocGroup(t) === 'صادر') return false;
                 if (search && !(t.subject + t.id + t.source).toLowerCase().includes(search)) return false;
                 if (src && t.source !== src) return false;
                 if (empVal) {
@@ -669,11 +667,11 @@
         }
 
         function updateContextBar(tasks) {
-            const icons  = { 'وارد': '📥' };
-            const counts = { 'وارد': 0 };
+            const icons  = { 'وارد': '📥', 'صادر': '📤' };
+            const counts = { 'وارد': 0, 'صادر': 0 };
             tasks.forEach(t => {
                 const g = getDocGroup(t);
-                if (g === 'وارد') counts[g]++;
+                if (g === 'وارد' || g === 'صادر') counts[g]++;
             });
 
             const bar   = document.getElementById('context-bar');
@@ -781,10 +779,7 @@ if (hasAttach) {
                 <div class="task-card ${hasMissing ? 'has-missing' : ''}">
                     <div class="card-stripe ${bgClass}">
                         <span>#${t.id}${linkedIn ? ` <span class="linked-in" style="background:rgba(255,255,255,0.2);color:white;border-color:rgba(255,255,255,0.3)">← ${linkedIn}</span>` : ''}</span>
-                        <span style="display:flex;align-items:center;gap:6px">
-                            ${t.status}
-                            ${(()=>{ const outTask = allTasks.find(x => x.id === t.id.replace(/^IN-/,'OUT-')); return outTask ? `<span style="background:rgba(255,255,255,0.2);border-radius:10px;padding:1px 7px;font-size:0.7rem;font-weight:700">📤 ${outTask.id}</span>` : ''; })()}
-                        </span>
+                        <span>${t.status}</span>
                     </div>
                     <div class="card-body">
                         <h3 class="tc-subject">${t.subject}</h3>
@@ -927,37 +922,31 @@ if (hasAttach) {
                             ${curParent ? '🔗 ' + curParent : '— غير مرتبطة'}
                         </span>
                         <button onclick="openParentPicker('${t.id}',this)"
-                            style="font-size:0.72rem;background:#eff6ff;border:1px solid #bfdbfe;padding:4px 10px;border-radius:8px;cursor:pointer;color:#1d4ed8;font-family:'Cairo',sans-serif;font-weight:700">
-                            🔗 ${curParent ? 'تعديل' : 'ربط'}
+                            style="font-size:0.72rem;background:#eff6ff;border:1px solid #bfdbfe;padding:4px 10px;border-radius:8px;cursor:pointer;color:#1d4ed8;font-family:'Cairo',sans-serif;font-weight:700;display:flex;align-items:center;gap:4px">
+                            <i data-lucide="link" style="width:12px;height:12px"></i> ${curParent ? 'تعديل' : 'ربط'}
                         </button>
                         ${curParent ? `<button onclick="clearParentId('${t.id}',this)"
-                            style="font-size:0.72rem;background:#fef2f2;border:1px solid #fecaca;padding:4px 8px;border-radius:8px;cursor:pointer;color:#dc2626;font-family:'Cairo',sans-serif;font-weight:700">✕</button>` : ''}
+                            style="font-size:0.72rem;background:#fef2f2;border:1px solid #fecaca;padding:4px 8px;border-radius:8px;cursor:pointer;color:#dc2626;font-family:'Cairo',sans-serif;font-weight:700">
+                            ✕
+                        </button>` : ''}
                     </div>
                     <div id="parent-picker-${t.id}" style="display:none;margin-top:8px">
                         <input type="text" id="parent-search-${t.id}" placeholder="ابحث برقم المعاملة أو الموضوع..."
                             oninput="filterParentList('${t.id}')"
                             style="width:100%;height:38px;border:1px solid #0f766e;border-radius:10px;padding:0 10px;font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;box-sizing:border-box">
                         <div id="parent-list-${t.id}"
-                            style="max-height:180px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;background:white;font-size:0.82rem;font-family:'Cairo',sans-serif"></div>
+                            style="max-height:180px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;background:white;font-size:0.82rem;font-family:'Cairo',sans-serif">
+                        </div>
                         <button onclick="document.getElementById('parent-picker-${t.id}').style.display='none'"
-                            style="margin-top:6px;height:32px;padding:0 14px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;cursor:pointer">إلغاء</button>
+                            style="margin-top:6px;height:32px;padding:0 14px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;cursor:pointer">
+                            إلغاء
+                        </button>
                     </div>
                 </div>`;
             };
             html += edParent();
             html += ro('محل التنفيذ', t.entity);
             html += ro('نوع المعاملة', t.transactionType || t.docType || '-');
-
-            // رقم الصادر المرتبط
-            const linkedOutTask = allTasks.find(x => x.id === t.id.replace(/^IN-/, 'OUT-'));
-            if (linkedOutTask) {
-                html += `<div class="data-item">
-                    <span class="data-label">رقم الصادر</span>
-                    <p class="data-val" style="color:#0f766e;font-weight:800">#${linkedOutTask.id}
-                        ${linkedOutTask.archive ? `<a href="${linkedOutTask.archive}" target="_blank" style="margin-right:8px;font-size:0.8rem;color:#0f766e;text-decoration:underline">📎 فتح الصادر</a>` : ''}
-                    </p>
-                </div>`;
-            }
             html += ro('تاريخ الوارد', formatArabicDate(t.date));
             html += ro('تاريخ التكليف', formatArabicDate(t.assignDate));
             html += ro('تاريخ الإنجاز', t.completionDate ? formatArabicDate(t.completionDate) : '-');
@@ -1088,14 +1077,16 @@ if (hasAttach) {
             const input = document.getElementById('parent-search-' + taskId);
             const list  = document.getElementById('parent-list-' + taskId);
             if (!input || !list) return;
+
             const q = input.value.trim().toLowerCase();
+            // استبعاد المعاملة الحالية نفسها
             const filtered = allTasks.filter(t =>
                 t.id != taskId &&
-                getDocGroup(t) !== 'صادر' &&
                 (!q || t.id.toString().toLowerCase().includes(q) ||
                        (t.subject || '').toLowerCase().includes(q) ||
                        (t.source  || '').toLowerCase().includes(q))
             ).slice(0, 30);
+
             if (!filtered.length) {
                 list.innerHTML = '<div style="padding:10px 12px;color:#94a3b8;text-align:center">لا توجد نتائج</div>';
                 return;
@@ -1105,7 +1096,8 @@ if (hasAttach) {
                     style="padding:8px 12px;cursor:pointer;border-bottom:1px solid #f1f5f9;display:flex;gap:8px;align-items:center"
                     onmouseover="this.style.background='#f0fdfa'" onmouseout="this.style.background='white'">
                     <span style="font-weight:800;color:#0f766e;min-width:60px">#${t.id}</span>
-                    <span style="color:#1e293b;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.subject || '-'}</span>
+                    <span style="color:#1e293b;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+                        title="${(t.subject||'').replace(/"/g,'')}">${t.subject || '-'}</span>
                     <span style="color:#64748b;font-size:0.75rem;white-space:nowrap">${t.assignee || ''}</span>
                 </div>`).join('');
         }
@@ -1113,17 +1105,21 @@ if (hasAttach) {
         async function selectParentTask(taskId, parentTaskId) {
             const parentTask = allTasks.find(x => x.id == parentTaskId);
             if (!parentTask) return;
-            const parentIdVal = parentTaskId.toString().startsWith('IN-') ? parentTaskId : 'IN-' + parentTaskId;
+            const parentIdVal = 'IN-' + parentTaskId;
+
             const confirmed = confirm('تأكيد الربط بالمعاملة:\n#' + parentTaskId + ' — ' + (parentTask.subject || ''));
             if (!confirmed) return;
+
             try {
                 const userStr   = localStorage.getItem('iag_user');
                 const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
+
                 const res  = await fetch(CONFIG.API_URL, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName: 'parentId', fieldValue: parentIdVal, updatedBy })
                 });
                 const data = await res.json();
+
                 if (data.success) {
                     const task = allTasks.find(x => x.id == taskId);
                     if (task) task.parentId = parentIdVal;
@@ -1131,20 +1127,25 @@ if (hasAttach) {
                     if (valEl) { valEl.textContent = '🔗 ' + parentIdVal; valEl.style.color = '#1d4ed8'; }
                     document.getElementById('parent-picker-' + taskId).style.display = 'none';
                     applyFilters();
-                } else { alert('❌ ' + (data.error || 'فشل الحفظ')); }
+                } else {
+                    alert('❌ ' + (data.error || 'فشل الحفظ'));
+                }
             } catch(e) { alert('❌ خطأ في الاتصال'); }
         }
 
         async function clearParentId(taskId, btnEl) {
-            if (!confirm('هل تريد إزالة الربط بالمعاملة الأصلية؟')) return;
+            const confirmed = confirm('هل تريد إزالة الربط بالمعاملة الأصلية؟');
+            if (!confirmed) return;
             try {
                 const userStr   = localStorage.getItem('iag_user');
                 const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
+
                 const res  = await fetch(CONFIG.API_URL, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName: 'parentId', fieldValue: ' ', updatedBy })
                 });
                 const data = await res.json();
+
                 if (data.success) {
                     const task = allTasks.find(x => x.id == taskId);
                     if (task) task.parentId = '';
