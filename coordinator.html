@@ -597,9 +597,13 @@
 
         // ── DocType helpers ──
         function getDocGroup(t) {
-            const tp = (t.transactionType || t.docType || '').trim();
-            if (tp.includes('صادر')) return 'صادر';
-            return 'وارد'; // كل ما ليس صادراً صريحاً = وارد
+            // ✅ نتحقق من docType أولاً — مش transactionType
+            // لأن transactionType ممكن يكون "شكوى" أو "مراسلة" وده يخبّي قيمة docType
+            const docType = (t.docType || '').trim();
+            if (docType.includes('صادر')) return 'صادر';
+            const txType = (t.transactionType || '').trim();
+            if (txType.includes('صادر')) return 'صادر';
+            return 'وارد';
         }
 
         function filterDocType(group) {
@@ -916,35 +920,6 @@ if (hasAttach) {
             let html = '';
             html += ro('الموضوع', `<span style="font-weight:800;line-height:1.6">${t.subject}</span>`);
             html += edSource(t.source);
-
-            // ── حقل ربط المعاملة بأصل ──
-            const edParent = () => {
-                const curParent = t.parentId && t.parentId.toString().trim();
-                return `<div class="data-item">
-                    <span class="data-label">مرتبطة بمعاملة أصل</span>
-                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-                        <span class="data-val" id="parent-val-${t.id}" style="flex:1;color:${curParent ? '#1d4ed8' : '#94a3b8'}">
-                            ${curParent ? '🔗 ' + curParent : '— غير مرتبطة'}
-                        </span>
-                        <button onclick="openParentPicker('${t.id}',this)"
-                            style="font-size:0.72rem;background:#eff6ff;border:1px solid #bfdbfe;padding:4px 10px;border-radius:8px;cursor:pointer;color:#1d4ed8;font-family:'Cairo',sans-serif;font-weight:700">
-                            🔗 ${curParent ? 'تعديل' : 'ربط'}
-                        </button>
-                        ${curParent ? `<button onclick="clearParentId('${t.id}',this)"
-                            style="font-size:0.72rem;background:#fef2f2;border:1px solid #fecaca;padding:4px 8px;border-radius:8px;cursor:pointer;color:#dc2626;font-family:'Cairo',sans-serif;font-weight:700">✕</button>` : ''}
-                    </div>
-                    <div id="parent-picker-${t.id}" style="display:none;margin-top:8px">
-                        <input type="text" id="parent-search-${t.id}" placeholder="ابحث برقم المعاملة أو الموضوع..."
-                            oninput="filterParentList('${t.id}')"
-                            style="width:100%;height:38px;border:1px solid #0f766e;border-radius:10px;padding:0 10px;font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;box-sizing:border-box">
-                        <div id="parent-list-${t.id}"
-                            style="max-height:180px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;background:white;font-size:0.82rem;font-family:'Cairo',sans-serif"></div>
-                        <button onclick="document.getElementById('parent-picker-${t.id}').style.display='none'"
-                            style="margin-top:6px;height:32px;padding:0 14px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;cursor:pointer">إلغاء</button>
-                    </div>
-                </div>`;
-            };
-            html += edParent();
             html += ro('محل التنفيذ', t.entity);
             html += ro('نوع المعاملة', t.transactionType || t.docType || '-');
 
