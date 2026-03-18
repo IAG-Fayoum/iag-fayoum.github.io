@@ -785,10 +785,7 @@ if (hasAttach) {
                 <div class="task-card ${hasMissing ? 'has-missing' : ''}">
                     <div class="card-stripe ${bgClass}">
                         <span>#${t.id}${linkedIn ? ` <span class="linked-in" style="background:rgba(255,255,255,0.2);color:white;border-color:rgba(255,255,255,0.3)">← ${linkedIn}</span>` : ''}</span>
-                        <span style="display:flex;align-items:center;gap:6px">
-                            ${t.status}
-                            ${(()=>{ const outTask = allTasks.find(x => x.id === t.id.replace(/^IN-/,'OUT-')); return outTask ? `<span style="background:rgba(255,255,255,0.2);border-radius:10px;padding:1px 7px;font-size:0.7rem;font-weight:700">📤 ${outTask.id}</span>` : ''; })()}
-                        </span>
+                        <span>${t.status}</span>
                     </div>
                     <div class="card-body">
                         <h3 class="tc-subject">${t.subject}</h3>
@@ -923,16 +920,6 @@ if (hasAttach) {
             html += ro('محل التنفيذ', t.entity);
             html += ro('نوع المعاملة', t.transactionType || t.docType || '-');
 
-            // رقم الصادر المرتبط
-            const linkedOutTask = allTasks.find(x => x.id === t.id.replace(/^IN-/, 'OUT-'));
-            if (linkedOutTask) {
-                html += `<div class="data-item">
-                    <span class="data-label">رقم الصادر</span>
-                    <p class="data-val" style="color:#0f766e;font-weight:800">#${linkedOutTask.id}
-                        ${linkedOutTask.archive ? `<a href="${linkedOutTask.archive}" target="_blank" style="margin-right:8px;font-size:0.8rem;color:#0f766e;text-decoration:underline">📎 فتح الصادر</a>` : ''}
-                    </p>
-                </div>`;
-            }
             html += ro('تاريخ الوارد', formatArabicDate(t.date));
             html += ro('تاريخ التكليف', formatArabicDate(t.assignDate));
             html += ro('تاريخ الإنجاز', t.completionDate ? formatArabicDate(t.completionDate) : '-');
