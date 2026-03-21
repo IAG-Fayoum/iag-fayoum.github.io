@@ -1,4 +1,4 @@
-"<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -14,38 +14,36 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
+        <style>
         body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
-        :root { --primary: #0f766e; --c-new: #3b82f6; --c-pending: #16a34a; --c-approved: #047857; --c-followup: #6b7280; --c-late: #dc2626; }
+        :root { --primary: #0f766e; --c-new: #3b82f6; --c-pending: #d97706; --c-approved: #059669; --c-followup: #7c3aed; --c-late: #dc2626; }
 
-        /* ═══ HEADER ═══ */
+        /* ══ HEADER ══ */
         .main-header {
             background: #020617;
-            background-image: radial-gradient(circle at top right, #0f766e 0%, transparent 40%),
-                              radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
-            color: white; padding: 1.5rem 1.5rem 6rem; position: relative; z-index: 10;
+            background-image: radial-gradient(circle at top right, #0f766e 0%, transparent 40%), radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
+            color: white; padding: 1.5rem 1.5rem 5rem; position: relative; z-index: 10;
             padding-top: max(1.5rem, env(safe-area-inset-top));
         }
         .header-top { display: flex; justify-content: space-between; align-items: center; }
         .header-btn { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; display: flex; align-items: center; justify-content: center; color: white; }
         .header-btn:hover { background: rgba(255,255,255,0.2); }
         .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; margin-bottom: 4px; opacity: 0.9; }
-        .breadcrumbs span { opacity: 0.7; }
-        .breadcrumbs strong { font-weight: 700; color: white; }
-        .dept-title { font-size: 1rem; font-weight: 800; text-align: center; }
-        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; font-family: sans-serif; }
+        .breadcrumbs span { opacity: 0.7; } .breadcrumbs strong { font-weight: 700; color: white; }
+        .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
-        /* ═══ GLASSMORPHISM FILTERS ═══ */
+        /* ══ GLASSMORPHISM FILTERS ══ */
         .filter-container {
-            margin: -4rem 1rem 1.5rem; position: relative; z-index: 20;
+            margin: -3.5rem 1rem 1.5rem; position: relative; z-index: 20;
             background: rgba(255,255,255,0.97); backdrop-filter: blur(20px);
             border-radius: 20px; padding: 1.25rem;
             box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,1);
         }
-        @media (min-width: 1024px) { .filter-container { max-width: 1300px; margin: -4rem auto 1.5rem; } }
+        @media (min-width: 1024px) { .filter-container { max-width: 1300px; margin: -3.5rem auto 1.5rem; } }
         .filter-grid { display: flex; flex-direction: column; gap: 10px; }
         @media (min-width: 1024px) { .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
-        .f-label { font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 0.3px; }
+        .f-label { font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; display: block; letter-spacing: 0.3px; }
         .f-input { width: 100%; height: 44px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 0.88rem; font-weight: 600; outline: none; background: #f8fafc; color: #334155; transition: 0.2s; padding: 0 10px; font-family: 'Cairo', sans-serif; }
         .f-input:focus { border-color: #0f766e; background: white; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
         .search-wrapper { position: relative; }
@@ -56,26 +54,20 @@
         .btn-missing { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 10px; height: 44px; padding: 0 12px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; font-family: 'Cairo', sans-serif; }
         .btn-missing.active { background: #dc2626; color: white; border-color: #dc2626; }
 
-        /* ═══ KPI STATS ═══ */
-        .stats-wrapper { padding: 0 1rem 1rem; max-width: 1300px; margin: 0 auto; }
-        .stats-row-big { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
+        /* ══ KPI STATS ══ */
+        .stats-wrapper { padding: 0 1rem 1rem; max-width: 1300px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+        .stats-row-big { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         @media (min-width: 768px) { .stats-row-big { grid-template-columns: repeat(6, 1fr); } .stats-row-small { display: contents; } }
 
-        .stat-card-big {
-            background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 14px;
-            text-align: center; cursor: pointer; display: flex; flex-direction: column; justify-content: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: all 0.25s; position: relative; overflow: hidden;
-        }
+        .stat-card-big { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 14px; text-align: center; cursor: pointer; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: all 0.25s; position: relative; overflow: hidden; }
         .stat-card-big::before { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; }
         .stat-card-big:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
-        .stat-card-big.active { border-color: #0f766e; background: #f0fdfa; box-shadow: 0 0 0 2px #0f766e; }
-        .stat-card-big.active .lbl { color: #0f766e !important; }
-        .stat-card-big.active .num { color: #0f766e !important; }
+        .stat-card-big.active { border-color: #0f766e !important; background: #f0fdfa; box-shadow: 0 0 0 2px #0f766e; }
+        .stat-card-big.active .lbl { color: #0f766e !important; } .stat-card-big.active .num { color: #0f766e !important; }
         .stat-card-big .num { font-size: 1.8rem; font-weight: 900; line-height: 1; margin-bottom: 3px; }
         .stat-card-big .lbl { font-size: 0.72rem; font-weight: 800; color: #64748b; }
 
-        /* Colored bottom bars */
         #st-total::before { background: #64748b; } #st-late::before { background: #dc2626; }
         #st-new::before { background: #3b82f6; } #st-pending::before { background: #d97706; }
         #st-approved::before { background: #059669; } #st-followup::before { background: #7c3aed; }
@@ -83,35 +75,28 @@
         .stat-card-small { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; text-align: center; cursor: pointer; display: flex; flex-direction: column; justify-content: center; transition: all 0.25s; position: relative; overflow: hidden; }
         .stat-card-small::before { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; }
         .stat-card-small:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
-        .stat-card-small.active { border-color: #0f766e; background: #f0fdfa; box-shadow: 0 0 0 2px #0f766e; }
-        .stat-card-small.active .lbl { color: #0f766e !important; }
-        .stat-card-small.active .num { color: #0f766e !important; }
+        .stat-card-small.active { border-color: #0f766e !important; background: #f0fdfa; box-shadow: 0 0 0 2px #0f766e; }
+        .stat-card-small.active .lbl { color: #0f766e !important; } .stat-card-small.active .num { color: #0f766e !important; }
         .stat-card-small .num { font-size: 1.4rem; font-weight: 900; line-height: 1; }
         .stat-card-small .lbl { font-size: 0.65rem; font-weight: 800; color: #64748b; }
 
         .txt-total { color: #334155; } .txt-late { color: #dc2626; } .txt-new { color: #3b82f6; }
         .txt-pending { color: #d97706; } .txt-approved { color: #059669; } .txt-followup { color: #7c3aed; }
 
-        /* ═══ ADV CARDS ═══ */
+        /* ══ ADV-CARDS ══ */
         .cards-container { padding: 0 1rem 5rem; display: flex; flex-direction: column; gap: 12px; max-width: 1300px; margin: 0 auto; }
         @media (min-width: 1280px) { .cards-container { display: grid; grid-template-columns: repeat(2, 1fr); } }
 
-        .task-card {
-            background: white; border-radius: 16px; border: 1px solid #e2e8f0;
-            border-right: 5px solid transparent; overflow: hidden;
-            display: flex; flex-direction: column;
-            transition: 0.25s; box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-        }
+        .task-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; border-right: 5px solid transparent; overflow: hidden; display: flex; flex-direction: column; transition: 0.25s; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
         @media (min-width: 768px) { .task-card { flex-direction: row; align-items: stretch; } }
         .task-card:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.07); border-color: #cbd5e1; }
         .task-card.has-missing { border-right-style: dashed; }
 
-        /* Status border colors */
+        /* Border colors via bgClass */
         .bg-new { border-right-color: #3b82f6; } .bg-pending { border-right-color: #d97706; }
         .bg-approved { border-right-color: #059669; } .bg-followup { border-right-color: #7c3aed; }
         .bg-late { border-right-color: #dc2626; }
 
-        /* Card sections */
         .card-body { padding: 14px 16px; flex: 2; display: flex; flex-direction: column; gap: 8px; }
         .card-stripe { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .card-id { font-size: 0.85rem; font-weight: 900; color: #0f766e; background: #f0fdfa; padding: 2px 10px; border-radius: 20px; border: 1px solid #ccfbf1; }
@@ -119,28 +104,16 @@
         .tc-subject { font-size: 1rem; font-weight: 900; color: #0f172a; line-height: 1.4; }
         .tc-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #475569; }
 
-        /* Assignee panel */
-        .card-assignee {
-            flex: 1; min-width: 0; padding: 12px 14px; background: #f8fafc;
-            border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 10px; justify-content: center;
-        }
+        .card-assignee { flex: 1; min-width: 0; padding: 12px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
         @media (min-width: 768px) { .card-assignee { border-top: none; border-right: 1px solid #f1f5f9; } }
-        .assignee-info { display: flex; align-items: center; gap: 10px; }
         .assignee-avatar { width: 34px; height: 34px; border-radius: 50%; background: #e0f2fe; color: #0369a1; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; flex-shrink: 0; }
 
-        /* Action panel */
-        .tc-footer {
-            flex-shrink: 0; padding: 12px 14px; background: white;
-            border-top: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: center;
-        }
+        .tc-footer { flex-shrink: 0; padding: 12px 14px; background: white; border-top: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: center; }
         @media (min-width: 768px) { .tc-footer { border-top: none; border-right: 1px solid #f1f5f9; width: 110px; padding: 14px; } }
-        .btn-card {
-            width: 100%; padding: 10px; background: #0f766e; color: white; border: none; border-radius: 10px;
-            font-weight: 800; font-size: 0.82rem; display: flex; flex-direction: row; align-items: center; justify-content: center;
-            gap: 6px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(15,118,110,0.2); font-family: 'Cairo', sans-serif;
-        }
+        .btn-card { width: 100%; padding: 10px; background: #0f766e; color: white; border: none; border-radius: 10px; font-weight: 800; font-size: 0.82rem; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(15,118,110,0.2); font-family: 'Cairo', sans-serif; }
         @media (min-width: 768px) { .btn-card { flex-direction: column; gap: 5px; height: 100%; border-radius: 12px; font-size: 0.8rem; } }
         .btn-card:hover { background: #0d6b63; transform: translateY(-1px); }
+        .btn-attach { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
 
         /* Attach Pills */
         .attach-pills { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; }
@@ -150,12 +123,11 @@
         .attach-warn { background: #fef3c7; color: #92400e; border-color: #fde68a; }
         .attach-danger { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
         .attach-grey { background: #f1f5f9; color: #94a3b8; border-color: #e2e8f0; cursor: default; }
-        .linked-in { font-size: 0.65rem; color: #64748b; background: #f1f5f9; border-radius: 6px; padding: 2px 7px; font-weight: 700; border: 1px solid #e2e8f0; }
         .badge-missing { display: inline-flex; align-items: center; gap: 3px; background: #fef3c7; color: #92400e; font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; border: 1px solid #fde68a; }
         .badge-case { display: inline-flex; align-items: center; gap: 3px; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
         .badge-case-na { background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
         .badge-case-sq { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-        .btn-attach { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+        .linked-in { font-size: 0.65rem; color: #64748b; background: #f1f5f9; border-radius: 6px; padding: 2px 7px; font-weight: 700; border: 1px solid #e2e8f0; }
 
         /* Table */
         .table-wrapper { padding: 0 1rem 5rem; max-width: 1300px; margin: 0 auto; }
@@ -163,8 +135,7 @@
         .data-table { width: 100%; text-align: right; border-collapse: collapse; }
         .data-table th { background: #f8fafc; padding: 12px 14px; font-size: 0.8rem; color: #64748b; border-bottom: 2px solid #e2e8f0; white-space: nowrap; font-weight: 800; font-family: 'Cairo', sans-serif; }
         .data-table td { padding: 11px 14px; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; font-family: 'Cairo', sans-serif; }
-        .data-table tr:last-child td { border-bottom: none; }
-        .data-table tr:hover td { background: #f8fafc; }
+        .data-table tr:last-child td { border-bottom: none; } .data-table tr:hover td { background: #f8fafc; }
         .data-table tr.row-missing td:first-child { border-right: 3px solid #f59e0b; }
         .missing-tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; margin: 1px; }
         .missing-tag-assignee { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
@@ -185,9 +156,7 @@
         .edit-input { flex: 1; height: 36px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 10px; font-size: 0.85rem; font-family: Cairo, sans-serif; outline: none; background: #fffbeb; }
         .edit-input:focus { border-color: #0f766e; box-shadow: 0 0 0 2px rgba(15,118,110,0.1); background: #fff; }
         .edit-btn { height: 36px; padding: 0 14px; border-radius: 8px; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; font-family: Cairo, sans-serif; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-        .edit-btn-save { background: #0f766e; color: white; }
-        .edit-btn-save:hover { background: #0d6b63; }
-        .edit-btn-save:disabled { background: #94a3b8; cursor: not-allowed; }
+        .edit-btn-save { background: #0f766e; color: white; } .edit-btn-save:hover { background: #0d6b63; } .edit-btn-save:disabled { background: #94a3b8; cursor: not-allowed; }
         .upload-area { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 16px; text-align: center; cursor: pointer; transition: 0.2s; background: #fefce8; margin-top: 4px; }
         .upload-area:hover { border-color: #0f766e; background: #f0fdfa; }
         .upload-area.uploading { opacity: 0.6; pointer-events: none; }
@@ -198,8 +167,7 @@
         .ctx-total { font-size: 0.8rem; font-weight: 800; color: #334155; }
         .ctx-divider { width: 1px; height: 16px; background: #e2e8f0; flex-shrink: 0; }
         .ctx-chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.15s; font-family: 'Cairo', sans-serif; background: #f1f5f9; color: #475569; }
-        .ctx-chip:hover { background: #e2e8f0; }
-        .ctx-chip.active { background: #0f766e; color: white; border-color: #0f766e; }
+        .ctx-chip:hover { background: #e2e8f0; } .ctx-chip.active { background: #0f766e; color: white; border-color: #0f766e; }
         .ctx-count { background: rgba(0,0,0,0.08); border-radius: 10px; padding: 0 5px; font-size: 0.7rem; }
         .ctx-chip.active .ctx-count { background: rgba(255,255,255,0.25); }
         @media (min-width: 1024px) { .context-bar { margin: 0 auto 10px; } }
@@ -218,6 +186,9 @@
         .empty-box { text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .hidden { display: none !important; }
+        .btn-archive-card { font-size: 0.7rem; padding: 4px 10px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; border: none; }
+        .btn-archive-upload { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .btn-archive-view { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
     </style>
 </head>
 <body>
@@ -625,6 +596,8 @@
 
         // ── DocType helpers ──
         function getDocGroup(t) {
+            // ✅ نتحقق من docType أولاً — مش transactionType
+            // لأن transactionType ممكن يكون "شكوى" أو "مراسلة" وده يخبّي قيمة docType
             const docType = (t.docType || '').trim();
             if (docType.includes('صادر')) return 'صادر';
             const txType = (t.transactionType || '').trim();
@@ -645,7 +618,7 @@
             const end    = document.getElementById('f-end').value;
 
             // baseFiltered: كل الفلاتر ما عدا الحالة ونوع المستند
-            // ✅ الصادرات مخفية — تظهر كـ badge داخل كارت الوارد
+            // ✅ الصادرات مخفية دائماً — تظهر فقط كـ badge داخل كارت الوارد
             const baseFiltered = allTasks.filter(t => {
                 if (getDocGroup(t) === 'صادر') return false;
                 if (search && !(t.subject + t.id + t.source).toLowerCase().includes(search)) return false;
@@ -738,7 +711,6 @@
                 else if (t.status.includes('تم'))      bgClass = 'bg-approved';
                 else if (t.status.includes('متابعة'))  bgClass = 'bg-followup';
                 else if (t.status.includes('متأخر'))   bgClass = 'bg-late';
-                // bgClass maps to border-right colors via CSS
 
                 const isCaseEntity = CASE_ENTITIES.some(ce => (t.source || '').includes(ce));
                 const isPending    = (t.status || '').includes('بانتظار');
@@ -747,6 +719,11 @@
                 const hasMissing   = missing.length > 0;
                 const hasReview    = t.reviewFile && t.reviewFile.toString().trim() && t.reviewFile !== 'undefined';
                 const hasArchive   = t.archive && t.archive.toString().trim() && t.archive !== 'undefined';
+
+                // badge الربط بمعاملة أصل
+                const linkedParent = t.parentId && t.parentId.toString().trim()
+                    ? `<span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:20px;padding:2px 10px;font-size:0.72rem;font-weight:700">🔗 مرتبطة بـ ${t.parentId}</span>`
+                    : '';
 
                 // badge القضية
                 let caseBadge = '';
@@ -799,35 +776,37 @@ if (hasAttach) {
                     btnArchive = `<span class="attach-pill attach-grey">📎 الصادر</span>`;
                 }
 
-                // assigneeHtml handled in card-assignee section directly
-                const assigneeHtml = t.assignee || '';
+                const assigneeHtml = t.assignee
+                    ? `${t.assignee} <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-gray-100 border border-gray-300 px-2 py-1 rounded hover:bg-gray-200 text-gray-700" title="تغيير المكلف">تغيير</button>`
+                    : `<span style="color:#dc2626">⚠ غير موزع</span> <button onclick="openReassignModal('${t.id}')" class="mr-2 text-xs bg-red-100 border border-red-300 px-2 py-1 rounded text-red-700">تعيين</button>`;
 
                 return `
-                <div class="task-card ${hasMissing ? 'has-missing' : ''}">
-                    <div class="card-stripe ${bgClass}">
-                        <span>#${t.id}${linkedIn ? ` <span class="linked-in" style="background:rgba(255,255,255,0.2);color:white;border-color:rgba(255,255,255,0.3)">← ${linkedIn}</span>` : ''}</span>
-                        <span>${t.status}</span>
-                    </div>
+                <div class="task-card ${bgClass} ${hasMissing ? 'has-missing' : ''}">
                     <div class="card-body">
+                        <div class="card-stripe">
+                            <span class="card-id">#${t.id}</span>
+                            <span class="card-status">${t.status}${isFullyDone ? ' ✅' : ''}</span>
+                        </div>
                         <h3 class="tc-subject">${t.subject}</h3>
-                        <div class="tc-row">
-                            <i data-lucide="building-2" class="w-4 h-4 flex-shrink-0"></i>
-                            <span>${t.source || 'غير محدد'}</span>
-                        </div>
-                        <div class="tc-row">
-                            <i data-lucide="calendar" class="w-4 h-4 flex-shrink-0"></i>
-                            <span>${formatArabicDate(t.date)}</span>
-                        </div>
-                        <div class="tc-row">
-                            <i data-lucide="user" class="w-4 h-4 flex-shrink-0 text-teal-600"></i>
-                            <span class="font-bold text-teal-700 flex items-center gap-1 flex-wrap">${assigneeHtml}</span>
-                        </div>
+                        <div class="tc-row"><i data-lucide="building-2" class="w-4 h-4 flex-shrink-0"></i><span>${t.source || 'غير محدد'}</span></div>
+                        <div class="tc-row"><i data-lucide="calendar" class="w-4 h-4 flex-shrink-0"></i><span>${formatArabicDate(t.date)}</span></div>
                         ${caseBadge ? `<div class="tc-row" style="flex-wrap:wrap;gap:6px">${caseBadge}</div>` : ''}
+                        ${linkedParent ? `<div class="tc-row">${linkedParent}</div>` : ''}
+                    </div>
+                    <div class="card-assignee">
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <div class="assignee-avatar">${t.assignee ? t.assignee.slice(0,2) : '؟'}</div>
+                            <div>
+                                <div style="font-size:0.68rem;font-weight:700;color:#94a3b8;line-height:1">المكلف</div>
+                                <div style="font-size:0.85rem;font-weight:800;color:#1e293b;line-height:1.3">${t.assignee || '<span style="color:#dc2626">⚠ غير موزع</span>'}</div>
+                                <button onclick="event.stopPropagation();openReassignModal('${t.id}')" style="margin-top:4px;font-size:0.65rem;background:#f1f5f9;border:1px solid #e2e8f0;padding:2px 8px;border-radius:8px;cursor:pointer;color:#64748b;font-family:Cairo,sans-serif;font-weight:700">تغيير</button>
+                            </div>
+                        </div>
                         <div class="attach-pills">${btnAttach}${btnReview}${btnArchive}</div>
                     </div>
                     <div class="tc-footer">
-                        <button onclick="openModal('${t.id}')" class="btn-card bg-teal-50 border-teal-200 text-teal-800 hover:bg-teal-100 w-full">
-                            <i data-lucide="edit" class="w-4 h-4"></i> إدارة ومعالجة
+                        <button onclick="openModal('${t.id}')" class="btn-card">
+                            <i data-lucide="settings-2" class="w-5 h-5"></i><span>معالجة</span>
                         </button>
                     </div>
                 </div>`;
@@ -938,7 +917,7 @@ if (hasAttach) {
             html += ro('الموضوع', `<span style="font-weight:800;line-height:1.6">${t.subject}</span>`);
             html += edSource(t.source);
 
-            // ── ربط المعاملة بأصل ──
+            // ── ١: ربط المعاملة بأصل ──
             const edParent = () => {
                 const curParent = t.parentId && t.parentId.toString().trim();
                 return `<div class="data-item">
@@ -951,13 +930,15 @@ if (hasAttach) {
                             style="font-size:0.72rem;background:#eff6ff;border:1px solid #bfdbfe;padding:4px 10px;border-radius:8px;cursor:pointer;color:#1d4ed8;font-family:'Cairo',sans-serif;font-weight:700">
                             🔗 ${curParent ? 'تعديل' : 'ربط'}
                         </button>
-                        ${curParent ? `<button onclick="clearParentId('${t.id}',this)" style="font-size:0.72rem;background:#fef2f2;border:1px solid #fecaca;padding:4px 8px;border-radius:8px;cursor:pointer;color:#dc2626;font-family:'Cairo',sans-serif;font-weight:700">✕</button>` : ''}
+                        ${curParent ? `<button onclick="clearParentId('${t.id}',this)"
+                            style="font-size:0.72rem;background:#fef2f2;border:1px solid #fecaca;padding:4px 8px;border-radius:8px;cursor:pointer;color:#dc2626;font-family:'Cairo',sans-serif;font-weight:700">✕</button>` : ''}
                     </div>
                     <div id="parent-picker-${t.id}" style="display:none;margin-top:8px">
                         <input type="text" id="parent-search-${t.id}" placeholder="ابحث برقم المعاملة أو الموضوع..."
                             oninput="filterParentList('${t.id}')"
                             style="width:100%;height:38px;border:1px solid #0f766e;border-radius:10px;padding:0 10px;font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;box-sizing:border-box">
-                        <div id="parent-list-${t.id}" style="max-height:180px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;background:white;font-size:0.82rem;font-family:'Cairo',sans-serif"></div>
+                        <div id="parent-list-${t.id}"
+                            style="max-height:180px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;background:white;font-size:0.82rem;font-family:'Cairo',sans-serif"></div>
                         <button onclick="document.getElementById('parent-picker-${t.id}').style.display='none'"
                             style="margin-top:6px;height:32px;padding:0 14px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:8px;font-family:'Cairo',sans-serif;font-size:0.82rem;cursor:pointer">إلغاء</button>
                     </div>
@@ -967,15 +948,23 @@ if (hasAttach) {
 
             html += ro('محل التنفيذ', t.entity);
             html += ro('نوع المعاملة', t.transactionType || t.docType || '-');
+
             html += ro('تاريخ الوارد', formatArabicDate(t.date));
             html += ro('تاريخ التكليف', formatArabicDate(t.assignDate));
             html += ro('تاريخ الإنجاز', t.completionDate ? formatArabicDate(t.completionDate) : '-');
             html += ed('الموظف المكلف', 'assignee', t.assignee, 'اسم الموظف');
             html += ro('الحالة', t.status);
+
+            // ── ٢: رقم الصادر وملفه لو المعاملة مكتملة ──
             if (isFullyDone && t.archive && t.archive.toString().trim() && t.archive !== 'undefined') {
                 html += `<div class="data-item" style="background:#f0fdf4;border-radius:8px;padding:8px;border:1px solid #bbf7d0">
                     <span class="data-label" style="color:#065f46">✅ تم إغلاق الموضوع — الصادر النهائي</span>
-                    <p class="data-val"><a href="${t.archive}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700;font-size:0.9rem">📎 فتح ملف الصادر</a></p>
+                    <p class="data-val">
+                        <a href="${t.archive}" target="_blank"
+                            style="color:#0f766e;text-decoration:underline;font-weight:700;font-size:0.9rem">
+                            📎 فتح ملف الصادر
+                        </a>
+                    </p>
                 </div>`;
             }
 
@@ -1087,40 +1076,57 @@ if (hasAttach) {
             }
         }
 
-        // ── Parent Picker Functions ──
+        // ── Parent Task Picker ──
         function openParentPicker(taskId, btnEl) {
             const picker = document.getElementById('parent-picker-' + taskId);
             if (!picker) return;
             const isOpen = picker.style.display !== 'none';
             picker.style.display = isOpen ? 'none' : 'block';
-            if (!isOpen) { const i = document.getElementById('parent-search-' + taskId); if (i) { i.value=''; filterParentList(taskId); i.focus(); } }
+            if (!isOpen) {
+                const input = document.getElementById('parent-search-' + taskId);
+                if (input) { input.value = ''; filterParentList(taskId); input.focus(); }
+            }
         }
+
         function filterParentList(taskId) {
             const input = document.getElementById('parent-search-' + taskId);
             const list  = document.getElementById('parent-list-' + taskId);
             if (!input || !list) return;
             const q = input.value.trim().toLowerCase();
-            const filtered = allTasks.filter(t => t.id != taskId && getDocGroup(t) !== 'صادر' &&
-                (!q || t.id.toString().toLowerCase().includes(q) || (t.subject||'').toLowerCase().includes(q) || (t.source||'').toLowerCase().includes(q))
+            const filtered = allTasks.filter(t =>
+                t.id != taskId &&
+                getDocGroup(t) !== 'صادر' &&
+                (!q || t.id.toString().toLowerCase().includes(q) ||
+                       (t.subject || '').toLowerCase().includes(q) ||
+                       (t.source  || '').toLowerCase().includes(q))
             ).slice(0, 30);
-            if (!filtered.length) { list.innerHTML = '<div style="padding:10px 12px;color:#94a3b8;text-align:center">لا توجد نتائج</div>'; return; }
-            list.innerHTML = filtered.map(t => `<div onclick="selectParentTask('${taskId}','${t.id}')"
-                style="padding:8px 12px;cursor:pointer;border-bottom:1px solid #f1f5f9;display:flex;gap:8px;align-items:center"
-                onmouseover="this.style.background='#f0fdfa'" onmouseout="this.style.background='white'">
-                <span style="font-weight:800;color:#0f766e;min-width:60px">#${t.id}</span>
-                <span style="color:#1e293b;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.subject||'-'}</span>
-                <span style="color:#64748b;font-size:0.75rem;white-space:nowrap">${t.assignee||''}</span>
-            </div>`).join('');
+            if (!filtered.length) {
+                list.innerHTML = '<div style="padding:10px 12px;color:#94a3b8;text-align:center">لا توجد نتائج</div>';
+                return;
+            }
+            list.innerHTML = filtered.map(t => `
+                <div onclick="selectParentTask('${taskId}','${t.id}')"
+                    style="padding:8px 12px;cursor:pointer;border-bottom:1px solid #f1f5f9;display:flex;gap:8px;align-items:center"
+                    onmouseover="this.style.background='#f0fdfa'" onmouseout="this.style.background='white'">
+                    <span style="font-weight:800;color:#0f766e;min-width:60px">#${t.id}</span>
+                    <span style="color:#1e293b;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.subject || '-'}</span>
+                    <span style="color:#64748b;font-size:0.75rem;white-space:nowrap">${t.assignee || ''}</span>
+                </div>`).join('');
         }
+
         async function selectParentTask(taskId, parentTaskId) {
             const parentTask = allTasks.find(x => x.id == parentTaskId);
             if (!parentTask) return;
             const parentIdVal = parentTaskId.toString().startsWith('IN-') ? parentTaskId : 'IN-' + parentTaskId;
-            if (!confirm('تأكيد الربط بالمعاملة:\n#' + parentTaskId + ' — ' + (parentTask.subject||''))) return;
+            const confirmed = confirm('تأكيد الربط بالمعاملة:\n#' + parentTaskId + ' — ' + (parentTask.subject || ''));
+            if (!confirmed) return;
             try {
-                const userStr = localStorage.getItem('iag_user');
+                const userStr   = localStorage.getItem('iag_user');
                 const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
-                const res = await fetch(CONFIG.API_URL, { method:'POST', body: JSON.stringify({action:'updateTaskField',taskId,fieldName:'parentId',fieldValue:parentIdVal,updatedBy}) });
+                const res  = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName: 'parentId', fieldValue: parentIdVal, updatedBy })
+                });
                 const data = await res.json();
                 if (data.success) {
                     const task = allTasks.find(x => x.id == taskId);
@@ -1129,15 +1135,19 @@ if (hasAttach) {
                     if (valEl) { valEl.textContent = '🔗 ' + parentIdVal; valEl.style.color = '#1d4ed8'; }
                     document.getElementById('parent-picker-' + taskId).style.display = 'none';
                     applyFilters();
-                } else { alert('❌ ' + (data.error||'فشل الحفظ')); }
+                } else { alert('❌ ' + (data.error || 'فشل الحفظ')); }
             } catch(e) { alert('❌ خطأ في الاتصال'); }
         }
+
         async function clearParentId(taskId, btnEl) {
-            if (!confirm('هل تريد إزالة الربط؟')) return;
+            if (!confirm('هل تريد إزالة الربط بالمعاملة الأصلية؟')) return;
             try {
-                const userStr = localStorage.getItem('iag_user');
+                const userStr   = localStorage.getItem('iag_user');
                 const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
-                const res = await fetch(CONFIG.API_URL, { method:'POST', body: JSON.stringify({action:'updateTaskField',taskId,fieldName:'parentId',fieldValue:' ',updatedBy}) });
+                const res  = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName: 'parentId', fieldValue: ' ', updatedBy })
+                });
                 const data = await res.json();
                 if (data.success) {
                     const task = allTasks.find(x => x.id == taskId);
@@ -1145,7 +1155,7 @@ if (hasAttach) {
                     const valEl = document.getElementById('parent-val-' + taskId);
                     if (valEl) { valEl.textContent = '— غير مرتبطة'; valEl.style.color = '#94a3b8'; }
                     applyFilters();
-                } else { alert('❌ ' + (data.error||'فشل الحذف')); }
+                } else { alert('❌ ' + (data.error || 'فشل الحذف')); }
             } catch(e) { alert('❌ خطأ في الاتصال'); }
         }
 
