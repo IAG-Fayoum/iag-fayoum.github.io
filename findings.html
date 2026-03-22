@@ -1,396 +1,454 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>المخالفات المرصودة — IAG</title>
-<script src="assets/js/config.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Cairo',sans-serif;background:#f1f5f9;font-size:14px;padding-bottom:80px;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <title>المخالفات المرصودة | IAG System</title>
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
 
-/* ── Header ── */
-.header{background:#020617;background-image:radial-gradient(circle at top right,#0f766e 0%,transparent 40%),radial-gradient(circle at bottom left,#1d4ed8 0%,transparent 40%);padding:1.5rem 1.5rem 5rem;position:relative;z-index:10}
-.header-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-.header-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 14px;font-size:.75rem;font-weight:800;color:#ccfbf1;margin-bottom:8px}
-.header-title{color:#fff;font-size:1.3rem;font-weight:800;margin:0}
-.header-sub{color:#94a3b8;font-size:.8rem;margin-top:4px}
-.header-btn{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,.1);cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-/* ── Filter Card ── */
-.filter-card{margin:-3.5rem 1rem 1.5rem;position:relative;z-index:20;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-radius:20px;padding:1.25rem;box-shadow:0 20px 40px rgba(0,0,0,.08);border:1px solid #fff}
-@media(min-width:1024px){.filter-card{max-width:1300px;margin:-3.5rem auto 1.5rem}}
-.filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(min-width:768px){.filter-grid{grid-template-columns:repeat(4,1fr)}}
-.f-input{width:100%;height:44px;border:2px solid #f1f5f9;border-radius:12px;background:#f8fafc;font-size:.88rem;font-weight:600;font-family:'Cairo',sans-serif;padding:0 12px;outline:none;transition:.2s}
-.f-input:focus{border-color:#0f766e;background:#fff;box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        :root { --primary: #0f766e; }
 
-/* ── KPI Cards ── */
-.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 1rem 1rem;max-width:1300px;margin:0 auto}
-@media(min-width:640px){.kpi-grid{grid-template-columns:repeat(4,1fr)}}
-.kpi-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:14px;position:relative;overflow:hidden;transition:.25s;cursor:pointer}
-.kpi-card::before{content:'';position:absolute;bottom:0;left:0;width:100%;height:4px}
-.kpi-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.06)}
-.kpi-card.active{border-color:#0f766e;background:#f0fdfa;box-shadow:0 0 0 2px #0f766e}
-.kpi-card.c-total::before{background:#64748b}
-.kpi-card.c-high::before{background:#dc2626}
-.kpi-card.c-med::before{background:#d97706}
-.kpi-card.c-low::before{background:#3b82f6}
-.kpi-num{font-size:1.8rem;font-weight:900;color:#0f172a;line-height:1}
-.kpi-lbl{font-size:.72rem;font-weight:800;color:#64748b;margin-top:4px}
+        /* HEADER */
+        .main-header { background: #115e59; color: white; padding: 1rem 1.5rem 3.5rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 4px 15px rgba(15,118,110,0.2); position: relative; z-index: 10; padding-top: max(1rem, env(safe-area-inset-top)); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .header-btn:hover { background: rgba(255,255,255,0.2); }
+        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9; }
+        .breadcrumbs span { opacity: 0.7; }
+        .breadcrumbs strong { font-weight: 700; color: white; }
+        .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
 
-/* ── Content ── */
-.content{max-width:1300px;margin:0 auto;padding:0 1rem}
+        /* SIDE MENU */
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu { right: 0; }
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
 
-/* ── Finding Card ── */
-.finding-card{background:#fff;border-radius:16px;border:1px solid #e2e8f0;border-right:5px solid #e2e8f0;margin-bottom:10px;overflow:hidden;transition:.2s}
-.finding-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06)}
-.finding-card.sev-high{border-right-color:#dc2626}
-.finding-card.sev-med{border-right-color:#d97706}
-.finding-card.sev-low{border-right-color:#3b82f6}
-.finding-card.sev-info{border-right-color:#64748b}
-.fc-body{padding:14px 16px;flex:1}
-.fc-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-.fc-id{font-size:.7rem;font-weight:800;color:#94a3b8;background:#f1f5f9;padding:3px 8px;border-radius:6px}
-.fc-section{font-size:.72rem;font-weight:700;color:#0f766e;background:#f0fdfa;border:1px solid #ccfbf1;padding:3px 8px;border-radius:6px}
-.fc-violation{font-size:.9rem;font-weight:700;color:#0f172a;line-height:1.6;margin-bottom:8px}
-.fc-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.fc-unit{font-size:.78rem;color:#475569;display:flex;align-items:center;gap:4px}
-.fc-date{font-size:.75rem;color:#94a3b8}
-.fc-footer{padding:10px 16px;background:#f8fafc;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.car-badge{font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:4px}
-.car-open{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
-.car-closed{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
-.car-escalated{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
-.clf-badge{font-size:.7rem;font-weight:800;padding:3px 8px;border-radius:6px}
-.clf-violation{background:#fef2f2;color:#dc2626}
-.clf-risk{background:#fff7ed;color:#c2410c}
-.clf-admin{background:#eff6ff;color:#1d4ed8}
-.clf-indicator{background:#f0fdf4;color:#15803d}
+        /* FILTER */
+        .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+        @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } }
+        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
+        .f-input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; font-family: 'Cairo', sans-serif; }
+        .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
 
-/* ── Empty ── */
-.empty-state{text-align:center;padding:60px 20px;color:#94a3b8}
-.empty-icon{font-size:3rem;margin-bottom:12px}
-.empty-text{font-size:.95rem;font-weight:700}
+        /* STATS */
+        .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; }
+        .stats-row { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 10px; }
+        .stats-row-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+        .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; transition: 0.15s; }
+        .stat-card.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
+        .stat-card .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+        .stat-card .lbl { font-size: 0.78rem; font-weight: 700; color: #64748b; }
+        .stat-card.active .num, .stat-card.active .lbl { color: #0f766e !important; }
 
-/* ── Modal ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(2px);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal-box{background:#fff;width:95%;max-width:580px;max-height:85vh;border-radius:16px;overflow-y:auto;animation:fadeIn .2s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.modal-header{padding:1rem 1.25rem;background:#f8fafc;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1}
-.modal-title{font-size:.95rem;font-weight:800;color:#0f172a}
-.modal-close{cursor:pointer;color:#64748b;font-size:1.2rem;background:none;border:none;padding:4px}
-.modal-body{padding:1.25rem}
-.detail-row{display:flex;gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f1f5f9}
-.detail-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-.detail-label{font-size:.75rem;font-weight:800;color:#64748b;min-width:100px;padding-top:2px}
-.detail-value{font-size:.88rem;font-weight:600;color:#0f172a;flex:1;line-height:1.7}
-.car-action-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px;margin-top:12px}
-.car-action-title{font-size:.78rem;font-weight:800;color:#065f46;margin-bottom:6px}
-.car-action-text{font-size:.85rem;color:#166534;line-height:1.8}
-.car-deadline{font-size:.8rem;color:#dc2626;font-weight:700;margin-top:8px}
+        /* CARDS */
+        .cards-container { padding: 0 1rem 5rem; max-width: 1200px; margin: 0 auto; display: grid; gap: 12px; grid-template-columns: 1fr; }
+        @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2,1fr); } }
+        @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3,1fr); } }
 
-/* ── Bottom Nav ── */
-.bottom-nav{position:fixed;bottom:0;width:100%;background:#fff;border-top:1px solid #e2e8f0;padding-bottom:max(8px,env(safe-area-inset-bottom));z-index:90}
-.nav-inner{display:flex;justify-content:space-around;padding:6px 0}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 16px;color:#94a3b8;cursor:pointer;text-decoration:none;font-size:.65rem;font-weight:700;background:none;border:none}
-.nav-btn.active{color:#0f766e}
-.nav-btn svg{width:22px;height:22px}
+        .finding-card { background: white; border-radius: 14px; border: 1px solid #e2e8f0; border-right: 4px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.03); transition: 0.15s; cursor: pointer; overflow: hidden; }
+        .finding-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
+        .finding-card.sev-high { border-right-color: #dc2626; }
+        .finding-card.sev-med  { border-right-color: #d97706; }
+        .finding-card.sev-low  { border-right-color: #3b82f6; }
+        .finding-card.sev-info { border-right-color: #64748b; }
+        .fc-body { padding: 12px 14px; }
+        .fc-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+        .fc-id { font-size: 0.68rem; font-weight: 800; color: #94a3b8; background: #f1f5f9; padding: 2px 7px; border-radius: 6px; }
+        .fc-section { font-size: 0.68rem; font-weight: 700; color: #0f766e; background: #f0fdfa; border: 1px solid #ccfbf1; padding: 2px 7px; border-radius: 6px; }
+        .clf-badge { font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 6px; }
+        .clf-v { background: #fef2f2; color: #dc2626; }
+        .clf-r { background: #fff7ed; color: #c2410c; }
+        .clf-a { background: #eff6ff; color: #1d4ed8; }
+        .clf-i { background: #f0fdf4; color: #15803d; }
+        .fc-violation { font-size: 0.88rem; font-weight: 700; color: #1e293b; line-height: 1.6; margin-bottom: 8px; }
+        .fc-meta { display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.75rem; color: #64748b; }
+        .fc-footer { padding: 8px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+        .car-pill { font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; display: inline-flex; align-items: center; gap: 3px; }
+        .car-open     { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .car-closed   { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .car-escalated{ background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
 
-/* ── Loading ── */
-.spinner{display:inline-block;width:20px;height:20px;border:3px solid #e2e8f0;border-top-color:#0f766e;border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-state{text-align:center;padding:40px;color:#94a3b8}
-</style>
+        /* MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .modal-box { background: white; width: 95%; max-width: 560px; max-height: 85vh; border-radius: 16px; overflow-y: auto; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+        .modal-header { padding: 1rem 1.25rem; background: #f8fafc; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1; }
+        .modal-title { font-size: 0.95rem; font-weight: 800; color: #0f172a; }
+        .modal-body { padding: 1.25rem; }
+        .detail-row { display: flex; gap: 10px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; }
+        .detail-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .detail-label { font-size: 0.72rem; font-weight: 800; color: #64748b; min-width: 95px; padding-top: 2px; }
+        .detail-value { font-size: 0.85rem; font-weight: 600; color: #1e293b; flex: 1; line-height: 1.7; }
+        .car-action-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px; margin-top: 10px; }
+        .car-action-title { font-size: 0.75rem; font-weight: 800; color: #065f46; margin-bottom: 5px; }
+        .car-action-text { font-size: 0.83rem; color: #166534; line-height: 1.8; }
+
+        /* EMPTY */
+        .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
+        .empty-icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+        .nav-btn.active { color: var(--primary); }
+
+        /* LOADING */
+        .loading-box { text-align: center; padding: 40px; color: #94a3b8; }
+    </style>
 </head>
 <body>
 
-<!-- Header -->
-<div class="header">
-  <div class="header-inner">
-    <div>
-      <div class="header-badge">🔬 المراجع الفني</div>
-      <div class="header-title">المخالفات المرصودة</div>
-      <div class="header-sub" id="hdr-name">جاري التحميل...</div>
+<!-- SIDE MENU -->
+<div class="side-menu-overlay" onclick="toggleMenu()"></div>
+<aside class="side-menu">
+    <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+        <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-content-center shadow-sm mb-3 flex items-center justify-center">
+            <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
+        </div>
+        <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
+        <p class="text-xs text-teal-600" id="menu-role">...</p>
     </div>
-    <button class="header-btn" onclick="location.href='index.html'">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
-    </button>
-  </div>
-</div>
-
-<!-- Filter Card -->
-<div class="filter-card">
-  <div class="filter-grid">
-    <input class="f-input" id="f-unit" placeholder="🔍 ابحث بالوحدة" oninput="applyFilters()">
-    <select class="f-input" id="f-clf" onchange="applyFilters()">
-      <option value="">كل التصنيفات</option>
-      <option value="مخالفة صريحة">🔴 مخالفة صريحة</option>
-      <option value="خطر كامن">🟠 خطر كامن</option>
-      <option value="قصور إداري">🔵 قصور إداري</option>
-      <option value="مؤشر">🟢 مؤشر</option>
-    </select>
-    <select class="f-input" id="f-sec" onchange="applyFilters()">
-      <option value="">كل الأقسام</option>
-    </select>
-    <select class="f-input" id="f-status" onchange="applyFilters()">
-      <option value="">كل الحالات</option>
-      <option value="Open">مفتوح</option>
-      <option value="Closed">مغلق</option>
-      <option value="Escalated">مصعَّد</option>
-    </select>
-  </div>
-</div>
-
-<!-- KPI -->
-<div class="kpi-grid">
-  <div class="kpi-card c-total" onclick="filterBySev('')" id="kpi-total">
-    <div class="kpi-num" id="k-total">—</div>
-    <div class="kpi-lbl">إجمالي المخالفات</div>
-  </div>
-  <div class="kpi-card c-high" onclick="filterBySev('عالي')" id="kpi-high">
-    <div class="kpi-num" id="k-high">—</div>
-    <div class="kpi-lbl">خطورة عالية</div>
-  </div>
-  <div class="kpi-card c-med" onclick="filterBySev('متوسط')" id="kpi-med">
-    <div class="kpi-num" id="k-med">—</div>
-    <div class="kpi-lbl">خطورة متوسطة</div>
-  </div>
-  <div class="kpi-card c-low" onclick="filterBySev('منخفض')" id="kpi-low">
-    <div class="kpi-num" id="k-low">—</div>
-    <div class="kpi-lbl">خطورة منخفضة</div>
-  </div>
-</div>
-
-<!-- Content -->
-<div class="content">
-  <div id="list-container">
-    <div class="loading-state"><div class="spinner"></div><br>جاري التحميل...</div>
-  </div>
-</div>
-
-<!-- Modal -->
-<div class="modal-overlay" id="modal" style="display:none" onclick="closeModal(event)">
-  <div class="modal-box">
-    <div class="modal-header">
-      <span class="modal-title" id="modal-title">تفاصيل المخالفة</span>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+    <nav class="flex-1 p-4 space-y-2">
+        <a href="employee.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="list-checks" class="w-4 h-4"></i> مهامي</a>
+        <a href="findings.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="shield-alert" class="w-4 h-4"></i> المخالفات</a>
+        <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
+        <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
+        <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
+    </nav>
+    <div class="p-4 border-t">
+        <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+            <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+        </button>
     </div>
-    <div class="modal-body" id="modal-body"></div>
-  </div>
+</aside>
+
+<!-- HEADER -->
+<header class="main-header">
+    <div class="max-w-[1200px] mx-auto">
+        <div class="header-top">
+            <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
+            <div class="text-center">
+                <div class="breadcrumbs">
+                    <span>الرئيسية</span>
+                    <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
+                    <strong id="hdr-name">...</strong>
+                </div>
+                <div class="dept-title">إدارة المراجعة الداخلية والحوكمة</div>
+                <div class="dept-subtitle">Internal Audit &amp; Governance Dept</div>
+            </div>
+            <button onclick="window.location.href='notifications.html'" class="header-btn">
+                <i data-lucide="bell" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <div class="text-center mt-3">
+            <h1 class="text-xl font-bold text-white">🔬 المخالفات المرصودة</h1>
+            <p class="text-teal-200 text-xs mt-1" id="hdr-sub">جاري التحميل...</p>
+        </div>
+    </div>
+</header>
+
+<!-- FILTER -->
+<div class="filter-container">
+    <div class="grid grid-cols-2 gap-3 mb-3">
+        <div>
+            <label class="f-label">🔍 بحث بالوحدة</label>
+            <input class="f-input" id="f-unit" placeholder="اسم الوحدة..." oninput="renderAll()">
+        </div>
+        <div>
+            <label class="f-label">التصنيف</label>
+            <select class="f-input" id="f-clf" onchange="renderAll()">
+                <option value="">كل التصنيفات</option>
+                <option value="مخالفة صريحة">🔴 مخالفة صريحة</option>
+                <option value="خطر كامن">🟠 خطر كامن</option>
+                <option value="قصور إداري">🔵 قصور إداري</option>
+                <option value="مؤشر">🟢 مؤشر</option>
+            </select>
+        </div>
+        <div>
+            <label class="f-label">القسم</label>
+            <select class="f-input" id="f-sec" onchange="renderAll()">
+                <option value="">كل الأقسام</option>
+            </select>
+        </div>
+        <div>
+            <label class="f-label">حالة الإجراء</label>
+            <select class="f-input" id="f-status" onchange="renderAll()">
+                <option value="">الكل</option>
+                <option value="مفتوح">⏳ مفتوح</option>
+                <option value="مغلق">✅ مغلق</option>
+                <option value="مصعَّد">🔺 مصعَّد</option>
+            </select>
+        </div>
+    </div>
 </div>
 
-<!-- Bottom Nav -->
-<nav class="bottom-nav">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-btn">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v9h14v-9"/></svg>الرئيسية
-    </a>
-    <a href="findings.html" class="nav-btn active">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>المخالفات
-    </a>
-    <a href="employee.html" class="nav-btn">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>ملفي
-    </a>
-  </div>
+<!-- STATS -->
+<div class="stats-wrapper">
+    <div class="stats-row">
+        <div class="stat-card active" id="kpi-total" onclick="filterBySev('')">
+            <div class="num" id="k-total" style="color:#334155">—</div>
+            <div class="lbl">إجمالي المخالفات</div>
+        </div>
+        <div class="stat-card" id="kpi-high" onclick="filterBySev('عالي')">
+            <div class="num" style="color:#dc2626" id="k-high">—</div>
+            <div class="lbl">خطورة عالية</div>
+        </div>
+    </div>
+    <div class="stats-row-4">
+        <div class="stat-card" id="kpi-med" onclick="filterBySev('متوسط')">
+            <div class="num" style="color:#d97706;font-size:1.4rem" id="k-med">—</div>
+            <div class="lbl" style="font-size:0.65rem">متوسطة</div>
+        </div>
+        <div class="stat-card" id="kpi-low" onclick="filterBySev('منخفض')">
+            <div class="num" style="color:#3b82f6;font-size:1.4rem" id="k-low">—</div>
+            <div class="lbl" style="font-size:0.65rem">منخفضة</div>
+        </div>
+        <div class="stat-card" id="kpi-open">
+            <div class="num" style="color:#d97706;font-size:1.4rem" id="k-open">—</div>
+            <div class="lbl" style="font-size:0.65rem">مفتوح</div>
+        </div>
+        <div class="stat-card" id="kpi-closed">
+            <div class="num" style="color:#059669;font-size:1.4rem" id="k-closed">—</div>
+            <div class="lbl" style="font-size:0.65rem">مغلق</div>
+        </div>
+    </div>
+</div>
+
+<!-- CARDS -->
+<div class="cards-container" id="list-container">
+    <div class="loading-box col-span-full">
+        <i data-lucide="loader-2" style="width:32px;height:32px;display:block;margin:0 auto 10px;color:#0f766e" class="animate-spin"></i>
+        <p class="text-sm text-slate-400">جاري تحميل المخالفات...</p>
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span class="modal-title">تفاصيل المخالفة</span>
+            <button onclick="closeModal()" style="background:none;border:none;cursor:pointer;color:#64748b;font-size:1.2rem">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav lg:hidden">
+    <a href="employee.html" class="nav-btn"><i data-lucide="list-checks"></i> مهامي</a>
+    <a href="findings.html" class="nav-btn active"><i data-lucide="shield-alert"></i> المخالفات</a>
+    <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
+    <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
 </nav>
 
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
 <script>
-const API = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
+lucide.createIcons();
 
 let allFindings = [];
 let carMap      = {};
 let activeSev   = '';
 
 // ── Init ──
-(async function init() {
-  const user = JSON.parse(localStorage.getItem('iag_user') || '{}');
-  if (!user.name) { location.href = 'index.html'; return; }
-  document.getElementById('hdr-name').textContent = user.name;
+window.addEventListener('load', async () => {
+    const userStr = localStorage.getItem('iag_user');
+    if (!userStr) { location.href = 'index.html'; return; }
+    const user = JSON.parse(userStr);
 
-  await Promise.all([loadFindings(), loadCARs()]);
-  renderAll();
-})();
+    document.getElementById('hdr-name').textContent  = user.name || '';
+    document.getElementById('hdr-sub').textContent   = user.jobTitle || 'مراجع فني';
+    document.getElementById('menu-user').textContent = user.name || '';
+    document.getElementById('menu-role').textContent = user.jobTitle || '';
 
-// ── Load Findings ──
-async function loadFindings() {
-  try {
-    const user = JSON.parse(localStorage.getItem('iag_user') || '{}');
-    const res  = await post({ action:'getFindings' });
-    if (res.success) {
-      // الموظف الفني يرى مخالفاته فقط (حسب officer)
-      const name = user.name || '';
-      allFindings = (res.findings || []).filter(f =>
-        !name || (f.officer || '').indexOf(name) !== -1
-      );
-      populateSections();
-      updateKPIs();
+    await Promise.all([loadFindings(user), loadCARs()]);
+    lucide.createIcons();
+});
+
+// ── Load ──
+async function loadFindings(user) {
+    try {
+        const res = await post({ action: 'getFindings' });
+        if (!res.success) return;
+        const name = (user && user.name) ? user.name.trim() : '';
+        // الموظف يرى مخالفاته فقط — الكود يقارن بالاسم داخل حقل officer
+        allFindings = (res.findings || []).filter(f => {
+            if (!name) return true;
+            return (f.officer || '').indexOf(name) !== -1;
+        });
+        populateSections();
+        updateKPIs();
+        renderAll();
+    } catch(e) {
+        document.getElementById('list-container').innerHTML = '<div class="empty-state col-span-full"><div class="empty-icon">⚠️</div><p>تعذر تحميل البيانات</p></div>';
     }
-  } catch(e) { console.error(e); }
 }
 
-// ── Load CARs ──
 async function loadCARs() {
-  try {
-    const res = await post({ action:'getCARs' });
-    if (res.success) {
-      (res.cars || []).forEach(c => { carMap[c.car_id] = c; });
-    }
-  } catch(e) {}
+    try {
+        const res = await post({ action: 'getCARs' });
+        if (res.success) (res.cars || []).forEach(c => { carMap[c.car_id] = c; });
+    } catch(e) {}
 }
 
-// ── Populate sections dropdown ──
+// ── Sections Dropdown ──
 function populateSections() {
-  const secs = [...new Set(allFindings.map(f => f.section).filter(Boolean))].sort();
-  const sel  = document.getElementById('f-sec');
-  secs.forEach(s => {
-    const o = document.createElement('option');
-    o.value = s; o.textContent = s;
-    sel.appendChild(o);
-  });
+    const secs = [...new Set(allFindings.map(f => f.section).filter(Boolean))].sort();
+    const sel  = document.getElementById('f-sec');
+    sel.innerHTML = '<option value="">كل الأقسام</option>';
+    secs.forEach(s => {
+        const o = document.createElement('option');
+        o.value = s; o.textContent = s;
+        sel.appendChild(o);
+    });
 }
 
 // ── KPIs ──
 function updateKPIs() {
-  document.getElementById('k-total').textContent = allFindings.length;
-  document.getElementById('k-high').textContent  = allFindings.filter(f => f.severity === 'عالي').length;
-  document.getElementById('k-med').textContent   = allFindings.filter(f => f.severity === 'متوسط').length;
-  document.getElementById('k-low').textContent   = allFindings.filter(f => f.severity === 'منخفض').length;
+    document.getElementById('k-total').textContent  = allFindings.length;
+    document.getElementById('k-high').textContent   = allFindings.filter(f => f.severity === 'عالي').length;
+    document.getElementById('k-med').textContent    = allFindings.filter(f => f.severity === 'متوسط').length;
+    document.getElementById('k-low').textContent    = allFindings.filter(f => f.severity === 'منخفض').length;
+    document.getElementById('k-open').textContent   = Object.values(carMap).filter(c => c.status === 'مفتوح').length;
+    document.getElementById('k-closed').textContent = Object.values(carMap).filter(c => c.status === 'مغلق').length;
 }
 
-// ── Filter ──
+// ── Filter by severity ──
 function filterBySev(sev) {
-  activeSev = sev;
-  ['kpi-total','kpi-high','kpi-med','kpi-low'].forEach(id =>
-    document.getElementById(id).classList.remove('active'));
-  const map = {'':'kpi-total','عالي':'kpi-high','متوسط':'kpi-med','منخفض':'kpi-low'};
-  if (map[sev]) document.getElementById(map[sev]).classList.add('active');
-  renderAll();
-}
-
-function applyFilters() { renderAll(); }
-
-function getFiltered() {
-  const unit   = document.getElementById('f-unit').value.trim().toLowerCase();
-  const clf    = document.getElementById('f-clf').value;
-  const sec    = document.getElementById('f-sec').value;
-  const status = document.getElementById('f-status').value;
-
-  return allFindings.filter(f => {
-    if (unit   && !(f.unit_name||'').toLowerCase().includes(unit)) return false;
-    if (clf    && f.classification !== clf) return false;
-    if (sec    && f.section !== sec) return false;
-    if (activeSev && f.severity !== activeSev) return false;
-    if (status) {
-      const car = carMap[f.car_id];
-      const carStatus = car ? car.status : 'Open';
-      if (status === 'Open'      && carStatus !== 'مفتوح')  return false;
-      if (status === 'Closed'    && carStatus !== 'مغلق')   return false;
-      if (status === 'Escalated' && carStatus !== 'مصعَّد') return false;
-    }
-    return true;
-  });
+    activeSev = sev;
+    ['kpi-total','kpi-high','kpi-med','kpi-low'].forEach(id =>
+        document.getElementById(id).classList.remove('active'));
+    const map = {'':'kpi-total','عالي':'kpi-high','متوسط':'kpi-med','منخفض':'kpi-low'};
+    if (map[sev]) document.getElementById(map[sev]).classList.add('active');
+    renderAll();
 }
 
 // ── Render ──
 function renderAll() {
-  const filtered = getFiltered();
-  const container = document.getElementById('list-container');
+    const unit    = document.getElementById('f-unit').value.trim().toLowerCase();
+    const clf     = document.getElementById('f-clf').value;
+    const sec     = document.getElementById('f-sec').value;
+    const status  = document.getElementById('f-status').value;
 
-  if (!filtered.length) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">لا توجد مخالفات بهذه الفلاتر</div></div>';
-    return;
-  }
+    const filtered = allFindings.filter(f => {
+        if (unit && !(f.unit_name||''). toLowerCase().includes(unit)) return false;
+        if (clf  && f.classification !== clf) return false;
+        if (sec  && f.section !== sec) return false;
+        if (activeSev && f.severity !== activeSev) return false;
+        if (status) {
+            const car = carMap[f.car_id];
+            const cs  = car ? (car.status||'مفتوح') : 'مفتوح';
+            if (cs !== status) return false;
+        }
+        return true;
+    });
 
-  container.innerHTML = filtered.map(f => buildCard(f)).join('');
+    const container = document.getElementById('list-container');
+    if (!filtered.length) {
+        container.innerHTML = '<div class="empty-state col-span-full"><div class="empty-icon">🔍</div><p class="text-sm font-bold">لا توجد مخالفات بهذه الفلاتر</p></div>';
+        lucide.createIcons();
+        return;
+    }
+
+    container.innerHTML = filtered.map(buildCard).join('');
+    lucide.createIcons();
 }
 
 function buildCard(f) {
-  const car     = carMap[f.car_id] || {};
-  const sevCls  = f.severity === 'عالي' ? 'sev-high' : f.severity === 'متوسط' ? 'sev-med' : f.severity === 'منخفض' ? 'sev-low' : 'sev-info';
-  const clfCls  = f.classification === 'مخالفة صريحة' ? 'clf-violation' : f.classification === 'خطر كامن' ? 'clf-risk' : f.classification === 'قصور إداري' ? 'clf-admin' : 'clf-indicator';
-  const clfIcon = f.classification === 'مخالفة صريحة' ? '🔴' : f.classification === 'خطر كامن' ? '🟠' : f.classification === 'قصور إداري' ? '🔵' : '🟢';
+    const car    = carMap[f.car_id] || {};
+    const sevCls = f.severity === 'عالي' ? 'sev-high' : f.severity === 'متوسط' ? 'sev-med' : f.severity === 'منخفض' ? 'sev-low' : 'sev-info';
+    const clfCls = f.classification === 'مخالفة صريحة' ? 'clf-v' : f.classification === 'خطر كامن' ? 'clf-r' : f.classification === 'قصور إداري' ? 'clf-a' : 'clf-i';
+    const clfIcon= f.classification === 'مخالفة صريحة' ? '🔴' : f.classification === 'خطر كامن' ? '🟠' : f.classification === 'قصور إداري' ? '🔵' : '🟢';
+    const cs     = car.status || 'مفتوح';
+    const carCls = cs === 'مغلق' ? 'car-closed' : cs === 'مصعَّد' ? 'car-escalated' : 'car-open';
+    const carIcon= cs === 'مغلق' ? '✅' : cs === 'مصعَّد' ? '🔺' : '⏳';
+    const vd     = f.visit_date ? formatDate(f.visit_date) : '';
 
-  const carStatus  = car.status || 'مفتوح';
-  const carBadgeCls= carStatus === 'مغلق' ? 'car-closed' : carStatus === 'مصعَّد' ? 'car-escalated' : 'car-open';
-  const carIcon    = carStatus === 'مغلق' ? '✅' : carStatus === 'مصعَّد' ? '🔺' : '⏳';
-
-  const visitDate = f.visit_date ? formatDate(f.visit_date) : '';
-
-  return `<div class="finding-card ${sevCls}" onclick="showDetail('${esc(f.finding_id)}')">
-    <div class="fc-body">
-      <div class="fc-top">
-        <span class="fc-id">${esc(f.finding_id)}</span>
-        <span class="fc-section">📋 ${esc(f.section||'عام')}</span>
-        <span class="clf-badge ${clfCls}">${clfIcon} ${esc(f.classification)}</span>
-      </div>
-      <div class="fc-violation">${esc(f.violation_text)}</div>
-      <div class="fc-meta">
-        <span class="fc-unit">🏥 ${esc(f.unit_name)}</span>
-        ${visitDate ? `<span class="fc-date">📅 ${visitDate}</span>` : ''}
-      </div>
-    </div>
-    <div class="fc-footer">
-      <span class="car-badge ${carBadgeCls}">${carIcon} إجراء تصحيحي: ${carStatus}</span>
-      ${car.deadline ? `<span style="font-size:.72rem;color:#dc2626;font-weight:700">⏰ ${formatDate(car.deadline)}</span>` : ''}
-    </div>
-  </div>`;
+    return `<div class="finding-card ${sevCls}" onclick="showDetail('${esc(f.finding_id)}')">
+        <div class="fc-body">
+            <div class="fc-top">
+                <span class="fc-id">${esc(f.finding_id)}</span>
+                <span class="fc-section">📋 ${esc(f.section||'عام')}</span>
+                <span class="clf-badge ${clfCls}">${clfIcon} ${esc(f.classification)}</span>
+            </div>
+            <div class="fc-violation">${esc(f.violation_text)}</div>
+            <div class="fc-meta">
+                <span>🏥 ${esc(f.unit_name)}</span>
+                ${vd ? `<span>📅 ${vd}</span>` : ''}
+            </div>
+        </div>
+        <div class="fc-footer">
+            <span class="car-pill ${carCls}">${carIcon} ${cs}</span>
+            ${car.deadline ? `<span style="font-size:.7rem;color:#dc2626;font-weight:700">⏰ ${formatDate(car.deadline)}</span>` : ''}
+        </div>
+    </div>`;
 }
 
-// ── Detail Modal ──
+// ── Modal ──
 function showDetail(findingId) {
-  const f   = allFindings.find(x => x.finding_id === findingId);
-  if (!f) return;
-  const car = carMap[f.car_id] || {};
+    const f   = allFindings.find(x => x.finding_id === findingId);
+    if (!f) return;
+    const car = carMap[f.car_id] || {};
 
-  document.getElementById('modal-title').textContent = 'تفاصيل المخالفة';
-  document.getElementById('modal-body').innerHTML = `
-    <div class="detail-row"><span class="detail-label">رقم المخالفة</span><span class="detail-value">${esc(f.finding_id)}</span></div>
-    <div class="detail-row"><span class="detail-label">الوحدة</span><span class="detail-value">🏥 ${esc(f.unit_name)}</span></div>
-    <div class="detail-row"><span class="detail-label">الإدارة الصحية</span><span class="detail-value">${esc(f.admin_area||'—')}</span></div>
-    <div class="detail-row"><span class="detail-label">تاريخ المرور</span><span class="detail-value">📅 ${formatDate(f.visit_date)}</span></div>
-    <div class="detail-row"><span class="detail-label">القسم</span><span class="detail-value">${esc(f.section||'—')}</span></div>
-    <div class="detail-row"><span class="detail-label">المخالفة</span><span class="detail-value" style="color:#dc2626;font-weight:800">${esc(f.violation_text)}</span></div>
-    <div class="detail-row"><span class="detail-label">التصنيف</span><span class="detail-value">${esc(f.classification)}</span></div>
-    <div class="detail-row"><span class="detail-label">الخطورة</span><span class="detail-value">${esc(f.severity)}</span></div>
-    <div class="detail-row"><span class="detail-label">الفريق</span><span class="detail-value">${esc(f.officer||'—')}</span></div>
-    ${f.car_id ? `
-    <div class="car-action-box">
-      <div class="car-action-title">📋 الإجراء التصحيحي المطلوب</div>
-      <div class="car-action-text">${esc(car.corrective_action||'—')}</div>
-      ${car.deadline ? `<div class="car-deadline">⏰ الموعد النهائي: ${formatDate(car.deadline)}</div>` : ''}
-      ${car.status ? `<div style="margin-top:8px;font-size:.78rem;font-weight:700;color:#475569">الحالة: ${esc(car.status)}</div>` : ''}
-      ${car.response ? `<div style="margin-top:8px;font-size:.82rem;color:#065f46;background:#f0fdf4;padding:8px 12px;border-radius:8px">رد الوحدة: ${esc(car.response)}</div>` : ''}
-    </div>` : ''}
-  `;
-  document.getElementById('modal').style.display = 'flex';
+    document.getElementById('modal-body').innerHTML = `
+        <div class="detail-row"><span class="detail-label">رقم المخالفة</span><span class="detail-value">${esc(f.finding_id)}</span></div>
+        <div class="detail-row"><span class="detail-label">الوحدة</span><span class="detail-value">🏥 ${esc(f.unit_name)}</span></div>
+        <div class="detail-row"><span class="detail-label">الإدارة الصحية</span><span class="detail-value">${esc(f.admin_area||'—')}</span></div>
+        <div class="detail-row"><span class="detail-label">تاريخ المرور</span><span class="detail-value">📅 ${formatDate(f.visit_date)}</span></div>
+        <div class="detail-row"><span class="detail-label">القسم</span><span class="detail-value">${esc(f.section||'—')}</span></div>
+        <div class="detail-row"><span class="detail-label">المخالفة</span><span class="detail-value" style="color:#dc2626;font-weight:800">${esc(f.violation_text)}</span></div>
+        <div class="detail-row"><span class="detail-label">التصنيف</span><span class="detail-value">${esc(f.classification)}</span></div>
+        <div class="detail-row"><span class="detail-label">الخطورة</span><span class="detail-value">${esc(f.severity)}</span></div>
+        <div class="detail-row"><span class="detail-label">الفريق</span><span class="detail-value">${esc(f.officer||'—')}</span></div>
+        ${f.car_id ? `
+        <div class="car-action-box">
+            <div class="car-action-title">📋 الإجراء التصحيحي المطلوب</div>
+            <div class="car-action-text">${esc(car.corrective_action||'—')}</div>
+            ${car.deadline ? `<div style="margin-top:8px;font-size:.78rem;color:#dc2626;font-weight:700">⏰ الموعد النهائي: ${formatDate(car.deadline)}</div>` : ''}
+            ${car.status  ? `<div style="margin-top:6px;font-size:.75rem;font-weight:700;color:#475569">الحالة: ${esc(car.status)}</div>` : ''}
+            ${car.response? `<div style="margin-top:8px;font-size:.82rem;color:#065f46;background:#f0fdf4;padding:8px 12px;border-radius:8px">رد الوحدة: ${esc(car.response)}</div>` : ''}
+        </div>` : ''}
+    `;
+    document.getElementById('modal').style.display = 'flex';
 }
 
-function closeModal(e) {
-  if (!e || e.target === document.getElementById('modal')) {
-    document.getElementById('modal').style.display = 'none';
-  }
-}
+function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
 // ── Helpers ──
+function toggleMenu() { document.body.classList.toggle('menu-open'); }
+function logout() {
+    localStorage.removeItem('iag_user');
+    location.href = 'index.html';
+}
+
 async function post(body) {
-  const api = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : API;
-  const res = await fetch(api, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-  return res.json();
+    const api = CONFIG.API_URL;
+    const res = await fetch(api, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    return res.json();
 }
 
 function formatDate(v) {
-  if (!v) return '';
-  try {
-    const d = new Date(v);
-    if (isNaN(d.getTime())) return String(v);
-    return d.toLocaleDateString('ar-EG', { day:'2-digit', month:'2-digit', year:'numeric' });
-  } catch { return String(v); }
+    if (!v) return '';
+    try {
+        const d = new Date(v);
+        if (isNaN(d.getTime())) return String(v);
+        return d.toLocaleDateString('ar-EG', { day:'2-digit', month:'2-digit', year:'numeric' });
+    } catch { return String(v); }
 }
 
 function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
 </body>
