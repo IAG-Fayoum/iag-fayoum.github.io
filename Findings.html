@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المخالفات المرصودة — IAG</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',sans-serif;background:#f1f5f9;font-size:14px;padding-bottom:80px;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+
+/* ── Header ── */
+.header{background:#020617;background-image:radial-gradient(circle at top right,#0f766e 0%,transparent 40%),radial-gradient(circle at bottom left,#1d4ed8 0%,transparent 40%);padding:1.5rem 1.5rem 5rem;position:relative;z-index:10}
+.header-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.header-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 14px;font-size:.75rem;font-weight:800;color:#ccfbf1;margin-bottom:8px}
+.header-title{color:#fff;font-size:1.3rem;font-weight:800;margin:0}
+.header-sub{color:#94a3b8;font-size:.8rem;margin-top:4px}
+.header-btn{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,.1);cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center}
+
+/* ── Filter Card ── */
+.filter-card{margin:-3.5rem 1rem 1.5rem;position:relative;z-index:20;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-radius:20px;padding:1.25rem;box-shadow:0 20px 40px rgba(0,0,0,.08);border:1px solid #fff}
+@media(min-width:1024px){.filter-card{max-width:1300px;margin:-3.5rem auto 1.5rem}}
+.filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(min-width:768px){.filter-grid{grid-template-columns:repeat(4,1fr)}}
+.f-input{width:100%;height:44px;border:2px solid #f1f5f9;border-radius:12px;background:#f8fafc;font-size:.88rem;font-weight:600;font-family:'Cairo',sans-serif;padding:0 12px;outline:none;transition:.2s}
+.f-input:focus{border-color:#0f766e;background:#fff;box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+
+/* ── KPI Cards ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 1rem 1rem;max-width:1300px;margin:0 auto}
+@media(min-width:640px){.kpi-grid{grid-template-columns:repeat(4,1fr)}}
+.kpi-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:14px;position:relative;overflow:hidden;transition:.25s;cursor:pointer}
+.kpi-card::before{content:'';position:absolute;bottom:0;left:0;width:100%;height:4px}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.06)}
+.kpi-card.active{border-color:#0f766e;background:#f0fdfa;box-shadow:0 0 0 2px #0f766e}
+.kpi-card.c-total::before{background:#64748b}
+.kpi-card.c-high::before{background:#dc2626}
+.kpi-card.c-med::before{background:#d97706}
+.kpi-card.c-low::before{background:#3b82f6}
+.kpi-num{font-size:1.8rem;font-weight:900;color:#0f172a;line-height:1}
+.kpi-lbl{font-size:.72rem;font-weight:800;color:#64748b;margin-top:4px}
+
+/* ── Content ── */
+.content{max-width:1300px;margin:0 auto;padding:0 1rem}
+
+/* ── Finding Card ── */
+.finding-card{background:#fff;border-radius:16px;border:1px solid #e2e8f0;border-right:5px solid #e2e8f0;margin-bottom:10px;overflow:hidden;transition:.2s}
+.finding-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.finding-card.sev-high{border-right-color:#dc2626}
+.finding-card.sev-med{border-right-color:#d97706}
+.finding-card.sev-low{border-right-color:#3b82f6}
+.finding-card.sev-info{border-right-color:#64748b}
+.fc-body{padding:14px 16px;flex:1}
+.fc-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.fc-id{font-size:.7rem;font-weight:800;color:#94a3b8;background:#f1f5f9;padding:3px 8px;border-radius:6px}
+.fc-section{font-size:.72rem;font-weight:700;color:#0f766e;background:#f0fdfa;border:1px solid #ccfbf1;padding:3px 8px;border-radius:6px}
+.fc-violation{font-size:.9rem;font-weight:700;color:#0f172a;line-height:1.6;margin-bottom:8px}
+.fc-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.fc-unit{font-size:.78rem;color:#475569;display:flex;align-items:center;gap:4px}
+.fc-date{font-size:.75rem;color:#94a3b8}
+.fc-footer{padding:10px 16px;background:#f8fafc;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.car-badge{font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:4px}
+.car-open{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.car-closed{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
+.car-escalated{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.clf-badge{font-size:.7rem;font-weight:800;padding:3px 8px;border-radius:6px}
+.clf-violation{background:#fef2f2;color:#dc2626}
+.clf-risk{background:#fff7ed;color:#c2410c}
+.clf-admin{background:#eff6ff;color:#1d4ed8}
+.clf-indicator{background:#f0fdf4;color:#15803d}
+
+/* ── Empty ── */
+.empty-state{text-align:center;padding:60px 20px;color:#94a3b8}
+.empty-icon{font-size:3rem;margin-bottom:12px}
+.empty-text{font-size:.95rem;font-weight:700}
+
+/* ── Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(2px);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal-box{background:#fff;width:95%;max-width:580px;max-height:85vh;border-radius:16px;overflow-y:auto;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{padding:1rem 1.25rem;background:#f8fafc;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1}
+.modal-title{font-size:.95rem;font-weight:800;color:#0f172a}
+.modal-close{cursor:pointer;color:#64748b;font-size:1.2rem;background:none;border:none;padding:4px}
+.modal-body{padding:1.25rem}
+.detail-row{display:flex;gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f1f5f9}
+.detail-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.detail-label{font-size:.75rem;font-weight:800;color:#64748b;min-width:100px;padding-top:2px}
+.detail-value{font-size:.88rem;font-weight:600;color:#0f172a;flex:1;line-height:1.7}
+.car-action-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px;margin-top:12px}
+.car-action-title{font-size:.78rem;font-weight:800;color:#065f46;margin-bottom:6px}
+.car-action-text{font-size:.85rem;color:#166534;line-height:1.8}
+.car-deadline{font-size:.8rem;color:#dc2626;font-weight:700;margin-top:8px}
+
+/* ── Bottom Nav ── */
+.bottom-nav{position:fixed;bottom:0;width:100%;background:#fff;border-top:1px solid #e2e8f0;padding-bottom:max(8px,env(safe-area-inset-bottom));z-index:90}
+.nav-inner{display:flex;justify-content:space-around;padding:6px 0}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 16px;color:#94a3b8;cursor:pointer;text-decoration:none;font-size:.65rem;font-weight:700;background:none;border:none}
+.nav-btn.active{color:#0f766e}
+.nav-btn svg{width:22px;height:22px}
+
+/* ── Loading ── */
+.spinner{display:inline-block;width:20px;height:20px;border:3px solid #e2e8f0;border-top-color:#0f766e;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-state{text-align:center;padding:40px;color:#94a3b8}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-badge">🔬 المراجع الفني</div>
+      <div class="header-title">المخالفات المرصودة</div>
+      <div class="header-sub" id="hdr-name">جاري التحميل...</div>
+    </div>
+    <button class="header-btn" onclick="location.href='index.html'">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- Filter Card -->
+<div class="filter-card">
+  <div class="filter-grid">
+    <input class="f-input" id="f-unit" placeholder="🔍 ابحث بالوحدة" oninput="applyFilters()">
+    <select class="f-input" id="f-clf" onchange="applyFilters()">
+      <option value="">كل التصنيفات</option>
+      <option value="مخالفة صريحة">🔴 مخالفة صريحة</option>
+      <option value="خطر كامن">🟠 خطر كامن</option>
+      <option value="قصور إداري">🔵 قصور إداري</option>
+      <option value="مؤشر">🟢 مؤشر</option>
+    </select>
+    <select class="f-input" id="f-sec" onchange="applyFilters()">
+      <option value="">كل الأقسام</option>
+    </select>
+    <select class="f-input" id="f-status" onchange="applyFilters()">
+      <option value="">كل الحالات</option>
+      <option value="Open">مفتوح</option>
+      <option value="Closed">مغلق</option>
+      <option value="Escalated">مصعَّد</option>
+    </select>
+  </div>
+</div>
+
+<!-- KPI -->
+<div class="kpi-grid">
+  <div class="kpi-card c-total" onclick="filterBySev('')" id="kpi-total">
+    <div class="kpi-num" id="k-total">—</div>
+    <div class="kpi-lbl">إجمالي المخالفات</div>
+  </div>
+  <div class="kpi-card c-high" onclick="filterBySev('عالي')" id="kpi-high">
+    <div class="kpi-num" id="k-high">—</div>
+    <div class="kpi-lbl">خطورة عالية</div>
+  </div>
+  <div class="kpi-card c-med" onclick="filterBySev('متوسط')" id="kpi-med">
+    <div class="kpi-num" id="k-med">—</div>
+    <div class="kpi-lbl">خطورة متوسطة</div>
+  </div>
+  <div class="kpi-card c-low" onclick="filterBySev('منخفض')" id="kpi-low">
+    <div class="kpi-num" id="k-low">—</div>
+    <div class="kpi-lbl">خطورة منخفضة</div>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="content">
+  <div id="list-container">
+    <div class="loading-state"><div class="spinner"></div><br>جاري التحميل...</div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">تفاصيل المخالفة</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-btn">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v9h14v-9"/></svg>الرئيسية
+    </a>
+    <a href="findings.html" class="nav-btn active">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>المخالفات
+    </a>
+    <a href="employee.html" class="nav-btn">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>ملفي
+    </a>
+  </div>
+</nav>
+
+<script>
+const API = (()=>{
+  const u = localStorage.getItem('iag_api_url') || '';
+  return u;
+})();
+
+let allFindings = [];
+let carMap      = {};
+let activeSev   = '';
+
+// ── Init ──
+(async function init() {
+  const user = JSON.parse(localStorage.getItem('iag_user') || '{}');
+  if (!user.name) { location.href = 'index.html'; return; }
+  document.getElementById('hdr-name').textContent = user.name;
+
+  await Promise.all([loadFindings(), loadCARs()]);
+  renderAll();
+})();
+
+// ── Load Findings ──
+async function loadFindings() {
+  try {
+    const user = JSON.parse(localStorage.getItem('iag_user') || '{}');
+    const res  = await post({ action:'getFindings' });
+    if (res.success) {
+      // الموظف الفني يرى مخالفاته فقط (حسب officer)
+      const name = user.name || '';
+      allFindings = (res.findings || []).filter(f =>
+        !name || (f.officer || '').indexOf(name) !== -1
+      );
+      populateSections();
+      updateKPIs();
+    }
+  } catch(e) { console.error(e); }
+}
+
+// ── Load CARs ──
+async function loadCARs() {
+  try {
+    const res = await post({ action:'getCARs' });
+    if (res.success) {
+      (res.cars || []).forEach(c => { carMap[c.car_id] = c; });
+    }
+  } catch(e) {}
+}
+
+// ── Populate sections dropdown ──
+function populateSections() {
+  const secs = [...new Set(allFindings.map(f => f.section).filter(Boolean))].sort();
+  const sel  = document.getElementById('f-sec');
+  secs.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s; o.textContent = s;
+    sel.appendChild(o);
+  });
+}
+
+// ── KPIs ──
+function updateKPIs() {
+  document.getElementById('k-total').textContent = allFindings.length;
+  document.getElementById('k-high').textContent  = allFindings.filter(f => f.severity === 'عالي').length;
+  document.getElementById('k-med').textContent   = allFindings.filter(f => f.severity === 'متوسط').length;
+  document.getElementById('k-low').textContent   = allFindings.filter(f => f.severity === 'منخفض').length;
+}
+
+// ── Filter ──
+function filterBySev(sev) {
+  activeSev = sev;
+  ['kpi-total','kpi-high','kpi-med','kpi-low'].forEach(id =>
+    document.getElementById(id).classList.remove('active'));
+  const map = {'':'kpi-total','عالي':'kpi-high','متوسط':'kpi-med','منخفض':'kpi-low'};
+  if (map[sev]) document.getElementById(map[sev]).classList.add('active');
+  renderAll();
+}
+
+function applyFilters() { renderAll(); }
+
+function getFiltered() {
+  const unit   = document.getElementById('f-unit').value.trim().toLowerCase();
+  const clf    = document.getElementById('f-clf').value;
+  const sec    = document.getElementById('f-sec').value;
+  const status = document.getElementById('f-status').value;
+
+  return allFindings.filter(f => {
+    if (unit   && !(f.unit_name||'').toLowerCase().includes(unit)) return false;
+    if (clf    && f.classification !== clf) return false;
+    if (sec    && f.section !== sec) return false;
+    if (activeSev && f.severity !== activeSev) return false;
+    if (status) {
+      const car = carMap[f.car_id];
+      const carStatus = car ? car.status : 'Open';
+      if (status === 'Open'      && carStatus !== 'مفتوح')  return false;
+      if (status === 'Closed'    && carStatus !== 'مغلق')   return false;
+      if (status === 'Escalated' && carStatus !== 'مصعَّد') return false;
+    }
+    return true;
+  });
+}
+
+// ── Render ──
+function renderAll() {
+  const filtered = getFiltered();
+  const container = document.getElementById('list-container');
+
+  if (!filtered.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">لا توجد مخالفات بهذه الفلاتر</div></div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(f => buildCard(f)).join('');
+}
+
+function buildCard(f) {
+  const car     = carMap[f.car_id] || {};
+  const sevCls  = f.severity === 'عالي' ? 'sev-high' : f.severity === 'متوسط' ? 'sev-med' : f.severity === 'منخفض' ? 'sev-low' : 'sev-info';
+  const clfCls  = f.classification === 'مخالفة صريحة' ? 'clf-violation' : f.classification === 'خطر كامن' ? 'clf-risk' : f.classification === 'قصور إداري' ? 'clf-admin' : 'clf-indicator';
+  const clfIcon = f.classification === 'مخالفة صريحة' ? '🔴' : f.classification === 'خطر كامن' ? '🟠' : f.classification === 'قصور إداري' ? '🔵' : '🟢';
+
+  const carStatus  = car.status || 'مفتوح';
+  const carBadgeCls= carStatus === 'مغلق' ? 'car-closed' : carStatus === 'مصعَّد' ? 'car-escalated' : 'car-open';
+  const carIcon    = carStatus === 'مغلق' ? '✅' : carStatus === 'مصعَّد' ? '🔺' : '⏳';
+
+  const visitDate = f.visit_date ? formatDate(f.visit_date) : '';
+
+  return `<div class="finding-card ${sevCls}" onclick="showDetail('${esc(f.finding_id)}')">
+    <div class="fc-body">
+      <div class="fc-top">
+        <span class="fc-id">${esc(f.finding_id)}</span>
+        <span class="fc-section">📋 ${esc(f.section||'عام')}</span>
+        <span class="clf-badge ${clfCls}">${clfIcon} ${esc(f.classification)}</span>
+      </div>
+      <div class="fc-violation">${esc(f.violation_text)}</div>
+      <div class="fc-meta">
+        <span class="fc-unit">🏥 ${esc(f.unit_name)}</span>
+        ${visitDate ? `<span class="fc-date">📅 ${visitDate}</span>` : ''}
+      </div>
+    </div>
+    <div class="fc-footer">
+      <span class="car-badge ${carBadgeCls}">${carIcon} إجراء تصحيحي: ${carStatus}</span>
+      ${car.deadline ? `<span style="font-size:.72rem;color:#dc2626;font-weight:700">⏰ ${formatDate(car.deadline)}</span>` : ''}
+    </div>
+  </div>`;
+}
+
+// ── Detail Modal ──
+function showDetail(findingId) {
+  const f   = allFindings.find(x => x.finding_id === findingId);
+  if (!f) return;
+  const car = carMap[f.car_id] || {};
+
+  document.getElementById('modal-title').textContent = 'تفاصيل المخالفة';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="detail-row"><span class="detail-label">رقم المخالفة</span><span class="detail-value">${esc(f.finding_id)}</span></div>
+    <div class="detail-row"><span class="detail-label">الوحدة</span><span class="detail-value">🏥 ${esc(f.unit_name)}</span></div>
+    <div class="detail-row"><span class="detail-label">الإدارة الصحية</span><span class="detail-value">${esc(f.admin_area||'—')}</span></div>
+    <div class="detail-row"><span class="detail-label">تاريخ المرور</span><span class="detail-value">📅 ${formatDate(f.visit_date)}</span></div>
+    <div class="detail-row"><span class="detail-label">القسم</span><span class="detail-value">${esc(f.section||'—')}</span></div>
+    <div class="detail-row"><span class="detail-label">المخالفة</span><span class="detail-value" style="color:#dc2626;font-weight:800">${esc(f.violation_text)}</span></div>
+    <div class="detail-row"><span class="detail-label">التصنيف</span><span class="detail-value">${esc(f.classification)}</span></div>
+    <div class="detail-row"><span class="detail-label">الخطورة</span><span class="detail-value">${esc(f.severity)}</span></div>
+    <div class="detail-row"><span class="detail-label">الفريق</span><span class="detail-value">${esc(f.officer||'—')}</span></div>
+    ${f.car_id ? `
+    <div class="car-action-box">
+      <div class="car-action-title">📋 الإجراء التصحيحي المطلوب</div>
+      <div class="car-action-text">${esc(car.corrective_action||'—')}</div>
+      ${car.deadline ? `<div class="car-deadline">⏰ الموعد النهائي: ${formatDate(car.deadline)}</div>` : ''}
+      ${car.status ? `<div style="margin-top:8px;font-size:.78rem;font-weight:700;color:#475569">الحالة: ${esc(car.status)}</div>` : ''}
+      ${car.response ? `<div style="margin-top:8px;font-size:.82rem;color:#065f46;background:#f0fdf4;padding:8px 12px;border-radius:8px">رد الوحدة: ${esc(car.response)}</div>` : ''}
+    </div>` : ''}
+  `;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal')) {
+    document.getElementById('modal').style.display = 'none';
+  }
+}
+
+// ── Helpers ──
+async function post(body) {
+  const api = localStorage.getItem('iag_api_url') || API;
+  const res = await fetch(api, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+  return res.json();
+}
+
+function formatDate(v) {
+  if (!v) return '';
+  try {
+    const d = new Date(v);
+    if (isNaN(d.getTime())) return String(v);
+    return d.toLocaleDateString('ar-EG', { day:'2-digit', month:'2-digit', year:'numeric' });
+  } catch { return String(v); }
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
