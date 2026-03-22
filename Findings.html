@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>المخالفات المرصودة — IAG</title>
+<script src="assets/js/config.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -196,10 +197,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;font-size:14px;padding-bo
 </nav>
 
 <script>
-const API = (()=>{
-  const u = localStorage.getItem('iag_api_url') || '';
-  return u;
-})();
+const API = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : '';
 
 let allFindings = [];
 let carMap      = {};
@@ -377,7 +375,7 @@ function closeModal(e) {
 
 // ── Helpers ──
 async function post(body) {
-  const api = localStorage.getItem('iag_api_url') || API;
+  const api = (typeof CONFIG !== 'undefined') ? CONFIG.API_URL : API;
   const res = await fetch(api, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
   return res.json();
 }
