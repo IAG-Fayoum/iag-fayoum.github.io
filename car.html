@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإجراءات التصحيحية - IAG Fayoum</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f766e;
+      --primary-dark: #0d6b63;
+      --primary-light: #f0fdfa;
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --status-open: #dc2626;
+      --status-inprog: #d97706;
+      --status-closed: #059669;
+      --status-new: #3b82f6;
+    }
+
+    * {
+      font-family: 'Cairo', sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+
+    .header-pattern {
+      background: #020617;
+      background-image:
+        radial-gradient(circle at top right, #0f766e 0%, transparent 40%),
+        radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
+      padding: 1.5rem 1.5rem 5rem;
+    }
+
+    .filter-card {
+      margin: -3.5rem 1rem 1.5rem;
+      position: relative;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 1.25rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .kpi-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .kpi-card.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .section-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .section-card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .status-open { border-right: 4px solid var(--status-open); }
+    .status-inprog { border-right: 4px solid var(--status-inprog); }
+    .status-closed { border-right: 4px solid var(--status-closed); }
+
+    .badge-open { background: #fef2f2; color: var(--status-open); }
+    .badge-inprog { background: #fffbeb; color: var(--status-inprog); }
+    .badge-closed { background: #ecfdf5; color: var(--status-closed); }
+    .badge-replied { background: #ecfdf5; color: var(--status-closed); }
+    .badge-pending { background: #f1f5f9; color: var(--text-muted); }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+
+    .accordion-content.open {
+      max-height: 1000px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-select, .form-input {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .form-select:focus, .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+
+    .nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+    }
+
+    .nav-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #0f172a;
+      color: white;
+      padding: 0.875rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 500;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success { background: var(--status-closed); }
+    .toast.error { background: var(--status-open); }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid white;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .loading-skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header-pattern">
+    <div style="max-width: 1300px; margin: 0 auto;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+        <div>
+          <span style="background: rgba(15, 118, 110, 0.2); color: #5eead4; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
+            إجراءات تصحيحية
+          </span>
+        </div>
+        <div style="color: #94a3b8; font-size: 0.8rem;">
+          <span id="currentDate"></span>
+        </div>
+      </div>
+      <h1 style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0;">
+        متابعة الإجراءات التصحيحية
+      </h1>
+      <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 0.5rem;" id="welcomeMsg">
+        مرحباً بك في نظام متابعة الإجراءات التصحيحية
+      </p>
+    </div>
+  </header>
+
+  <!-- KPI Cards -->
+  <div style="max-width: 1300px; margin: 0 auto; padding: 0 1rem;">
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
+      <div class="kpi-card" data-filter="all" onclick="filterByStatus('all')">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <div style="background: #f1f5f9; padding: 0.5rem; border-radius: 10px;">
+            <i data-lucide="layers" style="width: 18px; height: 18px; color: var(--text-secondary);"></i>
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-secondary);">الإجمالي</span>
+        </div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary);" id="totalCount">0</div>
+      </div>
+      <div class="kpi-card" data-filter="مفتوح" onclick="filterByStatus('مفتوح')">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <div style="background: #fef2f2; padding: 0.5rem; border-radius: 10px;">
+            <i data-lucide="circle-dot" style="width: 18px; height: 18px; color: var(--status-open);"></i>
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-secondary);">مفتوح</span>
+        </div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--status-open);" id="openCount">0</div>
+      </div>
+      <div class="kpi-card" data-filter="جاري" onclick="filterByStatus('جاري')">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <div style="background: #fffbeb; padding: 0.5rem; border-radius: 10px;">
+            <i data-lucide="loader" style="width: 18px; height: 18px; color: var(--status-inprog);"></i>
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-secondary);">جاري</span>
+        </div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--status-inprog);" id="inprogCount">0</div>
+      </div>
+      <div class="kpi-card" data-filter="مغلق" onclick="filterByStatus('مغلق')">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <div style="background: #ecfdf5; padding: 0.5rem; border-radius: 10px;">
+            <i data-lucide="check-circle-2" style="width: 18px; height: 18px; color: var(--status-closed);"></i>
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-secondary);">مغلق</span>
+        </div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--status-closed);" id="closedCount">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Card -->
+  <div class="filter-card" style="max-width: 1270px; margin-left: auto; margin-right: auto;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+      <div>
+        <label style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block;">بحث بالجهة</label>
+        <div style="position: relative;">
+          <i data-lucide="building-2" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
+          <input type="text" id="searchFacility" class="form-input" placeholder="اسم الجهة..." style="width: 100%; padding-right: 2.25rem;" oninput="applyFilters()">
+        </div>
+      </div>
+      <div>
+        <label style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block;">بحث بالقسم</label>
+        <div style="position: relative;">
+          <i data-lucide="door-open" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
+          <input type="text" id="searchSection" class="form-input" placeholder="اسم القسم..." style="width: 100%; padding-right: 2.25rem;" oninput="applyFilters()">
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <select id="filterStatus" class="form-select" style="flex: 1; min-width: 120px;" onchange="applyFilters()">
+        <option value="">كل الحالات</option>
+        <option value="مفتوح">مفتوح</option>
+        <option value="جاري">جاري</option>
+        <option value="مغلق">مغلق</option>
+      </select>
+      <select id="filterReplied" class="form-select" style="flex: 1; min-width: 120px;" onchange="applyFilters()">
+        <option value="">الكل</option>
+        <option value="replied">ردت الجهة</option>
+        <option value="pending">لم يرد بعد</option>
+      </select>
+      <button class="btn-primary" onclick="resetFilters()" style="display: flex; align-items: center; gap: 0.35rem;">
+        <i data-lucide="rotate-ccw" style="width: 16px; height: 16px;"></i>
+        إعادة تعيين
+      </button>
+    </div>
+  </div>
+
+  <!-- Sections Container -->
+  <div style="max-width: 1300px; margin: 0 auto; padding: 0 1rem;" id="sectionsContainer">
+    <!-- Loading State -->
+    <div id="loadingState" style="display: flex; flex-direction: column; gap: 1rem;">
+      <div class="loading-skeleton" style="height: 200px;"></div>
+      <div class="loading-skeleton" style="height: 200px;"></div>
+      <div class="loading-skeleton" style="height: 200px;"></div>
+    </div>
+    <!-- Empty State -->
+    <div id="emptyState" style="display: none; text-align: center; padding: 3rem 1rem;">
+      <i data-lucide="inbox" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1rem;"></i>
+      <p style="color: var(--text-secondary); font-size: 1rem;">لا توجد أقسام مطابقة للبحث</p>
+    </div>
+    <!-- Sections List -->
+    <div id="sectionsList" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Bottom Nav -->
+  <nav style="position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid var(--border); z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom));">
+    <div style="display: flex; justify-content: space-around; padding: 8px 0; max-width: 500px; margin: 0 auto;">
+      <a href="coordinator.html" class="nav-btn">
+        <i data-lucide="layout-dashboard"></i>
+        <span>المعاملات</span>
+      </a>
+      <a href="findings.html" class="nav-btn">
+        <i data-lucide="alert-triangle"></i>
+        <span>المخالفات</span>
+      </a>
+      <a href="car.html" class="nav-btn active">
+        <i data-lucide="clipboard-check"></i>
+        <span>الإجراءات</span>
+      </a>
+      <a href="notifications.html" class="nav-btn">
+        <i data-lucide="bell"></i>
+        <span>الإشعارات</span>
+      </a>
+      <a href="forms.html" class="nav-btn">
+        <i data-lucide="file-text"></i>
+        <span>النماذج</span>
+      </a>
+    </div>
+  </nav>
+
+  <script>
+    // ==================== Configuration ====================
+    const API = localStorage.getItem('iag_api_url') || '';
+    let allSections = [];
+    let currentFilter = 'all';
+
+    // ==================== Auth Check ====================
+    const user = JSON.parse(localStorage.getItem('iag_user') || '{}');
+    if (!user || !user.name) {
+      window.location.href = 'index.html';
+    }
+
+    // ==================== API Functions ====================
+    async function post(action, body) {
+      const res = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, ...body })
+      });
+      return res.json();
+    }
+
+    // ==================== Utility Functions ====================
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      return dateStr;
+    }
+
+    function getStatusClass(status) {
+      switch (status) {
+        case 'مفتوح': return 'status-open';
+        case 'جاري': return 'status-inprog';
+        case 'مغلق': return 'status-closed';
+        default: return 'status-open';
+      }
+    }
+
+    function getBadgeClass(status) {
+      switch (status) {
+        case 'مفتوح': return 'badge-open';
+        case 'جاري': return 'badge-inprog';
+        case 'مغلق': return 'badge-closed';
+        default: return 'badge-open';
+      }
+    }
+
+    // ==================== Data Loading ====================
+    async function loadSections() {
+      try {
+        document.getElementById('loadingState').style.display = 'flex';
+        document.getElementById('sectionsList').innerHTML = '';
+        document.getElementById('emptyState').style.display = 'none';
+
+        const result = await post('getCARSections', {});
+        
+        if (result.success && result.data) {
+          allSections = result.data;
+        } else {
+          // Demo data for testing
+          allSections = [
+            {
+              car_id: 'CAR-20260401-المشتل',
+              facility_name: 'المركز الطبي المشتل',
+              section_name: 'الصيدلية',
+              findings_count: '10',
+              findings_text: '1. عدم وجود سجل صرف الأدوية\n2. نقص في الأدوية الأساسية\n3. عدم تطبيق نظام FIFO\n4. انتهاء صلاحية بعض الأدوية\n5. عدم وجود تهوية مناسبة',
+              portal_response: 'جاري التلافي وتم صرف النقص',
+              portal_replied_at: '01/04/2026 14:30:00',
+              staff_status: 'جاري',
+              staff_note: '',
+              staff_updated_by: 'أحمد محمد',
+              staff_updated_at: '02/04/2026 10:00:00'
+            },
+            {
+              car_id: 'CAR-20260401-المشتل',
+              facility_name: 'المركز الطبي المشتل',
+              section_name: 'الطوارئ',
+              findings_count: '5',
+              findings_text: '1. عدم وجود حقيبة إسعافات أولية\n2. نقص في الأجهزة الطبية\n3. عدم صلاحية جهاز الإنعاش\n4. عدم وجود سرير فحص\n5. عدم كفاية الإضاءة',
+              portal_response: '',
+              portal_replied_at: '',
+              staff_status: 'مفتوح',
+              staff_note: '',
+              staff_updated_by: '',
+              staff_updated_at: ''
+            },
+            {
+              car_id: 'CAR-20260402-طامية',
+              facility_name: 'وحدة طامية الصحية',
+              section_name: 'العيادات',
+              findings_count: '3',
+              findings_text: '1. عدم وجود سجل مراجعة المرضى\n2. عدم تطبيق الإجراءات الوقائية\n3. نقص في المعدات الطبية',
+              portal_response: 'تم التلافي وجاري المتابعة',
+              portal_replied_at: '03/04/2026 09:15:00',
+              staff_status: 'مغلق',
+              staff_note: 'تم التحقق من التلافي',
+              staff_updated_by: 'محمد علي',
+              staff_updated_at: '04/04/2026 11:30:00'
+            },
+            {
+              car_id: 'CAR-20260403-سنورس',
+              facility_name: 'مستشفى سنورس المركزي',
+              section_name: 'المختبر',
+              findings_count: '8',
+              findings_text: '1. عدم وجود سجل تحاليل\n2. عدم صيانة الأجهزة\n3. نقص الكوادر الفنية\n4. عدم وجود تهوية مناسبة\n5. انتهاء صلاحية بعض المحاليل\n6. عدم وجود سجل نفايات\n7. عدم تطبيق معايير السلامة\n8. نقص في المستلزمات',
+              portal_response: '',
+              portal_replied_at: '',
+              staff_status: 'مفتوح',
+              staff_note: '',
+              staff_updated_by: '',
+              staff_updated_at: ''
+            }
+          ];
+        }
+
+        updateKPIs();
+        renderSections(allSections);
+        
+      } catch (error) {
+        console.error('Error loading sections:', error);
+        showToast('حدث خطأ في تحميل البيانات', 'error');
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
+      }
+    }
+
+    // ==================== KPI Updates ====================
+    function updateKPIs() {
+      const total = allSections.length;
+      const open = allSections.filter(s => s.staff_status === 'مفتوح').length;
+      const inprog = allSections.filter(s => s.staff_status === 'جاري').length;
+      const closed = allSections.filter(s => s.staff_status === 'مغلق').length;
+
+      document.getElementById('totalCount').textContent = total;
+      document.getElementById('openCount').textContent = open;
+      document.getElementById('inprogCount').textContent = inprog;
+      document.getElementById('closedCount').textContent = closed;
+    }
+
+    // ==================== Rendering ====================
+    function renderSections(sections) {
+      document.getElementById('loadingState').style.display = 'none';
+      
+      const container = document.getElementById('sectionsList');
+      
+      if (sections.length === 0) {
+        document.getElementById('emptyState').style.display = 'block';
+        container.innerHTML = '';
+        return;
+      }
+
+      document.getElementById('emptyState').style.display = 'none';
+      
+      container.innerHTML = sections.map((section, index) => {
+        const hasReply = section.portal_response && section.portal_response.trim() !== '';
+        const statusClass = getStatusClass(section.staff_status);
+        const badgeClass = getBadgeClass(section.staff_status);
+        
+        return `
+          <div class="section-card ${statusClass} animate-in" style="animation-delay: ${index * 0.1}s" data-car-id="${section.car_id}" data-section="${section.section_name}">
+            <!-- Header -->
+            <div style="padding: 1rem; border-bottom: 1px solid var(--border);">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                <div>
+                  <h3 style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin: 0 0 0.25rem 0;">
+                    ${section.facility_name}
+                  </h3>
+                  <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">
+                    قسم: ${section.section_name}
+                  </p>
+                </div>
+                <span class="${badgeClass}" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
+                  ${section.staff_status || 'مفتوح'}
+                </span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">
+                  <i data-lucide="alert-circle" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i>
+                  ${section.findings_count} مخالفات
+                </span>
+              </div>
+            </div>
+            
+            <!-- Portal Response -->
+            <div style="padding: 1rem; background: ${hasReply ? '#f8fafc' : '#fafafa'}; border-bottom: 1px solid var(--border);">
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary);">رد الجهة:</span>
+                ${hasReply 
+                  ? `<span class="badge-replied" style="padding: 0.15rem 0.5rem; border-radius: 12px; font-size: 0.7rem;">ردت</span>`
+                  : `<span class="badge-pending" style="padding: 0.15rem 0.5rem; border-radius: 12px; font-size: 0.7rem;">لم يرد بعد</span>`
+                }
+              </div>
+              ${hasReply 
+                ? `<p style="font-size: 0.85rem; color: var(--text-primary); margin: 0 0 0.5rem 0; line-height: 1.6; background: white; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border);">
+                    ${section.portal_response}
+                  </p>
+                  <span style="font-size: 0.7rem; color: var(--text-muted);">
+                    <i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; vertical-align: middle;"></i>
+                    ${section.portal_replied_at}
+                  </span>`
+                : `<p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">في انتظار رد الجهة...</p>`
+              }
+            </div>
+            
+            <!-- Findings Accordion -->
+            <div style="border-bottom: 1px solid var(--border);">
+              <button onclick="toggleAccordion(this)" style="width: 100%; padding: 0.75rem 1rem; background: none; border: none; text-align: right; cursor: pointer; display: flex; align-items: center; justify-content: space-between; color: var(--primary); font-weight: 600; font-size: 0.85rem;">
+                <span style="display: flex; align-items: center; gap: 0.5rem;">
+                  <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
+                  تفاصيل المخالفات
+                </span>
+                <i data-lucide="chevron-down" style="width: 18px; height: 18px; transition: transform 0.3s ease;"></i>
+              </button>
+              <div class="accordion-content">
+                <div style="padding: 0 1rem 1rem;">
+                  <div style="background: #fefce8; padding: 0.75rem; border-radius: 10px; border: 1px solid #fef08a;">
+                    <pre style="white-space: pre-wrap; font-family: 'Cairo', sans-serif; font-size: 0.8rem; color: var(--text-primary); margin: 0; line-height: 1.8;">${section.findings_text}</pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Status Update -->
+            <div style="padding: 1rem; background: #f8fafc;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <i data-lucide="edit-3" style="width: 14px; height: 14px; color: var(--text-muted);"></i>
+                <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary);">تحديث النتيجة:</span>
+              </div>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: flex-end;">
+                <div style="flex: 1; min-width: 100px;">
+                  <label style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">النتيجة</label>
+                  <select class="form-select" id="status-${index}" style="width: 100%;">
+                    <option value="مفتوح" ${section.staff_status === 'مفتوح' ? 'selected' : ''}>مفتوح</option>
+                    <option value="جاري" ${section.staff_status === 'جاري' ? 'selected' : ''}>جاري</option>
+                    <option value="مغلق" ${section.staff_status === 'مغلق' ? 'selected' : ''}>مغلق</option>
+                  </select>
+                </div>
+                <div style="flex: 2; min-width: 150px;">
+                  <label style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">ملاحظة</label>
+                  <input type="text" class="form-input" id="note-${index}" placeholder="ملاحظة اختيارية..." value="${section.staff_note || ''}" style="width: 100%;">
+                </div>
+                <button class="btn-primary" onclick="saveStatus(${index}, '${section.car_id}', '${section.section_name}')" id="saveBtn-${index}" style="white-space: nowrap;">
+                  <span style="display: flex; align-items: center; gap: 0.35rem;">
+                    <i data-lucide="save" style="width: 16px; height: 16px;"></i>
+                    حفظ
+                  </span>
+                </button>
+              </div>
+              ${section.staff_updated_by 
+                ? `<p style="font-size: 0.7rem; color: var(--text-muted); margin: 0.5rem 0 0 0;">
+                    آخر تحديث: ${section.staff_updated_by} - ${section.staff_updated_at}
+                  </p>`
+                : ''
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // ==================== Interactions ====================
+    function toggleAccordion(btn) {
+      const content = btn.nextElementSibling;
+      const icon = btn.querySelector('[data-lucide="chevron-down"]');
+      
+      content.classList.toggle('open');
+      icon.style.transform = content.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
+    }
+
+    function filterByStatus(status) {
+      currentFilter = status;
+      
+      // Update KPI cards active state
+      document.querySelectorAll('.kpi-card').forEach(card => {
+        card.classList.remove('active');
+        if (card.dataset.filter === status) {
+          card.classList.add('active');
+        }
+      });
+
+      // Update dropdown
+      document.getElementById('filterStatus').value = status === 'all' ? '' : status;
+      
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const facilitySearch = document.getElementById('searchFacility').value.trim().toLowerCase();
+      const sectionSearch = document.getElementById('searchSection').value.trim().toLowerCase();
+      const statusFilter = document.getElementById('filterStatus').value;
+      const repliedFilter = document.getElementById('filterReplied').value;
+
+      let filtered = [...allSections];
+
+      if (facilitySearch) {
+        filtered = filtered.filter(s => s.facility_name.toLowerCase().includes(facilitySearch));
+      }
+
+      if (sectionSearch) {
+        filtered = filtered.filter(s => s.section_name.toLowerCase().includes(sectionSearch));
+      }
+
+      if (statusFilter) {
+        filtered = filtered.filter(s => s.staff_status === statusFilter);
+      }
+
+      if (repliedFilter) {
+        if (repliedFilter === 'replied') {
+          filtered = filtered.filter(s => s.portal_response && s.portal_response.trim() !== '');
+        } else if (repliedFilter === 'pending') {
+          filtered = filtered.filter(s => !s.portal_response || s.portal_response.trim() === '');
+        }
+      }
+
+      renderSections(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById('searchFacility').value = '';
+      document.getElementById('searchSection').value = '';
+      document.getElementById('filterStatus').value = '';
+      document.getElementById('filterReplied').value = '';
+      
+      currentFilter = 'all';
+      document.querySelectorAll('.kpi-card').forEach(card => card.classList.remove('active'));
+      
+      renderSections(allSections);
+    }
+
+    async function saveStatus(index, carId, sectionName) {
+      const statusSelect = document.getElementById(`status-${index}`);
+      const noteInput = document.getElementById(`note-${index}`);
+      const saveBtn = document.getElementById(`saveBtn-${index}`);
+      
+      const newStatus = statusSelect.value;
+      const newNote = noteInput.value.trim();
+
+      // Show loading
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span class="spinner"></span>';
+
+      try {
+        const result = await post('updateSectionStatus', {
+          car_id: carId,
+          section_name: sectionName,
+          staff_status: newStatus,
+          staff_note: newNote,
+          updated_by: user.name
+        });
+
+        if (result.success) {
+          // Update local data
+          const section = allSections.find(s => s.car_id === carId && s.section_name === sectionName);
+          if (section) {
+            section.staff_status = newStatus;
+            section.staff_note = newNote;
+            section.staff_updated_by = user.name;
+            section.staff_updated_at = new Date().toLocaleString('ar-EG');
+          }
+
+          showToast('تم حفظ التحديث بنجاح', 'success');
+          updateKPIs();
+          applyFilters();
+        } else {
+          showToast(result.error || 'حدث خطأ في الحفظ', 'error');
+        }
+      } catch (error) {
+        console.error('Error saving status:', error);
+        showToast('حدث خطأ في الاتصال', 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = `<span style="display: flex; align-items: center; gap: 0.35rem;">
+          <i data-lucide="save" style="width: 16px; height: 16px;"></i>
+          حفظ
+        </span>`;
+        lucide.createIcons();
+      }
+    }
+
+    // ==================== Initialization ====================
+    function init() {
+      // Set current date
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ar-EG', options);
+
+      // Set welcome message
+      if (user.name) {
+        document.getElementById('welcomeMsg').textContent = `مرحباً ${user.name} - تابع الإجراءات التصحيحية`;
+      }
+
+      // Initialize icons
+      lucide.createIcons();
+
+      // Load data
+      loadSections();
+    }
+
+    // Start
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
