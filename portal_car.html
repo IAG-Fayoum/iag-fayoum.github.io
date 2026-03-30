@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوابة المتابعة - IAG Fayoum</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f766e;
+      --primary-dark: #0d6b63;
+      --primary-light: #f0fdfa;
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --status-closed: #059669;
+      --status-open: #dc2626;
+    }
+
+    * {
+      font-family: 'Cairo', sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #020617;
+      background-image:
+        radial-gradient(circle at top right, #0f766e 0%, transparent 50%),
+        radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 50%);
+      padding: 1rem;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .form-input {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.875rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .header-pattern {
+      background: #020617;
+      background-image:
+        radial-gradient(circle at top right, #0f766e 0%, transparent 40%),
+        radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
+      padding: 1.5rem;
+    }
+
+    .section-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1rem;
+      border-right: 4px solid var(--primary);
+    }
+
+    .badge-replied {
+      background: #ecfdf5;
+      color: var(--status-closed);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-pending {
+      background: #f1f5f9;
+      color: var(--text-muted);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .btn-submit {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-logout {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-logout:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid white;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #0f172a;
+      color: white;
+      padding: 0.875rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 500;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success { background: var(--status-closed); }
+    .toast.error { background: var(--status-open); }
+
+    .loading-skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen" class="login-container">
+    <div class="login-card animate-in">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <div style="background: var(--primary-light); width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+          <i data-lucide="landmark" style="width: 32px; height: 32px; color: var(--primary);"></i>
+        </div>
+        <h1 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.5rem 0;">
+          نظام المتابعة الإلكترونية
+        </h1>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+          إدارة المراجعة الداخلية والحوكمة
+        </p>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0.25rem 0 0 0;">
+          مديرية الصحة بالفيوم
+        </p>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label style="font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">
+          كود الإدارة
+        </label>
+        <input type="text" id="adminCode" class="form-input" placeholder="أدخل كود الإدارة" autocomplete="off">
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label style="font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">
+          رمز الدخول (PIN)
+        </label>
+        <input type="password" id="pinCode" class="form-input" placeholder="أدخل رمز الدخول" maxlength="6">
+      </div>
+
+      <p id="loginError" style="color: var(--status-open); font-size: 0.8rem; text-align: center; margin-bottom: 1rem; display: none;"></p>
+
+      <button class="btn-primary" id="loginBtn" onclick="handleLogin()">
+        <span id="loginBtnText">تسجيل الدخول</span>
+      </button>
+
+      <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center;">
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
+          <i data-lucide="alert-triangle" style="width: 14px; height: 14px;"></i>
+          سيتم قفل الحساب بعد 5 محاولات فاشلة
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="mainApp" style="display: none;">
+    <!-- Header -->
+    <header class="header-pattern">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <p style="color: #94a3b8; font-size: 0.75rem; margin: 0 0 0.25rem 0;" id="adminName">-</p>
+            <h1 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0;" id="managerName">-</h1>
+          </div>
+          <button class="btn-logout" onclick="handleLogout()">
+            <span style="display: flex; align-items: center; gap: 0.35rem;">
+              <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+              خروج
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div style="max-width: 800px; margin: -2rem 1rem 2rem; position: relative; z-index: 10;">
+      <!-- Info Card -->
+      <div style="background: rgba(255,255,255,0.97); backdrop-filter: blur(20px); border-radius: 16px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="background: var(--primary-light); padding: 0.75rem; border-radius: 12px;">
+            <i data-lucide="clipboard-list" style="width: 24px; height: 24px; color: var(--primary);"></i>
+          </div>
+          <div>
+            <h2 style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin: 0;">
+              المخالفات المرصودة
+            </h2>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">
+              قم بالرد على الملاحظات المرصودة بجهتك
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div id="loadingSections" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="loading-skeleton" style="height: 250px;"></div>
+        <div class="loading-skeleton" style="height: 250px;"></div>
+      </div>
+
+      <!-- Empty -->
+      <div id="emptySections" style="display: none; text-align: center; padding: 3rem 1rem; background: white; border-radius: 16px;">
+        <i data-lucide="check-circle" style="width: 48px; height: 48px; color: var(--status-closed); margin-bottom: 1rem;"></i>
+        <p style="color: var(--text-primary); font-size: 1rem; font-weight: 600; margin: 0 0 0.5rem 0;">لا توجد مخالفات</p>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0;">جميع المخالفات تم التلافي منها</p>
+      </div>
+
+      <!-- Sections List -->
+      <div id="sectionsList" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // ==================== Configuration ====================
+    const API = localStorage.getItem('iag_api_url') || '';
+
+    // ==================== Utility Functions ====================
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // ==================== API Functions ====================
+    async function post(action, body) {
+      const res = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, ...body })
+      });
+      return res.json();
+    }
+
+    // ==================== Auth Functions ====================
+    function checkSession() {
+      const session = JSON.parse(sessionStorage.getItem('portal_session') || '{}');
+      if (session && session.admin_code && session.admin_name) {
+        showMainApp(session);
+      } else {
+        showLoginScreen();
+      }
+    }
+
+    function showLoginScreen() {
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('mainApp').style.display = 'none';
+    }
+
+    function showMainApp(session) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      
+      document.getElementById('adminName').textContent = session.admin_name;
+      document.getElementById('managerName').textContent = session.manager_name || 'مدير الإدارة الصحية';
+      
+      loadSections(session.admin_code);
+    }
+
+    async function handleLogin() {
+      const adminCode = document.getElementById('adminCode').value.trim();
+      const pin = document.getElementById('pinCode').value.trim();
+      const errorEl = document.getElementById('loginError');
+      const btn = document.getElementById('loginBtn');
+      const btnText = document.getElementById('loginBtnText');
+
+      if (!adminCode || !pin) {
+        errorEl.textContent = 'يرجى إدخال كود الإدارة ورمز الدخول';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btnText.innerHTML = '<span class="spinner"></span>';
+      errorEl.style.display = 'none';
+
+      try {
+        const result = await post('portalLogin', { admin_code: adminCode, pin });
+
+        if (result.success) {
+          sessionStorage.setItem('portal_session', JSON.stringify({
+            admin_code: adminCode,
+            admin_name: result.admin_name,
+            manager_name: result.manager_name
+          }));
+          showMainApp({
+            admin_code: adminCode,
+            admin_name: result.admin_name,
+            manager_name: result.manager_name
+          });
+          showToast('تم تسجيل الدخول بنجاح', 'success');
+        } else {
+          errorEl.textContent = result.error || 'كود الإدارة أو رمز الدخول غير صحيح';
+          errorEl.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        errorEl.textContent = 'حدث خطأ في الاتصال';
+        errorEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = 'تسجيل الدخول';
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem('portal_session');
+      showLoginScreen();
+      document.getElementById('adminCode').value = '';
+      document.getElementById('pinCode').value = '';
+      showToast('تم تسجيل الخروج', 'info');
+    }
+
+    // ==================== Data Loading ====================
+    async function loadSections(adminCode) {
+      document.getElementById('loadingSections').style.display = 'flex';
+      document.getElementById('emptySections').style.display = 'none';
+      document.getElementById('sectionsList').innerHTML = '';
+
+      try {
+        const result = await post('portalGetSections', { admin_code: adminCode });
+        
+        let sections = [];
+        if (result.success && result.sections) {
+          sections = result.sections;
+        } else {
+          // Demo data
+          sections = [
+            {
+              car_id: 'CAR-20260401-المشتل',
+              section_name: 'الصيدلية',
+              findings_count: '10',
+              findings_text: '1. عدم وجود سجل صرف الأدوية\n2. نقص في الأدوية الأساسية\n3. عدم تطبيق نظام FIFO\n4. انتهاء صلاحية بعض الأدوية\n5. عدم وجود تهوية مناسبة\n6. عدم وجود سجل تبريد\n7. نظافة غير مطابقة\n8. عدم وجود طفاية حريق\n9. نقص في الكوادر\n10. عدم وجود سجل مراجعة',
+              portal_response: 'جاري التلافي وتم صرف النقص',
+              portal_replied_at: '01/04/2026 14:30:00'
+            },
+            {
+              car_id: 'CAR-20260401-المشتل',
+              section_name: 'الطوارئ',
+              findings_count: '5',
+              findings_text: '1. عدم وجود حقيبة إسعافات أولية\n2. نقص في الأجهزة الطبية\n3. عدم صلاحية جهاز الإنعاش\n4. عدم وجود سرير فحص\n5. عدم كفاية الإضاءة',
+              portal_response: '',
+              portal_replied_at: ''
+            },
+            {
+              car_id: 'CAR-20260401-المشتل',
+              section_name: 'العزل',
+              findings_count: '3',
+              findings_text: '1. عدم وجود غرفة عزل مناسبة\n2. نقص في مستلزمات الوقاية\n3. عدم وجود تهوية مناسبة',
+              portal_response: '',
+              portal_replied_at: ''
+            }
+          ];
+        }
+
+        document.getElementById('loadingSections').style.display = 'none';
+
+        if (sections.length === 0) {
+          document.getElementById('emptySections').style.display = 'block';
+          return;
+        }
+
+        renderSections(sections, adminCode);
+
+      } catch (error) {
+        console.error('Error loading sections:', error);
+        document.getElementById('loadingSections').style.display = 'none';
+        showToast('حدث خطأ في تحميل البيانات', 'error');
+      }
+    }
+
+    // ==================== Rendering ====================
+    function renderSections(sections, adminCode) {
+      const container = document.getElementById('sectionsList');
+      
+      container.innerHTML = sections.map((section, index) => {
+        const hasReply = section.portal_response && section.portal_response.trim() !== '';
+        
+        return `
+          <div class="section-card animate-in" style="animation-delay: ${index * 0.1}s" data-car-id="${section.car_id}" data-section="${section.section_name}">
+            <!-- Header -->
+            <div style="padding: 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin: 0 0 0.25rem 0;">
+                  قسم ${section.section_name}
+                </h3>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">
+                  ${section.findings_count} ملاحظات
+                </span>
+              </div>
+              ${hasReply 
+                ? `<span class="badge-replied">
+                    <span style="display: flex; align-items: center; gap: 0.25rem;">
+                      <i data-lucide="check" style="width: 14px; height: 14px;"></i>
+                      تم الرد
+                    </span>
+                  </span>`
+                : `<span class="badge-pending">لم يرد بعد</span>`
+              }
+            </div>
+            
+            <!-- Findings -->
+            <div style="padding: 1rem; background: #fafafa;">
+              <p style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin: 0 0 0.75rem 0;">
+                الملاحظات المرصودة:
+              </p>
+              <div style="background: white; padding: 0.875rem; border-radius: 10px; border: 1px solid var(--border); max-height: 200px; overflow-y: auto;">
+                <pre style="white-space: pre-wrap; font-family: 'Cairo', sans-serif; font-size: 0.8rem; color: var(--text-primary); margin: 0; line-height: 1.8;">${section.findings_text}</pre>
+              </div>
+            </div>
+            
+            <!-- Response Section -->
+            ${hasReply 
+              ? `<div style="padding: 1rem; background: #ecfdf5; border-top: 1px solid #a7f3d0;">
+                  <p style="font-size: 0.8rem; font-weight: 600; color: var(--status-closed); margin: 0 0 0.5rem 0;">
+                    الرد المُرسل:
+                  </p>
+                  <p style="font-size: 0.85rem; color: var(--text-primary); margin: 0 0 0.5rem 0; line-height: 1.6; background: white; padding: 0.75rem; border-radius: 8px;">
+                    ${section.portal_response}
+                  </p>
+                  <p style="font-size: 0.7rem; color: var(--text-muted); margin: 0;">
+                    <i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; vertical-align: middle;"></i>
+                    تم الرد في: ${section.portal_replied_at}
+                  </p>
+                </div>`
+              : `<div style="padding: 1rem; border-top: 1px solid var(--border);">
+                  <p style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin: 0 0 0.5rem 0;">
+                    اكتب ردك على الملاحظات:
+                  </p>
+                  <textarea 
+                    id="response-${index}" 
+                    class="form-input" 
+                    rows="3" 
+                    placeholder="اكتب الإجراءات المتخذة أو الرد على الملاحظات..." 
+                    style="resize: vertical; min-height: 80px;"></textarea>
+                  <div style="display: flex; justify-content: flex-start; margin-top: 0.75rem;">
+                    <button class="btn-submit" onclick="submitResponse(${index}, '${adminCode}', '${section.car_id}', '${section.section_name}')" id="submitBtn-${index}">
+                      <span style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+                        إرسال الرد
+                      </span>
+                    </button>
+                  </div>
+                </div>`
+            }
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // ==================== Submit Response ====================
+    async function submitResponse(index, adminCode, carId, sectionName) {
+      const textarea = document.getElementById(`response-${index}`);
+      const btn = document.getElementById(`submitBtn-${index}`);
+      const response = textarea.value.trim();
+
+      if (!response) {
+        showToast('يرجى كتابة الرد أولاً', 'error');
+        textarea.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+
+      try {
+        const result = await post('portalSubmitResponse', {
+          admin_code: adminCode,
+          car_id: carId,
+          section_name: sectionName,
+          response: response
+        });
+
+        if (result.success) {
+          showToast('تم إرسال الرد بنجاح', 'success');
+          // Update the card to show the response
+          const card = document.querySelector(`[data-car-id="${carId}"][data-section="${sectionName}"]`);
+          if (card) {
+            const responseSection = card.querySelector('.form-input').parentElement;
+            const now = new Date().toLocaleString('ar-EG');
+            responseSection.innerHTML = `
+              <div style="padding: 1rem; background: #ecfdf5; border-top: 1px solid #a7f3d0;">
+                <p style="font-size: 0.8rem; font-weight: 600; color: var(--status-closed); margin: 0 0 0.5rem 0;">
+                  الرد المُرسل:
+                </p>
+                <p style="font-size: 0.85rem; color: var(--text-primary); margin: 0 0 0.5rem 0; line-height: 1.6; background: white; padding: 0.75rem; border-radius: 8px;">
+                  ${response}
+                </p>
+                <p style="font-size: 0.7rem; color: var(--text-muted); margin: 0;">
+                  <i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; vertical-align: middle;"></i>
+                  تم الرد في: ${now}
+                </p>
+              </div>
+            `;
+            // Update badge
+            const badge = card.querySelector('.badge-pending');
+            if (badge) {
+              badge.className = 'badge-replied';
+              badge.innerHTML = `<span style="display: flex; align-items: center; gap: 0.25rem;">
+                <i data-lucide="check" style="width: 14px; height: 14px;"></i>
+                تم الرد
+              </span>`;
+            }
+            lucide.createIcons();
+          }
+        } else {
+          showToast(result.error || 'حدث خطأ في إرسال الرد', 'error');
+        }
+      } catch (error) {
+        console.error('Error submitting response:', error);
+        showToast('حدث خطأ في الاتصال', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span style="display: flex; align-items: center; gap: 0.5rem;">
+          <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+          إرسال الرد
+        </span>`;
+        lucide.createIcons();
+      }
+    }
+
+    // ==================== Enter Key Handler ====================
+    document.getElementById('pinCode').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        handleLogin();
+      }
+    });
+
+    document.getElementById('adminCode').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('pinCode').focus();
+      }
+    });
+
+    // ==================== Initialization ====================
+    function init() {
+      lucide.createIcons();
+      checkSession();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
