@@ -168,7 +168,10 @@
                     <p class="dept-subtitle">Notifications Center</p>
                 </div>
                 
-                <div class="w-10"></div> </div>
+                <div class="flex gap-3">
+                    <button onclick="goBack()" class="header-btn"><i data-lucide="arrow-right" class="w-6 h-6"></i></button>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -248,6 +251,16 @@
 
         function toggleMenu() { document.body.classList.toggle('menu-open'); }
         function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+        function goBack() {
+            if (history.length > 1) { history.back(); }
+            else {
+                const u = JSON.parse(localStorage.getItem('iag_user') || '{}');
+                if (u.role === 'مدير' || u.role === 'Admin') window.location.href = 'admin.html';
+                else if (u.role === 'منسق') window.location.href = 'coordinator.html';
+                else window.location.href = 'employee.html';
+            }
+        }
 
         // --- Real API Actions ---
 

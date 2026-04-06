@@ -7,22 +7,22 @@
 
   var NAV = {
     'مدير': [
-      { href: 'admin.html',         icon: 'layout-dashboard', label: 'لوحة التحكم'  },
-      { href: 'distribution.html',  icon: 'bar-chart-2',      label: 'المؤشرات'     },
-      { href: 'forms.html',         icon: 'file-text',        label: 'النماذج'      },
-      { href: 'notifications.html', icon: 'bell',             label: 'الإشعارات'    },
+      { href: 'admin.html',        icon: 'home',           label: 'الرئيسية'  },
+      { href: 'distribution.html', icon: 'bar-chart-2',    label: 'المؤشرات'  },
+      { href: 'settings.html',     icon: 'clipboard-list', label: 'إجراءات'   },
+      { href: 'forms.html',        icon: 'file-text',      label: 'النماذج'   },
     ],
     'منسق': [
-      { href: 'coordinator.html',   icon: 'inbox',            label: 'كل المعاملات' },
-      { href: 'distribution.html',  icon: 'bar-chart-2',      label: 'المؤشرات'     },
-      { href: 'forms.html',         icon: 'file-text',        label: 'النماذج'      },
-      { href: 'notifications.html', icon: 'bell',             label: 'الإشعارات'    },
+      { href: 'coordinator.html',  icon: 'home',           label: 'الرئيسية'  },
+      { href: 'distribution.html', icon: 'bar-chart-2',    label: 'المؤشرات'  },
+      { href: 'settings.html',     icon: 'clipboard-list', label: 'إجراءات'   },
+      { href: 'forms.html',        icon: 'file-text',      label: 'النماذج'   },
     ],
     'default': [
-      { href: 'employee.html',      icon: 'list-checks',      label: 'مهامي'        },
-      { href: 'findings.html',      icon: 'shield-alert',     label: 'المخالفات'    },
-      { href: 'distribution.html',  icon: 'bar-chart-2',      label: 'المؤشرات'     },
-      { href: 'notifications.html', icon: 'bell',             label: 'الإشعارات'    },
+      { href: 'employee.html',     icon: 'home',           label: 'الرئيسية'  },
+      { href: 'distribution.html', icon: 'bar-chart-2',    label: 'المؤشرات'  },
+      { href: 'findings.html',     icon: 'shield-alert',   label: 'المخالفات' },
+      { href: 'forms.html',        icon: 'file-text',      label: 'النماذج'   },
     ]
   };
 
