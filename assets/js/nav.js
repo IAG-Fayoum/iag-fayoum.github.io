@@ -21,7 +21,7 @@
     'default': [
       { href: 'employee.html',      icon: 'list-checks',      label: 'مهامي'        },
       { href: 'findings.html',      icon: 'shield-alert',     label: 'المخالفات'    },
-      { href: 'forms.html',         icon: 'file-text',        label: 'النماذج'      },
+      { href: 'distribution.html',  icon: 'bar-chart-2',      label: 'المؤشرات'     },
       { href: 'notifications.html', icon: 'bell',             label: 'الإشعارات'    },
     ]
   };
