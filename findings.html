@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0f766e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
-    <title>المخالفات المرصودة | IAG System</title>
+    <title>الملاحظات المرصودة | IAG System</title>
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -146,7 +146,7 @@
                 <div class="breadcrumbs">
                     <span>الرئيسية</span>
                     <i data-lucide="chevron-left" class="w-3 h-3 text-teal-200"></i>
-                    <strong>المخالفات المرصودة</strong>
+                    <strong>الملاحظات المرصودة</strong>
                 </div>
                 <div class="dept-title">إدارة المراجعة الداخلية والحوكمة</div>
                 <div class="dept-subtitle">Internal Audit &amp; Governance Dept</div>
@@ -156,7 +156,7 @@
             </button>
         </div>
         <div class="text-center mt-2">
-            <h1 class="text-lg font-bold text-white">المخالفات المرصودة</h1>
+            <h1 class="text-lg font-bold text-white">الملاحظات المرصودة</h1>
             <p class="text-teal-200 text-xs mt-1" id="hdr-sub">جاري التحميل...</p>
         </div>
     </div>
@@ -200,7 +200,7 @@
 <div class="kpi-strip">
     <div class="kpi-card">
         <div class="kpi-num" style="color:#334155" id="k-total">—</div>
-        <div class="kpi-lbl">إجمالي المخالفات</div>
+        <div class="kpi-lbl">إجمالي الملاحظات</div>
     </div>
     <div class="kpi-card">
         <div class="kpi-num" style="color:#dc2626" id="k-high">—</div>
@@ -385,7 +385,7 @@ function renderUnits() {
 
     if (!filtered.length) {
         document.getElementById('section-hdr').style.display = 'none';
-        container.innerHTML = '<div class="empty-box col-span-full"><p class="text-sm font-bold">لا توجد مخالفات بهذه الفلاتر</p></div>';
+        container.innerHTML = '<div class="empty-box col-span-full"><p class="text-sm font-bold">لا توجد ملاحظات بهذه الفلاتر</p></div>';
         lucide.createIcons();
         return;
     }
