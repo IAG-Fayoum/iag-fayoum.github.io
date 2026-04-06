@@ -1,807 +1,481 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الإجراءات التصحيحية - IAG Fayoum</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #0f766e;
-      --primary-dark: #0d6b63;
-      --primary-light: #f0fdfa;
-      --bg: #f1f5f9;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
-      --text-muted: #94a3b8;
-      --status-open: #dc2626;
-      --status-inprog: #d97706;
-      --status-closed: #059669;
-      --status-new: #3b82f6;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <title>الإجراءات التصحيحية | IAG System</title>
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
 
-    * {
-      font-family: 'Cairo', sans-serif;
-      box-sizing: border-box;
-    }
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-    body {
-      background: var(--bg);
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      padding-bottom: 90px;
-    }
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        :root { --primary: #0f766e; }
 
-    .header-pattern {
-      background: #020617;
-      background-image:
-        radial-gradient(circle at top right, #0f766e 0%, transparent 40%),
-        radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
-      padding: 1rem 1.5rem 3.5rem;
-    }
+        /* HEADER */
+        .main-header {
+            background: #020617;
+            background-image: radial-gradient(circle at top right, #0f766e 0%, transparent 40%), radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
+            color: white; padding: 1.5rem 1.5rem 5rem; position: relative; z-index: 10;
+            padding-top: max(1.5rem, env(safe-area-inset-top));
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; }
+        .header-btn { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; display: flex; align-items: center; justify-content: center; color: white; }
+        .header-btn:hover { background: rgba(255,255,255,0.2); }
+        .dept-title { font-size: 1rem; font-weight: 800; text-align: center; margin-top: 6px; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; font-family: sans-serif; }
 
-    .filter-card {
-      margin: -3.5rem 1rem 1.5rem;
-      position: relative;
-      z-index: 20;
-      background: rgba(255, 255, 255, 0.97);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 1.25rem;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-    }
+        /* FILTER CARD */
+        .filter-container {
+            margin: -3.5rem 1rem 1.5rem; position: relative; z-index: 20;
+            background: rgba(255,255,255,0.97); backdrop-filter: blur(20px);
+            border-radius: 20px; padding: 1.25rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid #fff;
+        }
+        @media (min-width: 1024px) { .filter-container { max-width: 1100px; margin: -3.5rem auto 1.5rem; } }
 
-    .kpi-card {
-      background: white;
-      border-radius: 16px;
-      padding: 1rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
-      cursor: pointer;
-      border: 2px solid transparent;
-    }
+        .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (min-width: 768px) { .filter-grid { grid-template-columns: 1fr 1fr auto; align-items: end; } }
 
-    .kpi-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    }
+        .f-label { font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; display: block; }
+        .f-input {
+            width: 100%; height: 44px; border: 2px solid #f1f5f9; border-radius: 12px;
+            font-size: 0.88rem; font-weight: 600; outline: none; background: #f8fafc;
+            color: #334155; transition: 0.2s; padding: 0 10px; font-family: 'Cairo', sans-serif;
+        }
+        .f-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
 
-    .kpi-card.active {
-      border-color: var(--primary);
-      background: var(--primary-light);
-    }
+        .btn-refresh {
+            height: 44px; padding: 0 16px; background: var(--primary); color: white;
+            border: none; border-radius: 12px; font-family: 'Cairo', sans-serif; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap;
+        }
+        .btn-refresh:hover { background: #0d6b63; }
 
-    .section-card {
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      margin-bottom: 1rem;
-      transition: all 0.3s ease;
-    }
+        /* RESULTS BAR */
+        .results-bar {
+            padding: 0 1rem 0.75rem; max-width: 1100px; margin: 0 auto;
+            font-size: 0.8rem; font-weight: 700; color: #64748b;
+        }
 
-    .section-card:hover {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    }
+        /* SECTION CARDS */
+        .cards-container { padding: 0 1rem 2rem; max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+        @media (min-width: 1024px) { .cards-container { display: grid; grid-template-columns: repeat(2, 1fr); } }
 
-    .status-open { border-right: 4px solid var(--status-open); }
-    .status-inprog { border-right: 4px solid var(--status-inprog); }
-    .status-closed { border-right: 4px solid var(--status-closed); }
+        .section-card {
+            background: white; border-radius: 18px; border: 1px solid #e2e8f0;
+            border-right: 5px solid var(--primary); overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04); transition: 0.2s;
+        }
+        .section-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        .section-card.status-مفتوح  { border-right-color: #dc2626; }
+        .section-card.status-جاري   { border-right-color: #d97706; }
+        .section-card.status-مغلق   { border-right-color: #059669; }
+        .section-card.status-معلق   { border-right-color: #7c3aed; }
 
-    .badge-open { background: #fef2f2; color: var(--status-open); }
-    .badge-inprog { background: #fffbeb; color: var(--status-inprog); }
-    .badge-closed { background: #ecfdf5; color: var(--status-closed); }
-    .badge-replied { background: #ecfdf5; color: var(--status-closed); }
-    .badge-pending { background: #f1f5f9; color: var(--text-muted); }
+        .card-header {
+            padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid #f1f5f9;
+            display: flex; justify-content: space-between; align-items: center; gap: 8px;
+        }
+        .car-id-badge { background: #f0fdfa; color: var(--primary); font-size: 0.8rem; font-weight: 900; padding: 3px 10px; border-radius: 20px; border: 1px solid #ccfbf1; white-space: nowrap; }
+        .unit-name { font-size: 0.85rem; font-weight: 800; color: #1e293b; }
+        .section-name { font-size: 0.75rem; color: #64748b; font-weight: 700; margin-top: 2px; }
 
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease;
-    }
+        .card-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
 
-    .accordion-content.open {
-      max-height: 1000px;
-    }
+        /* Findings */
+        .findings-block { background: #fefce8; border: 1px solid #fef08a; border-radius: 10px; padding: 10px 12px; }
+        .findings-label { font-size: 0.7rem; font-weight: 800; color: #92400e; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+        .findings-text { font-size: 0.85rem; color: #1e293b; line-height: 1.6; }
 
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.5rem 1.25rem;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
+        /* Portal response */
+        .portal-block { border-radius: 10px; padding: 10px 12px; }
+        .portal-block.has-response { background: #f0fdf4; border: 1px solid #bbf7d0; }
+        .portal-block.no-response  { background: #f8fafc; border: 1px solid #e2e8f0; }
+        .portal-label { font-size: 0.7rem; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .badge-replied { background: #d1fae5; color: #065f46; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+        .badge-no-reply { background: #f1f5f9; color: #94a3b8; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+        .portal-text { font-size: 0.82rem; color: #374151; line-height: 1.5; }
 
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
+        /* Status + Note */
+        .form-label { font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; display: block; }
+        .status-select {
+            width: 100%; height: 40px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+            font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 700;
+            background: #f8fafc; color: #1e293b; outline: none; padding: 0 10px;
+            transition: 0.2s; cursor: pointer;
+        }
+        .status-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); background: white; }
 
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+        .hold-reason-block { margin-top: 8px; }
+        .f-text { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 8px 12px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; outline: none; background: #f8fafc; color: #1e293b; transition: 0.2s; resize: vertical; min-height: 70px; }
+        .f-text:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); background: white; }
+        .f-text.required-field { border-color: #fca5a5; background: #fff5f5; }
 
-    .form-select, .form-input {
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 0.6rem 0.8rem;
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
-      background: white;
-    }
+        .card-footer { padding: 12px 16px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; }
+        .btn-save {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px;
+            background: var(--primary); color: white; border: none; border-radius: 10px;
+            font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 800;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-save:hover { background: #0d6b63; transform: translateY(-1px); }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-    .form-select:focus, .form-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
-    }
+        /* SIDE MENU */
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu { right: 0; }
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
 
-    .nav-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      text-decoration: none;
-      color: var(--text-muted);
-      font-size: 0.7rem;
-      font-weight: 500;
-      padding: 8px 12px;
-      border-radius: 12px;
-      transition: all 0.2s ease;
-    }
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+        .nav-btn.active { color: var(--primary); }
 
-    .nav-btn:hover {
-      color: var(--primary);
-      background: var(--primary-light);
-    }
+        .loader-box { text-align: center; padding: 4rem; color: #94a3b8; }
+        .empty-box { text-align: center; padding: 3rem; color: #64748b; background: white; border-radius: 16px; border: 1px dashed #e2e8f0; }
+        .hidden { display: none !important; }
 
-    .nav-btn.active {
-      color: var(--primary);
-    }
-
-    .nav-btn svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: #0f172a;
-      color: white;
-      padding: 0.875rem 1.5rem;
-      border-radius: 12px;
-      font-weight: 500;
-      z-index: 1000;
-      opacity: 0;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-    }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
-
-    .toast.success { background: var(--status-closed); }
-    .toast.error { background: var(--status-open); }
-
-    .spinner {
-      width: 20px;
-      height: 20px;
-      border: 2.5px solid white;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .animate-in {
-      animation: fadeInUp 0.5s ease forwards;
-    }
-
-    .loading-skeleton {
-      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 8px;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-  </style>
+        .toast {
+            position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%);
+            background: #0f766e; color: white; padding: 10px 22px; border-radius: 12px;
+            font-size: 0.85rem; font-weight: 700; z-index: 300; display: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .toast.show { display: block; animation: fadeIn 0.2s; }
+        .toast.error { background: #dc2626; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+    </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header-pattern">
-    <div style="max-width: 1300px; margin: 0 auto;">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-        <div>
-          <span style="background: rgba(15, 118, 110, 0.2); color: #5eead4; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
-            إجراءات تصحيحية
-          </span>
-        </div>
-        <div style="color: #94a3b8; font-size: 0.8rem;">
-          <span id="currentDate"></span>
-        </div>
-      </div>
-      <h1 style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0;">
-        متابعة الإجراءات التصحيحية
-      </h1>
-      <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 0.5rem;" id="welcomeMsg">
-        مرحباً بك في نظام متابعة الإجراءات التصحيحية
-      </p>
-    </div>
-  </header>
 
-  <!-- KPI Cards -->
-  <div style="max-width: 1300px; margin: 0 auto; padding: 0 1rem;">
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
-      <div class="kpi-card" data-filter="all" onclick="filterByStatus('all')">
-        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-          <div style="background: #f1f5f9; padding: 0.5rem; border-radius: 10px;">
-            <i data-lucide="layers" style="width: 18px; height: 18px; color: var(--text-secondary);"></i>
-          </div>
-          <span style="font-size: 0.75rem; color: var(--text-secondary);">الإجمالي</span>
-        </div>
-        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary);" id="totalCount">0</div>
-      </div>
-      <div class="kpi-card" data-filter="مفتوح" onclick="filterByStatus('مفتوح')">
-        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-          <div style="background: #fef2f2; padding: 0.5rem; border-radius: 10px;">
-            <i data-lucide="circle-dot" style="width: 18px; height: 18px; color: var(--status-open);"></i>
-          </div>
-          <span style="font-size: 0.75rem; color: var(--text-secondary);">مفتوح</span>
-        </div>
-        <div style="font-size: 1.5rem; font-weight: 700; color: var(--status-open);" id="openCount">0</div>
-      </div>
-      <div class="kpi-card" data-filter="جاري" onclick="filterByStatus('جاري')">
-        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-          <div style="background: #fffbeb; padding: 0.5rem; border-radius: 10px;">
-            <i data-lucide="loader" style="width: 18px; height: 18px; color: var(--status-inprog);"></i>
-          </div>
-          <span style="font-size: 0.75rem; color: var(--text-secondary);">جاري</span>
-        </div>
-        <div style="font-size: 1.5rem; font-weight: 700; color: var(--status-inprog);" id="inprogCount">0</div>
-      </div>
-      <div class="kpi-card" data-filter="مغلق" onclick="filterByStatus('مغلق')">
-        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-          <div style="background: #ecfdf5; padding: 0.5rem; border-radius: 10px;">
-            <i data-lucide="check-circle-2" style="width: 18px; height: 18px; color: var(--status-closed);"></i>
-          </div>
-          <span style="font-size: 0.75rem; color: var(--text-secondary);">مغلق</span>
-        </div>
-        <div style="font-size: 1.5rem; font-weight: 700; color: var(--status-closed);" id="closedCount">0</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Filter Card -->
-  <div class="filter-card" style="max-width: 1270px; margin-left: auto; margin-right: auto;">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
-      <div>
-        <label style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block;">بحث بالجهة</label>
-        <div style="position: relative;">
-          <i data-lucide="building-2" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
-          <input type="text" id="searchFacility" class="form-input" placeholder="اسم الجهة..." style="width: 100%; padding-right: 2.25rem;" oninput="applyFilters()">
-        </div>
-      </div>
-      <div>
-        <label style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block;">بحث بالقسم</label>
-        <div style="position: relative;">
-          <i data-lucide="door-open" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
-          <input type="text" id="searchSection" class="form-input" placeholder="اسم القسم..." style="width: 100%; padding-right: 2.25rem;" oninput="applyFilters()">
-        </div>
-      </div>
-    </div>
-    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-      <select id="filterStatus" class="form-select" style="flex: 1; min-width: 120px;" onchange="applyFilters()">
-        <option value="">كل الحالات</option>
-        <option value="مفتوح">مفتوح</option>
-        <option value="جاري">جاري</option>
-        <option value="مغلق">مغلق</option>
-      </select>
-      <select id="filterReplied" class="form-select" style="flex: 1; min-width: 120px;" onchange="applyFilters()">
-        <option value="">الكل</option>
-        <option value="replied">ردت الجهة</option>
-        <option value="pending">لم يرد بعد</option>
-      </select>
-      <button class="btn-primary" onclick="resetFilters()" style="display: flex; align-items: center; gap: 0.35rem;">
-        <i data-lucide="rotate-ccw" style="width: 16px; height: 16px;"></i>
-        إعادة تعيين
-      </button>
-    </div>
-  </div>
-
-  <!-- Sections Container -->
-  <div style="max-width: 1300px; margin: 0 auto; padding: 0 1rem;" id="sectionsContainer">
-    <!-- Loading State -->
-    <div id="loadingState" style="display: flex; flex-direction: column; gap: 1rem;">
-      <div class="loading-skeleton" style="height: 200px;"></div>
-      <div class="loading-skeleton" style="height: 200px;"></div>
-      <div class="loading-skeleton" style="height: 200px;"></div>
-    </div>
-    <!-- Empty State -->
-    <div id="emptyState" style="display: none; text-align: center; padding: 3rem 1rem;">
-      <i data-lucide="inbox" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1rem;"></i>
-      <p style="color: var(--text-secondary); font-size: 1rem;">لا توجد أقسام مطابقة للبحث</p>
-    </div>
-    <!-- Sections List -->
-    <div id="sectionsList" style="display: flex; flex-direction: column; gap: 1rem;"></div>
-  </div>
-
-  <!-- Toast -->
-  <div id="toast" class="toast"></div>
-
-  <!-- Bottom Nav -->
-  <nav style="position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid var(--border); z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom));">
-    <div style="display: flex; justify-content: space-around; padding: 8px 0; max-width: 500px; margin: 0 auto;">
-      <a href="coordinator.html" class="nav-btn">
-        <i data-lucide="layout-dashboard"></i>
-        <span>المعاملات</span>
-      </a>
-      <a href="findings.html" class="nav-btn">
-        <i data-lucide="alert-triangle"></i>
-        <span>الملاحظات</span>
-      </a>
-      <a href="car.html" class="nav-btn active">
-        <i data-lucide="clipboard-check"></i>
-        <span>الإجراءات</span>
-      </a>
-      <a href="notifications.html" class="nav-btn">
-        <i data-lucide="bell"></i>
-        <span>الإشعارات</span>
-      </a>
-      <a href="forms.html" class="nav-btn">
-        <i data-lucide="file-text"></i>
-        <span>النماذج</span>
-      </a>
-    </div>
-  </nav>
-
-  <script>
-    // ==================== Configuration ====================
-    const API = localStorage.getItem('iag_api_url') || '';
-    let allSections = [];
-    let currentFilter = 'all';
-
-    // ==================== Auth Check ====================
-    const user = JSON.parse(localStorage.getItem('iag_user') || '{}');
-    if (!user || !user.name) {
-      window.location.href = 'index.html';
-    }
-
-    // ==================== API Functions ====================
-    async function post(action, body) {
-      const res = await fetch(API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, ...body })
-      });
-      return res.json();
-    }
-
-    // ==================== Utility Functions ====================
-    function showToast(message, type = 'info') {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.className = `toast ${type} show`;
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
-    }
-
-    function formatDate(dateStr) {
-      if (!dateStr) return '';
-      return dateStr;
-    }
-
-    function getStatusClass(status) {
-      switch (status) {
-        case 'مفتوح': return 'status-open';
-        case 'جاري': return 'status-inprog';
-        case 'مغلق': return 'status-closed';
-        default: return 'status-open';
-      }
-    }
-
-    function getBadgeClass(status) {
-      switch (status) {
-        case 'مفتوح': return 'badge-open';
-        case 'جاري': return 'badge-inprog';
-        case 'مغلق': return 'badge-closed';
-        default: return 'badge-open';
-      }
-    }
-
-    // ==================== Data Loading ====================
-    async function loadSections() {
-      try {
-        document.getElementById('loadingState').style.display = 'flex';
-        document.getElementById('sectionsList').innerHTML = '';
-        document.getElementById('emptyState').style.display = 'none';
-
-        const result = await post('getCARSections', {});
-        
-        if (result.success && result.data) {
-          allSections = result.data;
-        } else {
-          // Demo data for testing
-          allSections = [
-            {
-              car_id: 'CAR-20260401-المشتل',
-              facility_name: 'المركز الطبي المشتل',
-              section_name: 'الصيدلية',
-              findings_count: '10',
-              findings_text: '1. عدم وجود سجل صرف الأدوية\n2. نقص في الأدوية الأساسية\n3. عدم تطبيق نظام FIFO\n4. انتهاء صلاحية بعض الأدوية\n5. عدم وجود تهوية مناسبة',
-              portal_response: 'جاري التلافي وتم صرف النقص',
-              portal_replied_at: '01/04/2026 14:30:00',
-              staff_status: 'جاري',
-              staff_note: '',
-              staff_updated_by: 'أحمد محمد',
-              staff_updated_at: '02/04/2026 10:00:00'
-            },
-            {
-              car_id: 'CAR-20260401-المشتل',
-              facility_name: 'المركز الطبي المشتل',
-              section_name: 'الطوارئ',
-              findings_count: '5',
-              findings_text: '1. عدم وجود حقيبة إسعافات أولية\n2. نقص في الأجهزة الطبية\n3. عدم صلاحية جهاز الإنعاش\n4. عدم وجود سرير فحص\n5. عدم كفاية الإضاءة',
-              portal_response: '',
-              portal_replied_at: '',
-              staff_status: 'مفتوح',
-              staff_note: '',
-              staff_updated_by: '',
-              staff_updated_at: ''
-            },
-            {
-              car_id: 'CAR-20260402-طامية',
-              facility_name: 'وحدة طامية الصحية',
-              section_name: 'العيادات',
-              findings_count: '3',
-              findings_text: '1. عدم وجود سجل مراجعة المرضى\n2. عدم تطبيق الإجراءات الوقائية\n3. نقص في المعدات الطبية',
-              portal_response: 'تم التلافي وجاري المتابعة',
-              portal_replied_at: '03/04/2026 09:15:00',
-              staff_status: 'مغلق',
-              staff_note: 'تم التحقق من التلافي',
-              staff_updated_by: 'محمد علي',
-              staff_updated_at: '04/04/2026 11:30:00'
-            },
-            {
-              car_id: 'CAR-20260403-سنورس',
-              facility_name: 'مستشفى سنورس المركزي',
-              section_name: 'المختبر',
-              findings_count: '8',
-              findings_text: '1. عدم وجود سجل تحاليل\n2. عدم صيانة الأجهزة\n3. نقص الكوادر الفنية\n4. عدم وجود تهوية مناسبة\n5. انتهاء صلاحية بعض المحاليل\n6. عدم وجود سجل نفايات\n7. عدم تطبيق معايير السلامة\n8. نقص في المستلزمات',
-              portal_response: '',
-              portal_replied_at: '',
-              staff_status: 'مفتوح',
-              staff_note: '',
-              staff_updated_by: '',
-              staff_updated_at: ''
-            }
-          ];
-        }
-
-        updateKPIs();
-        renderSections(allSections);
-        
-      } catch (error) {
-        console.error('Error loading sections:', error);
-        showToast('حدث خطأ في تحميل البيانات', 'error');
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('emptyState').style.display = 'block';
-      }
-    }
-
-    // ==================== KPI Updates ====================
-    function updateKPIs() {
-      const total = allSections.length;
-      const open = allSections.filter(s => s.staff_status === 'مفتوح').length;
-      const inprog = allSections.filter(s => s.staff_status === 'جاري').length;
-      const closed = allSections.filter(s => s.staff_status === 'مغلق').length;
-
-      document.getElementById('totalCount').textContent = total;
-      document.getElementById('openCount').textContent = open;
-      document.getElementById('inprogCount').textContent = inprog;
-      document.getElementById('closedCount').textContent = closed;
-    }
-
-    // ==================== Rendering ====================
-    function renderSections(sections) {
-      document.getElementById('loadingState').style.display = 'none';
-      
-      const container = document.getElementById('sectionsList');
-      
-      if (sections.length === 0) {
-        document.getElementById('emptyState').style.display = 'block';
-        container.innerHTML = '';
-        return;
-      }
-
-      document.getElementById('emptyState').style.display = 'none';
-      
-      container.innerHTML = sections.map((section, index) => {
-        const hasReply = section.portal_response && section.portal_response.trim() !== '';
-        const statusClass = getStatusClass(section.staff_status);
-        const badgeClass = getBadgeClass(section.staff_status);
-        
-        return `
-          <div class="section-card ${statusClass} animate-in" style="animation-delay: ${index * 0.1}s" data-car-id="${section.car_id}" data-section="${section.section_name}">
-            <!-- Header -->
-            <div style="padding: 1rem; border-bottom: 1px solid var(--border);">
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-                <div>
-                  <h3 style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin: 0 0 0.25rem 0;">
-                    ${section.facility_name}
-                  </h3>
-                  <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">
-                    قسم: ${section.section_name}
-                  </p>
-                </div>
-                <span class="${badgeClass}" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
-                  ${section.staff_status || 'مفتوح'}
-                </span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 1rem;">
-                <span style="font-size: 0.75rem; color: var(--text-muted);">
-                  <i data-lucide="alert-circle" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i>
-                  ${section.findings_count} مخالفات
-                </span>
-              </div>
+    <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
+    <aside class="side-menu" id="side-menu">
+        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+                <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
             </div>
-            
-            <!-- Portal Response -->
-            <div style="padding: 1rem; background: ${hasReply ? '#f8fafc' : '#fafafa'}; border-bottom: 1px solid var(--border);">
-              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary);">رد الجهة:</span>
-                ${hasReply 
-                  ? `<span class="badge-replied" style="padding: 0.15rem 0.5rem; border-radius: 12px; font-size: 0.7rem;">ردت</span>`
-                  : `<span class="badge-pending" style="padding: 0.15rem 0.5rem; border-radius: 12px; font-size: 0.7rem;">لم يرد بعد</span>`
-                }
-              </div>
-              ${hasReply 
-                ? `<p style="font-size: 0.85rem; color: var(--text-primary); margin: 0 0 0.5rem 0; line-height: 1.6; background: white; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border);">
-                    ${section.portal_response}
-                  </p>
-                  <span style="font-size: 0.7rem; color: var(--text-muted);">
-                    <i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; vertical-align: middle;"></i>
-                    ${section.portal_replied_at}
-                  </span>`
-                : `<p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">في انتظار رد الجهة...</p>`
-              }
-            </div>
-            
-            <!-- Findings Accordion -->
-            <div style="border-bottom: 1px solid var(--border);">
-              <button onclick="toggleAccordion(this)" style="width: 100%; padding: 0.75rem 1rem; background: none; border: none; text-align: right; cursor: pointer; display: flex; align-items: center; justify-content: space-between; color: var(--primary); font-weight: 600; font-size: 0.85rem;">
-                <span style="display: flex; align-items: center; gap: 0.5rem;">
-                  <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
-                  تفاصيل المخالفات
-                </span>
-                <i data-lucide="chevron-down" style="width: 18px; height: 18px; transition: transform 0.3s ease;"></i>
-              </button>
-              <div class="accordion-content">
-                <div style="padding: 0 1rem 1rem;">
-                  <div style="background: #fefce8; padding: 0.75rem; border-radius: 10px; border: 1px solid #fef08a;">
-                    <pre style="white-space: pre-wrap; font-family: 'Cairo', sans-serif; font-size: 0.8rem; color: var(--text-primary); margin: 0; line-height: 1.8;">${section.findings_text}</pre>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Status Update -->
-            <div style="padding: 1rem; background: #f8fafc;">
-              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
-                <i data-lucide="edit-3" style="width: 14px; height: 14px; color: var(--text-muted);"></i>
-                <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary);">تحديث النتيجة:</span>
-              </div>
-              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: flex-end;">
-                <div style="flex: 1; min-width: 100px;">
-                  <label style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">النتيجة</label>
-                  <select class="form-select" id="status-${index}" style="width: 100%;">
-                    <option value="مفتوح" ${section.staff_status === 'مفتوح' ? 'selected' : ''}>مفتوح</option>
-                    <option value="جاري" ${section.staff_status === 'جاري' ? 'selected' : ''}>جاري</option>
-                    <option value="مغلق" ${section.staff_status === 'مغلق' ? 'selected' : ''}>مغلق</option>
-                  </select>
-                </div>
-                <div style="flex: 2; min-width: 150px;">
-                  <label style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">ملاحظة</label>
-                  <input type="text" class="form-input" id="note-${index}" placeholder="ملاحظة اختيارية..." value="${section.staff_note || ''}" style="width: 100%;">
-                </div>
-                <button class="btn-primary" onclick="saveStatus(${index}, '${section.car_id}', '${section.section_name}')" id="saveBtn-${index}" style="white-space: nowrap;">
-                  <span style="display: flex; align-items: center; gap: 0.35rem;">
-                    <i data-lucide="save" style="width: 16px; height: 16px;"></i>
-                    حفظ
-                  </span>
+            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
+            <p class="text-xs text-teal-600" id="menu-role">...</p>
+        </div>
+        <nav class="flex-1 p-4 space-y-2" id="side-nav"></nav>
+        <div class="p-4 border-t">
+            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+            </button>
+        </div>
+    </aside>
+
+    <header class="main-header">
+        <div class="max-w-[1100px] mx-auto">
+            <div class="header-top">
+                <button onclick="toggleMenu()" class="header-btn">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-              </div>
-              ${section.staff_updated_by 
-                ? `<p style="font-size: 0.7rem; color: var(--text-muted); margin: 0.5rem 0 0 0;">
-                    آخر تحديث: ${section.staff_updated_by} - ${section.staff_updated_at}
-                  </p>`
-                : ''
-              }
+                <div class="text-center">
+                    <div class="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-xs font-bold text-teal-100 mb-2 border border-white/10">
+                        <i data-lucide="clipboard-check" class="w-3 h-3"></i> الإجراءات التصحيحية
+                    </div>
+                    <h1 class="dept-title">CAR — الأقسام والملاحظات</h1>
+                    <p class="dept-subtitle">Corrective Action Reports</p>
+                </div>
+                <button onclick="window.location.href='notifications.html'" class="header-btn relative">
+                    <i data-lucide="bell" class="w-6 h-6"></i>
+                    <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900"></span>
+                </button>
             </div>
-          </div>
-        `;
-      }).join('');
+        </div>
+    </header>
 
-      lucide.createIcons();
-    }
+    <!-- FILTER CARD -->
+    <div class="filter-container">
+        <div class="filter-grid">
+            <div>
+                <label class="f-label">الجهة</label>
+                <select id="f-unit" class="f-input" onchange="applyFilters()">
+                    <option value="">كل الجهات</option>
+                </select>
+            </div>
+            <div>
+                <label class="f-label">الحالة</label>
+                <select id="f-status" class="f-input" onchange="applyFilters()">
+                    <option value="">الكل</option>
+                    <option value="مفتوح">مفتوح</option>
+                    <option value="جاري">جاري</option>
+                    <option value="مغلق">مغلق</option>
+                    <option value="معلق">معلق</option>
+                </select>
+            </div>
+            <div>
+                <label class="f-label text-transparent hidden md:block">.</label>
+                <button onclick="reload()" class="btn-refresh">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i> تحديث
+                </button>
+            </div>
+        </div>
+    </div>
 
-    // ==================== Interactions ====================
-    function toggleAccordion(btn) {
-      const content = btn.nextElementSibling;
-      const icon = btn.querySelector('[data-lucide="chevron-down"]');
-      
-      content.classList.toggle('open');
-      icon.style.transform = content.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
-    }
+    <div class="results-bar" id="results-bar"></div>
 
-    function filterByStatus(status) {
-      currentFilter = status;
-      
-      // Update KPI cards active state
-      document.querySelectorAll('.kpi-card').forEach(card => {
-        card.classList.remove('active');
-        if (card.dataset.filter === status) {
-          card.classList.add('active');
-        }
-      });
+    <div class="cards-container" id="cards-container">
+        <div class="loader-box col-span-2">
+            <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto mb-3 text-teal-600"></i>
+            <p class="font-bold">جاري تحميل البيانات...</p>
+        </div>
+    </div>
 
-      // Update dropdown
-      document.getElementById('filterStatus').value = status === 'all' ? '' : status;
-      
-      applyFilters();
-    }
+    <div class="toast" id="toast"></div>
 
-    function applyFilters() {
-      const facilitySearch = document.getElementById('searchFacility').value.trim().toLowerCase();
-      const sectionSearch = document.getElementById('searchSection').value.trim().toLowerCase();
-      const statusFilter = document.getElementById('filterStatus').value;
-      const repliedFilter = document.getElementById('filterReplied').value;
+    <nav class="bottom-nav lg:hidden" id="bottom-nav"></nav>
 
-      let filtered = [...allSections];
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/nav.js"></script>
+    <script>
+        lucide.createIcons();
 
-      if (facilitySearch) {
-        filtered = filtered.filter(s => s.facility_name.toLowerCase().includes(facilitySearch));
-      }
+        let allSections = [];
+        let currentUser = null;
 
-      if (sectionSearch) {
-        filtered = filtered.filter(s => s.section_name.toLowerCase().includes(sectionSearch));
-      }
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (typeof auth === 'undefined') { window.location.href = 'index.html'; return; }
+            const user = auth.checkAuth();
+            if (!user) { window.location.href = 'index.html'; return; }
 
-      if (statusFilter) {
-        filtered = filtered.filter(s => s.staff_status === statusFilter);
-      }
+            // مراجع فني only
+            if (user.role === 'مدير' || user.role === 'Admin' || user.role === 'منسق') {
+                window.location.href = 'coordinator.html';
+                return;
+            }
 
-      if (repliedFilter) {
-        if (repliedFilter === 'replied') {
-          filtered = filtered.filter(s => s.portal_response && s.portal_response.trim() !== '');
-        } else if (repliedFilter === 'pending') {
-          filtered = filtered.filter(s => !s.portal_response || s.portal_response.trim() === '');
-        }
-      }
+            currentUser = user;
+            document.getElementById('menu-user').textContent = user.name;
+            document.getElementById('menu-role').textContent = user.role;
 
-      renderSections(filtered);
-    }
-
-    function resetFilters() {
-      document.getElementById('searchFacility').value = '';
-      document.getElementById('searchSection').value = '';
-      document.getElementById('filterStatus').value = '';
-      document.getElementById('filterReplied').value = '';
-      
-      currentFilter = 'all';
-      document.querySelectorAll('.kpi-card').forEach(card => card.classList.remove('active'));
-      
-      renderSections(allSections);
-    }
-
-    async function saveStatus(index, carId, sectionName) {
-      const statusSelect = document.getElementById(`status-${index}`);
-      const noteInput = document.getElementById(`note-${index}`);
-      const saveBtn = document.getElementById(`saveBtn-${index}`);
-      
-      const newStatus = statusSelect.value;
-      const newNote = noteInput.value.trim();
-
-      // Show loading
-      saveBtn.disabled = true;
-      saveBtn.innerHTML = '<span class="spinner"></span>';
-
-      try {
-        const result = await post('updateSectionStatus', {
-          car_id: carId,
-          section_name: sectionName,
-          staff_status: newStatus,
-          staff_note: newNote,
-          updated_by: user.name
+            await loadSections();
         });
 
-        if (result.success) {
-          // Update local data
-          const section = allSections.find(s => s.car_id === carId && s.section_name === sectionName);
-          if (section) {
-            section.staff_status = newStatus;
-            section.staff_note = newNote;
-            section.staff_updated_by = user.name;
-            section.staff_updated_at = new Date().toLocaleString('ar-EG');
-          }
+        function toggleMenu() { document.body.classList.toggle('menu-open'); }
+        function logout() { localStorage.removeItem('iag_user'); localStorage.removeItem('iag_last_page'); window.location.href = 'index.html'; }
 
-          showToast('تم حفظ التحديث بنجاح', 'success');
-          updateKPIs();
-          applyFilters();
-        } else {
-          showToast(result.error || 'حدث خطأ في الحفظ', 'error');
+        async function loadSections() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = `
+                <div class="loader-box col-span-2">
+                    <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto mb-3 text-teal-600"></i>
+                    <p class="font-bold">جاري تحميل البيانات...</p>
+                </div>`;
+            lucide.createIcons();
+
+            try {
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getCARSections' })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    allSections = data.sections || [];
+                    populateUnitDropdown();
+                    applyFilters();
+                } else {
+                    container.innerHTML = `<div class="empty-box"><p class="font-bold">${data.error || 'لا توجد بيانات'}</p></div>`;
+                }
+            } catch (e) {
+                container.innerHTML = `<div class="empty-box text-red-500 col-span-2"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2"></i><p class="font-bold">خطأ في الاتصال بالخادم</p></div>`;
+                lucide.createIcons();
+            }
         }
-      } catch (error) {
-        console.error('Error saving status:', error);
-        showToast('حدث خطأ في الاتصال', 'error');
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.innerHTML = `<span style="display: flex; align-items: center; gap: 0.35rem;">
-          <i data-lucide="save" style="width: 16px; height: 16px;"></i>
-          حفظ
-        </span>`;
-        lucide.createIcons();
-      }
-    }
 
-    // ==================== Initialization ====================
-    function init() {
-      // Set current date
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ar-EG', options);
+        function reload() { allSections = []; loadSections(); }
 
-      // Set welcome message
-      if (user.name) {
-        document.getElementById('welcomeMsg').textContent = `مرحباً ${user.name} - تابع الإجراءات التصحيحية`;
-      }
+        function populateUnitDropdown() {
+            const sel = document.getElementById('f-unit');
+            const units = [...new Set(allSections.map(s => s.unit_name).filter(Boolean))].sort();
+            sel.innerHTML = '<option value="">كل الجهات</option>' +
+                units.map(u => `<option value="${u}">${u}</option>`).join('');
+        }
 
-      // Initialize icons
-      lucide.createIcons();
+        function applyFilters() {
+            const unitFilter   = document.getElementById('f-unit').value;
+            const statusFilter = document.getElementById('f-status').value;
 
-      // Load data
-      loadSections();
-    }
+            let filtered = allSections;
+            if (unitFilter)   filtered = filtered.filter(s => s.unit_name === unitFilter);
+            if (statusFilter) filtered = filtered.filter(s => (s.staff_status || 'مفتوح') === statusFilter);
 
-    // Start
-    document.addEventListener('DOMContentLoaded', init);
-  </script>
+            document.getElementById('results-bar').textContent =
+                filtered.length ? `عرض ${filtered.length} قسم` : '';
+
+            renderCards(filtered);
+        }
+
+        function renderCards(sections) {
+            const container = document.getElementById('cards-container');
+            if (!sections.length) {
+                container.innerHTML = `<div class="empty-box col-span-2"><p class="font-bold">لا توجد أقسام بهذه الفلاتر</p></div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = sections.map((s, idx) => buildCard(s, idx)).join('');
+            lucide.createIcons();
+        }
+
+        function buildCard(s, idx) {
+            const status = s.staff_status || 'مفتوح';
+            const hasResponse = s.portal_response && s.portal_response.trim() !== '';
+            const isMaglaq = status === 'معلق';
+
+            const portalBlock = hasResponse
+                ? `<div class="portal-block has-response">
+                    <div class="portal-label">
+                        <i data-lucide="message-circle" style="width:13px;height:13px;color:#059669"></i>
+                        <span class="font-bold text-green-800" style="font-size:0.7rem">رد الإدارة الصحية</span>
+                        <span class="badge-replied">تم الرد</span>
+                    </div>
+                    <p class="portal-text">${escHtml(s.portal_response)}</p>
+                  </div>`
+                : `<div class="portal-block no-response">
+                    <div class="portal-label">
+                        <i data-lucide="message-circle-off" style="width:13px;height:13px;color:#94a3b8"></i>
+                        <span class="font-bold text-gray-400" style="font-size:0.7rem">رد الإدارة الصحية</span>
+                        <span class="badge-no-reply">لا يوجد رد</span>
+                    </div>
+                  </div>`;
+
+            const statusOptions = ['مفتوح','جاري','مغلق','معلق'];
+            const statusSel = `<select class="status-select" id="status-${idx}" onchange="onStatusChange(${idx})">
+                ${statusOptions.map(o => `<option value="${o}" ${status === o ? 'selected' : ''}>${o}</option>`).join('')}
+            </select>`;
+
+            const holdDisplay = isMaglaq ? '' : 'display:none';
+            const holdRequired = isMaglaq ? 'required-field' : '';
+
+            return `
+            <div class="section-card status-${status}" id="card-${idx}" data-car-id="${escAttr(s.car_id)}" data-section="${escAttr(s.section_name)}">
+                <div class="card-header">
+                    <div>
+                        <div class="unit-name">${escHtml(s.unit_name || '—')}</div>
+                        <div class="section-name">${escHtml(s.section_name || '—')}</div>
+                    </div>
+                    <span class="car-id-badge">${escHtml(s.car_id || '—')}</span>
+                </div>
+                <div class="card-body">
+                    <div class="findings-block">
+                        <div class="findings-label">
+                            <i data-lucide="alert-triangle" style="width:13px;height:13px"></i> الملاحظات
+                        </div>
+                        <p class="findings-text">${escHtml(s.findings_text || 'لا توجد ملاحظات')}</p>
+                    </div>
+
+                    ${portalBlock}
+
+                    <div>
+                        <label class="form-label">الحالة</label>
+                        ${statusSel}
+                        <div id="hold-reason-block-${idx}" class="hold-reason-block" style="${holdDisplay}">
+                            <label class="form-label" style="margin-top:8px">سبب التعليق <span class="text-red-500">*</span></label>
+                            <input type="text" id="hold-reason-${idx}" class="f-text ${holdRequired}" placeholder="اكتب سبب التعليق..." style="min-height:unset;height:40px;resize:none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="form-label">ملاحظات الموظف</label>
+                        <textarea id="note-${idx}" class="f-text" placeholder="أي ملاحظات إضافية...">${escHtml(s.staff_note || '')}</textarea>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn-save" id="btn-${idx}" onclick="saveSection(${idx})">
+                        <i data-lucide="save" style="width:15px;height:15px"></i> حفظ
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        function onStatusChange(idx) {
+            const val = document.getElementById('status-' + idx).value;
+            const block = document.getElementById('hold-reason-block-' + idx);
+            const field = document.getElementById('hold-reason-' + idx);
+            if (val === 'معلق') {
+                block.style.display = '';
+                field.classList.add('required-field');
+            } else {
+                block.style.display = 'none';
+                field.classList.remove('required-field');
+                field.value = '';
+            }
+        }
+
+        async function saveSection(idx) {
+            const card    = document.getElementById('card-' + idx);
+            const carId   = card.dataset.carId;
+            const section = card.dataset.section;
+            const newStatus  = document.getElementById('status-' + idx).value;
+            const holdReason = document.getElementById('hold-reason-' + idx)?.value?.trim() || '';
+            const staffNote  = document.getElementById('note-' + idx).value.trim();
+            const btn        = document.getElementById('btn-' + idx);
+
+            if (newStatus === 'معلق' && !holdReason) {
+                document.getElementById('hold-reason-' + idx).focus();
+                showToast('يرجى إدخال سبب التعليق', true);
+                return;
+            }
+
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="animate-pulse">جاري الحفظ...</span>';
+
+            try {
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'updateSectionStatus',
+                        carId: carId,
+                        sectionName: section,
+                        newStatus: newStatus,
+                        holdReason: holdReason,
+                        staffNote: staffNote,
+                        updatedBy: currentUser.name
+                    })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('✅ تم حفظ التعديل');
+                    // Update card border color
+                    card.className = card.className.replace(/status-\S+/, 'status-' + newStatus);
+                } else {
+                    showToast('❌ ' + (data.error || 'فشل الحفظ'), true);
+                }
+            } catch (e) {
+                showToast('❌ خطأ في الاتصال', true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+                lucide.createIcons();
+            }
+        }
+
+        function showToast(msg, isError) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => { t.className = 'toast'; }, 2800);
+        }
+
+        function escHtml(str) {
+            return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+        function escAttr(str) {
+            return String(str || '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        }
+    </script>
 </body>
 </html>
