@@ -13,7 +13,7 @@
 
 ### قيد التنفيذ
 - [x] car.html — REBUILD للمراجع الفني (getCARSections + updateSectionStatus)
-- [ ] portal.html — بوابة مدير الإدارة الصحية (standalone, portalLogin + portalGetSections + portalSubmitResponse)
+- [x] portal.html — بوابة مدير الإدارة الصحية (standalone, portalLogin + portalGetSections + portalSubmitResponse)
 
 ### ملاحظة: portal_car.html موجود بالفعل كنسخة قديمة — سيُعاد بناء portal.html كصفحة جديدة نظيفة
 
