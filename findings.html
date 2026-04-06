@@ -34,99 +34,86 @@
         .menu-open .side-menu { right: 0; }
         .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
 
-        /* FILTER */
+        /* FILTER CARD */
         .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
         @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } }
-        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
-        .f-input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; font-family: 'Cairo', sans-serif; }
+        .f-label { font-size: 0.72rem; font-weight: 700; color: #64748b; margin-bottom: 5px; display: block; }
+        .f-input { width: 100%; height: 42px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.88rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 10px; font-family: 'Cairo', sans-serif; }
         .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
-        .btn-toggle-view { height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #cbd5e1; background: #f8fafc; color: #475569; font-family: 'Cairo', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; white-space: nowrap; }
-        .btn-toggle-view:hover { background: #e2e8f0; border-color: #0f766e; color: #0f766e; }
-        .btn-toggle-view.table-active { background: #f0fdfa; border-color: #0f766e; color: #0f766e; }
+        .f-input:disabled { background: #f8fafc; color: #94a3b8; cursor: not-allowed; }
 
-        /* STATS */
-        .stats-wrapper { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; }
-        .stats-row { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 10px; }
-        .stats-row-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
-        .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; transition: 0.15s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .stat-card.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
-        .stat-card .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-        .stat-card .lbl { font-size: 0.78rem; font-weight: 700; color: #64748b; }
-        .stat-card.active .num, .stat-card.active .lbl { color: #0f766e !important; }
+        /* TYPE TOGGLE */
+        .type-toggle { display: flex; gap: 6px; }
+        .type-btn { flex: 1; height: 42px; border: 1px solid #cbd5e1; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; background: #f8fafc; color: #475569; transition: 0.2s; }
+        .type-btn.active { background: #0f766e; color: white; border-color: #0f766e; }
+        .type-btn:hover:not(.active) { background: #f0fdfa; border-color: #0f766e; color: #0f766e; }
 
-        /* CARDS VIEW */
-        .cards-container { padding: 0 1rem 5rem; max-width: 1200px; margin: 0 auto; display: grid; gap: 12px; grid-template-columns: 1fr; }
-        @media (min-width: 768px) { .cards-container { grid-template-columns: repeat(2,1fr); } }
-        @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3,1fr); } }
+        /* KPI STRIP */
+        .kpi-strip { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+        .kpi-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .kpi-num { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 3px; }
+        .kpi-lbl { font-size: 0.62rem; font-weight: 700; color: #64748b; }
 
-        .finding-card { background: white; border-radius: 14px; border: 1px solid #e2e8f0; border-right: 4px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.03); transition: 0.15s; cursor: pointer; overflow: hidden; }
-        .finding-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
-        .finding-card.sev-high { border-right-color: #dc2626; }
-        .finding-card.sev-med  { border-right-color: #d97706; }
-        .finding-card.sev-low  { border-right-color: #3b82f6; }
-        .finding-card.sev-info { border-right-color: #64748b; }
-        .fc-body { padding: 12px 14px; }
-        .fc-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-        .fc-id { font-size: 0.68rem; font-weight: 800; color: #94a3b8; background: #f1f5f9; padding: 2px 7px; border-radius: 6px; }
-        .fc-section { font-size: 0.68rem; font-weight: 700; color: #0f766e; background: #f0fdfa; border: 1px solid #ccfbf1; padding: 2px 7px; border-radius: 6px; }
-        .clf-badge { font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 6px; }
-        .clf-v { background: #fef2f2; color: #dc2626; }
-        .clf-r { background: #fff7ed; color: #c2410c; }
-        .clf-a { background: #eff6ff; color: #1d4ed8; }
-        .clf-i { background: #f0fdf4; color: #15803d; }
-        .sev-badge { font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 6px; }
-        .sev-badge-high { background: #fef2f2; color: #dc2626; }
-        .sev-badge-med  { background: #fff7ed; color: #c2410c; }
-        .sev-badge-low  { background: #eff6ff; color: #1d4ed8; }
-        .fc-violation { font-size: 0.88rem; font-weight: 700; color: #1e293b; line-height: 1.6; margin-bottom: 8px; }
-        .fc-meta { display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.75rem; color: #64748b; }
-        .fc-footer { padding: 8px 14px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
-        .car-pill { font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; display: inline-flex; align-items: center; gap: 3px; cursor: pointer; transition: 0.15s; text-decoration: none; }
-        .car-pill:hover { opacity: 0.8; transform: scale(1.03); }
+        /* SECTION HEADER */
+        .section-hdr { padding: 0 1rem; max-width: 1200px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: space-between; }
+        .section-hdr-title { font-size: 0.82rem; font-weight: 800; color: #475569; }
+        .section-hdr-count { font-size: 0.75rem; font-weight: 700; color: #94a3b8; background: #f1f5f9; padding: 3px 10px; border-radius: 20px; }
+
+        /* UNIT CARDS */
+        .units-container { padding: 0 1rem 5rem; max-width: 1200px; margin: 0 auto; display: grid; gap: 10px; grid-template-columns: 1fr; }
+        @media (min-width: 768px) { .units-container { grid-template-columns: repeat(2,1fr); } }
+        @media (min-width: 1200px) { .units-container { grid-template-columns: repeat(3,1fr); } }
+
+        .unit-card { background: white; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.03); overflow: hidden; transition: 0.15s; }
+        .unit-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
+        .unit-card.has-high { border-right: 4px solid #dc2626; }
+        .unit-card.has-med  { border-right: 4px solid #d97706; }
+        .unit-card.has-low  { border-right: 4px solid #3b82f6; }
+
+        .uc-header { padding: 12px 14px; cursor: pointer; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+        .uc-name { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.4; flex: 1; }
+        .uc-chevron { color: #94a3b8; flex-shrink: 0; transition: transform 0.2s; }
+        .unit-card.open .uc-chevron { transform: rotate(90deg); }
+
+        .uc-meta { padding: 0 14px 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .uc-badge { font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+        .uc-badge-findings { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .uc-badge-sections { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .uc-badge-date     { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+        .uc-badge-open     { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .uc-badge-closed   { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+
+        /* SECTIONS INSIDE CARD */
+        .uc-sections { border-top: 1px solid #f1f5f9; display: none; }
+        .unit-card.open .uc-sections { display: block; }
+
+        .sec-item { border-bottom: 1px solid #f8fafc; padding: 12px 14px; }
+        .sec-item:last-child { border-bottom: none; }
+        .sec-name { font-size: 0.82rem; font-weight: 800; color: #0f766e; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .sec-findings-list { list-style: none; padding: 0; margin: 0 0 8px; }
+        .sec-findings-list li { font-size: 0.82rem; color: #334155; line-height: 1.6; padding: 3px 0; display: flex; gap: 8px; }
+        .sev-dot { flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; margin-top: 7px; }
+        .sev-dot.high { background: #dc2626; }
+        .sev-dot.med  { background: #d97706; }
+        .sev-dot.low  { background: #3b82f6; }
+        .sec-car-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+        .car-pill { font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; display: inline-flex; align-items: center; gap: 3px; text-decoration: none; transition: 0.15s; }
+        .car-pill:hover { opacity: 0.8; }
         .car-open     { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
         .car-closed   { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
         .car-escalated{ background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-        .car-none     { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; cursor: default; }
+        .car-none     { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
 
-        /* TABLE VIEW */
-        .table-wrapper { padding: 0 1rem 5rem; max-width: 1200px; margin: 0 auto; }
-        .table-container { width: 100%; overflow-x: auto; background: white; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .data-table { width: 100%; text-align: right; border-collapse: collapse; min-width: 700px; }
-        .data-table th { background: #f8fafc; padding: 11px 12px; font-size: 0.78rem; color: #64748b; border-bottom: 2px solid #e2e8f0; white-space: nowrap; font-weight: 700; font-family: 'Cairo', sans-serif; }
-        .data-table td { padding: 10px 12px; font-size: 0.82rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; font-family: 'Cairo', sans-serif; }
-        .data-table tr:last-child td { border-bottom: none; }
-        .data-table tr:hover td { background: #f8fafc; }
-        .data-table tr { cursor: pointer; }
-        .td-id { font-size: 0.72rem; font-weight: 800; color: #94a3b8; white-space: nowrap; }
-        .td-violation { max-width: 280px; color: #1e293b; font-weight: 600; line-height: 1.5; }
-        .td-car-link { font-size: 0.72rem; font-weight: 800; padding: 3px 9px; border-radius: 20px; display: inline-flex; align-items: center; gap: 3px; text-decoration: none; white-space: nowrap; transition: 0.15s; }
-        .td-car-link:hover { opacity: 0.8; }
-
-        /* MODAL */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; }
-        .modal-box { background: white; width: 95%; max-width: 560px; max-height: 85vh; border-radius: 16px; overflow-y: auto; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
-        .modal-header { padding: 1rem 1.25rem; background: #f8fafc; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1; }
-        .modal-title { font-size: 0.95rem; font-weight: 800; color: #0f172a; }
-        .modal-body { padding: 1.25rem; }
-        .detail-row { display: flex; gap: 10px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; }
-        .detail-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .detail-label { font-size: 0.72rem; font-weight: 800; color: #64748b; min-width: 95px; padding-top: 2px; }
-        .detail-value { font-size: 0.85rem; font-weight: 600; color: #1e293b; flex: 1; line-height: 1.7; }
-        .car-action-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px; margin-top: 10px; }
-        .car-action-title { font-size: 0.75rem; font-weight: 800; color: #065f46; margin-bottom: 5px; }
-        .car-action-text { font-size: 0.83rem; color: #166534; line-height: 1.8; }
-        .btn-goto-car { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; padding: 8px 16px; background: #0f766e; color: white; border-radius: 8px; font-size: 0.82rem; font-weight: 700; text-decoration: none; border: none; cursor: pointer; transition: 0.2s; }
-        .btn-goto-car:hover { background: #0d6b63; }
+        /* EMPTY / LOADING */
+        .loader-box { text-align: center; padding: 60px 20px; color: #94a3b8; }
+        .empty-box  { text-align: center; padding: 50px 20px; color: #94a3b8; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
 
         /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
 
-        .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
-        .empty-icon { font-size: 2.5rem; margin-bottom: 10px; }
-        .loading-box { text-align: center; padding: 40px; color: #94a3b8; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -143,9 +130,8 @@
         <p class="text-xs text-teal-600" id="menu-role">...</p>
     </div>
     <nav class="flex-1 p-4 space-y-2">
-        <a href="coordinator.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="users" class="w-4 h-4"></i> المنسق</a>
+        <a href="employee.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="list-checks" class="w-4 h-4"></i> مهامي</a>
         <a href="findings.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm"><i data-lucide="shield-alert" class="w-4 h-4"></i> المخالفات</a>
-        <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات</a>
         <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> النماذج</a>
         <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm"><i data-lucide="bell" class="w-4 h-4"></i> الإشعارات</a>
     </nav>
@@ -174,137 +160,84 @@
                 <i data-lucide="bell" class="w-6 h-6"></i>
             </button>
         </div>
-        <div class="text-center mt-3">
-            <h1 class="text-xl font-bold text-white">المخالفات المرصودة</h1>
+        <div class="text-center mt-2">
+            <h1 class="text-lg font-bold text-white">المخالفات المرصودة</h1>
             <p class="text-teal-200 text-xs mt-1" id="hdr-sub">جاري التحميل...</p>
         </div>
     </div>
 </header>
 
-<!-- FILTER -->
+<!-- FILTER CARD -->
 <div class="filter-container">
     <div class="grid grid-cols-2 gap-3 mb-3">
         <div>
-            <label class="f-label">بحث بالوحدة</label>
-            <input class="f-input" id="f-unit" placeholder="اسم الوحدة أو المنشأة..." oninput="renderAll()">
-        </div>
-        <div>
-            <label class="f-label">الخطورة</label>
-            <select class="f-input" id="f-sev" onchange="renderAll()">
-                <option value="">كل مستويات الخطورة</option>
-                <option value="عالي">🔴 عالي</option>
-                <option value="متوسط">🟠 متوسط</option>
-                <option value="منخفض">🔵 منخفض</option>
+            <label class="f-label">الإدارة الصحية</label>
+            <select class="f-input" id="f-admin" onchange="onAdminChange()">
+                <option value="">كل الإدارات</option>
             </select>
         </div>
         <div>
-            <label class="f-label">التصنيف</label>
-            <select class="f-input" id="f-clf" onchange="renderAll()">
-                <option value="">كل التصنيفات</option>
-                <option value="مخالفة صريحة">🔴 مخالفة صريحة</option>
-                <option value="خطر كامن">🟠 خطر كامن</option>
-                <option value="قصور إداري">🔵 قصور إداري</option>
-                <option value="مؤشر">🟢 مؤشر</option>
+            <label class="f-label">اختر الوحدة</label>
+            <select class="f-input" id="f-unit" onchange="renderUnits()">
+                <option value="">كل الوحدات</option>
             </select>
         </div>
         <div>
-            <label class="f-label">الحالة (CAR)</label>
-            <select class="f-input" id="f-status" onchange="renderAll()">
-                <option value="">الكل</option>
-                <option value="مفتوح">⏳ مفتوح</option>
-                <option value="مغلق">✅ مغلق</option>
-                <option value="مصعَّد">🔺 مصعَّد</option>
-            </select>
+            <label class="f-label">من تاريخ</label>
+            <input type="date" class="f-input" id="f-start" onchange="renderUnits()">
+        </div>
+        <div>
+            <label class="f-label">إلى تاريخ</label>
+            <input type="date" class="f-input" id="f-end" onchange="renderUnits()">
         </div>
     </div>
-    <div class="flex justify-between items-center gap-3 flex-wrap">
-        <span class="text-xs text-slate-400 font-bold" id="result-count"></span>
-        <div class="flex gap-2">
-            <button onclick="window.print()" class="btn-toggle-view" title="طباعة">
-                <i data-lucide="printer" class="w-4 h-4"></i> طباعة
-            </button>
-            <button onclick="toggleViewMode()" id="btn-view" class="btn-toggle-view" title="تبديل العرض">
-                <i data-lucide="table" id="icon-view" class="w-4 h-4"></i>
-                <span id="view-label">جدول</span>
-            </button>
+    <div>
+        <label class="f-label">نوع المنشأة</label>
+        <div class="type-toggle">
+            <button class="type-btn active" id="tb-all"   onclick="setType('')">الكل</button>
+            <button class="type-btn"        id="tb-hosp"  onclick="setType('مستشفى')">مستشفيات</button>
+            <button class="type-btn"        id="tb-unit"  onclick="setType('وحدة')">وحدات صحية</button>
         </div>
     </div>
 </div>
 
-<!-- STATS -->
-<div class="stats-wrapper">
-    <div class="stats-row">
-        <div class="stat-card active" id="kpi-all" onclick="filterBySev('')" style="cursor:pointer">
-            <div class="num" id="k-total" style="color:#334155">—</div>
-            <div class="lbl">إجمالي المخالفات</div>
-        </div>
-        <div class="stat-card" id="kpi-high" onclick="filterBySev('عالي')" style="cursor:pointer">
-            <div class="num" style="color:#dc2626" id="k-high">—</div>
-            <div class="lbl">خطورة عالية</div>
-        </div>
+<!-- KPI STRIP -->
+<div class="kpi-strip">
+    <div class="kpi-card">
+        <div class="kpi-num" style="color:#334155" id="k-total">—</div>
+        <div class="kpi-lbl">إجمالي المخالفات</div>
     </div>
-    <div class="stats-row-4">
-        <div class="stat-card" id="kpi-med" onclick="filterBySev('متوسط')" style="cursor:pointer">
-            <div class="num" style="color:#d97706;font-size:1.4rem" id="k-med">—</div>
-            <div class="lbl" style="font-size:0.65rem">متوسطة</div>
-        </div>
-        <div class="stat-card" id="kpi-low" onclick="filterBySev('منخفض')" style="cursor:pointer">
-            <div class="num" style="color:#3b82f6;font-size:1.4rem" id="k-low">—</div>
-            <div class="lbl" style="font-size:0.65rem">منخفضة</div>
-        </div>
-        <div class="stat-card" style="cursor:default">
-            <div class="num" style="color:#d97706;font-size:1.4rem" id="k-open">—</div>
-            <div class="lbl" style="font-size:0.65rem">CAR مفتوح</div>
-        </div>
-        <div class="stat-card" style="cursor:default">
-            <div class="num" style="color:#059669;font-size:1.4rem" id="k-closed">—</div>
-            <div class="lbl" style="font-size:0.65rem">CAR مغلق</div>
-        </div>
+    <div class="kpi-card">
+        <div class="kpi-num" style="color:#dc2626" id="k-high">—</div>
+        <div class="kpi-lbl">خطورة عالية</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-num" style="color:#d97706" id="k-units">—</div>
+        <div class="kpi-lbl">وحدة مخالِفة</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-num" style="color:#059669" id="k-open">—</div>
+        <div class="kpi-lbl">CAR مفتوح</div>
     </div>
 </div>
 
-<!-- CARDS VIEW -->
-<div class="cards-container" id="list-cards">
-    <div class="loading-box col-span-full">
-        <i data-lucide="loader-2" style="width:32px;height:32px;display:block;margin:0 auto 10px;color:#0f766e" class="animate-spin"></i>
-        <p class="text-sm text-slate-400">جاري تحميل المخالفات...</p>
-    </div>
+<!-- SECTION HEADER -->
+<div class="section-hdr" id="section-hdr" style="display:none">
+    <span class="section-hdr-title">الوحدات</span>
+    <span class="section-hdr-count" id="section-count"></span>
 </div>
 
-<!-- TABLE VIEW -->
-<div class="table-wrapper hidden" id="list-table">
-    <div class="table-container">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>رقم المخالفة</th>
-                    <th>القسم</th>
-                    <th>نص المخالفة</th>
-                    <th>التصنيف</th>
-                    <th>الخطورة</th>
-                    <th>الحالة</th>
-                    <th>رقم CAR</th>
-                </tr>
-            </thead>
-            <tbody id="table-body"></tbody>
-        </table>
-    </div>
-</div>
-
-<!-- MODAL -->
-<div class="modal-overlay" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
-    <div class="modal-box">
-        <div class="modal-header">
-            <span class="modal-title">تفاصيل المخالفة</span>
-            <button onclick="closeModal()" style="background:none;border:none;cursor:pointer;color:#64748b;font-size:1.2rem;padding:4px">✕</button>
-        </div>
-        <div class="modal-body" id="modal-body"></div>
+<!-- UNITS CONTAINER -->
+<div class="units-container" id="units-container">
+    <div class="loader-box col-span-full">
+        <i data-lucide="loader-2" style="width:36px;height:36px;display:block;margin:0 auto 12px;color:#0f766e" class="animate-spin"></i>
+        <p class="font-bold text-gray-400">جاري تحميل البيانات...</p>
     </div>
 </div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav lg:hidden">
-    <a href="coordinator.html" class="nav-btn"><i data-lucide="users"></i> المنسق</a>
+    <a href="employee.html" class="nav-btn"><i data-lucide="list-checks"></i> مهامي</a>
     <a href="findings.html" class="nav-btn active"><i data-lucide="shield-alert"></i> المخالفات</a>
     <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
     <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
@@ -315,31 +248,32 @@
 <script>
 lucide.createIcons();
 
-const ALLOWED_ROLES = ['منسق', 'مدير'];
-
 let allFindings = [];
 let carMap      = {};
-let activeSev   = '';
-let isTableView = false;
+let activeType  = '';
 
 // ── Init ──
-window.addEventListener('load', async () => {
-    const userStr = localStorage.getItem('iag_user');
-    if (!userStr) { location.href = 'index.html'; return; }
+document.addEventListener('DOMContentLoaded', async () => {
+    if (typeof auth === 'undefined') { location.href = 'index.html'; return; }
+    const user = auth.checkAuth();
+    if (!user) { location.href = 'index.html'; return; }
 
-    let user;
-    try { user = JSON.parse(userStr); } catch(e) { location.href = 'index.html'; return; }
-
-    // Role guard: منسق / مدير only
+    // Role guard: مراجع فني only — redirect مدير/منسق
     const role = (user.role || '').trim();
-    if (!ALLOWED_ROLES.some(r => role.includes(r))) {
-        location.href = 'index.html';
-        return;
+    if (role.includes('مدير') || role.includes('منسق')) {
+        location.href = 'coordinator.html'; return;
     }
 
     document.getElementById('menu-user').textContent = user.name || '';
     document.getElementById('menu-role').textContent = user.jobTitle || user.role || '';
     document.getElementById('hdr-sub').textContent   = user.name + ' — ' + (user.jobTitle || user.role || '');
+
+    // Default date range: current month
+    const now = new Date();
+    const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0');
+    const lastDay = new Date(y, now.getMonth()+1, 0).getDate();
+    document.getElementById('f-start').value = `${y}-${m}-01`;
+    document.getElementById('f-end').value   = `${y}-${m}-${lastDay}`;
 
     await Promise.all([loadFindings(), loadCARs()]);
     lucide.createIcons();
@@ -354,17 +288,15 @@ async function post(body) {
     return res.json();
 }
 
-// ── Load Findings ──
+// ── Load ──
 async function loadFindings() {
     try {
         const res = await post({ action: 'getFindings' });
-        if (!res.success) {
-            showError('تعذر تحميل المخالفات: ' + (res.error || ''));
-            return;
-        }
+        if (!res.success) { showError('تعذر تحميل البيانات: ' + (res.error || '')); return; }
         allFindings = res.findings || [];
-        updateKPIs();
-        renderAll();
+        populateAdminDropdown();
+        updateKPIs(allFindings);
+        renderUnits();
     } catch(e) {
         showError('خطأ في الاتصال بالخادم');
     }
@@ -377,197 +309,193 @@ async function loadCARs() {
     } catch(e) {}
 }
 
-// ── KPIs ──
-function updateKPIs() {
-    document.getElementById('k-total').textContent  = allFindings.length;
-    document.getElementById('k-high').textContent   = allFindings.filter(f => f.severity === 'عالي').length;
-    document.getElementById('k-med').textContent    = allFindings.filter(f => f.severity === 'متوسط').length;
-    document.getElementById('k-low').textContent    = allFindings.filter(f => f.severity === 'منخفض').length;
-    document.getElementById('k-open').textContent   = Object.values(carMap).filter(c => c.status === 'مفتوح').length;
-    document.getElementById('k-closed').textContent = Object.values(carMap).filter(c => c.status === 'مغلق').length;
+// ── Dropdowns ──
+function populateAdminDropdown() {
+    const areas = [...new Set(allFindings.map(f => f.admin_area).filter(Boolean))].sort();
+    const sel = document.getElementById('f-admin');
+    sel.innerHTML = '<option value="">كل الإدارات</option>';
+    areas.forEach(a => {
+        const o = document.createElement('option');
+        o.value = a; o.textContent = a;
+        sel.appendChild(o);
+    });
 }
 
-// ── Filter by severity (KPI click) ──
-function filterBySev(sev) {
-    activeSev = sev;
-    // sync dropdown
-    document.getElementById('f-sev').value = sev;
-    // update KPI active states
-    ['kpi-all','kpi-high','kpi-med','kpi-low'].forEach(id =>
-        document.getElementById(id).classList.remove('active'));
-    const kpiMap = { '': 'kpi-all', 'عالي': 'kpi-high', 'متوسط': 'kpi-med', 'منخفض': 'kpi-low' };
-    if (kpiMap[sev]) document.getElementById(kpiMap[sev]).classList.add('active');
-    renderAll();
+function onAdminChange() {
+    const admin = document.getElementById('f-admin').value;
+    const unitSel = document.getElementById('f-unit');
+    const units = [...new Set(
+        allFindings
+            .filter(f => !admin || f.admin_area === admin)
+            .map(f => f.unit_name)
+            .filter(Boolean)
+    )].sort();
+    unitSel.innerHTML = '<option value="">كل الوحدات</option>';
+    units.forEach(u => {
+        const o = document.createElement('option');
+        o.value = u; o.textContent = u;
+        unitSel.appendChild(o);
+    });
+    renderUnits();
 }
 
-// ── Toggle View ──
-function toggleViewMode() {
-    isTableView = !isTableView;
-    document.getElementById('list-cards').classList.toggle('hidden', isTableView);
-    document.getElementById('list-table').classList.toggle('hidden', !isTableView);
-    const btn   = document.getElementById('btn-view');
-    const icon  = document.getElementById('icon-view');
-    const label = document.getElementById('view-label');
-    btn.classList.toggle('table-active', isTableView);
-    icon.setAttribute('data-lucide', isTableView ? 'layout-grid' : 'table');
-    label.textContent = isTableView ? 'كروت' : 'جدول';
-    lucide.createIcons();
-    renderAll();
+// ── Type Toggle ──
+function setType(t) {
+    activeType = t;
+    ['tb-all','tb-hosp','tb-unit'].forEach(id => document.getElementById(id).classList.remove('active'));
+    if (!t)               document.getElementById('tb-all').classList.add('active');
+    else if (t==='مستشفى') document.getElementById('tb-hosp').classList.add('active');
+    else                  document.getElementById('tb-unit').classList.add('active');
+    renderUnits();
 }
 
-// ── Render ──
-function renderAll() {
-    const unit   = document.getElementById('f-unit').value.trim().toLowerCase();
-    const sev    = document.getElementById('f-sev').value;
-    const clf    = document.getElementById('f-clf').value;
-    const status = document.getElementById('f-status').value;
+// ── Filter findings ──
+function getFiltered() {
+    const admin    = document.getElementById('f-admin').value;
+    const unitVal  = document.getElementById('f-unit').value;
+    const startVal = document.getElementById('f-start').value;
+    const endVal   = document.getElementById('f-end').value;
+    const start    = startVal ? new Date(startVal) : null;
+    const end      = endVal   ? new Date(endVal + 'T23:59:59') : null;
 
-    // sync activeSev from dropdown
-    if (sev !== activeSev) {
-        activeSev = sev;
-        const kpiMap = { '': 'kpi-all', 'عالي': 'kpi-high', 'متوسط': 'kpi-med', 'منخفض': 'kpi-low' };
-        ['kpi-all','kpi-high','kpi-med','kpi-low'].forEach(id =>
-            document.getElementById(id).classList.remove('active'));
-        if (kpiMap[sev]) document.getElementById(kpiMap[sev]).classList.add('active');
-    }
-
-    const filtered = allFindings.filter(f => {
-        if (unit && !(f.unit_name || '').toLowerCase().includes(unit)) return false;
-        if (activeSev && f.severity !== activeSev) return false;
-        if (clf  && f.classification !== clf) return false;
-        if (status) {
-            const car = carMap[f.car_id];
-            const cs  = car ? (car.status || 'مفتوح') : 'مفتوح';
-            if (cs !== status) return false;
+    return allFindings.filter(f => {
+        if (admin   && f.admin_area !== admin) return false;
+        if (unitVal && f.unit_name  !== unitVal) return false;
+        if (activeType) {
+            const uname = (f.unit_name || '').trim();
+            if (activeType === 'مستشفى' && !uname.includes('مستشفى') && !uname.includes('مستشفيات')) return false;
+            if (activeType === 'وحدة'   && (uname.includes('مستشفى') || uname.includes('مستشفيات'))) return false;
+        }
+        if (start || end) {
+            const vd = f.visit_date ? new Date(f.visit_date) : null;
+            if (!vd) return false;
+            if (start && vd < start) return false;
+            if (end   && vd > end)   return false;
         }
         return true;
     });
-
-    document.getElementById('result-count').textContent =
-        filtered.length + ' من ' + allFindings.length + ' مخالفة';
-
-    if (isTableView) {
-        renderTable(filtered);
-    } else {
-        renderCards(filtered);
-    }
 }
 
-// ── Cards ──
-function renderCards(list) {
-    const container = document.getElementById('list-cards');
-    if (!list.length) {
-        container.innerHTML = '<div class="empty-state col-span-full"><div class="empty-icon">🔍</div><p class="text-sm font-bold">لا توجد مخالفات بهذه الفلاتر</p></div>';
+// ── KPIs ──
+function updateKPIs(list) {
+    document.getElementById('k-total').textContent = list.length;
+    document.getElementById('k-high').textContent  = list.filter(f => f.severity === 'عالي').length;
+    const units = new Set(list.map(f => f.unit_name).filter(Boolean));
+    document.getElementById('k-units').textContent = units.size;
+    document.getElementById('k-open').textContent  = Object.values(carMap).filter(c => c.status === 'مفتوح').length;
+}
+
+// ── Render Unit Cards ──
+function renderUnits() {
+    const filtered = getFiltered();
+    updateKPIs(filtered);
+
+    const container = document.getElementById('units-container');
+
+    if (!filtered.length) {
+        document.getElementById('section-hdr').style.display = 'none';
+        container.innerHTML = '<div class="empty-box col-span-full"><p class="text-sm font-bold">لا توجد مخالفات بهذه الفلاتر</p></div>';
         lucide.createIcons();
         return;
     }
-    container.innerHTML = list.map(buildCard).join('');
+
+    // Group by unit_name
+    const unitMap = {};
+    filtered.forEach(f => {
+        const u = f.unit_name || 'غير محدد';
+        if (!unitMap[u]) unitMap[u] = [];
+        unitMap[u].push(f);
+    });
+
+    const unitNames = Object.keys(unitMap).sort();
+
+    document.getElementById('section-hdr').style.display = 'flex';
+    document.getElementById('section-count').textContent = unitNames.length + ' وحدة';
+
+    container.innerHTML = unitNames.map(uName => buildUnitCard(uName, unitMap[uName])).join('');
     lucide.createIcons();
 }
 
-function buildCard(f) {
-    const car    = carMap[f.car_id] || {};
-    const sevCls = f.severity === 'عالي' ? 'sev-high' : f.severity === 'متوسط' ? 'sev-med' : f.severity === 'منخفض' ? 'sev-low' : 'sev-info';
-    const clfCls = f.classification === 'مخالفة صريحة' ? 'clf-v' : f.classification === 'خطر كامن' ? 'clf-r' : f.classification === 'قصور إداري' ? 'clf-a' : 'clf-i';
-    const clfIcon= f.classification === 'مخالفة صريحة' ? '🔴' : f.classification === 'خطر كامن' ? '🟠' : f.classification === 'قصور إداري' ? '🔵' : '🟢';
-    const sevBadgeCls = f.severity === 'عالي' ? 'sev-badge-high' : f.severity === 'متوسط' ? 'sev-badge-med' : 'sev-badge-low';
-    const cs     = car.status || (f.car_id ? 'مفتوح' : '—');
-    const carCls = !f.car_id ? 'car-none' : cs === 'مغلق' ? 'car-closed' : cs === 'مصعَّد' ? 'car-escalated' : 'car-open';
-    const carIcon= !f.car_id ? '—' : cs === 'مغلق' ? '✅' : cs === 'مصعَّد' ? '🔺' : '⏳';
-    const carHref= f.car_id ? `car-dashboard.html?car=${encodeURIComponent(f.car_id)}` : '#';
-    const vd     = f.visit_date ? formatDate(f.visit_date) : '';
+function buildUnitCard(unitName, findings) {
+    // Group findings by section
+    const secMap = {};
+    findings.forEach(f => {
+        const s = f.section || 'عام';
+        if (!secMap[s]) secMap[s] = [];
+        secMap[s].push(f);
+    });
 
-    return `<div class="finding-card ${sevCls}" onclick="showDetail('${esc(f.finding_id)}')">
-        <div class="fc-body">
-            <div class="fc-top">
-                <span class="fc-id">${esc(f.finding_id)}</span>
-                <span class="fc-section">📋 ${esc(f.section || 'عام')}</span>
-                <span class="clf-badge ${clfCls}">${clfIcon} ${esc(f.classification)}</span>
-                <span class="sev-badge ${sevBadgeCls}">${esc(f.severity)}</span>
+    const sections   = Object.keys(secMap);
+    const lastVisit  = findings.reduce((acc, f) => {
+        const d = f.visit_date ? new Date(f.visit_date) : null;
+        return (d && (!acc || d > acc)) ? d : acc;
+    }, null);
+    const highCount  = findings.filter(f => f.severity === 'عالي').length;
+    const medCount   = findings.filter(f => f.severity === 'متوسط').length;
+    const openCARs   = [...new Set(findings.map(f => f.car_id).filter(Boolean))]
+        .filter(id => { const c = carMap[id]; return !c || c.status !== 'مغلق'; });
+    const closedCARs = [...new Set(findings.map(f => f.car_id).filter(Boolean))]
+        .filter(id => { const c = carMap[id]; return c && c.status === 'مغلق'; });
+
+    const borderCls = highCount ? 'has-high' : medCount ? 'has-med' : 'has-low';
+    const uid = 'u-' + unitName.replace(/\s+/g,'_').replace(/[^\w-]/g,'');
+
+    const sectionsHtml = sections.map(secName => {
+        const sFindings = secMap[secName];
+        const carIds    = [...new Set(sFindings.map(f => f.car_id).filter(Boolean))];
+        const carId     = carIds[0] || '';
+        const car       = carMap[carId] || {};
+        const cs        = car.status || (carId ? 'مفتوح' : '');
+        const carCls    = !carId ? 'car-none' : cs === 'مغلق' ? 'car-closed' : cs === 'مصعَّد' ? 'car-escalated' : 'car-open';
+        const carIcon   = !carId ? '' : cs === 'مغلق' ? '✅ ' : cs === 'مصعَّد' ? '🔺 ' : '⏳ ';
+        const carHref   = carId ? `car-dashboard.html?car=${encodeURIComponent(carId)}` : '';
+
+        const findingsLi = sFindings.map(f => {
+            const dot = f.severity === 'عالي' ? 'high' : f.severity === 'متوسط' ? 'med' : 'low';
+            return `<li><span class="sev-dot ${dot}"></span><span>${esc(f.violation_text)}</span></li>`;
+        }).join('');
+
+        return `<div class="sec-item">
+            <div class="sec-name">
+                <i data-lucide="layers" style="width:14px;height:14px;flex-shrink:0"></i>
+                ${esc(secName)}
+                <span style="font-size:.68rem;font-weight:700;color:#94a3b8;margin-right:auto">${sFindings.length} مخالفة</span>
             </div>
-            <div class="fc-violation">${esc(f.violation_text)}</div>
-            <div class="fc-meta">
-                <span>🏥 ${esc(f.unit_name)}</span>
-                ${vd ? `<span>📅 ${vd}</span>` : ''}
-            </div>
-        </div>
-        <div class="fc-footer">
-            ${f.car_id
-                ? `<a class="car-pill ${carCls}" href="${carHref}" onclick="event.stopPropagation()" title="فتح لوحة CAR">${carIcon} ${esc(f.car_id)}</a>`
-                : `<span class="car-pill car-none">لا يوجد CAR</span>`
+            <ul class="sec-findings-list">${findingsLi}</ul>
+            ${carId
+                ? `<div class="sec-car-row">
+                    <span style="font-size:.72rem;color:#64748b;font-weight:700">CAR:</span>
+                    <a class="car-pill ${carCls}" href="${carHref}">${carIcon}${esc(carId)}</a>
+                   </div>`
+                : `<div class="sec-car-row"><span class="car-pill car-none" style="font-size:.68rem">لا يوجد CAR بعد</span></div>`
             }
-            ${car.deadline ? `<span style="font-size:.7rem;color:#dc2626;font-weight:700">⏰ ${formatDate(car.deadline)}</span>` : ''}
+        </div>`;
+    }).join('');
+
+    return `<div class="unit-card ${borderCls}" id="${uid}">
+        <div class="uc-header" onclick="toggleUnit('${uid}')">
+            <div>
+                <div class="uc-name">🏥 ${esc(unitName)}</div>
+            </div>
+            <i data-lucide="chevron-left" class="uc-chevron w-5 h-5"></i>
         </div>
+        <div class="uc-meta">
+            <span class="uc-badge uc-badge-findings">⚠ ${findings.length} مخالفة</span>
+            <span class="uc-badge uc-badge-sections">📋 ${sections.length} قسم</span>
+            ${lastVisit ? `<span class="uc-badge uc-badge-date">📅 ${formatDate(lastVisit)}</span>` : ''}
+            ${openCARs.length   ? `<span class="uc-badge uc-badge-open">⏳ ${openCARs.length} CAR مفتوح</span>` : ''}
+            ${closedCARs.length ? `<span class="uc-badge uc-badge-closed">✅ ${closedCARs.length} CAR مغلق</span>` : ''}
+        </div>
+        <div class="uc-sections">${sectionsHtml}</div>
     </div>`;
 }
 
-// ── Table ──
-function renderTable(list) {
-    const tbody = document.getElementById('table-body');
-    if (!list.length) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#94a3b8;font-size:.9rem">لا توجد مخالفات بهذه الفلاتر</td></tr>';
-        return;
-    }
-
-    tbody.innerHTML = list.map(f => {
-        const car     = carMap[f.car_id] || {};
-        const cs      = car.status || (f.car_id ? 'مفتوح' : '—');
-        const carCls  = !f.car_id ? 'car-none' : cs === 'مغلق' ? 'car-closed' : cs === 'مصعَّد' ? 'car-escalated' : 'car-open';
-        const carIcon = !f.car_id ? '' : cs === 'مغلق' ? '✅ ' : cs === 'مصعَّد' ? '🔺 ' : '⏳ ';
-        const clfCls  = f.classification === 'مخالفة صريحة' ? 'clf-v' : f.classification === 'خطر كامن' ? 'clf-r' : f.classification === 'قصور إداري' ? 'clf-a' : 'clf-i';
-        const sevStyle = f.severity === 'عالي' ? 'color:#dc2626;font-weight:800' : f.severity === 'متوسط' ? 'color:#d97706;font-weight:800' : 'color:#3b82f6;font-weight:700';
-        const carHref  = f.car_id ? `car-dashboard.html?car=${encodeURIComponent(f.car_id)}` : '';
-
-        return `<tr onclick="showDetail('${esc(f.finding_id)}')">
-            <td class="td-id">${esc(f.finding_id)}</td>
-            <td><span class="fc-section" style="white-space:nowrap">${esc(f.section || 'عام')}</span></td>
-            <td class="td-violation">${esc(f.violation_text)}</td>
-            <td><span class="clf-badge ${clfCls}">${esc(f.classification)}</span></td>
-            <td><span style="${sevStyle}">${esc(f.severity)}</span></td>
-            <td>${cs}</td>
-            <td>${f.car_id
-                ? `<a class="td-car-link ${carCls}" href="${carHref}" onclick="event.stopPropagation()">${carIcon}${esc(f.car_id)}</a>`
-                : '<span style="color:#94a3b8;font-size:.75rem">—</span>'
-            }</td>
-        </tr>`;
-    }).join('');
-}
-
-// ── Modal ──
-function showDetail(findingId) {
-    const f   = allFindings.find(x => x.finding_id === findingId);
-    if (!f) return;
-    const car = carMap[f.car_id] || {};
-    const carHref = f.car_id ? `car-dashboard.html?car=${encodeURIComponent(f.car_id)}` : '';
-
-    document.getElementById('modal-body').innerHTML = `
-        <div class="detail-row"><span class="detail-label">رقم المخالفة</span><span class="detail-value">${esc(f.finding_id)}</span></div>
-        <div class="detail-row"><span class="detail-label">الوحدة</span><span class="detail-value">🏥 ${esc(f.unit_name)}</span></div>
-        <div class="detail-row"><span class="detail-label">الإدارة الصحية</span><span class="detail-value">${esc(f.admin_area || '—')}</span></div>
-        <div class="detail-row"><span class="detail-label">تاريخ المرور</span><span class="detail-value">📅 ${formatDate(f.visit_date)}</span></div>
-        <div class="detail-row"><span class="detail-label">القسم</span><span class="detail-value">${esc(f.section || '—')}</span></div>
-        <div class="detail-row"><span class="detail-label">المخالفة</span><span class="detail-value" style="color:#dc2626;font-weight:800">${esc(f.violation_text)}</span></div>
-        <div class="detail-row"><span class="detail-label">التصنيف</span><span class="detail-value">${esc(f.classification)}</span></div>
-        <div class="detail-row"><span class="detail-label">الخطورة</span><span class="detail-value">${esc(f.severity)}</span></div>
-        <div class="detail-row"><span class="detail-label">الفريق</span><span class="detail-value">${esc(f.officer || '—')}</span></div>
-        ${f.car_id ? `
-        <div class="car-action-box">
-            <div class="car-action-title">📋 الإجراء التصحيحي المطلوب</div>
-            <div class="car-action-text">${esc(car.corrective_action || '—')}</div>
-            ${car.deadline ? `<div style="margin-top:8px;font-size:.78rem;color:#dc2626;font-weight:700">⏰ الموعد النهائي: ${formatDate(car.deadline)}</div>` : ''}
-            ${car.status   ? `<div style="margin-top:6px;font-size:.75rem;font-weight:700;color:#475569">الحالة: ${esc(car.status)}</div>` : ''}
-            ${car.response ? `<div style="margin-top:8px;font-size:.82rem;color:#065f46;background:#f0fdf4;padding:8px 12px;border-radius:8px">رد الوحدة: ${esc(car.response)}</div>` : ''}
-            <a class="btn-goto-car" href="${carHref}">
-                <i data-lucide="external-link" style="width:14px;height:14px"></i>
-                فتح لوحة الإجراء التصحيحي
-            </a>
-        </div>` : ''}
-    `;
-    document.getElementById('modal').style.display = 'flex';
+function toggleUnit(uid) {
+    const card = document.getElementById(uid);
+    if (!card) return;
+    card.classList.toggle('open');
     lucide.createIcons();
 }
-
-function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
 // ── Helpers ──
 function toggleMenu() { document.body.classList.toggle('menu-open'); }
@@ -579,8 +507,9 @@ function logout() {
 }
 
 function showError(msg) {
-    document.getElementById('list-cards').innerHTML =
-        `<div class="empty-state col-span-full"><div class="empty-icon">⚠️</div><p class="text-sm font-bold">${esc(msg)}</p></div>`;
+    document.getElementById('section-hdr').style.display = 'none';
+    document.getElementById('units-container').innerHTML =
+        `<div class="empty-box col-span-full"><p class="font-bold text-red-500">${esc(msg)}</p></div>`;
     lucide.createIcons();
 }
 
