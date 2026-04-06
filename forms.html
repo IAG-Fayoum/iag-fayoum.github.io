@@ -98,6 +98,9 @@
                 <a href="#" id="side-nav-home" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
                     <i id="side-nav-icon" data-lucide="home" class="w-4 h-4"></i> <span id="side-nav-text">...</span>
                 </a>
+                <a href="findings.html" id="side-nav-findings" class="hidden flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
+                    <i data-lucide="shield-alert" class="w-4 h-4"></i> المخالفات
+                </a>
                 <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
                     <i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات
                 </a>
@@ -275,6 +278,8 @@
                 if (user.role !== 'مدير' && user.role !== 'Admin' && user.role !== 'منسق') {
                     const fn = document.getElementById('bottom-nav-findings');
                     if (fn) fn.classList.remove('hidden');
+                    const sfn = document.getElementById('side-nav-findings');
+                    if (sfn) sfn.classList.remove('hidden');
                 }
 
                 lucide.createIcons();
