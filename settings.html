@@ -201,6 +201,7 @@
         <a href="#" id="bottom-nav-home" class="nav-btn">
             <i id="bottom-nav-icon" data-lucide="home"></i> <span id="bottom-nav-text">...</span>
         </a>
+        <a href="findings.html" class="nav-btn hidden" id="bottom-nav-findings"><i data-lucide="shield-alert"></i> المخالفات</a>
         <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
         <a href="forms.html" class="nav-btn"><i data-lucide="file-text"></i> النماذج</a>
         <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
@@ -252,7 +253,13 @@
             bottomHome.href = homeUrl;
             document.getElementById('bottom-nav-text').textContent = homeText;
             document.getElementById('bottom-nav-icon').setAttribute('data-lucide', homeIcon);
-            
+
+            // Show findings link for مراجع فني (not مدير / منسق)
+            if (user.role !== 'مدير' && user.role !== 'Admin' && user.role !== 'منسق') {
+                const fn = document.getElementById('bottom-nav-findings');
+                if (fn) fn.classList.remove('hidden');
+            }
+
             lucide.createIcons();
             // -------------------------
         });

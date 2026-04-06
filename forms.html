@@ -20,10 +20,10 @@
 
         /* HEADER */
         .main-header {
-            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            background: #020617;
+            background-image: radial-gradient(circle at top right, #0f766e 0%, transparent 40%), radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
             color: white; padding: 1rem 1.5rem 3.5rem;
             border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
-            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.2);
             position: relative; z-index: 10;
             padding-top: max(1rem, env(safe-area-inset-top));
         }
@@ -208,6 +208,7 @@
         <a href="#" onclick="goBack()" class="nav-btn">
             <i id="bottom-home-icon" data-lucide="home"></i> <span id="bottom-home-text">...</span>
         </a>
+        <a href="findings.html" class="nav-btn hidden" id="bottom-nav-findings"><i data-lucide="shield-alert"></i> المخالفات</a>
         <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
         <a href="forms.html" class="nav-btn active"><i data-lucide="file-text"></i> النماذج</a>
         <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
@@ -269,6 +270,12 @@
                 bottomHomeBtn.onclick = () => window.location.href = homeUrl;
                 document.getElementById('bottom-home-text').textContent = homeText;
                 document.getElementById('bottom-home-icon').setAttribute('data-lucide', homeIcon);
+
+                // Show findings link for مراجع فني (not مدير / منسق)
+                if (user.role !== 'مدير' && user.role !== 'Admin' && user.role !== 'منسق') {
+                    const fn = document.getElementById('bottom-nav-findings');
+                    if (fn) fn.classList.remove('hidden');
+                }
 
                 lucide.createIcons();
 
