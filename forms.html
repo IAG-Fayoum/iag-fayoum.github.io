@@ -93,26 +93,7 @@
             <p class="text-xs text-teal-600" id="menu-role">تصفح النماذج</p>
         </div>
         
-        <nav class="flex-1 p-4 space-y-2" id="side-nav-container">
-            <div id="private-links" class="hidden">
-                <a href="#" id="side-nav-home" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
-                    <i id="side-nav-icon" data-lucide="home" class="w-4 h-4"></i> <span id="side-nav-text">...</span>
-                </a>
-                <a href="findings.html" id="side-nav-findings" class="hidden flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
-                    <i data-lucide="shield-alert" class="w-4 h-4"></i> المخالفات
-                </a>
-                <a href="distribution.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
-                    <i data-lucide="bar-chart-2" class="w-4 h-4"></i> المؤشرات
-                </a>
-                <a href="notifications.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm">
-                    <i data-lucide="bell" class="w-4 h-4"></i> الإشعارات
-                </a>
-            </div>
-
-            <a href="forms.html" class="flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm">
-                <i data-lucide="file-text" class="w-4 h-4"></i> النماذج
-            </a>
-        </nav>
+        <nav class="flex-1 p-4 space-y-2" id="side-nav"></nav>
 
         <div class="p-4 border-t">
             <button onclick="handleAuthAction()" id="auth-btn" class="w-full flex items-center justify-center gap-2 p-3 font-bold rounded-lg text-sm text-teal-600 hover:bg-teal-50">
@@ -207,15 +188,7 @@
 
     </div>
 
-    <nav class="bottom-nav lg:hidden hidden" id="bottom-nav">
-        <a href="#" onclick="goBack()" class="nav-btn">
-            <i id="bottom-home-icon" data-lucide="home"></i> <span id="bottom-home-text">...</span>
-        </a>
-        <a href="findings.html" class="nav-btn hidden" id="bottom-nav-findings"><i data-lucide="shield-alert"></i> المخالفات</a>
-        <a href="distribution.html" class="nav-btn"><i data-lucide="bar-chart-2"></i> المؤشرات</a>
-        <a href="forms.html" class="nav-btn active"><i data-lucide="file-text"></i> النماذج</a>
-        <a href="notifications.html" class="nav-btn"><i data-lucide="bell"></i> الإشعارات</a>
-    </nav>
+    <nav class="bottom-nav lg:hidden hidden" id="bottom-nav"></nav>
 
     <div id="float-login-btn" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 lg:hidden hidden">
         <button onclick="window.location.href='index.html'" class="bg-teal-600 text-white px-6 py-3 rounded-full shadow-lg font-bold flex items-center gap-2">
@@ -225,6 +198,7 @@
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
+    <script src="assets/js/nav.js"></script>
     <script>
         lucide.createIcons();
 
@@ -238,11 +212,9 @@
                 // 1. تحديث بيانات القائمة الجانبية
                 document.getElementById('menu-user').textContent = user.name;
                 document.getElementById('menu-role').textContent = user.role;
-                
-                // 2. إظهار الروابط الخاصة
-                document.getElementById('private-links').classList.remove('hidden');
+
+                // 2. إظهار زر الإشعارات
                 document.getElementById('header-notif-btn').classList.remove('hidden');
-                document.getElementById('bottom-nav').classList.remove('hidden'); // إظهار البار السفلي
 
                 // 3. ضبط زر الخروج
                 const authBtn = document.getElementById('auth-btn');
@@ -251,46 +223,11 @@
                 authBtn.classList.replace('hover:bg-teal-50', 'hover:bg-red-50');
                 authBtn.onclick = logout;
 
-                // 4. توجيه الروابط الديناميكية (Side & Bottom)
-                let homeUrl = 'employee.html';
-                let homeText = 'مهامي';
-                let homeIcon = 'user';
-
-                if (user.role === 'مدير' || user.role === 'Admin') {
-                    homeUrl = 'admin.html'; homeText = 'التحكم'; homeIcon = 'layout-dashboard';
-                } else if (user.role === 'منسق') {
-                    homeUrl = 'coordinator.html'; homeText = 'المنسق'; homeIcon = 'users';
-                }
-
-                // Side
-                const sideHome = document.getElementById('side-nav-home');
-                sideHome.href = homeUrl;
-                document.getElementById('side-nav-text').textContent = homeText;
-                document.getElementById('side-nav-icon').setAttribute('data-lucide', homeIcon);
-
-                // Bottom
-                const bottomHomeBtn = document.querySelector('#bottom-nav a:first-child');
-                bottomHomeBtn.onclick = () => window.location.href = homeUrl;
-                document.getElementById('bottom-home-text').textContent = homeText;
-                document.getElementById('bottom-home-icon').setAttribute('data-lucide', homeIcon);
-
-                // Show findings link for مراجع فني (not مدير / منسق)
-                if (user.role !== 'مدير' && user.role !== 'Admin' && user.role !== 'منسق') {
-                    const fn = document.getElementById('bottom-nav-findings');
-                    if (fn) fn.classList.remove('hidden');
-                    const sfn = document.getElementById('side-nav-findings');
-                    if (sfn) sfn.classList.remove('hidden');
-                }
-
                 lucide.createIcons();
 
             } else {
                 // --- زائر (Guest) ---
-                // 1. إظهار زر الدخول العائم في الموبايل
                 document.getElementById('float-login-btn').classList.remove('hidden');
-                
-                // 2. إخفاء البار السفلي تماماً (لأنه يحتوي على روابط خاصة)
-                document.getElementById('bottom-nav').classList.add('hidden');
             }
         });
 
