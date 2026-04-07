@@ -393,7 +393,12 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    allSections = data.sections || [];
+                    const raw = data.sections || [];
+                    // فلترة بالإدارة الصحية المسجلة
+                    const adminName = session.admin_name || '';
+                    allSections = adminName
+                        ? raw.filter(s => (s.admin_area || s.facility_name || '').indexOf(adminName) !== -1)
+                        : raw;
                     updateStats();
                     renderSections();
                 } else {

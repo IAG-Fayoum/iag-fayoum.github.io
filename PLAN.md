@@ -15,7 +15,11 @@
 - [x] car.html — REBUILD للمراجع الفني (getCARSections + updateSectionStatus)
 - [x] portal.html — بوابة مدير الإدارة الصحية (standalone, portalLogin + portalGetSections + portalSubmitResponse)
 
-### ملاحظة: portal_car.html موجود بالفعل كنسخة قديمة — سيُعاد بناء portal.html كصفحة جديدة نظيفة
+### إصلاحات مطبقة
+- [x] car.html role guard — مراجع فني فقط (إصلاح)
+- [x] car.html filter — إدارة صحية → وحدة (cascading)
+- [x] nav.js — إضافة car.html للمراجع الفني
+- [x] portal.html — فلترة بالإدارة الصحية بعد الدخول
 
 ## Phase 3 — Backend Handlers
 - [ ] getQuarterlyReport — تنفيذ في Backend.js

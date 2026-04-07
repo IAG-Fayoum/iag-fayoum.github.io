@@ -19,10 +19,10 @@
       { href: 'forms.html',        icon: 'file-text',      label: 'النماذج'   },
     ],
     'default': [
-      { href: 'employee.html',     icon: 'home',           label: 'الرئيسية'  },
-      { href: 'distribution.html', icon: 'bar-chart-2',    label: 'المؤشرات'  },
-      { href: 'findings.html',     icon: 'shield-alert',   label: 'الملاحظات' },
-      { href: 'forms.html',        icon: 'file-text',      label: 'النماذج'   },
+      { href: 'employee.html',     icon: 'home',              label: 'الرئيسية'   },
+      { href: 'findings.html',     icon: 'shield-alert',      label: 'الملاحظات'  },
+      { href: 'car.html',          icon: 'clipboard-check',   label: 'الإجراءات'  },
+      { href: 'forms.html',        icon: 'file-text',         label: 'النماذج'    },
     ]
   };
 

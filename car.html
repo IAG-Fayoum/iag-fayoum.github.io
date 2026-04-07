@@ -40,7 +40,7 @@
         @media (min-width: 1024px) { .filter-container { max-width: 1100px; margin: -3.5rem auto 1.5rem; } }
 
         .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        @media (min-width: 768px) { .filter-grid { grid-template-columns: 1fr 1fr auto; align-items: end; } }
+        @media (min-width: 768px) { .filter-grid { grid-template-columns: 1fr 1fr 1fr auto; align-items: end; } }
 
         .f-label { font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; display: block; }
         .f-input {
@@ -197,9 +197,15 @@
     <div class="filter-container">
         <div class="filter-grid">
             <div>
-                <label class="f-label">الجهة</label>
+                <label class="f-label">الإدارة الصحية</label>
+                <select id="f-admin" class="f-input" onchange="onAdminChange()">
+                    <option value="">كل الإدارات</option>
+                </select>
+            </div>
+            <div>
+                <label class="f-label">الوحدة</label>
                 <select id="f-unit" class="f-input" onchange="applyFilters()">
-                    <option value="">كل الجهات</option>
+                    <option value="">كل الوحدات</option>
                 </select>
             </div>
             <div>
@@ -248,9 +254,14 @@
             const user = auth.checkAuth();
             if (!user) { window.location.href = 'index.html'; return; }
 
-            // مراجع فني only
-            if (user.role === 'مدير' || user.role === 'Admin' || user.role === 'منسق') {
+            // مراجع فني only — redirect أي دور آخر
+            const r = user.role || '';
+            if (r === 'مدير' || r === 'Admin' || r === 'منسق') {
                 window.location.href = 'coordinator.html';
+                return;
+            }
+            if (!r || r.trim() === '') {
+                window.location.href = 'index.html';
                 return;
             }
 
@@ -282,7 +293,7 @@
 
                 if (data.success) {
                     allSections = data.sections || [];
-                    populateUnitDropdown();
+                    populateDropdowns();
                     applyFilters();
                 } else {
                     container.innerHTML = `<div class="empty-box"><p class="font-bold">${data.error || 'لا توجد بيانات'}</p></div>`;
@@ -295,19 +306,40 @@
 
         function reload() { allSections = []; loadSections(); }
 
-        function populateUnitDropdown() {
-            const sel = document.getElementById('f-unit');
-            const units = [...new Set(allSections.map(s => s.unit_name).filter(Boolean))].sort();
-            sel.innerHTML = '<option value="">كل الجهات</option>' +
+        function populateDropdowns() {
+            // الإدارات الصحية
+            const admins = [...new Set(allSections.map(s => s.admin_area).filter(Boolean))].sort();
+            document.getElementById('f-admin').innerHTML =
+                '<option value="">كل الإدارات</option>' +
+                admins.map(a => `<option value="${a}">${a}</option>`).join('');
+            // وحدات — كل الوحدات بدون فلتر
+            populateUnitDropdown('');
+        }
+
+        function populateUnitDropdown(adminFilter) {
+            const src = adminFilter
+                ? allSections.filter(s => s.admin_area === adminFilter)
+                : allSections;
+            const units = [...new Set(src.map(s => s.unit_name).filter(Boolean))].sort();
+            document.getElementById('f-unit').innerHTML =
+                '<option value="">كل الوحدات</option>' +
                 units.map(u => `<option value="${u}">${u}</option>`).join('');
         }
 
+        function onAdminChange() {
+            const adminVal = document.getElementById('f-admin').value;
+            populateUnitDropdown(adminVal);
+            applyFilters();
+        }
+
         function applyFilters() {
+            const adminFilter  = document.getElementById('f-admin').value;
             const unitFilter   = document.getElementById('f-unit').value;
             const statusFilter = document.getElementById('f-status').value;
 
             let filtered = allSections;
-            if (unitFilter)   filtered = filtered.filter(s => s.unit_name === unitFilter);
+            if (adminFilter)  filtered = filtered.filter(s => s.admin_area === adminFilter);
+            if (unitFilter)   filtered = filtered.filter(s => s.unit_name  === unitFilter);
             if (statusFilter) filtered = filtered.filter(s => (s.staff_status || 'مفتوح') === statusFilter);
 
             document.getElementById('results-bar').textContent =
@@ -364,6 +396,7 @@
                     <div>
                         <div class="unit-name">${escHtml(s.unit_name || '—')}</div>
                         <div class="section-name">${escHtml(s.section_name || '—')}</div>
+                        ${s.admin_area ? `<div style="font-size:0.7rem;color:#0f766e;font-weight:700;margin-top:2px">${escHtml(s.admin_area)}</div>` : ''}
                     </div>
                     <span class="car-id-badge">${escHtml(s.car_id || '—')}</span>
                 </div>
