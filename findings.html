@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Cairo', sans-serif; background: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
         :root { --primary: #0f766e; }
 
         /* HEADER */
@@ -49,71 +49,110 @@
         .type-btn:hover:not(.active) { background: #f0fdfa; border-color: #0f766e; color: #0f766e; }
 
         /* KPI STRIP */
-        .kpi-strip { padding: 0 1rem 1rem; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+        .kpi-strip { padding: 0 1rem 0.75rem; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
         .kpi-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
         .kpi-num { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 3px; }
         .kpi-lbl { font-size: 0.62rem; font-weight: 700; color: #64748b; }
 
-        /* SECTION HEADER */
-        .section-hdr { padding: 0 1rem; max-width: 1200px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: space-between; }
-        .section-hdr-title { font-size: 0.82rem; font-weight: 800; color: #475569; }
-        .section-hdr-count { font-size: 0.75rem; font-weight: 700; color: #94a3b8; background: #f1f5f9; padding: 3px 10px; border-radius: 20px; }
+        /* TAB BAR */
+        .tab-bar { padding: 0 1rem 0.75rem; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+        .tab-btn { padding: 8px 4px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 0.78rem; font-weight: 700; cursor: pointer; background: #f8fafc; color: #475569; transition: 0.2s; text-align: center; }
+        .tab-btn.active { background: #0f766e; color: white; border-color: #0f766e; }
+        .tab-btn:hover:not(.active) { background: #f0fdfa; border-color: #0f766e; color: #0f766e; }
+        .tab-btn.tab-legal.active { background: #dc2626; border-color: #dc2626; }
+        .tab-count { display: inline-block; background: rgba(255,255,255,0.25); border-radius: 20px; font-size: 0.68rem; padding: 1px 6px; margin-left: 3px; min-width: 18px; }
+        .tab-btn:not(.active) .tab-count { background: #e2e8f0; color: #475569; }
 
-        /* UNIT CARDS */
-        .units-container { padding: 0 1rem 6rem; max-width: 1200px; margin: 0 auto; display: grid; gap: 10px; grid-template-columns: 1fr; }
-        @media (min-width: 768px) { .units-container { grid-template-columns: repeat(2,1fr); } }
-        @media (min-width: 1200px) { .units-container { grid-template-columns: repeat(3,1fr); } }
+        /* TAB PANELS */
+        .tab-panel { display: none; padding: 0 1rem 6rem; max-width: 1200px; margin: 0 auto; }
+        .tab-panel.active { display: block; }
 
-        .unit-card { background: white; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.03); overflow: hidden; transition: 0.15s; }
-        .unit-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
-        .unit-card.has-high { border-right: 4px solid #dc2626; }
-        .unit-card.has-med  { border-right: 4px solid #d97706; }
-        .unit-card.has-low  { border-right: 4px solid #3b82f6; }
+        /* UNIT CARDS GRID */
+        .units-grid { display: grid; gap: 10px; grid-template-columns: 1fr; }
+        @media (min-width: 768px)  { .units-grid { grid-template-columns: repeat(2,1fr); } }
+        @media (min-width: 1200px) { .units-grid { grid-template-columns: repeat(3,1fr); } }
 
-        .uc-header { padding: 12px 14px; cursor: pointer; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-        .uc-name { font-size: 0.95rem; font-weight: 800; color: #1e293b; line-height: 1.4; flex: 1; }
-        .uc-chevron { color: #94a3b8; flex-shrink: 0; transition: transform 0.2s; }
-        .unit-card.open .uc-chevron { transform: rotate(90deg); }
+        .unit-card { background: white; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.03); overflow: hidden; }
+        .uc-header { padding: 12px 14px; background: #f8fafc; border-bottom: 1px solid #f1f5f9; }
+        .uc-name { font-size: 0.92rem; font-weight: 800; color: #1e293b; margin-bottom: 6px; }
+        .uc-meta-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+        .uc-area { font-size: 0.72rem; color: #64748b; font-weight: 600; }
+        .uc-days-ok   { font-size: 0.72rem; font-weight: 800; color: #059669; background: #d1fae5; padding: 2px 8px; border-radius: 20px; border: 1px solid #a7f3d0; }
+        .uc-days-late { font-size: 0.72rem; font-weight: 800; color: #dc2626; background: #fef2f2; padding: 2px 8px; border-radius: 20px; border: 1px solid #fecaca; }
+        .uc-portal-badge { font-size: 0.68rem; font-weight: 700; color: #1d4ed8; background: #eff6ff; padding: 2px 8px; border-radius: 20px; border: 1px solid #bfdbfe; }
 
-        .uc-meta { padding: 0 14px 10px; display: flex; gap: 10px; flex-wrap: wrap; }
-        .uc-badge { font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
-        .uc-badge-findings { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-        .uc-badge-sections { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-        .uc-badge-date     { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-        .uc-badge-open     { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-        .uc-badge-closed   { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        /* FINDING ROWS */
+        .finding-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #f8fafc; }
+        .finding-row:last-child { border-bottom: none; }
+        .finding-row.closed-row { opacity: 0.45; }
+        .finding-checkbox { flex-shrink: 0; width: 17px; height: 17px; margin-top: 3px; accent-color: #0f766e; }
+        .finding-text { flex: 1; font-size: 0.82rem; color: #334155; line-height: 1.6; }
+        .finding-text.strikethrough { text-decoration: line-through; color: #94a3b8; }
+        .finding-actions { display: flex; gap: 4px; flex-shrink: 0; padding-top: 1px; }
+        .act-btn { border: none; border-radius: 6px; font-family: 'Cairo', sans-serif; font-size: 0.68rem; font-weight: 700; cursor: pointer; padding: 3px 7px; transition: 0.15s; white-space: nowrap; }
+        .act-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .act-btn-lock    { background: #d1fae5; color: #065f46; }
+        .act-btn-lock:hover:not(:disabled)    { background: #059669; color: white; }
+        .act-btn-suspend { background: #fef3c7; color: #92400e; }
+        .act-btn-suspend:hover:not(:disabled) { background: #d97706; color: white; }
+        .act-btn-legal   { background: #fef2f2; color: #dc2626; }
+        .act-btn-legal:hover:not(:disabled)   { background: #dc2626; color: white; }
+        .act-btn-reopen  { background: #eff6ff; color: #1d4ed8; }
+        .act-btn-reopen:hover:not(:disabled)  { background: #1d4ed8; color: white; }
 
-        /* SECTIONS INSIDE CARD */
-        .uc-sections { border-top: 1px solid #f1f5f9; display: none; }
-        .unit-card.open .uc-sections { display: block; }
+        /* SUSPENDED LIST */
+        .susp-item { background: white; border-radius: 12px; border: 1px solid #fde68a; padding: 12px 14px; margin-bottom: 8px; }
+        .susp-unit { font-size: 0.72rem; font-weight: 700; color: #0f766e; margin-bottom: 4px; }
+        .susp-text { font-size: 0.85rem; color: #334155; line-height: 1.5; margin-bottom: 8px; }
+        .susp-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+        .susp-party { font-size: 0.72rem; font-weight: 700; color: #92400e; background: #fef3c7; padding: 2px 8px; border-radius: 20px; }
 
-        .sec-item { border-bottom: 1px solid #f8fafc; padding: 12px 14px; }
-        .sec-item:last-child { border-bottom: none; }
-        .sec-name { font-size: 0.82rem; font-weight: 800; color: #0f766e; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-        .sec-findings-list { list-style: none; padding: 0; margin: 0 0 8px; }
-        .sec-findings-list li { font-size: 0.82rem; color: #334155; line-height: 1.6; padding: 3px 0; display: flex; gap: 8px; }
-        .sev-dot { flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; margin-top: 7px; }
-        .sev-dot.high { background: #dc2626; }
-        .sev-dot.med  { background: #d97706; }
-        .sev-dot.low  { background: #3b82f6; }
-        .sec-car-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
-        .car-pill { font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; display: inline-flex; align-items: center; gap: 3px; text-decoration: none; transition: 0.15s; }
-        .car-pill:hover { opacity: 0.8; }
-        .car-open     { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-        .car-closed   { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-        .car-escalated{ background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-        .car-none     { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+        /* LEGAL LIST */
+        .legal-item { background: white; border-radius: 12px; border: 1px solid #fecaca; padding: 12px 14px; margin-bottom: 8px; }
+        .legal-item.warn  { border-color: #fcd34d; background: #fffbeb; }
+        .legal-item.alert { border-color: #dc2626; background: #fef2f2; }
+        .legal-unit { font-size: 0.72rem; font-weight: 700; color: #0f766e; margin-bottom: 4px; }
+        .legal-text { font-size: 0.85rem; color: #334155; line-height: 1.5; margin-bottom: 8px; }
+        .legal-footer { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .legal-days-normal { font-size: 0.72rem; font-weight: 700; color: #dc2626; background: #fef2f2; padding: 2px 8px; border-radius: 20px; border: 1px solid #fecaca; }
+        .legal-days-warn   { font-size: 0.72rem; font-weight: 700; color: #92400e; background: #fef3c7; padding: 2px 8px; border-radius: 20px; border: 1px solid #fde68a; }
+        .legal-days-alert  { font-size: 0.72rem; font-weight: 700; color: white;    background: #dc2626; padding: 2px 8px; border-radius: 20px; }
+        .legal-warn-msg  { font-size: 0.72rem; font-weight: 700; color: #92400e; }
+        .legal-alert-msg { font-size: 0.72rem; font-weight: 700; color: #dc2626; }
 
-        /* EMPTY / LOADING */
+        /* CLOSED LIST */
+        .closed-item { background: white; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px 14px; margin-bottom: 6px; opacity: 0.7; }
+        .closed-unit { font-size: 0.72rem; font-weight: 700; color: #64748b; margin-bottom: 3px; }
+        .closed-text { font-size: 0.82rem; color: #94a3b8; text-decoration: line-through; line-height: 1.5; }
+
+        /* EMPTY / LOADER */
         .loader-box { text-align: center; padding: 60px 20px; color: #94a3b8; }
-        .empty-box  { text-align: center; padding: 50px 20px; color: #94a3b8; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
+        .empty-box  { text-align: center; padding: 40px 20px; color: #94a3b8; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; font-size: 0.88rem; font-weight: 700; }
 
         /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
 
-        @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+        /* TOAST */
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1e293b; color: white; padding: 10px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 700; opacity: 0; transition: 0.3s; z-index: 200; white-space: nowrap; pointer-events: none; }
+        .toast.show    { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error   { background: #dc2626; }
+
+        /* SUSPEND MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 150; display: none; align-items: center; justify-content: center; padding: 1rem; }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: white; border-radius: 16px; padding: 1.5rem; width: 100%; max-width: 400px; }
+        .modal-title { font-size: 1rem; font-weight: 800; color: #1e293b; margin-bottom: 1rem; }
+        .modal-lbl { font-size: 0.78rem; font-weight: 700; color: #475569; display: block; margin-bottom: 5px; }
+        .modal-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 10px; font-family: 'Cairo', sans-serif; font-size: 0.88rem; outline: none; margin-bottom: 12px; color: #1e293b; }
+        .modal-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
+        .modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
+        .modal-cancel { padding: 8px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; background: #f8fafc; color: #475569; }
+        .modal-submit { padding: 8px 16px; border: none; border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; background: #d97706; color: white; }
+        .modal-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -131,7 +170,7 @@
     </div>
     <nav class="flex-1 p-4 space-y-2" id="side-nav"></nav>
     <div class="p-4 border-t">
-        <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+        <button onclick="auth.logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
             <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
         </button>
     </div>
@@ -173,25 +212,25 @@
         </div>
         <div>
             <label class="f-label">اختر الوحدة</label>
-            <select class="f-input" id="f-unit" onchange="renderUnits()">
+            <select class="f-input" id="f-unit" onchange="onFilterChange()">
                 <option value="">كل الوحدات</option>
             </select>
         </div>
         <div>
             <label class="f-label">من تاريخ</label>
-            <input type="date" class="f-input" id="f-start" onchange="renderUnits()">
+            <input type="date" class="f-input" id="f-start" onchange="onFilterChange()">
         </div>
         <div>
             <label class="f-label">إلى تاريخ</label>
-            <input type="date" class="f-input" id="f-end" onchange="renderUnits()">
+            <input type="date" class="f-input" id="f-end" onchange="onFilterChange()">
         </div>
     </div>
     <div>
         <label class="f-label">نوع المنشأة</label>
         <div class="type-toggle">
-            <button class="type-btn active" id="tb-all"   onclick="setType('')">الكل</button>
-            <button class="type-btn"        id="tb-hosp"  onclick="setType('مستشفى')">مستشفيات</button>
-            <button class="type-btn"        id="tb-unit"  onclick="setType('وحدة')">وحدات صحية</button>
+            <button class="type-btn active" id="tb-all"  onclick="setType('')">الكل</button>
+            <button class="type-btn"        id="tb-hosp" onclick="setType('مستشفى')">مستشفيات</button>
+            <button class="type-btn"        id="tb-unit" onclick="setType('وحدة')">وحدات صحية</button>
         </div>
     </div>
 </div>
@@ -199,36 +238,79 @@
 <!-- KPI STRIP -->
 <div class="kpi-strip">
     <div class="kpi-card">
-        <div class="kpi-num" style="color:#334155" id="k-total">—</div>
-        <div class="kpi-lbl">إجمالي الملاحظات</div>
+        <div class="kpi-num" style="color:#0f766e" id="k-open-units">—</div>
+        <div class="kpi-lbl">وحدات مفتوحة</div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-num" style="color:#dc2626" id="k-high">—</div>
-        <div class="kpi-lbl">خطورة عالية</div>
+        <div class="kpi-num" style="color:#dc2626" id="k-late">—</div>
+        <div class="kpi-lbl">متأخر</div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-num" style="color:#d97706" id="k-units">—</div>
-        <div class="kpi-lbl">وحدة مخالِفة</div>
+        <div class="kpi-num" style="color:#d97706" id="k-suspended">—</div>
+        <div class="kpi-lbl">معلق</div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-num" style="color:#059669" id="k-open">—</div>
-        <div class="kpi-lbl">CAR مفتوح</div>
+        <div class="kpi-num" style="color:#7c3aed" id="k-legal">—</div>
+        <div class="kpi-lbl">قانوني</div>
     </div>
 </div>
 
-<!-- SECTION HEADER -->
-<div class="section-hdr" id="section-hdr" style="display:none">
-    <span class="section-hdr-title">الوحدات</span>
-    <span class="section-hdr-count" id="section-count"></span>
+<!-- TAB BAR -->
+<div class="tab-bar">
+    <button class="tab-btn active"    id="tab-btn-active"    onclick="switchTab('active')">
+        <span class="tab-count" id="tc-active">0</span> نشط
+    </button>
+    <button class="tab-btn"           id="tab-btn-suspended" onclick="switchTab('suspended')">
+        <span class="tab-count" id="tc-suspended">0</span> معلق
+    </button>
+    <button class="tab-btn tab-legal" id="tab-btn-legal"     onclick="switchTab('legal')">
+        <span class="tab-count" id="tc-legal">0</span> قانوني
+    </button>
+    <button class="tab-btn"           id="tab-btn-closed"    onclick="switchTab('closed')">
+        <span class="tab-count" id="tc-closed">0</span> مغلق
+    </button>
 </div>
 
-<!-- UNITS CONTAINER -->
-<div class="units-container" id="units-container">
-    <div class="loader-box col-span-full">
+<!-- TAB PANEL: نشط -->
+<div class="tab-panel active" id="panel-active">
+    <div class="loader-box">
         <i data-lucide="loader-2" style="width:36px;height:36px;display:block;margin:0 auto 12px;color:#0f766e" class="animate-spin"></i>
         <p class="font-bold text-gray-400">جاري تحميل البيانات...</p>
     </div>
 </div>
+
+<!-- TAB PANEL: معلق -->
+<div class="tab-panel" id="panel-suspended">
+    <div class="empty-box">جاري التحميل...</div>
+</div>
+
+<!-- TAB PANEL: قانوني -->
+<div class="tab-panel" id="panel-legal">
+    <div class="empty-box">جاري التحميل...</div>
+</div>
+
+<!-- TAB PANEL: مغلق -->
+<div class="tab-panel" id="panel-closed">
+    <div class="empty-box">جاري التحميل...</div>
+</div>
+
+<!-- SUSPEND MODAL -->
+<div class="modal-overlay" id="suspend-modal">
+    <div class="modal-box">
+        <p class="modal-title">⏸ تعليق المخالفة</p>
+        <label class="modal-lbl">الجهة المسؤولة <span style="color:#dc2626">*</span></label>
+        <input class="modal-input" id="modal-party" placeholder="مثال: مدير الوحدة، قسم الصيانة..." maxlength="120">
+        <label class="modal-lbl">ملاحظة (اختياري)</label>
+        <input class="modal-input" id="modal-comment" placeholder="سبب التعليق..." maxlength="250">
+        <div class="modal-btns">
+            <button class="modal-cancel" onclick="closeSuspendModal()">إلغاء</button>
+            <button class="modal-submit" id="modal-submit-btn" onclick="submitSuspend()">تعليق</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav lg:hidden" id="bottom-nav"></nav>
@@ -239,34 +321,38 @@
 <script>
 lucide.createIcons();
 
-let allFindings = [];
-let carMap      = {};
-let activeType  = '';
+// ── STATE ──
+let allFindings      = [];
+let portalMap        = {};   // unit_name → portal reply count
+let activeType       = '';
+let pendingSuspendId = null;
+let currentUser      = null;
+let toastTimer;
 
-// ── Init ──
+// ── INIT ──
 document.addEventListener('DOMContentLoaded', async () => {
-    if (typeof auth === 'undefined') { location.href = 'index.html'; return; }
     const user = auth.checkAuth();
     if (!user) { location.href = 'index.html'; return; }
 
-    // Role guard: مراجع فني only — redirect مدير/منسق
+    // Role guard: allow مراجع فني + مدير, redirect منسق
     const role = (user.role || '').trim();
-    if (role.includes('مدير') || role.includes('منسق')) {
+    if (role.includes('منسق') && !role.includes('مدير')) {
         location.href = 'coordinator.html'; return;
     }
 
+    currentUser = user;
     document.getElementById('menu-user').textContent = user.name || '';
     document.getElementById('menu-role').textContent = user.jobTitle || user.role || '';
-    document.getElementById('hdr-sub').textContent   = user.name + ' — ' + (user.jobTitle || user.role || '');
+    document.getElementById('hdr-sub').textContent   = (user.name || '') + ' — ' + (user.jobTitle || user.role || '');
 
     // Default date range: current month
     const now = new Date();
-    const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0');
-    const lastDay = new Date(y, now.getMonth()+1, 0).getDate();
+    const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2, '0');
+    const lastDay = new Date(y, now.getMonth() + 1, 0).getDate();
     document.getElementById('f-start').value = `${y}-${m}-01`;
-    document.getElementById('f-end').value   = `${y}-${m}-${lastDay}`;
+    document.getElementById('f-end').value   = `${y}-${m}-${String(lastDay).padStart(2, '0')}`;
 
-    await Promise.all([loadFindings(), loadCARs()]);
+    await Promise.all([loadFindings(), loadPortalData()]);
     lucide.createIcons();
 });
 
@@ -274,33 +360,383 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function post(body) {
     const res = await fetch(CONFIG.API_URL, {
         method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(body)
     });
     return res.json();
 }
 
-// ── Load ──
+// ── LOAD FINDINGS ──
 async function loadFindings() {
     try {
         const res = await post({ action: 'getFindings' });
-        if (!res.success) { showError('تعذر تحميل البيانات: ' + (res.error || '')); return; }
-        allFindings = res.findings || [];
+        if (!res.success) {
+            showPanelError('panel-active', 'تعذر تحميل البيانات: ' + (res.error || ''));
+            return;
+        }
+        allFindings = (res.findings || []).map(f => ({
+            ...f,
+            // Treat blank status as مفتوح
+            status: (String(f.status || '').trim()) || 'مفتوح'
+        }));
         populateAdminDropdown();
-        updateKPIs(allFindings);
-        renderUnits();
-    } catch(e) {
-        showError('خطأ في الاتصال بالخادم');
+        render();
+    } catch (e) {
+        showPanelError('panel-active', 'خطأ في الاتصال بالخادم');
     }
 }
 
-async function loadCARs() {
+// ── LOAD PORTAL DATA (optional — for portal reply badge) ──
+async function loadPortalData() {
     try {
-        const res = await post({ action: 'getCARs' });
-        if (res.success) (res.cars || []).forEach(c => { carMap[c.car_id] = c; });
-    } catch(e) {}
+        const res = await post({ action: 'getCARSections' });
+        if (!res.success) return;
+        portalMap = {};
+        (res.sections || []).forEach(s => {
+            const unit = (s.unit_name || s.facility_name || '').trim();
+            if (unit && (s.portal_status === 'تم الرد' || s.portal_reply)) {
+                portalMap[unit] = (portalMap[unit] || 0) + 1;
+            }
+        });
+    } catch (e) { /* portal data is optional */ }
 }
 
-// ── Dropdowns ──
+// ── FILTER ──
+function getFiltered() {
+    const admin    = document.getElementById('f-admin').value;
+    const unitVal  = document.getElementById('f-unit').value;
+    const startVal = document.getElementById('f-start').value;
+    const endVal   = document.getElementById('f-end').value;
+    const start    = startVal ? new Date(startVal) : null;
+    const end      = endVal   ? new Date(endVal + 'T23:59:59') : null;
+
+    return allFindings.filter(f => {
+        if (admin   && f.admin_area !== admin)   return false;
+        if (unitVal && f.unit_name  !== unitVal) return false;
+        if (activeType) {
+            const u = (f.unit_name || '').trim();
+            if (activeType === 'مستشفى' && !u.includes('مستشفى') && !u.includes('مستشفيات')) return false;
+            if (activeType === 'وحدة'   && (u.includes('مستشفى') || u.includes('مستشفيات'))) return false;
+        }
+        if (start || end) {
+            const vd = f.visit_date ? new Date(f.visit_date) : null;
+            if (!vd || isNaN(vd.getTime())) return false;
+            if (start && vd < start) return false;
+            if (end   && vd > end)   return false;
+        }
+        return true;
+    });
+}
+
+// ── MAIN RENDER ──
+function render() {
+    const filtered  = getFiltered();
+    const active    = filtered.filter(f => f.status === 'مفتوح');
+    const suspended = filtered.filter(f => f.status === 'معلق');
+    const legal     = filtered.filter(f => f.status === 'قانوني');
+    const closed    = filtered.filter(f => f.status === 'مغلق');
+
+    updateKPIs(active, suspended, legal);
+    updateTabCounts(active, suspended, legal, closed);
+
+    renderActive(active, filtered);
+    renderSuspended(suspended);
+    renderLegal(legal);
+    renderClosed(closed);
+
+    lucide.createIcons();
+}
+
+// ── KPIs ──
+function updateKPIs(active, suspended, legal) {
+    const openUnits = new Set(active.map(f => f.unit_name).filter(Boolean));
+    const lateCount = active.filter(f => daysSince(f.visit_date) > 14).length;
+    document.getElementById('k-open-units').textContent = openUnits.size;
+    document.getElementById('k-late').textContent       = lateCount;
+    document.getElementById('k-suspended').textContent  = suspended.length;
+    document.getElementById('k-legal').textContent      = legal.length;
+}
+
+// ── TAB COUNTS ──
+function updateTabCounts(active, suspended, legal, closed) {
+    document.getElementById('tc-active').textContent    = active.length;
+    document.getElementById('tc-suspended').textContent = suspended.length;
+    document.getElementById('tc-legal').textContent     = legal.length;
+    document.getElementById('tc-closed').textContent    = closed.length;
+}
+
+// ── SWITCH TAB ──
+function switchTab(key) {
+    ['active','suspended','legal','closed'].forEach(k => {
+        document.getElementById('tab-btn-' + k).classList.toggle('active', k === key);
+        document.getElementById('panel-'  + k).classList.toggle('active', k === key);
+    });
+}
+
+// ── RENDER: نشط ──
+function renderActive(activeFindings, allFiltered) {
+    const panel = document.getElementById('panel-active');
+    if (!activeFindings.length) {
+        panel.innerHTML = '<div class="empty-box">✅ لا توجد ملاحظات مفتوحة</div>';
+        return;
+    }
+
+    // Group open findings by unit
+    const unitMap = {};
+    activeFindings.forEach(f => {
+        const u = f.unit_name || 'غير محدد';
+        if (!unitMap[u]) unitMap[u] = [];
+        unitMap[u].push(f);
+    });
+
+    // Collect closed findings per unit (shown faded inside active card)
+    const closedByUnit = {};
+    allFiltered.filter(f => f.status === 'مغلق').forEach(f => {
+        const u = f.unit_name || 'غير محدد';
+        if (!closedByUnit[u]) closedByUnit[u] = [];
+        closedByUnit[u].push(f);
+    });
+
+    const unitNames = Object.keys(unitMap).sort();
+    panel.innerHTML = `<div class="units-grid">${
+        unitNames.map(u => buildUnitCard(u, unitMap[u], closedByUnit[u] || [])).join('')
+    }</div>`;
+}
+
+function buildUnitCard(unitName, openFindings, closedFindings) {
+    const visitDate    = (openFindings[0] || {}).visit_date || '';
+    const sinceVisit   = daysSince(visitDate);
+    const daysLeft     = sinceVisit !== null ? (14 - sinceVisit) : null;
+    const portalCount  = portalMap[unitName] || 0;
+    const adminArea    = (openFindings[0] || {}).admin_area || '';
+
+    const daysHtml = (daysLeft !== null)
+        ? (daysLeft > 0
+            ? `<span class="uc-days-ok">${daysLeft} أيام متبقية</span>`
+            : `<span class="uc-days-late">🔴 متأخر ${Math.abs(daysLeft)} يوم</span>`)
+        : '';
+
+    const portalHtml = portalCount
+        ? `<span class="uc-portal-badge">💬 ${portalCount} ردود جديدة من المدير</span>`
+        : '';
+
+    const openRows   = openFindings.map(f => buildFindingRow(f, false)).join('');
+    const closedRows = closedFindings.map(f => buildFindingRow(f, true)).join('');
+
+    return `<div class="unit-card">
+        <div class="uc-header">
+            <div class="uc-name">🏥 ${esc(unitName)}</div>
+            <div class="uc-meta-row">
+                ${adminArea ? `<span class="uc-area">${esc(adminArea)}</span>` : ''}
+                ${daysHtml}
+                ${portalHtml}
+            </div>
+        </div>
+        ${openRows}${closedRows}
+    </div>`;
+}
+
+function buildFindingRow(f, isClosed) {
+    const fid     = esc(f.finding_id || f.uuid || '');
+    const rowCls  = isClosed ? 'finding-row closed-row' : 'finding-row';
+    const textCls = isClosed ? 'finding-text strikethrough' : 'finding-text';
+    const actions = isClosed ? '' : `
+        <div class="finding-actions">
+            <button class="act-btn act-btn-lock"
+                    onclick="handleAction(this,'${fid}','مغلق')"
+                    title="قفل المخالفة">قفل</button>
+            <button class="act-btn act-btn-suspend"
+                    onclick="openSuspendModal('${fid}')"
+                    title="تعليق المخالفة">تعليق</button>
+            <button class="act-btn act-btn-legal"
+                    onclick="handleAction(this,'${fid}','قانوني')"
+                    title="إحالة للجهة القانونية">قانوني</button>
+        </div>`;
+    return `<div class="${rowCls}" data-fid="${fid}">
+        <input type="checkbox" class="finding-checkbox" ${isClosed ? 'checked disabled' : ''}>
+        <span class="${textCls}">${esc(f.violation_text)}</span>
+        ${actions}
+    </div>`;
+}
+
+// ── RENDER: معلق ──
+function renderSuspended(findings) {
+    const panel = document.getElementById('panel-suspended');
+    if (!findings.length) {
+        panel.innerHTML = '<div class="empty-box">لا توجد ملاحظات معلقة</div>';
+        return;
+    }
+    panel.innerHTML = findings.map(f => {
+        const fid = esc(f.finding_id || f.uuid || '');
+        return `<div class="susp-item">
+            <div class="susp-unit">🏥 ${esc(f.unit_name || '')}${f.admin_area ? ' · ' + esc(f.admin_area) : ''}</div>
+            <div class="susp-text">🔁 ${esc(f.violation_text)}</div>
+            <div class="susp-footer">
+                ${f.responsible_party
+                    ? `<span class="susp-party">مسؤول: ${esc(f.responsible_party)}</span>`
+                    : '<span style="font-size:.72rem;color:#94a3b8">لم يحدد المسؤول</span>'}
+                <button class="act-btn act-btn-reopen"
+                        onclick="handleAction(this,'${fid}','مفتوح')">رفع التعليق</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ── RENDER: قانوني ──
+function renderLegal(findings) {
+    const panel = document.getElementById('panel-legal');
+    if (!findings.length) {
+        panel.innerHTML = '<div class="empty-box">لا توجد ملاحظات قانونية</div>';
+        return;
+    }
+    panel.innerHTML = findings.map(f => {
+        const lDays = f.legal_date ? daysSince(f.legal_date) : null;
+        let cardCls = 'legal-item', daysHtml = '', warnHtml = '';
+
+        if (lDays !== null) {
+            if (lDays >= 90) {
+                cardCls += ' alert';
+                daysHtml = `<span class="legal-days-alert">يوم ${lDays} من 90</span>`;
+                warnHtml = `<span class="legal-alert-msg">🔴 انتهت المهلة القانونية</span>`;
+            } else if (lDays >= 80) {
+                cardCls += ' warn';
+                daysHtml = `<span class="legal-days-warn">يوم ${lDays} من 90</span>`;
+                warnHtml = `<span class="legal-warn-msg">⚠ تحذير: ${90 - lDays} يوم متبقي للمهلة</span>`;
+            } else {
+                daysHtml = `<span class="legal-days-normal">${lDays} يوم منذ الإحالة</span>`;
+            }
+        }
+
+        return `<div class="${cardCls}">
+            <div class="legal-unit">🏥 ${esc(f.unit_name || '')}${f.admin_area ? ' · ' + esc(f.admin_area) : ''}</div>
+            <div class="legal-text">⚖️ ${esc(f.violation_text)}</div>
+            <div class="legal-footer">${daysHtml}${warnHtml}</div>
+        </div>`;
+    }).join('');
+}
+
+// ── RENDER: مغلق ──
+function renderClosed(findings) {
+    const panel = document.getElementById('panel-closed');
+    if (!findings.length) {
+        panel.innerHTML = '<div class="empty-box">لا توجد ملاحظات مغلقة</div>';
+        return;
+    }
+    panel.innerHTML = findings.map(f => `
+        <div class="closed-item">
+            <div class="closed-unit">🏥 ${esc(f.unit_name || '')}${f.admin_area ? ' · ' + esc(f.admin_area) : ''}</div>
+            <div class="closed-text">${esc(f.violation_text)}</div>
+        </div>
+    `).join('');
+}
+
+// ── ACTION HANDLER (قفل / قانوني / رفع التعليق) ──
+async function handleAction(btn, findingId, newStatus) {
+    if (!findingId) { showToast('معرف المخالفة مفقود', 'error'); return; }
+
+    const msgs = {
+        'مغلق':  'هل تريد قفل هذه المخالفة؟',
+        'قانوني':'هل تريد إحالة هذه المخالفة للجهة القانونية؟',
+        'مفتوح': 'هل تريد رفع التعليق وإعادة فتح المخالفة؟'
+    };
+    if (!confirm(msgs[newStatus] || 'تأكيد')) return;
+
+    const origLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    try {
+        const res = await post({
+            action:     'updateFindingStatus',
+            finding_id: findingId,
+            status:     newStatus,
+            updated_by: (currentUser && currentUser.name) || 'مستخدم'
+        });
+
+        if (!res.success) {
+            showToast('خطأ: ' + (res.error || 'فشل التحديث'), 'error');
+            btn.disabled = false;
+            btn.textContent = origLabel;
+            return;
+        }
+
+        // Optimistic local update
+        const idx = allFindings.findIndex(f => (f.finding_id || f.uuid) === findingId);
+        if (idx > -1) allFindings[idx].status = newStatus;
+
+        const success = { 'مغلق': '✅ تم قفل المخالفة', 'قانوني': '⚖️ تمت الإحالة للقانون', 'مفتوح': '🔓 تمت إعادة فتح المخالفة' };
+        showToast(success[newStatus] || 'تم التحديث', 'success');
+        render();
+        lucide.createIcons();
+    } catch (e) {
+        showToast('خطأ في الاتصال بالخادم', 'error');
+        btn.disabled = false;
+        btn.textContent = origLabel;
+    }
+}
+
+// ── SUSPEND MODAL ──
+function openSuspendModal(findingId) {
+    pendingSuspendId = findingId;
+    document.getElementById('modal-party').value   = '';
+    document.getElementById('modal-comment').value = '';
+    document.getElementById('modal-party').style.borderColor = '';
+    document.getElementById('suspend-modal').classList.add('open');
+    setTimeout(() => document.getElementById('modal-party').focus(), 100);
+}
+
+function closeSuspendModal() {
+    pendingSuspendId = null;
+    document.getElementById('suspend-modal').classList.remove('open');
+}
+
+async function submitSuspend() {
+    const party   = document.getElementById('modal-party').value.trim();
+    const comment = document.getElementById('modal-comment').value.trim();
+
+    if (!party) {
+        document.getElementById('modal-party').style.borderColor = '#dc2626';
+        document.getElementById('modal-party').focus();
+        return;
+    }
+    document.getElementById('modal-party').style.borderColor = '';
+
+    const btn = document.getElementById('modal-submit-btn');
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    try {
+        const res = await post({
+            action:             'updateFindingStatus',
+            finding_id:         pendingSuspendId,
+            status:             'معلق',
+            responsible_party:  party,
+            comment:            comment,
+            updated_by:         (currentUser && currentUser.name) || 'مستخدم'
+        });
+
+        if (!res.success) {
+            showToast('خطأ: ' + (res.error || 'فشل التحديث'), 'error');
+        } else {
+            const idx = allFindings.findIndex(f => (f.finding_id || f.uuid) === pendingSuspendId);
+            if (idx > -1) {
+                allFindings[idx].status = 'معلق';
+                allFindings[idx].responsible_party = party;
+            }
+            showToast('⏸ تم تعليق المخالفة', 'success');
+            closeSuspendModal();
+            render();
+            lucide.createIcons();
+        }
+    } catch (e) {
+        showToast('خطأ في الاتصال بالخادم', 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'تعليق';
+}
+
+// ── DROPDOWNS ──
 function populateAdminDropdown() {
     const areas = [...new Set(allFindings.map(f => f.admin_area).filter(Boolean))].sort();
     const sel = document.getElementById('f-admin');
@@ -316,10 +752,7 @@ function onAdminChange() {
     const admin = document.getElementById('f-admin').value;
     const unitSel = document.getElementById('f-unit');
     const units = [...new Set(
-        allFindings
-            .filter(f => !admin || f.admin_area === admin)
-            .map(f => f.unit_name)
-            .filter(Boolean)
+        allFindings.filter(f => !admin || f.admin_area === admin).map(f => f.unit_name).filter(Boolean)
     )].sort();
     unitSel.innerHTML = '<option value="">كل الوحدات</option>';
     units.forEach(u => {
@@ -327,191 +760,49 @@ function onAdminChange() {
         o.value = u; o.textContent = u;
         unitSel.appendChild(o);
     });
-    renderUnits();
+    render();
 }
 
-// ── Type Toggle ──
+function onFilterChange() { render(); }
+
 function setType(t) {
     activeType = t;
     ['tb-all','tb-hosp','tb-unit'].forEach(id => document.getElementById(id).classList.remove('active'));
     if (!t)               document.getElementById('tb-all').classList.add('active');
     else if (t==='مستشفى') document.getElementById('tb-hosp').classList.add('active');
     else                  document.getElementById('tb-unit').classList.add('active');
-    renderUnits();
+    render();
 }
 
-// ── Filter findings ──
-function getFiltered() {
-    const admin    = document.getElementById('f-admin').value;
-    const unitVal  = document.getElementById('f-unit').value;
-    const startVal = document.getElementById('f-start').value;
-    const endVal   = document.getElementById('f-end').value;
-    const start    = startVal ? new Date(startVal) : null;
-    const end      = endVal   ? new Date(endVal + 'T23:59:59') : null;
-
-    return allFindings.filter(f => {
-        if (admin   && f.admin_area !== admin) return false;
-        if (unitVal && f.unit_name  !== unitVal) return false;
-        if (activeType) {
-            const uname = (f.unit_name || '').trim();
-            if (activeType === 'مستشفى' && !uname.includes('مستشفى') && !uname.includes('مستشفيات')) return false;
-            if (activeType === 'وحدة'   && (uname.includes('مستشفى') || uname.includes('مستشفيات'))) return false;
-        }
-        if (start || end) {
-            const vd = f.visit_date ? new Date(f.visit_date) : null;
-            if (!vd) return false;
-            if (start && vd < start) return false;
-            if (end   && vd > end)   return false;
-        }
-        return true;
-    });
-}
-
-// ── KPIs ──
-function updateKPIs(list) {
-    document.getElementById('k-total').textContent = list.length;
-    document.getElementById('k-high').textContent  = list.filter(f => f.severity === 'عالي').length;
-    const units = new Set(list.map(f => f.unit_name).filter(Boolean));
-    document.getElementById('k-units').textContent = units.size;
-    document.getElementById('k-open').textContent  = Object.values(carMap).filter(c => c.status === 'مفتوح').length;
-}
-
-// ── Render Unit Cards ──
-function renderUnits() {
-    const filtered = getFiltered();
-    updateKPIs(filtered);
-
-    const container = document.getElementById('units-container');
-
-    if (!filtered.length) {
-        document.getElementById('section-hdr').style.display = 'none';
-        container.innerHTML = '<div class="empty-box col-span-full"><p class="text-sm font-bold">لا توجد ملاحظات بهذه الفلاتر</p></div>';
-        lucide.createIcons();
-        return;
-    }
-
-    // Group by unit_name
-    const unitMap = {};
-    filtered.forEach(f => {
-        const u = f.unit_name || 'غير محدد';
-        if (!unitMap[u]) unitMap[u] = [];
-        unitMap[u].push(f);
-    });
-
-    const unitNames = Object.keys(unitMap).sort();
-
-    document.getElementById('section-hdr').style.display = 'flex';
-    document.getElementById('section-count').textContent = unitNames.length + ' وحدة';
-
-    container.innerHTML = unitNames.map(uName => buildUnitCard(uName, unitMap[uName])).join('');
-    lucide.createIcons();
-}
-
-function buildUnitCard(unitName, findings) {
-    // Group findings by section
-    const secMap = {};
-    findings.forEach(f => {
-        const s = f.section || 'عام';
-        if (!secMap[s]) secMap[s] = [];
-        secMap[s].push(f);
-    });
-
-    const sections   = Object.keys(secMap);
-    const lastVisit  = findings.reduce((acc, f) => {
-        const d = f.visit_date ? new Date(f.visit_date) : null;
-        return (d && (!acc || d > acc)) ? d : acc;
-    }, null);
-    const highCount  = findings.filter(f => f.severity === 'عالي').length;
-    const medCount   = findings.filter(f => f.severity === 'متوسط').length;
-    const openCARs   = [...new Set(findings.map(f => f.car_id).filter(Boolean))]
-        .filter(id => { const c = carMap[id]; return !c || c.status !== 'مغلق'; });
-    const closedCARs = [...new Set(findings.map(f => f.car_id).filter(Boolean))]
-        .filter(id => { const c = carMap[id]; return c && c.status === 'مغلق'; });
-
-    const borderCls = highCount ? 'has-high' : medCount ? 'has-med' : 'has-low';
-    const uid = 'u-' + unitName.replace(/\s+/g,'_').replace(/[^\w-]/g,'');
-
-    const sectionsHtml = sections.map(secName => {
-        const sFindings = secMap[secName];
-        const carIds    = [...new Set(sFindings.map(f => f.car_id).filter(Boolean))];
-        const carId     = carIds[0] || '';
-        const car       = carMap[carId] || {};
-        const cs        = car.status || (carId ? 'مفتوح' : '');
-        const carCls    = !carId ? 'car-none' : cs === 'مغلق' ? 'car-closed' : cs === 'مصعَّد' ? 'car-escalated' : 'car-open';
-        const carIcon   = !carId ? '' : cs === 'مغلق' ? '✅ ' : cs === 'مصعَّد' ? '🔺 ' : '⏳ ';
-        const carHref   = carId ? `car-dashboard.html?car=${encodeURIComponent(carId)}` : '';
-
-        const findingsLi = sFindings.map(f => {
-            const dot = f.severity === 'عالي' ? 'high' : f.severity === 'متوسط' ? 'med' : 'low';
-            return `<li><span class="sev-dot ${dot}"></span><span>${esc(f.violation_text)}</span></li>`;
-        }).join('');
-
-        return `<div class="sec-item">
-            <div class="sec-name">
-                <i data-lucide="layers" style="width:14px;height:14px;flex-shrink:0"></i>
-                ${esc(secName)}
-                <span style="font-size:.68rem;font-weight:700;color:#94a3b8;margin-right:auto">${sFindings.length} مخالفة</span>
-            </div>
-            <ul class="sec-findings-list">${findingsLi}</ul>
-            ${carId
-                ? `<div class="sec-car-row">
-                    <span style="font-size:.72rem;color:#64748b;font-weight:700">CAR:</span>
-                    <a class="car-pill ${carCls}" href="${carHref}">${carIcon}${esc(carId)}</a>
-                   </div>`
-                : `<div class="sec-car-row"><span class="car-pill car-none" style="font-size:.68rem">لا يوجد CAR بعد</span></div>`
-            }
-        </div>`;
-    }).join('');
-
-    return `<div class="unit-card ${borderCls}" id="${uid}">
-        <div class="uc-header" onclick="toggleUnit('${uid}')">
-            <div>
-                <div class="uc-name">🏥 ${esc(unitName)}</div>
-            </div>
-            <i data-lucide="chevron-left" class="uc-chevron w-5 h-5"></i>
-        </div>
-        <div class="uc-meta">
-            <span class="uc-badge uc-badge-findings">⚠ ${findings.length} مخالفة</span>
-            <span class="uc-badge uc-badge-sections">📋 ${sections.length} قسم</span>
-            ${lastVisit ? `<span class="uc-badge uc-badge-date">📅 ${formatDate(lastVisit)}</span>` : ''}
-            ${openCARs.length   ? `<span class="uc-badge uc-badge-open">⏳ ${openCARs.length} CAR مفتوح</span>` : ''}
-            ${closedCARs.length ? `<span class="uc-badge uc-badge-closed">✅ ${closedCARs.length} CAR مغلق</span>` : ''}
-        </div>
-        <div class="uc-sections">${sectionsHtml}</div>
-    </div>`;
-}
-
-function toggleUnit(uid) {
-    const card = document.getElementById(uid);
-    if (!card) return;
-    card.classList.toggle('open');
-    lucide.createIcons();
-}
-
-// ── Helpers ──
-function toggleMenu() { document.body.classList.toggle('menu-open'); }
-
-function logout() {
-    localStorage.removeItem('iag_user');
-    localStorage.removeItem('iag_last_page');
-    location.href = 'index.html';
-}
-
-function showError(msg) {
-    document.getElementById('section-hdr').style.display = 'none';
-    document.getElementById('units-container').innerHTML =
-        `<div class="empty-box col-span-full"><p class="font-bold text-red-500">${esc(msg)}</p></div>`;
-    lucide.createIcons();
-}
-
-function formatDate(v) {
-    if (!v) return '';
+// ── HELPERS ──
+function daysSince(dateStr) {
+    if (!dateStr) return null;
     try {
-        const d = new Date(v);
-        if (isNaN(d.getTime())) return String(v);
-        return d.toLocaleDateString('ar-EG', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    } catch { return String(v); }
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return null;
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        d.setHours(0, 0, 0, 0);
+        return Math.floor((now - d) / 86400000);
+    } catch (e) { return null; }
 }
+
+function showPanelError(panelId, msg) {
+    document.getElementById(panelId).innerHTML =
+        `<div class="empty-box" style="border-color:#fecaca;color:#dc2626">${esc(msg)}</div>`;
+}
+
+function showToast(msg, type) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast' + (type ? ' ' + type : '');
+    void el.offsetWidth;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function toggleMenu() { document.body.classList.toggle('menu-open'); }
 
 function esc(s) {
     return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
