@@ -21,7 +21,6 @@
     'default': [
       { href: 'employee.html',     icon: 'home',              label: 'الرئيسية'   },
       { href: 'findings.html',     icon: 'shield-alert',      label: 'الملاحظات'  },
-      { href: 'car.html',          icon: 'clipboard-check',   label: 'الإجراءات'  },
       { href: 'forms.html',        icon: 'file-text',         label: 'النماذج'    },
     ]
   };

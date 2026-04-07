@@ -72,20 +72,34 @@
         @media (min-width: 768px)  { .units-grid { grid-template-columns: repeat(2,1fr); } }
         @media (min-width: 1200px) { .units-grid { grid-template-columns: repeat(3,1fr); } }
 
+        /* UNIT CARD — collapsed by default */
         .unit-card { background: white; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.03); overflow: hidden; }
-        .uc-header { padding: 12px 14px; background: #f8fafc; border-bottom: 1px solid #f1f5f9; }
+        .uc-header { padding: 12px 14px; background: #f8fafc; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: flex-start; gap: 10px; user-select: none; }
+        .uc-header:hover { background: #f0fdfa; }
+        .uc-header-content { flex: 1; min-width: 0; }
         .uc-name { font-size: 0.92rem; font-weight: 800; color: #1e293b; margin-bottom: 6px; }
         .uc-meta-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
         .uc-area { font-size: 0.72rem; color: #64748b; font-weight: 600; }
+        .uc-count { font-size: 0.68rem; font-weight: 700; color: #dc2626; background: #fef2f2; padding: 2px 8px; border-radius: 20px; border: 1px solid #fecaca; }
         .uc-days-ok   { font-size: 0.72rem; font-weight: 800; color: #059669; background: #d1fae5; padding: 2px 8px; border-radius: 20px; border: 1px solid #a7f3d0; }
         .uc-days-late { font-size: 0.72rem; font-weight: 800; color: #dc2626; background: #fef2f2; padding: 2px 8px; border-radius: 20px; border: 1px solid #fecaca; }
         .uc-portal-badge { font-size: 0.68rem; font-weight: 700; color: #1d4ed8; background: #eff6ff; padding: 2px 8px; border-radius: 20px; border: 1px solid #bfdbfe; }
+        .uc-chevron { flex-shrink: 0; color: #94a3b8; transition: transform 0.2s; margin-top: 2px; }
+        .unit-card.expanded .uc-chevron { transform: rotate(-90deg); }
+
+        /* CARD BODY */
+        .uc-body { display: none; }
+        .unit-card.expanded .uc-body { display: block; }
+
+        /* SECTION GROUP */
+        .sec-group-hdr { font-size: 0.75rem; font-weight: 800; color: #0f766e; background: #f0fdfa; padding: 5px 14px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 6px; }
+        .sec-group-hdr i { flex-shrink: 0; }
 
         /* FINDING ROWS */
-        .finding-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #f8fafc; }
+        .finding-row { display: flex; align-items: flex-start; gap: 10px; padding: 9px 14px; border-bottom: 1px solid #f8fafc; }
         .finding-row:last-child { border-bottom: none; }
-        .finding-row.closed-row { opacity: 0.45; }
-        .finding-checkbox { flex-shrink: 0; width: 17px; height: 17px; margin-top: 3px; accent-color: #0f766e; }
+        .finding-row.closed-row { opacity: 0.42; }
+        .finding-checkbox { flex-shrink: 0; width: 17px; height: 17px; margin-top: 3px; accent-color: #0f766e; cursor: pointer; }
         .finding-text { flex: 1; font-size: 0.82rem; color: #334155; line-height: 1.6; }
         .finding-text.strikethrough { text-decoration: line-through; color: #94a3b8; }
         .finding-actions { display: flex; gap: 4px; flex-shrink: 0; padding-top: 1px; }
@@ -99,6 +113,14 @@
         .act-btn-legal:hover:not(:disabled)   { background: #dc2626; color: white; }
         .act-btn-reopen  { background: #eff6ff; color: #1d4ed8; }
         .act-btn-reopen:hover:not(:disabled)  { background: #1d4ed8; color: white; }
+
+        /* BULK ACTION BAR */
+        .bulk-bar { position: fixed; bottom: 82px; left: 50%; transform: translateX(-50%) translateY(120px); background: #1e293b; color: white; padding: 10px 18px; border-radius: 14px; display: flex; align-items: center; gap: 12px; z-index: 180; transition: 0.3s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .bulk-bar.visible { transform: translateX(-50%) translateY(0); }
+        .bulk-label { font-size: 0.82rem; font-weight: 700; }
+        .bulk-close-btn { background: #059669; color: white; border: none; border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; padding: 6px 14px; transition: 0.15s; }
+        .bulk-close-btn:hover { background: #047857; }
+        .bulk-cancel { font-size: 0.75rem; color: #94a3b8; cursor: pointer; text-decoration: underline; }
 
         /* SUSPENDED LIST */
         .susp-item { background: white; border-radius: 12px; border: 1px solid #fde68a; padding: 12px 14px; margin-bottom: 8px; }
@@ -149,9 +171,9 @@
         .modal-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 10px; font-family: 'Cairo', sans-serif; font-size: 0.88rem; outline: none; margin-bottom: 12px; color: #1e293b; }
         .modal-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
         .modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
-        .modal-cancel { padding: 8px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; background: #f8fafc; color: #475569; }
-        .modal-submit { padding: 8px 16px; border: none; border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; background: #d97706; color: white; }
-        .modal-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        .modal-cancel-btn { padding: 8px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; background: #f8fafc; color: #475569; }
+        .modal-submit-btn { padding: 8px 16px; border: none; border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; background: #d97706; color: white; }
+        .modal-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .hidden { display: none !important; }
     </style>
@@ -205,15 +227,15 @@
 <div class="filter-container">
     <div class="grid grid-cols-2 gap-3 mb-3">
         <div>
-            <label class="f-label">الإدارة الصحية</label>
+            <label class="f-label" id="f-label-1">الإدارة الصحية</label>
             <select class="f-input" id="f-admin" onchange="onAdminChange()">
-                <option value="">كل الإدارات</option>
+                <option value="">الكل</option>
             </select>
         </div>
         <div>
-            <label class="f-label">اختر الوحدة</label>
+            <label class="f-label" id="f-label-2">اختر الوحدة</label>
             <select class="f-input" id="f-unit" onchange="onFilterChange()">
-                <option value="">كل الوحدات</option>
+                <option value="">الكل</option>
             </select>
         </div>
         <div>
@@ -294,6 +316,13 @@
     <div class="empty-box">جاري التحميل...</div>
 </div>
 
+<!-- BULK ACTION BAR -->
+<div class="bulk-bar" id="bulk-bar">
+    <span class="bulk-label">تم تحديد <strong id="bulk-count">0</strong> مخالفة</span>
+    <button class="bulk-close-btn" onclick="bulkClose()">✅ قفل الكل</button>
+    <span class="bulk-cancel" onclick="clearSelection()">إلغاء</span>
+</div>
+
 <!-- SUSPEND MODAL -->
 <div class="modal-overlay" id="suspend-modal">
     <div class="modal-box">
@@ -303,8 +332,8 @@
         <label class="modal-lbl">ملاحظة (اختياري)</label>
         <input class="modal-input" id="modal-comment" placeholder="سبب التعليق..." maxlength="250">
         <div class="modal-btns">
-            <button class="modal-cancel" onclick="closeSuspendModal()">إلغاء</button>
-            <button class="modal-submit" id="modal-submit-btn" onclick="submitSuspend()">تعليق</button>
+            <button class="modal-cancel-btn" onclick="closeSuspendModal()">إلغاء</button>
+            <button class="modal-submit-btn" id="modal-submit-btn" onclick="submitSuspend()">تعليق</button>
         </div>
     </div>
 </div>
@@ -323,10 +352,11 @@ lucide.createIcons();
 
 // ── STATE ──
 let allFindings      = [];
-let portalMap        = {};   // unit_name → portal reply count
-let activeType       = '';
+let portalMap        = {};       // unit_name → portal reply count
+let activeType       = '';       // '' | 'مستشفى' | 'وحدة'
 let pendingSuspendId = null;
 let currentUser      = null;
+let selectedIds      = new Set();
 let toastTimer;
 
 // ── INIT ──
@@ -334,7 +364,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const user = auth.checkAuth();
     if (!user) { location.href = 'index.html'; return; }
 
-    // Role guard: allow مراجع فني + مدير, redirect منسق
+    // Role guard: مراجع فني + مدير allowed; منسق → coordinator
     const role = (user.role || '').trim();
     if (role.includes('منسق') && !role.includes('مدير')) {
         location.href = 'coordinator.html'; return;
@@ -345,13 +375,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('menu-role').textContent = user.jobTitle || user.role || '';
     document.getElementById('hdr-sub').textContent   = (user.name || '') + ' — ' + (user.jobTitle || user.role || '');
 
-    // Default date range: current month
-    const now = new Date();
-    const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2, '0');
-    const lastDay = new Date(y, now.getMonth() + 1, 0).getDate();
-    document.getElementById('f-start').value = `${y}-${m}-01`;
-    document.getElementById('f-end').value   = `${y}-${m}-${String(lastDay).padStart(2, '0')}`;
-
+    // No default date range — show all findings
     await Promise.all([loadFindings(), loadPortalData()]);
     lucide.createIcons();
 });
@@ -370,23 +394,31 @@ async function post(body) {
 async function loadFindings() {
     try {
         const res = await post({ action: 'getFindings' });
+        console.log('[findings] getFindings response:', res);
+
         if (!res.success) {
             showPanelError('panel-active', 'تعذر تحميل البيانات: ' + (res.error || ''));
             return;
         }
+
         allFindings = (res.findings || []).map(f => ({
             ...f,
-            // Treat blank status as مفتوح
+            // Blank / null / undefined status → مفتوح
             status: (String(f.status || '').trim()) || 'مفتوح'
         }));
-        populateAdminDropdown();
+
+        console.log('[findings] total loaded:', allFindings.length,
+            '| statuses:', allFindings.reduce((acc, f) => { acc[f.status] = (acc[f.status]||0)+1; return acc; }, {}));
+
+        populateDropdowns();
         render();
     } catch (e) {
+        console.error('[findings] load error:', e);
         showPanelError('panel-active', 'خطأ في الاتصال بالخادم');
     }
 }
 
-// ── LOAD PORTAL DATA (optional — for portal reply badge) ──
+// ── PORTAL DATA (badge) ──
 async function loadPortalData() {
     try {
         const res = await post({ action: 'getCARSections' });
@@ -398,26 +430,98 @@ async function loadPortalData() {
                 portalMap[unit] = (portalMap[unit] || 0) + 1;
             }
         });
-    } catch (e) { /* portal data is optional */ }
+    } catch (e) { /* optional */ }
 }
 
-// ── FILTER ──
+// ─────────────────────────────────────────
+// FILTER LOGIC
+// ─────────────────────────────────────────
+
+// Populate dropdowns based on activeType
+function populateDropdowns() {
+    if (activeType === 'مستشفى') {
+        // dropdown 1 = hospital name, dropdown 2 = section
+        document.getElementById('f-label-1').textContent = 'اسم المستشفى';
+        document.getElementById('f-label-2').textContent = 'القسم';
+        const hospitals = unique(allFindings
+            .filter(f => isHospital(f.unit_name))
+            .map(f => f.unit_name));
+        fillSelect('f-admin', hospitals, 'كل المستشفيات');
+        fillSelect('f-unit', [], 'كل الأقسام');
+    } else {
+        // dropdown 1 = admin_area, dropdown 2 = unit_name
+        document.getElementById('f-label-1').textContent = 'الإدارة الصحية';
+        document.getElementById('f-label-2').textContent = 'اختر الوحدة';
+        const baseFindings = activeType === 'وحدة'
+            ? allFindings.filter(f => !isHospital(f.unit_name))
+            : allFindings;
+        const areas = unique(baseFindings.map(f => f.admin_area).filter(Boolean));
+        fillSelect('f-admin', areas, 'كل الإدارات');
+        fillSelect('f-unit', [], 'كل الوحدات');
+    }
+}
+
+function onAdminChange() {
+    const sel1 = document.getElementById('f-admin').value;
+    if (activeType === 'مستشفى') {
+        // dropdown 2 = sections for selected hospital
+        const sections = unique(allFindings
+            .filter(f => isHospital(f.unit_name) && (!sel1 || f.unit_name === sel1))
+            .map(f => f.section).filter(Boolean));
+        fillSelect('f-unit', sections, 'كل الأقسام');
+    } else {
+        // dropdown 2 = units for selected admin_area
+        const baseFindings = activeType === 'وحدة'
+            ? allFindings.filter(f => !isHospital(f.unit_name))
+            : allFindings;
+        const units = unique(baseFindings
+            .filter(f => !sel1 || f.admin_area === sel1)
+            .map(f => f.unit_name).filter(Boolean));
+        fillSelect('f-unit', units, 'كل الوحدات');
+    }
+    render();
+}
+
+function onFilterChange() { render(); }
+
+function setType(t) {
+    activeType = t;
+    ['tb-all','tb-hosp','tb-unit'].forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById(t === 'مستشفى' ? 'tb-hosp' : t === 'وحدة' ? 'tb-unit' : 'tb-all').classList.add('active');
+    // Reset both dropdowns when type changes
+    document.getElementById('f-admin').value = '';
+    document.getElementById('f-unit').value  = '';
+    populateDropdowns();
+    render();
+}
+
 function getFiltered() {
-    const admin    = document.getElementById('f-admin').value;
-    const unitVal  = document.getElementById('f-unit').value;
+    const sel1     = document.getElementById('f-admin').value;
+    const sel2     = document.getElementById('f-unit').value;
     const startVal = document.getElementById('f-start').value;
     const endVal   = document.getElementById('f-end').value;
     const start    = startVal ? new Date(startVal) : null;
     const end      = endVal   ? new Date(endVal + 'T23:59:59') : null;
 
     return allFindings.filter(f => {
-        if (admin   && f.admin_area !== admin)   return false;
-        if (unitVal && f.unit_name  !== unitVal) return false;
-        if (activeType) {
-            const u = (f.unit_name || '').trim();
-            if (activeType === 'مستشفى' && !u.includes('مستشفى') && !u.includes('مستشفيات')) return false;
-            if (activeType === 'وحدة'   && (u.includes('مستشفى') || u.includes('مستشفيات'))) return false;
+        const uname = (f.unit_name || '').trim();
+
+        // Type filter
+        if (activeType === 'مستشفى') {
+            if (!isHospital(uname)) return false;
+            if (sel1 && f.unit_name !== sel1) return false;          // hospital name
+            if (sel2 && f.section   !== sel2) return false;          // section
+        } else if (activeType === 'وحدة') {
+            if (isHospital(uname)) return false;
+            if (sel1 && f.admin_area !== sel1) return false;
+            if (sel2 && f.unit_name  !== sel2) return false;
+        } else {
+            // الكل
+            if (sel1 && f.admin_area !== sel1) return false;
+            if (sel2 && f.unit_name  !== sel2) return false;
         }
+
+        // Date filter
         if (start || end) {
             const vd = f.visit_date ? new Date(f.visit_date) : null;
             if (!vd || isNaN(vd.getTime())) return false;
@@ -428,7 +532,10 @@ function getFiltered() {
     });
 }
 
-// ── MAIN RENDER ──
+// ─────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────
+
 function render() {
     const filtered  = getFiltered();
     const active    = filtered.filter(f => f.status === 'مفتوح');
@@ -438,26 +545,21 @@ function render() {
 
     updateKPIs(active, suspended, legal);
     updateTabCounts(active, suspended, legal, closed);
-
     renderActive(active, filtered);
     renderSuspended(suspended);
     renderLegal(legal);
     renderClosed(closed);
-
     lucide.createIcons();
 }
 
-// ── KPIs ──
 function updateKPIs(active, suspended, legal) {
     const openUnits = new Set(active.map(f => f.unit_name).filter(Boolean));
-    const lateCount = active.filter(f => daysSince(f.visit_date) > 14).length;
     document.getElementById('k-open-units').textContent = openUnits.size;
-    document.getElementById('k-late').textContent       = lateCount;
+    document.getElementById('k-late').textContent       = active.filter(f => daysSince(f.visit_date) > 14).length;
     document.getElementById('k-suspended').textContent  = suspended.length;
     document.getElementById('k-legal').textContent      = legal.length;
 }
 
-// ── TAB COUNTS ──
 function updateTabCounts(active, suspended, legal, closed) {
     document.getElementById('tc-active').textContent    = active.length;
     document.getElementById('tc-suspended').textContent = suspended.length;
@@ -465,7 +567,6 @@ function updateTabCounts(active, suspended, legal, closed) {
     document.getElementById('tc-closed').textContent    = closed.length;
 }
 
-// ── SWITCH TAB ──
 function switchTab(key) {
     ['active','suspended','legal','closed'].forEach(k => {
         document.getElementById('tab-btn-' + k).classList.toggle('active', k === key);
@@ -473,7 +574,7 @@ function switchTab(key) {
     });
 }
 
-// ── RENDER: نشط ──
+// ── Tab: نشط ──
 function renderActive(activeFindings, allFiltered) {
     const panel = document.getElementById('panel-active');
     if (!activeFindings.length) {
@@ -489,7 +590,7 @@ function renderActive(activeFindings, allFiltered) {
         unitMap[u].push(f);
     });
 
-    // Collect closed findings per unit (shown faded inside active card)
+    // Closed findings per unit (shown faded inside the same card)
     const closedByUnit = {};
     allFiltered.filter(f => f.status === 'مغلق').forEach(f => {
         const u = f.unit_name || 'غير محدد';
@@ -504,11 +605,14 @@ function renderActive(activeFindings, allFiltered) {
 }
 
 function buildUnitCard(unitName, openFindings, closedFindings) {
-    const visitDate    = (openFindings[0] || {}).visit_date || '';
-    const sinceVisit   = daysSince(visitDate);
-    const daysLeft     = sinceVisit !== null ? (14 - sinceVisit) : null;
-    const portalCount  = portalMap[unitName] || 0;
-    const adminArea    = (openFindings[0] || {}).admin_area || '';
+    const uid         = 'uc-' + unitName.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 30);
+    const visitDate   = (openFindings[0] || {}).visit_date || '';
+    const sinceVisit  = daysSince(visitDate);
+    const daysLeft    = sinceVisit !== null ? (14 - sinceVisit) : null;
+    const adminArea   = (openFindings[0] || {}).admin_area || '';
+    const portalCount = portalMap[unitName] || 0;
+    const openCount   = openFindings.length;
+    const closedCount = closedFindings.length;
 
     const daysHtml = (daysLeft !== null)
         ? (daysLeft > 0
@@ -517,23 +621,55 @@ function buildUnitCard(unitName, openFindings, closedFindings) {
         : '';
 
     const portalHtml = portalCount
-        ? `<span class="uc-portal-badge">💬 ${portalCount} ردود جديدة من المدير</span>`
+        ? `<span class="uc-portal-badge">💬 ${portalCount} ردود من المدير</span>`
         : '';
 
-    const openRows   = openFindings.map(f => buildFindingRow(f, false)).join('');
-    const closedRows = closedFindings.map(f => buildFindingRow(f, true)).join('');
+    // Group open findings by section
+    const secMap = {};
+    openFindings.forEach(f => {
+        const s = f.section || 'عام';
+        if (!secMap[s]) secMap[s] = [];
+        secMap[s].push(f);
+    });
 
-    return `<div class="unit-card">
-        <div class="uc-header">
-            <div class="uc-name">🏥 ${esc(unitName)}</div>
-            <div class="uc-meta-row">
-                ${adminArea ? `<span class="uc-area">${esc(adminArea)}</span>` : ''}
-                ${daysHtml}
-                ${portalHtml}
+    const secHtml = Object.keys(secMap).map(secName => {
+        const rows = secMap[secName].map(f => buildFindingRow(f, false)).join('');
+        return `<div class="sec-group-hdr">
+            <i data-lucide="layers" style="width:12px;height:12px"></i>
+            ${esc(secName)}
+            <span style="font-size:.65rem;color:#94a3b8;margin-right:auto">${secMap[secName].length} مخالفة</span>
+        </div>${rows}`;
+    }).join('');
+
+    const closedHtml = closedFindings.length
+        ? closedFindings.map(f => buildFindingRow(f, true)).join('')
+        : '';
+
+    return `<div class="unit-card" id="${uid}">
+        <div class="uc-header" onclick="toggleCard('${uid}')">
+            <div class="uc-header-content">
+                <div class="uc-name">🏥 ${esc(unitName)}</div>
+                <div class="uc-meta-row">
+                    ${adminArea ? `<span class="uc-area">${esc(adminArea)}</span>` : ''}
+                    <span class="uc-count">⚠ ${openCount} مخالفة مفتوحة</span>
+                    ${closedCount ? `<span style="font-size:.68rem;font-weight:700;color:#059669;background:#d1fae5;padding:2px 8px;border-radius:20px;border:1px solid #a7f3d0">✅ ${closedCount} مغلقة</span>` : ''}
+                    ${daysHtml}
+                    ${portalHtml}
+                </div>
             </div>
+            <i data-lucide="chevron-left" class="uc-chevron w-5 h-5"></i>
         </div>
-        ${openRows}${closedRows}
+        <div class="uc-body">
+            ${secHtml}${closedHtml}
+        </div>
     </div>`;
+}
+
+function toggleCard(uid) {
+    const card = document.getElementById(uid);
+    if (!card) return;
+    card.classList.toggle('expanded');
+    lucide.createIcons();
 }
 
 function buildFindingRow(f, isClosed) {
@@ -547,19 +683,22 @@ function buildFindingRow(f, isClosed) {
                     title="قفل المخالفة">قفل</button>
             <button class="act-btn act-btn-suspend"
                     onclick="openSuspendModal('${fid}')"
-                    title="تعليق المخالفة">تعليق</button>
+                    title="تعليق">تعليق</button>
             <button class="act-btn act-btn-legal"
                     onclick="handleAction(this,'${fid}','قانوني')"
-                    title="إحالة للجهة القانونية">قانوني</button>
+                    title="إحالة قانونية">قانوني</button>
         </div>`;
+    const chkAttr = isClosed
+        ? 'checked disabled'
+        : `onchange="onCheckboxChange(this,'${fid}')"`;
     return `<div class="${rowCls}" data-fid="${fid}">
-        <input type="checkbox" class="finding-checkbox" ${isClosed ? 'checked disabled' : ''}>
+        <input type="checkbox" class="finding-checkbox" ${chkAttr}>
         <span class="${textCls}">${esc(f.violation_text)}</span>
         ${actions}
     </div>`;
 }
 
-// ── RENDER: معلق ──
+// ── Tab: معلق ──
 function renderSuspended(findings) {
     const panel = document.getElementById('panel-suspended');
     if (!findings.length) {
@@ -582,7 +721,7 @@ function renderSuspended(findings) {
     }).join('');
 }
 
-// ── RENDER: قانوني ──
+// ── Tab: قانوني ──
 function renderLegal(findings) {
     const panel = document.getElementById('panel-legal');
     if (!findings.length) {
@@ -615,7 +754,7 @@ function renderLegal(findings) {
     }).join('');
 }
 
-// ── RENDER: مغلق ──
+// ── Tab: مغلق ──
 function renderClosed(findings) {
     const panel = document.getElementById('panel-closed');
     if (!findings.length) {
@@ -630,7 +769,10 @@ function renderClosed(findings) {
     `).join('');
 }
 
-// ── ACTION HANDLER (قفل / قانوني / رفع التعليق) ──
+// ─────────────────────────────────────────
+// ACTIONS
+// ─────────────────────────────────────────
+
 async function handleAction(btn, findingId, newStatus) {
     if (!findingId) { showToast('معرف المخالفة مفقود', 'error'); return; }
 
@@ -655,24 +797,64 @@ async function handleAction(btn, findingId, newStatus) {
 
         if (!res.success) {
             showToast('خطأ: ' + (res.error || 'فشل التحديث'), 'error');
-            btn.disabled = false;
-            btn.textContent = origLabel;
+            btn.disabled = false; btn.textContent = origLabel;
             return;
         }
 
-        // Optimistic local update
-        const idx = allFindings.findIndex(f => (f.finding_id || f.uuid) === findingId);
-        if (idx > -1) allFindings[idx].status = newStatus;
-
-        const success = { 'مغلق': '✅ تم قفل المخالفة', 'قانوني': '⚖️ تمت الإحالة للقانون', 'مفتوح': '🔓 تمت إعادة فتح المخالفة' };
-        showToast(success[newStatus] || 'تم التحديث', 'success');
-        render();
-        lucide.createIcons();
+        updateLocalStatus(findingId, newStatus);
+        const msgs2 = { 'مغلق': '✅ تم قفل المخالفة', 'قانوني': '⚖️ تمت الإحالة للقانون', 'مفتوح': '🔓 تمت إعادة فتح المخالفة' };
+        showToast(msgs2[newStatus] || 'تم التحديث', 'success');
+        render(); lucide.createIcons();
     } catch (e) {
-        showToast('خطأ في الاتصال بالخادم', 'error');
-        btn.disabled = false;
-        btn.textContent = origLabel;
+        showToast('خطأ في الاتصال', 'error');
+        btn.disabled = false; btn.textContent = origLabel;
     }
+}
+
+// ── BULK ACTIONS ──
+function onCheckboxChange(cb, findingId) {
+    if (cb.checked) selectedIds.add(findingId);
+    else selectedIds.delete(findingId);
+    updateBulkBar();
+}
+
+function updateBulkBar() {
+    const bar = document.getElementById('bulk-bar');
+    document.getElementById('bulk-count').textContent = selectedIds.size;
+    bar.classList.toggle('visible', selectedIds.size > 0);
+}
+
+function clearSelection() {
+    selectedIds.clear();
+    updateBulkBar();
+    // Uncheck all checkboxes
+    document.querySelectorAll('.finding-checkbox:not(:disabled)').forEach(cb => { cb.checked = false; });
+}
+
+async function bulkClose() {
+    if (!selectedIds.size) return;
+    const count = selectedIds.size;
+    if (!confirm(`قفل ${count} مخالفة؟`)) return;
+
+    const ids = [...selectedIds];
+    selectedIds.clear();
+    updateBulkBar();
+
+    let done = 0;
+    for (const fid of ids) {
+        try {
+            const res = await post({
+                action:     'updateFindingStatus',
+                finding_id: fid,
+                status:     'مغلق',
+                updated_by: (currentUser && currentUser.name) || 'مستخدم'
+            });
+            if (res.success) { updateLocalStatus(fid, 'مغلق'); done++; }
+        } catch (e) { /* continue */ }
+    }
+
+    showToast(`✅ تم قفل ${done} من ${count} مخالفة`, 'success');
+    render(); lucide.createIcons();
 }
 
 // ── SUSPEND MODAL ──
@@ -693,7 +875,6 @@ function closeSuspendModal() {
 async function submitSuspend() {
     const party   = document.getElementById('modal-party').value.trim();
     const comment = document.getElementById('modal-comment').value.trim();
-
     if (!party) {
         document.getElementById('modal-party').style.borderColor = '#dc2626';
         document.getElementById('modal-party').focus();
@@ -702,79 +883,60 @@ async function submitSuspend() {
     document.getElementById('modal-party').style.borderColor = '';
 
     const btn = document.getElementById('modal-submit-btn');
-    btn.disabled = true;
-    btn.textContent = '...';
+    btn.disabled = true; btn.textContent = '...';
 
     try {
         const res = await post({
-            action:             'updateFindingStatus',
-            finding_id:         pendingSuspendId,
-            status:             'معلق',
-            responsible_party:  party,
-            comment:            comment,
-            updated_by:         (currentUser && currentUser.name) || 'مستخدم'
+            action:            'updateFindingStatus',
+            finding_id:        pendingSuspendId,
+            status:            'معلق',
+            responsible_party: party,
+            comment:           comment,
+            updated_by:        (currentUser && currentUser.name) || 'مستخدم'
         });
 
         if (!res.success) {
             showToast('خطأ: ' + (res.error || 'فشل التحديث'), 'error');
         } else {
             const idx = allFindings.findIndex(f => (f.finding_id || f.uuid) === pendingSuspendId);
-            if (idx > -1) {
-                allFindings[idx].status = 'معلق';
-                allFindings[idx].responsible_party = party;
-            }
+            if (idx > -1) { allFindings[idx].status = 'معلق'; allFindings[idx].responsible_party = party; }
             showToast('⏸ تم تعليق المخالفة', 'success');
             closeSuspendModal();
-            render();
-            lucide.createIcons();
+            render(); lucide.createIcons();
         }
-    } catch (e) {
-        showToast('خطأ في الاتصال بالخادم', 'error');
-    }
+    } catch (e) { showToast('خطأ في الاتصال', 'error'); }
 
-    btn.disabled = false;
-    btn.textContent = 'تعليق';
+    btn.disabled = false; btn.textContent = 'تعليق';
 }
 
-// ── DROPDOWNS ──
-function populateAdminDropdown() {
-    const areas = [...new Set(allFindings.map(f => f.admin_area).filter(Boolean))].sort();
-    const sel = document.getElementById('f-admin');
-    sel.innerHTML = '<option value="">كل الإدارات</option>';
-    areas.forEach(a => {
+// ─────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────
+
+function updateLocalStatus(findingId, newStatus) {
+    const idx = allFindings.findIndex(f => (f.finding_id || f.uuid) === findingId);
+    if (idx > -1) allFindings[idx].status = newStatus;
+}
+
+function isHospital(name) {
+    const n = (name || '').trim();
+    return n.includes('مستشفى') || n.includes('مستشفيات');
+}
+
+function unique(arr) {
+    return [...new Set(arr)].sort();
+}
+
+function fillSelect(id, options, placeholder) {
+    const sel = document.getElementById(id);
+    sel.innerHTML = `<option value="">${placeholder}</option>`;
+    options.forEach(v => {
         const o = document.createElement('option');
-        o.value = a; o.textContent = a;
+        o.value = v; o.textContent = v;
         sel.appendChild(o);
     });
 }
 
-function onAdminChange() {
-    const admin = document.getElementById('f-admin').value;
-    const unitSel = document.getElementById('f-unit');
-    const units = [...new Set(
-        allFindings.filter(f => !admin || f.admin_area === admin).map(f => f.unit_name).filter(Boolean)
-    )].sort();
-    unitSel.innerHTML = '<option value="">كل الوحدات</option>';
-    units.forEach(u => {
-        const o = document.createElement('option');
-        o.value = u; o.textContent = u;
-        unitSel.appendChild(o);
-    });
-    render();
-}
-
-function onFilterChange() { render(); }
-
-function setType(t) {
-    activeType = t;
-    ['tb-all','tb-hosp','tb-unit'].forEach(id => document.getElementById(id).classList.remove('active'));
-    if (!t)               document.getElementById('tb-all').classList.add('active');
-    else if (t==='مستشفى') document.getElementById('tb-hosp').classList.add('active');
-    else                  document.getElementById('tb-unit').classList.add('active');
-    render();
-}
-
-// ── HELPERS ──
 function daysSince(dateStr) {
     if (!dateStr) return null;
     try {
