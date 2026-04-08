@@ -69,7 +69,7 @@
     }).join('');
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
+  function _navInit() {
     try {
       var userStr = localStorage.getItem('iag_user');
       if (!userStr) return; // guest — leave nav empty
@@ -81,6 +81,14 @@
     } catch (e) {
       // silent fail — don't break page
     }
-  });
+  }
+
+  // Run immediately if DOM is ready (nav.js is at bottom of body),
+  // otherwise wait for DOMContentLoaded.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _navInit);
+  } else {
+    _navInit();
+  }
 
 })();

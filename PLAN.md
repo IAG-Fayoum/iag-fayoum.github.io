@@ -42,6 +42,11 @@
 
 ## Phase 4 — Style ✅ مكتمل
 - [x] توحيد الهيدر / nav.js / الإشعارات
+- [x] إنشاء assets/css/theme.css — CSS variables + shared components (header, nav, cards, buttons)
+- [x] ربط theme.css بكل الصفحات الـ 14
+- [x] إصلاح nav.js — readyState guard بدلاً من DOMContentLoaded فقط (يضمن lucide.createIcons بعد inject الـ nav)
+- [x] توحيد الألوان: --primary #0f766e، body bg #f1f5f9، bottom-nav height 64px، cards border-radius 16px
+- [x] إصلاح padding-bottom من 90px إلى 80px في car.html و car-dashboard.html
 
 ## Phase 5 — لاحقاً
 - [ ] CAR_LEGAL

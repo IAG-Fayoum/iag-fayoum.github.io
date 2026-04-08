@@ -1,0 +1,303 @@
+/**
+ * IAG System — Unified Theme
+ * Single source of truth for colors, typography, and shared components.
+ * Loaded in every page. Tailwind CDN loads before this, so these rules take precedence.
+ */
+
+/* ─── Design Tokens ───────────────────────────────────────────── */
+:root {
+  /* Brand */
+  --primary:        #0f766e;
+  --primary-dark:   #0d6b63;
+  --primary-light:  #f0fdfa;
+  --primary-ring:   rgba(15, 118, 110, 0.15);
+
+  /* Neutrals */
+  --bg:             #f1f5f9;
+  --surface:        #ffffff;
+  --border:         #e2e8f0;
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+  --text-label:     #64748b;
+
+  /* Status */
+  --status-new:      #3b82f6;
+  --status-pending:  #d97706;
+  --status-approved: #059669;
+  --status-followup: #7c3aed;
+  --status-late:     #dc2626;
+}
+
+/* ─── Base ────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  padding-bottom: 80px;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  margin: 0;
+}
+
+/* ─── Page Header ─────────────────────────────────────────────── */
+.page-header {
+  background: #020617;
+  background-image:
+    radial-gradient(circle at top right,   #0f766e 0%, transparent 40%),
+    radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
+  padding: 1.5rem 1.5rem 5rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Header action button (bell, menu icons) */
+.header-btn {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* ─── Bottom Nav ──────────────────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-bottom: max(0px, env(safe-area-inset-bottom));
+  z-index: 90;
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  height: 100%;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.62rem;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  transition: color 0.2s;
+}
+
+.nav-btn svg,
+.nav-btn i {
+  width: 22px;
+  height: 22px;
+}
+
+.nav-btn.active {
+  color: var(--primary);
+}
+
+/* ─── Cards ───────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ─── Filter Card (Glassmorphism) ─────────────────────────────── */
+.filter-card {
+  margin: -3.5rem 1rem 1.5rem;
+  position: relative;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 1.25rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid #fff;
+}
+
+@media (min-width: 1024px) {
+  .filter-card {
+    max-width: 1300px;
+    margin: -3.5rem auto 1.5rem;
+  }
+}
+
+/* Filter input */
+.f-input {
+  height: 44px;
+  border: 2px solid var(--bg);
+  border-radius: 12px;
+  background: #f8fafc;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: 'Cairo', sans-serif;
+  padding: 0 12px;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.f-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 3px var(--primary-ring);
+}
+
+/* ─── Primary Button ──────────────────────────────────────────── */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+/* ─── Tabs Bar ────────────────────────────────────────────────── */
+.tabs-bar {
+  background: var(--border);
+  border-radius: 14px;
+  padding: 4px;
+  display: flex;
+  gap: 2px;
+}
+
+.tab-btn {
+  border-radius: 12px;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  color: var(--text-label);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+.tab-btn.active {
+  background: white;
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ─── Content Wrapper ─────────────────────────────────────────── */
+.content-wrapper {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ─── Modals ──────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .modal-overlay {
+    align-items: center;
+  }
+}
+
+.modal-box {
+  background: white;
+  width: 95%;
+  max-width: 580px;
+  max-height: 85vh;
+  border-radius: 16px;
+  overflow-y: auto;
+  animation: fadeInUp 0.2s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Side Menu ───────────────────────────────────────────────── */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -260px;
+  width: 260px;
+  height: 100vh;
+  background: white;
+  z-index: 100;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+.side-menu.menu-open {
+  right: 0;
+}
+
+/* ─── Loading Overlay ─────────────────────────────────────────── */
+.loading {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.loading.hidden {
+  display: none;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Desktop: hide bottom-nav ────────────────────────────────── */
+@media (min-width: 1024px) {
+  .bottom-nav {
+    display: none;
+  }
+}

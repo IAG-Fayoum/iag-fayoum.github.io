@@ -15,25 +15,29 @@
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/theme.css">
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
     * { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
     .en-font { font-family: system-ui, -apple-system, sans-serif; letter-spacing: 0.5px; }
-    
+
     body {
       min-height: 100vh;
-      background-color: #f0fdfa;
+      background-color: #f1f5f9;
       display: flex;
       flex-direction: column;
       overscroll-behavior-y: none;
+      padding-bottom: 0;
     }
 
     .header-bg {
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+      background: #020617;
+      background-image:
+        radial-gradient(circle at top right,   #0f766e 0%, transparent 40%),
+        radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
       position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(15, 118, 110, 0.25);
     }
     
     .logo-circle {
