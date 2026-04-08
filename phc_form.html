@@ -31,7 +31,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .page{display:none;animation:fadeIn 0.25s ease}
 .page.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.page-header{background:white;border-radius:14px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.form-section-header{background:white;border-radius:14px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
 .page-icon{font-size:2rem;line-height:1}
 .page-title{font-size:1.1rem;font-weight:800;color:#0f172a}
 .page-count{font-size:0.75rem;color:#64748b;font-weight:600;margin-top:2px}
@@ -104,7 +104,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 <div class="steps-wrap"><div class="steps-inner"><button class="step active" id="step_0" onclick="goToPage(0)" title="البيانات الأساسية">📋</button><button class="step " id="step_1" onclick="goToPage(1)" title="الإدارة">🏛</button><button class="step " id="step_2" onclick="goToPage(2)" title="الكوادر — الوحدة">👥</button><button class="step " id="step_3" onclick="goToPage(3)" title="الاستقبال والعيادات الخارجية">🏥</button><button class="step " id="step_4" onclick="goToPage(4)" title="غرفة الملفات">🗂</button><button class="step " id="step_5" onclick="goToPage(5)" title="المبادرات الرئاسية">⭐</button><button class="step " id="step_6" onclick="goToPage(6)" title="الطوارئ والإسعاف">🚨</button><button class="step " id="step_7" onclick="goToPage(7)" title="الصيدلية">💊</button><button class="step " id="step_8" onclick="goToPage(8)" title="المعمل">🔬</button><button class="step " id="step_9" onclick="goToPage(9)" title="الأم والطفل والتطعيمات">👶</button><button class="step " id="step_10" onclick="goToPage(10)" title="تنظيم الأسرة">👨‍👩‍👧</button><button class="step " id="step_11" onclick="goToPage(11)" title="الأسنان">🦷</button><button class="step " id="step_12" onclick="goToPage(12)" title="الأشعة">☢</button><button class="step " id="step_13" onclick="goToPage(13)" title="الإثبات والأمراض المزمنة">📊</button><button class="step " id="step_14" onclick="goToPage(14)" title="التعقيم المركزي">🧹</button><button class="step " id="step_15" onclick="goToPage(15)" title="النفايات الطبية">♻</button><button class="step " id="step_16" onclick="goToPage(16)" title="الخاتمة">✅</button></div></div>
 <main class="main" id="main-form">
     <div class="page active" id="page_0" data-page="0">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">📋</span>
             <div>
                 <h2 class="page-title">البيانات الأساسية</h2>
@@ -123,7 +123,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_1" data-page="1">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">🏛</span>
             <div>
                 <h2 class="page-title">الإدارة</h2>
@@ -137,7 +137,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_2" data-page="2">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">👥</span>
             <div>
                 <h2 class="page-title">الكوادر — الوحدة</h2>
@@ -153,7 +153,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_3" data-page="3">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">🏥</span>
             <div>
                 <h2 class="page-title">الاستقبال والعيادات الخارجية</h2>
@@ -167,7 +167,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_4" data-page="4">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">🗂</span>
             <div>
                 <h2 class="page-title">غرفة الملفات</h2>
@@ -187,7 +187,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_5" data-page="5">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">⭐</span>
             <div>
                 <h2 class="page-title">المبادرات الرئاسية</h2>
@@ -199,7 +199,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_6" data-page="6">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">🚨</span>
             <div>
                 <h2 class="page-title">الطوارئ والإسعاف</h2>
@@ -217,7 +217,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_7" data-page="7">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">💊</span>
             <div>
                 <h2 class="page-title">الصيدلية</h2>
@@ -234,7 +234,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_8" data-page="8">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">🔬</span>
             <div>
                 <h2 class="page-title">المعمل</h2>
@@ -247,7 +247,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_9" data-page="9">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">👶</span>
             <div>
                 <h2 class="page-title">الأم والطفل والتطعيمات</h2>
@@ -263,7 +263,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_10" data-page="10">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">👨‍👩‍👧</span>
             <div>
                 <h2 class="page-title">تنظيم الأسرة</h2>
@@ -276,7 +276,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_11" data-page="11">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">🦷</span>
             <div>
                 <h2 class="page-title">الأسنان</h2>
@@ -288,7 +288,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_12" data-page="12">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">☢</span>
             <div>
                 <h2 class="page-title">الأشعة</h2>
@@ -302,7 +302,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_13" data-page="13">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">📊</span>
             <div>
                 <h2 class="page-title">الإثبات والأمراض المزمنة</h2>
@@ -314,7 +314,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_14" data-page="14">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">🧹</span>
             <div>
                 <h2 class="page-title">التعقيم المركزي</h2>
@@ -325,7 +325,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_15" data-page="15">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">♻</span>
             <div>
                 <h2 class="page-title">النفايات الطبية</h2>
@@ -338,7 +338,7 @@ body{font-family:'Cairo',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 </div>
     </div>
     <div class="page " id="page_16" data-page="16">
-        <div class="page-header">
+        <div class="form-section-header">
             <span class="page-icon">✅</span>
             <div>
                 <h2 class="page-title">الخاتمة</h2>

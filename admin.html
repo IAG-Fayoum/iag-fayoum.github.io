@@ -6,147 +6,104 @@
     <meta name="theme-color" content="#0f766e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
-    
+
     <title>لوحة التحكم | IAG System</title>
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    
+
     <link rel="stylesheet" href="assets/css/theme.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
-        :root { --primary: #0f766e; }
-
-        /* HEADER */
-        .admin-header {
-            background: #020617;
-            background-image: radial-gradient(circle at top right, #0f766e 0%, transparent 40%), radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
-            color: white; padding: 1rem 1.5rem 6rem;
-            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
-            position: relative; z-index: 10;
-            padding-top: max(1rem, env(safe-area-inset-top));
-        }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .header-btn { padding: 10px; background: rgba(255,255,255,0.15); border-radius: 50%; backdrop-filter: blur(5px); transition: 0.3s; display: flex; align-items: center; justify-content: center; }
-        .header-btn:hover { background: rgba(255,255,255,0.3); }
-
-        .dept-title { font-size: 1.25rem; font-weight: 800; text-align: center; }
-        .dept-subtitle { font-size: 0.85rem; opacity: 0.9; text-align: center; margin-bottom: 10px; font-family: sans-serif; letter-spacing: 0.5px; }
-
-        .admin-info { display: flex; align-items: center; gap: 12px; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1rem; }
-        .admin-avatar { width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; border: 2px solid rgba(255,255,255,0.3); }
-
         /* STATS */
-        .stats-wrapper { margin: -4rem 1rem 1rem; position: relative; z-index: 20; display: flex; flex-direction: column; gap: 10px; max-width: 1300px; margin-left: auto; margin-right: auto; }
+        .stats-wrapper { margin: -3.5rem 1rem 1rem; position: relative; z-index: 20; display: flex; flex-direction: column; gap: 10px; max-width: 1300px; margin-left: auto; margin-right: auto; padding: 0 0; }
         .stats-row-main { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
-        .stat-card-main { background: white; border-radius: 16px; padding: 1.25rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 1rem; }
-        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
-        .stat-card { background: white; border-radius: 12px; padding: 10px; text-align: center; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: center; min-height: 85px; }
+        .stat-card-main { background: white; border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+        .stat-icon { width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .stat-card { background: white; border-radius: var(--radius-md); padding: 10px; text-align: center; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; min-height: 80px; box-shadow: var(--shadow-sm); }
         .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; }
-        .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
+        .stat-lbl { font-size: 0.68rem; font-weight: 700; color: var(--text-3); margin-top: 3px; }
 
         /* ACTIONS */
         .actions-section { max-width: 1300px; margin: 0 auto 1.5rem; padding: 0 1rem; }
-        .section-header { font-weight: 800; color: #334155; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .section-header { font-weight: 800; color: var(--text-1); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         .actions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         @media (min-width: 768px) { .actions-grid { grid-template-columns: repeat(4, 1fr); } }
 
-        .action-btn { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-weight: 700; color: #475569; font-size: 0.85rem; cursor: pointer; transition: 0.2s; height: 100px; }
-        .action-btn:hover { border-color: var(--primary); color: var(--primary); background: #f0fdfa; transform: translateY(-2px); }
-        .btn-primary { background: var(--primary); color: white; border: none; box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2); }
-        .btn-primary:hover { background: #115e59; color: white; }
+        .action-btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-weight: 700; color: var(--text-2); font-size: 0.85rem; cursor: pointer; transition: 0.2s; height: 96px; font-family: 'Cairo', sans-serif; }
+        .action-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .action-btn.primary { background: var(--primary); color: white; border: none; box-shadow: 0 4px 12px rgba(15,118,110,0.25); }
+        .action-btn.primary:hover { background: var(--primary-dark); color: white; }
 
         /* TABLE */
         .table-section { max-width: 1300px; margin: 0 auto; padding: 0 1rem 2rem; }
-        .table-container { background: white; border-radius: 16px; padding: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.03); overflow: hidden; }
-        
+        .table-container { background: white; border-radius: var(--radius-lg); padding: 1rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; }
+
         table.dataTable { width: 100% !important; border-collapse: collapse !important; }
-        table.dataTable thead th { background: #f1f5f9; color: #475569; font-weight: 800; padding: 12px; border-bottom: 2px solid #e2e8f0; text-align: right; }
-        table.dataTable tbody td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
-        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; white-space: nowrap; }
-        .st-new { background: #eff6ff; color: #2563eb; } .st-pending { background: #fff7ed; color: #c2410c; }
-        .st-done { background: #ecfdf5; color: #059669; } .st-late { background: #fef2f2; color: #dc2626; }
+        table.dataTable thead th { background: var(--surface-2); color: var(--text-2); font-weight: 800; padding: 12px; border-bottom: 2px solid var(--border); text-align: right; }
+        table.dataTable tbody td { padding: 12px; border-bottom: 1px solid var(--surface-2); color: var(--text-1); vertical-align: middle; }
+        .status-badge { padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; display: inline-block; white-space: nowrap; }
+        .st-new     { background: #eff6ff; color: #2563eb; }
+        .st-pending { background: #fff7ed; color: #c2410c; }
+        .st-done    { background: #ecfdf5; color: #059669; }
+        .st-late    { background: #fef2f2; color: #dc2626; }
 
-        /* MODAL */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
-        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
-        .modal-box { background: white; width: 95%; max-width: 500px; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
-        .modal-header { padding: 1.25rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
-        .modal-body { padding: 1.5rem; overflow-y: auto; }
+        /* FORM GROUPS */
         .f-group { margin-bottom: 1rem; }
-        .f-label { display: block; font-size: 0.8rem; font-weight: 700; color: #64748b; margin-bottom: 5px; }
-        .f-input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; transition: 0.2s; }
-        .f-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
-        .f-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border-radius: 8px; font-weight: 700; transition: 0.2s; }
-        .f-btn:hover { background: #115e59; }
-
-        /* SIDE MENU */
-        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
-        .menu-open .side-menu { right: 0; }
-        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
-
-        /* BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 64px; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
-        .nav-btn.active { color: var(--primary); }
-
-        .hidden { display: none !important; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .f-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border-radius: var(--radius-sm); font-weight: 700; font-family: 'Cairo', sans-serif; border: none; cursor: pointer; transition: 0.2s; }
+        .f-btn:hover { background: var(--primary-dark); }
     </style>
 </head>
 <body>
 
-    <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
+    <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
     <aside class="side-menu" id="side-menu">
-        <div class="p-8 bg-teal-50 border-b border-teal-100 text-center">
-            <div class="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center shadow-md mb-4 border-4 border-white">
-                <i data-lucide="shield-check" class="w-10 h-10 text-teal-700"></i>
+        <div class="side-menu-header">
+            <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:44px;height:44px;background:rgba(255,255,255,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <i data-lucide="shield-check" style="width:22px;height:22px;color:white"></i>
+                </div>
+                <div>
+                    <div style="font-weight:800;font-size:0.9rem;color:white" id="menu-user">Admin</div>
+                    <div style="font-size:0.72rem;color:#99f6e4">مدير النظام</div>
+                </div>
             </div>
-            <h3 class="font-bold text-teal-900 text-lg" id="menu-user">Admin</h3>
-            <p class="text-xs text-teal-600">مدير النظام</p>
         </div>
-        <nav class="flex-1 p-4 space-y-2" id="side-nav"></nav>
-        <div class="p-4 border-t">
-            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
-                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+        <div class="side-menu-body">
+            <nav id="side-nav"></nav>
+        </div>
+        <div class="menu-footer">
+            <button onclick="logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);justify-content:center">
+                <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
             </button>
         </div>
     </aside>
 
-    <header class="admin-header">
-        <div class="max-w-[1400px] mx-auto">
-            <div class="header-top">
-                <div class="flex gap-3">
-                    <button onclick="toggleMenu()" class="header-btn"><i data-lucide="menu" class="w-6 h-6"></i></button>
+    <header class="page-header">
+        <div class="header-top">
+            <button class="header-btn" onclick="toggleMenu()">
+                <i data-lucide="menu" style="width:20px;height:20px"></i>
+            </button>
+            <div class="header-center">
+                <div class="header-badge">
+                    <i data-lucide="shield-check" style="width:12px;height:12px"></i>
+                    لوحة التحكم
                 </div>
-                <div class="text-center">
-                    <div class="dept-title">إدارة المراجعة الداخلية</div>
-                    <div class="dept-subtitle">لوحة التحكم المركزية</div>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="window.location.href='notifications.html'" class="header-btn relative">
-                        <i data-lucide="bell" class="w-6 h-6"></i>
-                        <span id="notif-badge" class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border border-white hidden"></span>
-                    </button>
-                </div>
+                <h1 class="header-title">إدارة المراجعة الداخلية</h1>
+                <p class="header-sub">Central Admin Dashboard</p>
+                <p class="header-user" id="header-name"></p>
             </div>
-            
-            <div class="admin-info">
-                <div class="admin-avatar" id="avatar-initials">A</div>
-                <div>
-                    <div class="font-bold text-white" id="header-name">Admin User</div>
-                    <div class="text-teal-200 text-xs">صلاحيات كاملة</div>
-                </div>
-            </div>
+            <button class="header-btn" onclick="window.location.href='notifications.html'">
+                <i data-lucide="bell" style="width:20px;height:20px"></i>
+                <span id="notif-badge" class="notif-dot hidden"></span>
+            </button>
         </div>
     </header>
 
@@ -170,9 +127,9 @@
     </div>
 
     <div class="actions-section">
-        <div class="section-header"><i data-lucide="zap" class="w-5 h-5 text-amber-500"></i> إجراءات سريعة</div>
+        <div class="section-header"><i data-lucide="zap" style="width:18px;height:18px;color:#f59e0b"></i> إجراءات سريعة</div>
         <div class="actions-grid">
-            <button onclick="openModal('updateStatus')" class="action-btn btn-primary"><i data-lucide="refresh-cw"></i><span>تحديث حالة</span></button>
+            <button onclick="openModal('updateStatus')" class="action-btn primary"><i data-lucide="refresh-cw"></i><span>تحديث حالة</span></button>
             <button onclick="openModal('sendEmail')" class="action-btn"><i data-lucide="mail"></i><span>بريد إلكتروني</span></button>
             <button onclick="openModal('sendNotification')" class="action-btn"><i data-lucide="bell"></i><span>إشعار فوري</span></button>
             <button onclick="exportData()" class="action-btn"><i data-lucide="download"></i><span>تصدير Excel</span></button>
@@ -201,8 +158,8 @@
     <div class="modal-overlay" id="modal-updateStatus">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 class="font-bold">تحديث حالة معاملة</h3>
-                <button onclick="closeModal('modal-updateStatus')"><i data-lucide="x"></i></button>
+                <h3 style="font-weight:800;font-size:0.95rem">تحديث حالة معاملة</h3>
+                <button onclick="closeModal('modal-updateStatus')" class="header-btn" style="width:32px;height:32px"><i data-lucide="x" style="width:16px;height:16px"></i></button>
             </div>
             <div class="modal-body">
                 <div class="f-group">
@@ -221,7 +178,7 @@
                 </div>
                 <div class="f-group">
                     <label class="f-label">ملاحظات إدارية</label>
-                    <textarea id="upd-notes" class="f-input" rows="3"></textarea>
+                    <textarea id="upd-notes" class="f-input" rows="3" style="height:auto;padding:10px"></textarea>
                 </div>
                 <button onclick="confirmUpdate()" class="f-btn">حفظ التحديث</button>
             </div>
@@ -231,8 +188,8 @@
     <div class="modal-overlay" id="modal-sendEmail">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 class="font-bold">إرسال بريد إلكتروني</h3>
-                <button onclick="closeModal('modal-sendEmail')"><i data-lucide="x"></i></button>
+                <h3 style="font-weight:800;font-size:0.95rem">إرسال بريد إلكتروني</h3>
+                <button onclick="closeModal('modal-sendEmail')" class="header-btn" style="width:32px;height:32px"><i data-lucide="x" style="width:16px;height:16px"></i></button>
             </div>
             <div class="modal-body">
                 <div class="f-group">
@@ -245,9 +202,9 @@
                 </div>
                 <div class="f-group">
                     <label class="f-label">الرسالة</label>
-                    <textarea id="email-body" class="f-input" rows="4"></textarea>
+                    <textarea id="email-body" class="f-input" rows="4" style="height:auto;padding:10px"></textarea>
                 </div>
-                <button onclick="sendEmail()" class="f-btn bg-blue-600 hover:bg-blue-700">إرسال</button>
+                <button onclick="sendEmail()" class="f-btn" style="background:#2563eb">إرسال</button>
             </div>
         </div>
     </div>
@@ -255,8 +212,8 @@
     <div class="modal-overlay" id="modal-sendNotification">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 class="font-bold">إرسال إشعار فوري</h3>
-                <button onclick="closeModal('modal-sendNotification')"><i data-lucide="x"></i></button>
+                <h3 style="font-weight:800;font-size:0.95rem">إرسال إشعار فوري</h3>
+                <button onclick="closeModal('modal-sendNotification')" class="header-btn" style="width:32px;height:32px"><i data-lucide="x" style="width:16px;height:16px"></i></button>
             </div>
             <div class="modal-body">
                 <div class="f-group">
@@ -265,21 +222,21 @@
                 </div>
                 <div class="f-group">
                     <label class="f-label">نص الإشعار</label>
-                    <textarea id="notif-msg" class="f-input" rows="3"></textarea>
+                    <textarea id="notif-msg" class="f-input" rows="3" style="height:auto;padding:10px"></textarea>
                 </div>
-                <button onclick="sendNotification()" class="f-btn bg-orange-600 hover:bg-orange-700">بث الإشعار</button>
+                <button onclick="sendNotification()" class="f-btn" style="background:#d97706">بث الإشعار</button>
             </div>
         </div>
     </div>
 
-    <nav class="bottom-nav lg:hidden" id="bottom-nav"></nav>
+    <nav class="bottom-nav" id="bottom-nav"></nav>
 
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    
+
     <script src="assets/js/config.js"></script>
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/nav.js"></script>
@@ -292,7 +249,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const userStr = localStorage.getItem('iag_user');
             if (!userStr) { window.location.href = 'index.html'; return; }
-            
+
             const user = JSON.parse(userStr);
             if (user.role !== 'مدير' && user.role !== 'Admin') {
                 alert('غير مصرح لك بالدخول لهذه الصفحة');
@@ -301,14 +258,19 @@
             }
 
             document.getElementById('header-name').textContent = user.name;
-            document.getElementById('menu-user').textContent = user.name.split(' ')[0];
-            document.getElementById('avatar-initials').textContent = user.name.charAt(0);
 
             initDataTable();
             await loadData(user.name);
         });
 
-        function toggleMenu() { document.body.classList.toggle('menu-open'); }
+        function toggleMenu() {
+            document.getElementById('side-menu').classList.toggle('open');
+            document.getElementById('menu-overlay').classList.toggle('open');
+        }
+        function closeMenu() {
+            document.getElementById('side-menu').classList.remove('open');
+            document.getElementById('menu-overlay').classList.remove('open');
+        }
         function logout() { localStorage.clear(); window.location.href = 'index.html'; }
         function closeModal(id) { document.getElementById(id).classList.remove('open'); }
         function openModal(id) { document.getElementById('modal-'+id).classList.add('open'); }
@@ -318,7 +280,7 @@
                 responsive: true,
                 language: { url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/ar.json' },
                 dom: 'Brtip',
-                buttons: [ { extend: 'excel', className: 'hidden' } ], // Hidden btn triggered by custom btn
+                buttons: [ { extend: 'excel', className: 'hidden' } ],
                 pageLength: 10,
                 order: [[0, 'desc']],
                 columnDefs: [
@@ -340,7 +302,6 @@
                 if (data.success) {
                     const tasks = data.tasks || [];
                     allEmployees = data.stats.employees || [];
-                    
                     updateStats(data.stats.totals);
                     populateTable(tasks);
                     populateDropdowns();
@@ -385,75 +346,43 @@
         function populateDropdowns() {
             const empSelects = [document.getElementById('email-to'), document.getElementById('notif-to')];
             empSelects.forEach(s => { if(s) s.innerHTML = '<option value="">اختر الموظف...</option>'; });
-            
-            // Add 'All' option for notification
             if(document.getElementById('notif-to')) {
                 const allOpt = document.createElement('option'); allOpt.value = 'all'; allOpt.textContent = 'الجميع';
                 document.getElementById('notif-to').appendChild(allOpt);
             }
-
             allEmployees.forEach(e => {
                 empSelects.forEach(s => {
-                    if(s) {
-                        const opt = document.createElement('option');
-                        opt.value = e.name; opt.textContent = e.name;
-                        s.appendChild(opt);
-                    }
+                    if(s) { const opt = document.createElement('option'); opt.value = e.name; opt.textContent = e.name; s.appendChild(opt); }
                 });
             });
         }
 
-        // --- Real API Actions ---
-
-        function openEdit(id) {
-            $('#upd-task-id').val(id);
-            openModal('updateStatus');
-        }
+        function openEdit(id) { $('#upd-task-id').val(id); openModal('updateStatus'); }
 
         async function confirmUpdate() {
             const taskId = $('#upd-task-id').val();
             const status = $('#upd-status').val();
             const notes = $('#upd-notes').val();
             const btn = document.querySelector('#modal-updateStatus .f-btn');
-
             if(!taskId) { alert('رقم المعاملة مطلوب'); return; }
-
             const user = JSON.parse(localStorage.getItem('iag_user'));
             btn.textContent = 'جاري الحفظ...'; btn.disabled = true;
-
             try {
-                const res = await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'adminUpdateStatus',
-                        taskId: taskId, newStatus: status, notes: notes, updatedBy: user.name
-                    })
-                });
+                const res = await fetch(CONFIG.API_URL, { method: 'POST', body: JSON.stringify({ action: 'adminUpdateStatus', taskId, newStatus: status, notes, updatedBy: user.name }) });
                 const data = await res.json();
-                if(data.success) { 
-                    alert('✅ تم تحديث الحالة بنجاح'); 
-                    closeModal('modal-updateStatus'); 
-                    loadData(user.name); 
-                } else { alert('❌ خطأ: ' + data.error); }
+                if(data.success) { alert('✅ تم تحديث الحالة بنجاح'); closeModal('modal-updateStatus'); loadData(user.name); }
+                else { alert('❌ خطأ: ' + data.error); }
             } catch(e) { alert('❌ خطأ في الاتصال'); }
             finally { btn.textContent = 'حفظ التحديث'; btn.disabled = false; }
         }
 
         async function sendEmail() {
-            const to = $('#email-to').val();
-            const subject = $('#email-subject').val();
-            const body = $('#email-body').val();
+            const to = $('#email-to').val(), subject = $('#email-subject').val(), body = $('#email-body').val();
             const btn = document.querySelector('#modal-sendEmail .f-btn');
-
             if(!to || !subject) { alert('البيانات ناقصة'); return; }
-
             btn.textContent = 'جاري الإرسال...'; btn.disabled = true;
-
             try {
-                const res = await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'sendCustomEmail', toEmployee: to, subject: subject, body: body })
-                });
+                const res = await fetch(CONFIG.API_URL, { method: 'POST', body: JSON.stringify({ action: 'sendCustomEmail', toEmployee: to, subject, body }) });
                 const data = await res.json();
                 if(data.success) { alert('✅ تم الإرسال'); closeModal('modal-sendEmail'); }
                 else { alert('❌ فشل الإرسال'); }
@@ -462,19 +391,12 @@
         }
 
         async function sendNotification() {
-            const to = $('#notif-to').val();
-            const msg = $('#notif-msg').val();
+            const to = $('#notif-to').val(), msg = $('#notif-msg').val();
             const btn = document.querySelector('#modal-sendNotification .f-btn');
-
             if(!msg) { alert('اكتب الرسالة'); return; }
-
             btn.textContent = 'جاري البث...'; btn.disabled = true;
-
             try {
-                const res = await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'broadcastNotification', target: to, message: msg })
-                });
+                const res = await fetch(CONFIG.API_URL, { method: 'POST', body: JSON.stringify({ action: 'broadcastNotification', target: to, message: msg }) });
                 const data = await res.json();
                 if(data.success) { alert('✅ تم بث الإشعار'); closeModal('modal-sendNotification'); }
                 else { alert('❌ فشل البث'); }

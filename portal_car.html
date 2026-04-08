@@ -9,18 +9,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/theme.css">
   <style>
+    /* portal_car-specific aliases */
     :root {
-      --primary: #0f766e;
-      --primary-dark: #0d6b63;
-      --primary-light: #f0fdfa;
-      --bg: #f1f5f9;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
-      --text-muted: #94a3b8;
-      --status-closed: #059669;
-      --status-open: #dc2626;
+      --text-primary: var(--text-1);
+      --text-secondary: var(--text-2);
+      --text-muted: var(--text-3);
+      --status-closed: var(--success);
+      --status-open: var(--danger);
     }
 
     * {

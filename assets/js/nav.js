@@ -1,7 +1,7 @@
 /**
- * nav.js — IAG System Unified Navigation (v1.0)
- * Builds bottom nav + side menu based on role from localStorage
- * Included in every page after auth.js
+ * nav.js — IAG System Unified Navigation (v2.0)
+ * Builds bottom nav + side menu based on role from localStorage.
+ * Included in every page after auth.js.
  */
 (function () {
 
@@ -19,10 +19,10 @@
       { href: 'forms.html',        icon: 'file-text',      label: 'النماذج'   },
     ],
     'default': [
-      { href: 'employee.html',     icon: 'home',              label: 'الرئيسية'   },
-      { href: 'distribution.html', icon: 'bar-chart-2',       label: 'المؤشرات'   },
-      { href: 'findings.html',     icon: 'shield-alert',      label: 'الملاحظات'  },
-      { href: 'forms.html',        icon: 'file-text',         label: 'النماذج'    },
+      { href: 'employee.html',     icon: 'home',           label: 'الرئيسية'   },
+      { href: 'distribution.html', icon: 'bar-chart-2',    label: 'المؤشرات'   },
+      { href: 'findings.html',     icon: 'shield-alert',   label: 'الملاحظات'  },
+      { href: 'forms.html',        icon: 'file-text',      label: 'النماذج'    },
     ]
   };
 
@@ -36,8 +36,7 @@
   function currentPage() {
     var path = window.location.pathname;
     var parts = path.split('/');
-    var page = parts[parts.length - 1] || '';
-    return page || 'index.html';
+    return parts[parts.length - 1] || 'index.html';
   }
 
   function buildBottomNav(items) {
@@ -47,10 +46,10 @@
     nav.innerHTML = items.map(function (item) {
       var active = (page === item.href) ? ' active' : '';
       return '<a href="' + item.href + '" class="nav-btn' + active + '">'
-        + '<i data-lucide="' + item.icon + '"></i> ' + item.label
+        + '<i data-lucide="' + item.icon + '"></i>'
+        + '<span>' + item.label + '</span>'
         + '</a>';
     }).join('');
-    // Ensure nav is visible (forms.html starts with hidden class)
     nav.classList.remove('hidden');
   }
 
@@ -60,11 +59,9 @@
     var page = currentPage();
     nav.innerHTML = items.map(function (item) {
       var isActive = (page === item.href);
-      var cls = isActive
-        ? 'flex items-center gap-3 p-3 rounded-lg bg-teal-600 text-white font-bold text-sm'
-        : 'flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-bold text-sm';
-      return '<a href="' + item.href + '" class="' + cls + '">'
-        + '<i data-lucide="' + item.icon + '" class="w-4 h-4"></i> ' + item.label
+      return '<a href="' + item.href + '" class="menu-item' + (isActive ? ' active' : '') + '">'
+        + '<i data-lucide="' + item.icon + '" style="width:18px;height:18px;flex-shrink:0"></i>'
+        + ' ' + item.label
         + '</a>';
     }).join('');
   }
@@ -75,6 +72,13 @@
       if (!userStr) return; // guest — leave nav empty
       var user  = JSON.parse(userStr);
       var items = getItems(user.role);
+
+      // Populate user name in side menu header
+      var menuUser = document.getElementById('menu-user');
+      if (menuUser) menuUser.textContent = user.name || user.role || '—';
+      var menuRole = document.getElementById('menu-role');
+      if (menuRole) menuRole.textContent = user.role || '';
+
       buildBottomNav(items);
       buildSideNav(items);
       if (typeof lucide !== 'undefined') lucide.createIcons();
