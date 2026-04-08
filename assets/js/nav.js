@@ -20,6 +20,7 @@
     ],
     'default': [
       { href: 'employee.html',     icon: 'home',              label: 'الرئيسية'   },
+      { href: 'distribution.html', icon: 'bar-chart-2',       label: 'المؤشرات'   },
       { href: 'findings.html',     icon: 'shield-alert',      label: 'الملاحظات'  },
       { href: 'forms.html',        icon: 'file-text',         label: 'النماذج'    },
     ]

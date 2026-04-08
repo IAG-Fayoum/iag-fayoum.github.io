@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         :root { --primary: #0f766e; }
 
         /* HEADER */
@@ -42,7 +42,7 @@
         .admin-avatar { width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; border: 2px solid rgba(255,255,255,0.3); }
 
         /* STATS */
-        .stats-wrapper { margin: -4rem 1rem 1rem; position: relative; z-index: 20; display: flex; flex-direction: column; gap: 10px; max-width: 1400px; margin-left: auto; margin-right: auto; }
+        .stats-wrapper { margin: -4rem 1rem 1rem; position: relative; z-index: 20; display: flex; flex-direction: column; gap: 10px; max-width: 1300px; margin-left: auto; margin-right: auto; }
         .stats-row-main { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
@@ -53,7 +53,7 @@
         .stat-lbl { font-size: 0.7rem; font-weight: 700; color: #64748b; }
 
         /* ACTIONS */
-        .actions-section { max-width: 1400px; margin: 0 auto 1.5rem; padding: 0 1rem; }
+        .actions-section { max-width: 1300px; margin: 0 auto 1.5rem; padding: 0 1rem; }
         .section-header { font-weight: 800; color: #334155; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .actions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         @media (min-width: 768px) { .actions-grid { grid-template-columns: repeat(4, 1fr); } }
@@ -64,7 +64,7 @@
         .btn-primary:hover { background: #115e59; color: white; }
 
         /* TABLE */
-        .table-section { max-width: 1400px; margin: 0 auto; padding: 0 1rem 2rem; }
+        .table-section { max-width: 1300px; margin: 0 auto; padding: 0 1rem 2rem; }
         .table-container { background: white; border-radius: 16px; padding: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.03); overflow: hidden; }
         
         table.dataTable { width: 100% !important; border-collapse: collapse !important; }
@@ -88,13 +88,13 @@
         .f-btn:hover { background: #115e59; }
 
         /* SIDE MENU */
-        .side-menu { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
         .menu-open .side-menu { right: 0; }
         .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
 
         /* BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 64px; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
 

@@ -34,7 +34,7 @@
 - [ ] admin.html — إضافة 3 tabs (نظرة عامة / المعاملات / التصعيد)
 
 ### مؤجل
-- [ ] Mobile-first unification
+- [x] Mobile-first unification (style unification — Issue 3 complete)
 
 ## Phase 3 — Backend Handlers
 - [ ] getQuarterlyReport
@@ -58,7 +58,7 @@
 ## ملاحظات تقنية
 - API_URL: من CONFIG.API_URL — Content-Type: text/plain;charset=utf-8
 - Auth: localStorage iag_user → name/role
-- nav.js: default role = مراجع فني (3 items: employee / findings / forms)
+- nav.js: default role = مراجع فني (4 items: employee / distribution / findings / forms)
 - OP_FINDINGS columns: finding_id, unit_name, admin_area, visit_date, section, violation_text, finding_code, severity, status, responsible_party, legal_date, comments, uuid
 - getFindings يرجع كل الأعمدة ديناميكياً — لا تعديل للقراءة
 - updateFindingStatus: finding_id, status, responsible_party?, comment?, updated_by

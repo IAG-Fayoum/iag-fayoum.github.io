@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background: #f3f4f6; font-size: 14px; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Cairo', sans-serif; background: #f1f5f9; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         :root { --primary: #0f766e; }
 
         /* HEADER */
@@ -36,7 +36,7 @@
 
         /* FILTER CARD */
         .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
-        @media (min-width: 1024px) { .filter-container { max-width: 1200px; margin: -2.5rem auto 1rem; } }
+        @media (min-width: 1024px) { .filter-container { max-width: 1300px; margin: -2.5rem auto 1rem; } }
         .f-label { font-size: 0.72rem; font-weight: 700; color: #64748b; margin-bottom: 5px; display: block; }
         .f-input { width: 100%; height: 42px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.88rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 10px; font-family: 'Cairo', sans-serif; }
         .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
@@ -49,13 +49,13 @@
         .type-btn:hover:not(.active) { background: #f0fdfa; border-color: #0f766e; color: #0f766e; }
 
         /* KPI STRIP */
-        .kpi-strip { padding: 0 1rem 0.75rem; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+        .kpi-strip { padding: 0 1rem 0.75rem; max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
         .kpi-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
         .kpi-num { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 3px; }
         .kpi-lbl { font-size: 0.62rem; font-weight: 700; color: #64748b; }
 
         /* TAB BAR */
-        .tab-bar { padding: 0 1rem 0.75rem; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+        .tab-bar { padding: 0 1rem 0.75rem; max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
         .tab-btn { padding: 8px 4px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 0.78rem; font-weight: 700; cursor: pointer; background: #f8fafc; color: #475569; transition: 0.2s; text-align: center; }
         .tab-btn.active { background: #0f766e; color: white; border-color: #0f766e; }
         .tab-btn:hover:not(.active) { background: #f0fdfa; border-color: #0f766e; color: #0f766e; }
@@ -64,7 +64,7 @@
         .tab-btn:not(.active) .tab-count { background: #e2e8f0; color: #475569; }
 
         /* TAB PANELS */
-        .tab-panel { display: none; padding: 0 1rem 6rem; max-width: 1200px; margin: 0 auto; }
+        .tab-panel { display: none; padding: 0 1rem 6rem; max-width: 1300px; margin: 0 auto; }
         .tab-panel.active { display: block; }
 
         /* UNIT CARDS GRID */
@@ -115,8 +115,8 @@
         .act-btn-reopen:hover:not(:disabled)  { background: #1d4ed8; color: white; }
 
         /* BULK ACTION BAR */
-        .bulk-bar { position: fixed; bottom: 82px; left: 50%; transform: translateX(-50%) translateY(120px); background: #1e293b; color: white; padding: 10px 18px; border-radius: 14px; display: flex; align-items: center; gap: 12px; z-index: 180; transition: 0.3s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
-        .bulk-bar.visible { transform: translateX(-50%) translateY(0); }
+        .bulk-bar { display: none; position: fixed; bottom: 82px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 18px; border-radius: 14px; align-items: center; gap: 12px; z-index: 180; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .bulk-bar.visible { display: flex; }
         .bulk-label { font-size: 0.82rem; font-weight: 700; }
         .bulk-close-btn { background: #059669; color: white; border: none; border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; padding: 6px 14px; transition: 0.15s; }
         .bulk-close-btn:hover { background: #047857; }
@@ -152,7 +152,7 @@
         .empty-box  { text-align: center; padding: 40px 20px; color: #94a3b8; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; font-size: 0.88rem; font-weight: 700; }
 
         /* BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 64px; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
         .nav-btn.active { color: var(--primary); }
 
@@ -356,7 +356,7 @@ let portalMap        = {};       // unit_name → portal reply count
 let activeType       = '';       // '' | 'مستشفى' | 'وحدة'
 let pendingSuspendId = null;
 let currentUser      = null;
-let selectedIds      = new Set();
+let selectedFindings = new Set();
 let toastTimer;
 
 // ── INIT ──
@@ -813,31 +813,31 @@ async function handleAction(btn, findingId, newStatus) {
 
 // ── BULK ACTIONS ──
 function onCheckboxChange(cb, findingId) {
-    if (cb.checked) selectedIds.add(findingId);
-    else selectedIds.delete(findingId);
+    if (cb.checked) selectedFindings.add(findingId);
+    else selectedFindings.delete(findingId);
     updateBulkBar();
 }
 
 function updateBulkBar() {
     const bar = document.getElementById('bulk-bar');
-    document.getElementById('bulk-count').textContent = selectedIds.size;
-    bar.classList.toggle('visible', selectedIds.size > 0);
+    document.getElementById('bulk-count').textContent = selectedFindings.size;
+    bar.classList.toggle('visible', selectedFindings.size > 0);
 }
 
 function clearSelection() {
-    selectedIds.clear();
+    selectedFindings.clear();
     updateBulkBar();
     // Uncheck all checkboxes
     document.querySelectorAll('.finding-checkbox:not(:disabled)').forEach(cb => { cb.checked = false; });
 }
 
 async function bulkClose() {
-    if (!selectedIds.size) return;
-    const count = selectedIds.size;
+    if (!selectedFindings.size) return;
+    const count = selectedFindings.size;
     if (!confirm(`قفل ${count} مخالفة؟`)) return;
 
-    const ids = [...selectedIds];
-    selectedIds.clear();
+    const ids = [...selectedFindings];
+    selectedFindings.clear();
     updateBulkBar();
 
     let done = 0;
