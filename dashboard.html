@@ -13,265 +13,211 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/theme.css">
   <style>
-    /* ── FILTER BAR ─────────────────────────────────────────── */
+    /* ── FILTER BAR ─────────────────────────────── */
     .filter-bar {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 10px 1rem;
-      position: sticky; top: 0; z-index: 40;
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 10px 1rem; position: sticky; top: 0; z-index: 40;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .filter-row {
       display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end;
-      max-width: 1300px; margin: 0 auto;
+      max-width: 1340px; margin: 0 auto;
     }
-    .filter-group {
-      display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 110px;
+    .fg { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 100px; }
+    .fg label { font-size: 0.62rem; font-weight: 800; color: var(--text-3); letter-spacing: .4px; }
+    .fi {
+      height: 34px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 0 8px; font-family: 'Cairo', sans-serif; font-size: 0.78rem;
+      color: var(--text-1); background: var(--surface-1); width: 100%; outline: none;
     }
-    .filter-group label {
-      font-size: 0.65rem; font-weight: 800; color: var(--text-3);
-      text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .filter-input {
-      height: 34px; border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: 0 8px;
-      font-family: 'Cairo', sans-serif; font-size: 0.78rem;
-      color: var(--text-1); background: var(--surface-1);
-      width: 100%; outline: none; transition: border 0.15s;
-    }
-    .filter-input:focus { border-color: var(--primary); }
-    .filter-sep {
-      width: 1px; background: var(--border); align-self: stretch;
-      margin: 2px 4px; flex-shrink: 0;
-    }
-    .filter-actions { display: flex; gap: 6px; align-items: flex-end; flex-shrink: 0; }
+    .fi:focus { border-color: var(--primary); }
+    .fsep { width: 1px; background: var(--border); align-self: stretch; margin: 2px 2px; flex-shrink: 0; }
+    .fbtns { display: flex; gap: 6px; align-items: flex-end; flex-shrink: 0; }
     .btn-apply {
-      height: 34px; padding: 0 14px;
-      background: var(--primary); color: white;
-      border: none; border-radius: var(--radius-sm);
-      font-family: 'Cairo', sans-serif; font-size: 0.8rem; font-weight: 800;
-      cursor: pointer; transition: opacity 0.15s; white-space: nowrap;
-      display: flex; align-items: center; gap: 5px;
+      height: 34px; padding: 0 14px; background: var(--primary); color: white;
+      border: none; border-radius: var(--radius-sm); font-family: 'Cairo', sans-serif;
+      font-size: 0.8rem; font-weight: 800; cursor: pointer;
+      display: flex; align-items: center; gap: 5px; white-space: nowrap;
     }
-    .btn-apply:hover { opacity: 0.88; }
+    .btn-apply:hover { opacity: .87; }
     .btn-reset {
-      height: 34px; padding: 0 10px;
-      background: var(--surface-2); color: var(--text-2);
+      height: 34px; padding: 0 10px; background: var(--surface-2); color: var(--text-2);
       border: 1px solid var(--border); border-radius: var(--radius-sm);
-      font-family: 'Cairo', sans-serif; font-size: 0.78rem; font-weight: 700;
-      cursor: pointer; white-space: nowrap;
+      font-family: 'Cairo', sans-serif; font-size: 0.76rem; font-weight: 700; cursor: pointer;
     }
-    .btn-reset:hover { background: var(--surface-3,#e5e7eb); }
-
-    /* ── KPI GRID ────────────────────────────────────────────── */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px; padding: 12px 1rem 0;
-      max-width: 1300px; margin: 0 auto;
-    }
-    @media (min-width: 600px)  { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (min-width: 1024px) { .kpi-grid { grid-template-columns: repeat(6, 1fr); } }
-
-    .kpi-card {
-      background: white; border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 14px 12px 12px;
-      box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
-      transition: box-shadow 0.2s, transform 0.2s; cursor: default;
-    }
-    .kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-    .kpi-card::before {
-      content: ''; position: absolute; top: 0; right: 0;
-      width: 4px; height: 100%; border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-    }
-    .kpi-blue::before   { background: #3b82f6; }
-    .kpi-red::before    { background: #dc2626; }
-    .kpi-green::before  { background: #059669; }
-    .kpi-orange::before { background: #f97316; }
-    .kpi-teal::before   { background: #0d9488; }
-    .kpi-indigo::before { background: #6366f1; }
-
-    .kpi-icon {
-      width: 34px; height: 34px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 8px;
-    }
-    .kpi-val { font-size: 1.8rem; font-weight: 900; line-height: 1; color: var(--text-1); }
-    .kpi-lbl { font-size: 0.68rem; font-weight: 700; color: var(--text-2); margin-top: 4px; }
-
-    /* ── TABS ────────────────────────────────────────────────── */
-    .tabs-wrap {
-      max-width: 1300px; margin: 14px auto 0; padding: 0 1rem;
-    }
-    .tabs-bar {
-      display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none;
-      border-bottom: 2px solid var(--border);
-    }
-    .tabs-bar::-webkit-scrollbar { display: none; }
-    .tab-btn {
-      flex-shrink: 0; padding: 9px 18px;
-      font-family: 'Cairo', sans-serif; font-size: 0.82rem; font-weight: 700;
-      color: var(--text-3); background: transparent; border: none;
-      border-bottom: 2px solid transparent; margin-bottom: -2px;
-      cursor: pointer; transition: color 0.15s, border-color 0.15s;
-      display: flex; align-items: center; gap: 6px; white-space: nowrap;
-    }
-    .tab-btn:hover { color: var(--text-1); }
-    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-    .tab-badge {
-      background: var(--surface-2); color: var(--text-3);
-      border-radius: 20px; padding: 1px 7px; font-size: 0.65rem; font-weight: 800;
-    }
-    .tab-btn.active .tab-badge { background: rgba(15,118,110,0.12); color: var(--primary); }
-
-    .tab-pane { display: none; padding: 14px 0 80px; }
-    .tab-pane.active { display: block; }
-
-    /* ── SECTION HEADER ──────────────────────────────────────── */
-    .sec-hdr {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 10px; padding: 0 1rem;
-      max-width: 1300px; margin-left: auto; margin-right: auto;
-    }
-    .sec-title {
-      display: flex; align-items: center; gap: 7px;
-      font-size: 0.85rem; font-weight: 800; color: var(--text-1);
-    }
-    .sec-sub { font-size: 0.72rem; color: var(--text-3); font-weight: 600; }
-
-    /* ── CARDS WRAPPER ───────────────────────────────────────── */
-    .card {
-      background: white; border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 1.1rem;
-      box-shadow: var(--shadow-sm); margin: 0 1rem 12px;
-      max-width: 1300px;
-    }
-    @media (min-width: 1332px) { .card { margin-left: auto; margin-right: auto; } }
-
-    /* ── BAR CHART ───────────────────────────────────────────── */
-    .bar-list { display: flex; flex-direction: column; gap: 8px; }
-    .bar-row { display: flex; align-items: center; gap: 8px; }
-    .bar-unit {
-      width: 130px; flex-shrink: 0; font-size: 0.7rem; font-weight: 700;
-      color: var(--text-2); text-align: right; white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis;
-    }
-    .bar-track {
-      flex: 1; height: 20px; background: var(--surface-2);
-      border-radius: 5px; overflow: hidden;
-    }
-    .bar-fill {
-      height: 100%; border-radius: 5px;
-      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
-      display: flex; align-items: center; justify-content: flex-end;
-      padding-left: 7px;
-    }
-    .bar-fill span { font-size: 0.62rem; font-weight: 800; color: white; white-space: nowrap; }
-    .bar-num {
-      width: 30px; flex-shrink: 0;
-      font-size: 0.72rem; font-weight: 800; color: var(--text-1); text-align: left;
-    }
-
-    /* ── DATA TABLE ──────────────────────────────────────────── */
-    .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    table {
-      width: 100%; border-collapse: collapse;
-      font-size: 0.75rem; font-family: 'Cairo', sans-serif;
-    }
-    th {
-      background: var(--surface-2); padding: 8px 10px;
-      font-weight: 800; color: var(--text-2); white-space: nowrap;
-      text-align: right; border-bottom: 2px solid var(--border);
-      position: sticky; top: 0;
-    }
-    td {
-      padding: 7px 10px; border-bottom: 1px solid var(--border);
-      color: var(--text-1); white-space: nowrap; text-align: right;
-    }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--surface-1); }
-    .td-num { font-weight: 800; }
-    .td-rate { font-weight: 800; }
-
-    /* ── STATUS BADGES ───────────────────────────────────────── */
-    .badge {
-      display: inline-block; padding: 2px 9px; border-radius: 20px;
-      font-size: 0.65rem; font-weight: 800;
-    }
-    .badge-open   { background: #fee2e2; color: #991b1b; }
-    .badge-closed { background: #d1fae5; color: #065f46; }
-    .badge-in-progress { background: #fef3c7; color: #92400e; }
-    .badge-ministerial { background: #ede9fe; color: #5b21b6; }
-    .badge-other { background: var(--surface-2); color: var(--text-2); }
-
-    /* ── SEVERITY ────────────────────────────────────────────── */
-    .sev-high   { color: #dc2626; font-weight: 800; }
-    .sev-medium { color: #d97706; font-weight: 800; }
-    .sev-low    { color: #059669; font-weight: 700; }
-
-    /* ── RATE CELL ───────────────────────────────────────────── */
-    .rate-bar {
-      display: flex; align-items: center; gap: 6px;
-    }
-    .rate-track {
-      flex: 1; height: 6px; background: var(--surface-2);
-      border-radius: 3px; overflow: hidden; min-width: 50px;
-    }
-    .rate-fill {
-      height: 100%; border-radius: 3px;
-      background: linear-gradient(90deg, #059669, #0d9488);
-    }
-    .rate-fill.danger { background: linear-gradient(90deg, #ef4444, #f97316); }
-
-    /* ── OVERVIEW GRID ───────────────────────────────────────── */
-    .overview-grid {
-      display: grid; grid-template-columns: 1fr;
-      gap: 12px; padding: 0 1rem;
-      max-width: 1300px; margin: 0 auto;
-    }
-    @media (min-width: 900px) { .overview-grid { grid-template-columns: 3fr 2fr; } }
-
-    /* ── SUMMARY STATS ───────────────────────────────────────── */
-    .stat-list { display: flex; flex-direction: column; gap: 1px; }
-    .stat-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 0; border-bottom: 1px solid var(--border);
-      font-size: 0.78rem;
-    }
-    .stat-row:last-child { border-bottom: none; }
-    .stat-lbl { color: var(--text-2); font-weight: 700; }
-    .stat-val { font-weight: 900; color: var(--text-1); }
-
-    /* ── LOADER / EMPTY ──────────────────────────────────────── */
-    .loader-box {
-      text-align: center; padding: 3rem 1rem;
-      color: var(--text-3); font-size: 0.85rem; font-weight: 700;
-    }
-    .empty-box {
-      text-align: center; padding: 2.5rem 1rem;
-      color: var(--text-3); font-size: 0.82rem; font-weight: 700;
-    }
-
-    /* ── FILTER TAGS ──────────────────────────────────────────── */
-    .active-filters {
-      display: flex; flex-wrap: wrap; gap: 6px;
-      padding: 6px 1rem 0; max-width: 1300px; margin: 0 auto;
-    }
-    .filter-tag {
+    .btn-reset:hover { background: #e5e7eb; }
+    .active-tags { display: flex; flex-wrap: wrap; gap: 5px; padding: 5px 1rem 0; max-width: 1340px; margin: 0 auto; }
+    .atag {
+      background: rgba(15,118,110,.08); color: var(--primary);
+      border: 1px solid rgba(15,118,110,.2); border-radius: 20px;
+      padding: 2px 9px; font-size: 0.65rem; font-weight: 800;
       display: inline-flex; align-items: center; gap: 4px;
-      background: rgba(15,118,110,0.08); color: var(--primary);
-      border: 1px solid rgba(15,118,110,0.2);
-      border-radius: 20px; padding: 3px 10px;
-      font-size: 0.68rem; font-weight: 800;
-    }
-    .filter-tag button {
-      background: none; border: none; cursor: pointer;
-      color: var(--primary); font-size: 0.75rem; padding: 0; line-height: 1;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .spin { animation: spin 0.8s linear infinite; }
-    .hidden { display: none !important; }
+    /* ── KPI GRID ───────────────────────────────── */
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(2,1fr);
+      gap: 10px; padding: 12px 1rem 0; max-width: 1340px; margin: 0 auto;
+    }
+    @media(min-width:600px)  { .kpi-grid { grid-template-columns: repeat(3,1fr); } }
+    @media(min-width:900px)  { .kpi-grid { grid-template-columns: repeat(4,1fr); } }
+    @media(min-width:1200px) { .kpi-grid { grid-template-columns: repeat(8,1fr); } }
+
+    .kc {
+      background: white; border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 12px 10px 10px;
+      box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .kc:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .kc::before {
+      content:''; position:absolute; top:0; right:0;
+      width:4px; height:100%;
+      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    }
+    .kc-blue::before   { background:#3b82f6; }
+    .kc-sky::before    { background:#0ea5e9; }
+    .kc-red::before    { background:#dc2626; }
+    .kc-green::before  { background:#059669; }
+    .kc-orange::before { background:#f97316; }
+    .kc-teal::before   { background:#0d9488; }
+    .kc-amber::before  { background:#d97706; }
+    .kc-purple::before { background:#7c3aed; }
+    .kc-rose::before   { background:#e11d48; }
+
+    .kc-icon { width:32px; height:32px; border-radius:7px; display:flex; align-items:center; justify-content:center; margin-bottom:7px; }
+    .kc-val  { font-size:1.65rem; font-weight:900; line-height:1; color:var(--text-1); }
+    .kc-lbl  { font-size:0.62rem; font-weight:700; color:var(--text-2); margin-top:3px; line-height:1.3; }
+
+    /* ── TABS ───────────────────────────────────── */
+    .tabs-wrap { max-width:1340px; margin:14px auto 0; padding:0 1rem; }
+    .tabs-bar {
+      display:flex; gap:2px; overflow-x:auto; scrollbar-width:none;
+      border-bottom:2px solid var(--border);
+    }
+    .tabs-bar::-webkit-scrollbar { display:none; }
+    .tab-btn {
+      flex-shrink:0; padding:8px 16px; font-family:'Cairo',sans-serif;
+      font-size:0.8rem; font-weight:700; color:var(--text-3); background:transparent;
+      border:none; border-bottom:2px solid transparent; margin-bottom:-2px;
+      cursor:pointer; transition:color .15s,border-color .15s;
+      display:flex; align-items:center; gap:5px; white-space:nowrap;
+    }
+    .tab-btn:hover { color:var(--text-1); }
+    .tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
+    .tbadge {
+      background:var(--surface-2); color:var(--text-3);
+      border-radius:20px; padding:1px 7px; font-size:0.63rem; font-weight:800;
+    }
+    .tab-btn.active .tbadge { background:rgba(15,118,110,.12); color:var(--primary); }
+
+    .tab-pane { display:none; padding:14px 0 90px; }
+    .tab-pane.active { display:block; }
+
+    /* ── CARDS / WRAPPERS ───────────────────────── */
+    .card {
+      background:white; border:1px solid var(--border);
+      border-radius:var(--radius-lg); padding:1.1rem;
+      box-shadow:var(--shadow-sm);
+    }
+    .card-hdr {
+      display:flex; align-items:center; gap:7px; margin-bottom:12px;
+      font-size:0.82rem; font-weight:800; color:var(--text-1);
+    }
+    .card-hdr-sub { font-size:0.68rem; color:var(--text-3); font-weight:600; margin-right:auto; }
+
+    .wrap { padding:0 1rem; max-width:1340px; margin:0 auto; }
+
+    /* ── BAR CHART ──────────────────────────────── */
+    .bar-list  { display:flex; flex-direction:column; gap:7px; }
+    .bar-row   { display:flex; align-items:center; gap:8px; }
+    .bar-lbl   {
+      width:140px; flex-shrink:0; font-size:0.68rem; font-weight:700;
+      color:var(--text-2); text-align:right; white-space:nowrap;
+      overflow:hidden; text-overflow:ellipsis;
+    }
+    .bar-track { flex:1; height:19px; background:var(--surface-2); border-radius:5px; overflow:hidden; }
+    .bar-fill  {
+      height:100%; border-radius:5px;
+      transition:width .65s cubic-bezier(.4,0,.2,1);
+      display:flex; align-items:center; justify-content:flex-end; padding-left:6px;
+    }
+    .bar-fill span { font-size:0.6rem; font-weight:800; color:white; white-space:nowrap; }
+    .bar-num   { width:28px; flex-shrink:0; font-size:0.7rem; font-weight:800; color:var(--text-1); text-align:left; }
+    .bar-tag   {
+      flex-shrink:0; font-size:0.58rem; font-weight:800; padding:1px 5px;
+      border-radius:4px; margin-right:4px;
+    }
+    .bar-hosp  { background:#ede9fe; color:#5b21b6; }
+    .bar-admin { background:#dbeafe; color:#1d4ed8; }
+
+    /* ── DATA TABLE ─────────────────────────────── */
+    .tbl-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    table { width:100%; border-collapse:collapse; font-size:0.74rem; font-family:'Cairo',sans-serif; }
+    th {
+      background:var(--surface-2); padding:8px 10px; font-weight:800;
+      color:var(--text-2); white-space:nowrap; text-align:right;
+      border-bottom:2px solid var(--border); position:sticky; top:0; z-index:1;
+    }
+    td { padding:7px 10px; border-bottom:1px solid var(--border); color:var(--text-1); white-space:nowrap; text-align:right; }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:var(--surface-1); }
+    .tn { font-weight:800; }
+
+    /* ── BADGES ─────────────────────────────────── */
+    .badge {
+      display:inline-block; padding:2px 8px; border-radius:20px;
+      font-size:0.63rem; font-weight:800;
+    }
+    .b-closed   { background:#d1fae5; color:#065f46; }
+    .b-open     { background:#fee2e2; color:#991b1b; }
+    .b-progress { background:#fef3c7; color:#92400e; }
+    .b-min      { background:#ede9fe; color:#5b21b6; }
+    .b-legal    { background:#fee2e2; color:#9f1239; }
+    .b-hosp     { background:#ede9fe; color:#5b21b6; font-size:0.58rem; }
+    .b-admin    { background:#dbeafe; color:#1d4ed8; font-size:0.58rem; }
+    .b-other    { background:var(--surface-2); color:var(--text-2); }
+
+    /* ── RATE BAR ───────────────────────────────── */
+    .rbar { display:flex; align-items:center; gap:6px; }
+    .rtrack { flex:1; height:5px; background:var(--surface-2); border-radius:3px; overflow:hidden; min-width:40px; }
+    .rfill  { height:100%; border-radius:3px; background:linear-gradient(90deg,#059669,#0d9488); }
+    .rfill.low { background:linear-gradient(90deg,#ef4444,#f97316); }
+
+    /* ── OVERVIEW LAYOUT ────────────────────────── */
+    .ov-grid {
+      display:grid; grid-template-columns:1fr;
+      gap:12px; padding:0 1rem; max-width:1340px; margin:14px auto 0;
+    }
+    @media(min-width:900px) { .ov-grid { grid-template-columns:3fr 2fr; } }
+
+    /* ── MINI STAT LIST ─────────────────────────── */
+    .srow {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:7px 0; border-bottom:1px solid var(--border); font-size:0.78rem;
+    }
+    .srow:last-child { border-bottom:none; }
+    .slbl { color:var(--text-2); font-weight:700; }
+    .sval { font-weight:900; color:var(--text-1); }
+
+    /* ── MINI KPI ROW ───────────────────────────── */
+    .mkrow { display:grid; gap:10px; margin-bottom:12px; }
+    .mkcell {
+      background:white; border:1px solid var(--border); border-radius:var(--radius-lg);
+      padding:11px; box-shadow:var(--shadow-sm);
+      display:flex; align-items:center; gap:9px;
+    }
+    .mki { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .mkv { font-size:1.45rem; font-weight:900; color:var(--text-1); }
+    .mkl { font-size:0.65rem; font-weight:700; color:var(--text-2); }
+
+    /* ── LOADER / EMPTY ─────────────────────────── */
+    .loader-box { text-align:center; padding:3rem 1rem; color:var(--text-3); font-size:0.85rem; font-weight:700; }
+    .empty-row  { text-align:center; padding:1.5rem; color:var(--text-3); font-size:0.78rem; }
+
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .spin { animation:spin .8s linear infinite; }
+    .hidden { display:none !important; }
   </style>
 </head>
 <body>
@@ -281,18 +227,16 @@
 <aside class="side-menu" id="side-menu">
   <div class="side-menu-header">
     <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:44px;height:44px;background:rgba(255,255,255,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center">
+      <div style="width:44px;height:44px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center">
         <i data-lucide="layout-dashboard" style="width:22px;height:22px;color:white"></i>
       </div>
       <div>
-        <div style="font-weight:800;font-size:0.9rem;color:white" id="menu-user">—</div>
-        <div style="font-size:0.72rem;color:#99f6e4" id="menu-role"></div>
+        <div style="font-weight:800;font-size:.9rem;color:white" id="menu-user">—</div>
+        <div style="font-size:.72rem;color:#99f6e4" id="menu-role"></div>
       </div>
     </div>
   </div>
-  <div class="side-menu-body">
-    <nav id="side-nav"></nav>
-  </div>
+  <div class="side-menu-body"><nav id="side-nav"></nav></div>
   <div class="menu-footer">
     <button onclick="logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);gap:8px;justify-content:center">
       <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
@@ -315,7 +259,7 @@
       <p class="header-sub">Internal Audit &amp; Governance</p>
       <p class="header-user" id="header-name"></p>
     </div>
-    <button class="header-btn" onclick="window.location.href='notifications.html'">
+    <button class="header-btn" onclick="location.href='notifications.html'">
       <i data-lucide="bell" style="width:20px;height:20px"></i>
     </button>
   </div>
@@ -324,16 +268,14 @@
 <!-- FILTER BAR -->
 <div class="filter-bar">
   <div class="filter-row">
-
-    <!-- Quick: Year + Month -->
-    <div class="filter-group" style="min-width:80px;max-width:90px">
+    <div class="fg" style="max-width:85px">
       <label>السنة</label>
-      <select class="filter-input" id="f-year"></select>
+      <select class="fi" id="f-year"></select>
     </div>
-    <div class="filter-group" style="min-width:100px;max-width:120px">
+    <div class="fg" style="max-width:115px">
       <label>الشهر</label>
-      <select class="filter-input" id="f-month">
-        <option value="">-- كل الشهور --</option>
+      <select class="fi" id="f-month">
+        <option value="">كل الشهور</option>
         <option value="1">يناير</option><option value="2">فبراير</option>
         <option value="3">مارس</option><option value="4">أبريل</option>
         <option value="5">مايو</option><option value="6">يونيو</option>
@@ -342,131 +284,127 @@
         <option value="11">نوفمبر</option><option value="12">ديسمبر</option>
       </select>
     </div>
-
-    <div class="filter-sep"></div>
-
-    <!-- Custom date range -->
-    <div class="filter-group" style="min-width:120px">
+    <div class="fsep"></div>
+    <div class="fg" style="min-width:120px">
       <label>من تاريخ</label>
-      <input type="date" class="filter-input" id="f-from">
+      <input type="date" class="fi" id="f-from">
     </div>
-    <div class="filter-group" style="min-width:120px">
+    <div class="fg" style="min-width:120px">
       <label>إلى تاريخ</label>
-      <input type="date" class="filter-input" id="f-to">
+      <input type="date" class="fi" id="f-to">
     </div>
-
-    <div class="filter-sep"></div>
-
-    <!-- Unit + Employee -->
-    <div class="filter-group" style="min-width:140px">
-      <label>الجهة / الوحدة</label>
-      <select class="filter-input" id="f-unit">
-        <option value="">-- كل الجهات --</option>
+    <div class="fsep"></div>
+    <div class="fg" style="min-width:145px">
+      <label>الإدارة / المستشفى</label>
+      <select class="fi" id="f-area">
+        <option value="">الكل</option>
       </select>
     </div>
-    <div class="filter-group" style="min-width:140px">
+    <div class="fg" style="min-width:140px">
       <label>الموظف المكلف</label>
-      <select class="filter-input" id="f-emp">
-        <option value="">-- كل الموظفين --</option>
+      <select class="fi" id="f-emp">
+        <option value="">الكل</option>
       </select>
     </div>
-
-    <!-- Buttons -->
-    <div class="filter-actions">
+    <div class="fbtns">
       <button class="btn-apply" onclick="applyFilters()">
-        <i data-lucide="search" style="width:13px;height:13px"></i>
-        تطبيق
+        <i data-lucide="search" style="width:13px;height:13px"></i> تطبيق
       </button>
       <button class="btn-reset" onclick="resetFilters()">إعادة تعيين</button>
     </div>
   </div>
-
-  <!-- Active filter tags -->
-  <div class="active-filters" id="active-tags"></div>
+  <div class="active-tags" id="active-tags"></div>
 </div>
 
 <!-- KPI CARDS -->
 <div class="kpi-grid" id="kpi-grid">
   <div class="loader-box" style="grid-column:1/-1">
-    <i data-lucide="loader-2" style="width:30px;height:30px;display:block;margin:0 auto 10px;opacity:0.3" class="spin"></i>
+    <i data-lucide="loader-2" style="width:30px;height:30px;display:block;margin:0 auto 10px;opacity:.3" class="spin"></i>
     جاري تحميل البيانات...
   </div>
 </div>
 
 <!-- TABS -->
-<div class="tabs-wrap" id="tabs-wrap" style="display:none">
-  <div class="tabs-bar">
-    <button class="tab-btn active" onclick="switchTab('overview', this)">
-      <i data-lucide="layout-grid" style="width:14px;height:14px"></i>
-      نظرة عامة
-    </button>
-    <button class="tab-btn" onclick="switchTab('findings', this)">
-      <i data-lucide="shield-alert" style="width:14px;height:14px"></i>
-      المخالفات
-      <span class="tab-badge" id="tab-badge-findings">0</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('inout', this)">
-      <i data-lucide="inbox" style="width:14px;height:14px"></i>
-      المعاملات
-      <span class="tab-badge" id="tab-badge-inout">0</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('escal', this)">
-      <i data-lucide="trending-up" style="width:14px;height:14px"></i>
-      التصعيدات
-      <span class="tab-badge" id="tab-badge-escal">0</span>
-    </button>
+<div id="tabs-wrap" style="display:none">
+  <div class="tabs-wrap">
+    <div class="tabs-bar">
+      <button class="tab-btn active" onclick="switchTab('overview',this)">
+        <i data-lucide="layout-grid" style="width:13px;height:13px"></i> نظرة عامة
+      </button>
+      <button class="tab-btn" onclick="switchTab('findings',this)">
+        <i data-lucide="eye" style="width:13px;height:13px"></i> الملاحظات
+        <span class="tbadge" id="tb-findings">0</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('inout',this)">
+        <i data-lucide="inbox" style="width:13px;height:13px"></i> المعاملات
+        <span class="tbadge" id="tb-inout">0</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('reports',this)">
+        <i data-lucide="file-text" style="width:13px;height:13px"></i> التقارير
+        <span class="tbadge" id="tb-reports">0</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('escal',this)">
+        <i data-lucide="trending-up" style="width:13px;height:13px"></i> التصعيد
+        <span class="tbadge" id="tb-escal">0</span>
+      </button>
+    </div>
   </div>
 
-  <!-- ── TAB: OVERVIEW ──────────────────────────────────────── -->
+  <!-- ══ TAB: OVERVIEW ══════════════════════════════════════ -->
   <div class="tab-pane active" id="tab-overview">
+    <div class="ov-grid">
 
-    <div class="overview-grid" style="margin-top:14px">
-
-      <!-- Bar chart: top units by findings -->
+      <!-- Bar chart: ملاحظات حسب الإدارة/المستشفى -->
       <div class="card" style="margin:0">
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px">
+        <div class="card-hdr">
           <i data-lucide="bar-chart-2" style="width:15px;height:15px;color:var(--primary)"></i>
-          <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">المخالفات حسب الجهة</span>
-          <span style="font-size:0.68rem;color:var(--text-3);margin-right:auto" id="chart-period-lbl"></span>
+          الملاحظات حسب الجهة
+          <span class="card-hdr-sub" id="ov-period"></span>
         </div>
-        <div class="bar-list" id="unit-bar-chart">
-          <div class="empty-box">لا توجد بيانات</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <span style="display:flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;color:var(--text-3)">
+            <span style="width:10px;height:10px;background:#3b82f6;border-radius:2px;display:inline-block"></span> إدارة صحية
+          </span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;color:var(--text-3)">
+            <span style="width:10px;height:10px;background:#7c3aed;border-radius:2px;display:inline-block"></span> مستشفى
+          </span>
+        </div>
+        <div class="bar-list" id="ov-bar-chart">
+          <div class="empty-row">لا توجد بيانات</div>
         </div>
       </div>
 
-      <!-- Summary stats panel -->
+      <!-- ملخص المؤشرات -->
       <div class="card" style="margin:0">
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px">
+        <div class="card-hdr">
           <i data-lucide="activity" style="width:15px;height:15px;color:var(--primary)"></i>
-          <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">ملخص المؤشرات</span>
+          ملخص المؤشرات
         </div>
-        <div class="stat-list" id="summary-stats"></div>
+        <div id="ov-summary"></div>
       </div>
-
     </div>
 
-    <!-- Per-unit overview table -->
-    <div style="margin-top:12px;padding:0 1rem;max-width:1300px;margin-left:auto;margin-right:auto">
+    <!-- جدول تفصيلي حسب الجهة -->
+    <div style="margin-top:12px" class="wrap">
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
         <i data-lucide="table-2" style="width:14px;height:14px;color:var(--primary)"></i>
-        <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">تفصيل حسب الجهة</span>
+        <span style="font-size:.82rem;font-weight:800;color:var(--text-1)">تفصيل حسب الجهة</span>
       </div>
-      <div class="card" style="margin:0;padding:0;overflow:hidden">
+      <div class="card" style="padding:0;overflow:hidden">
         <div class="tbl-wrap">
-          <table id="overview-table">
+          <table>
             <thead>
               <tr>
-                <th>الجهة / الوحدة</th>
-                <th>المخالفات</th>
+                <th>الجهة</th>
+                <th>النوع</th>
+                <th>الملاحظات</th>
                 <th>مغلقة</th>
                 <th>مفتوحة</th>
-                <th style="min-width:130px">نسبة الإغلاق</th>
-                <th>المعاملات</th>
-                <th>SLA %</th>
+                <th style="min-width:120px">نسبة الإغلاق</th>
               </tr>
             </thead>
-            <tbody id="overview-tbody">
-              <tr><td colspan="7" class="empty-box">لا توجد بيانات</td></tr>
+            <tbody id="ov-tbody">
+              <tr><td colspan="6" class="empty-row">لا توجد بيانات</td></tr>
             </tbody>
           </table>
         </div>
@@ -474,38 +412,59 @@
     </div>
   </div>
 
-  <!-- ── TAB: FINDINGS ─────────────────────────────────────── -->
+  <!-- ══ TAB: FINDINGS (ملاحظات) ═══════════════════════════ -->
   <div class="tab-pane" id="tab-findings">
-    <div style="margin-top:14px;padding:0 1rem;max-width:1300px;margin-left:auto;margin-right:auto">
+    <div class="wrap" style="margin-top:14px">
 
-      <!-- findings stats row -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px" id="f-stats-row"></div>
+      <!-- mini KPIs -->
+      <div class="mkrow" style="grid-template-columns:repeat(4,1fr)" id="f-mkrow"></div>
 
-      <!-- findings table -->
-      <div class="card" style="margin:0;padding:0;overflow:hidden">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px">
-          <div style="display:flex;align-items:center;gap:7px">
-            <i data-lucide="list" style="width:14px;height:14px;color:var(--primary)"></i>
-            <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">تفاصيل المخالفات</span>
+      <!-- تصنيف الملاحظات -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="card">
+          <div class="card-hdr">
+            <i data-lucide="pie-chart" style="width:14px;height:14px;color:var(--primary)"></i>
+            تصنيف الملاحظات
           </div>
-          <span style="font-size:0.68rem;color:var(--text-3)" id="findings-count-lbl"></span>
+          <div id="f-classify-list"><div class="empty-row">—</div></div>
+        </div>
+        <!-- ملاحظات مستشفيات vs إدارات -->
+        <div class="card">
+          <div class="card-hdr">
+            <i data-lucide="building-2" style="width:14px;height:14px;color:var(--primary)"></i>
+            الملاحظات حسب إدارات وحدات / مستشفيات
+          </div>
+          <div id="f-type-split"><div class="empty-row">—</div></div>
+        </div>
+      </div>
+
+      <!-- جدول الملاحظات -->
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:12px 14px 10px;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+            <i data-lucide="list" style="width:14px;height:14px;color:var(--primary)"></i>
+            تفاصيل الملاحظات
+          </div>
+          <span style="font-size:.68rem;color:var(--text-3)" id="f-count-lbl"></span>
         </div>
         <div class="tbl-wrap">
-          <table id="findings-table">
+          <table>
             <thead>
               <tr>
                 <th>#</th>
                 <th>الجهة</th>
+                <th>النوع</th>
                 <th>التاريخ</th>
-                <th>القسم / المجال</th>
+                <th>القسم</th>
                 <th>الكود</th>
+                <th>التصنيف</th>
                 <th>الخطورة</th>
                 <th>الحالة</th>
                 <th>الموظف</th>
               </tr>
             </thead>
-            <tbody id="findings-tbody">
-              <tr><td colspan="8" class="empty-box">لا توجد بيانات</td></tr>
+            <tbody id="f-tbody">
+              <tr><td colspan="10" class="empty-row">لا توجد ملاحظات</td></tr>
             </tbody>
           </table>
         </div>
@@ -513,30 +472,32 @@
     </div>
   </div>
 
-  <!-- ── TAB: INOUT ─────────────────────────────────────────── -->
+  <!-- ══ TAB: INOUT (معاملات) ══════════════════════════════ -->
   <div class="tab-pane" id="tab-inout">
-    <div style="margin-top:14px;padding:0 1rem;max-width:1300px;margin-left:auto;margin-right:auto">
+    <div class="wrap" style="margin-top:14px">
 
-      <!-- inout stats row -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px" id="io-stats-row"></div>
+      <!-- mini KPIs -->
+      <div class="mkrow" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px" id="io-mkrow"></div>
 
-      <!-- inout by unit table -->
-      <div class="card" style="margin:0;padding:0;overflow:hidden">
-        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px">
-          <i data-lucide="building-2" style="width:14px;height:14px;color:var(--primary)"></i>
-          <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">المعاملات حسب الجهة</span>
+      <!-- معاملات حسب النوع -->
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px">
+        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+          <i data-lucide="layers" style="width:14px;height:14px;color:var(--primary)"></i>
+          المعاملات حسب النوع
         </div>
         <div class="tbl-wrap">
-          <table id="inout-table">
+          <table>
             <thead>
               <tr>
-                <th>الجهة / الوحدة</th>
-                <th>إجمالي المعاملات</th>
-                <th>نسبة الالتزام بـ SLA</th>
+                <th>نوع المعاملة</th>
+                <th>الإجمالي</th>
+                <th>منجزة</th>
+                <th>قيد التنفيذ</th>
+                <th style="min-width:130px">التزام SLA</th>
               </tr>
             </thead>
-            <tbody id="inout-tbody">
-              <tr><td colspan="3" class="empty-box">لا توجد بيانات</td></tr>
+            <tbody id="io-type-tbody">
+              <tr><td colspan="5" class="empty-row">لا توجد معاملات</td></tr>
             </tbody>
           </table>
         </div>
@@ -544,21 +505,65 @@
     </div>
   </div>
 
-  <!-- ── TAB: ESCALATIONS ──────────────────────────────────── -->
-  <div class="tab-pane" id="tab-escal">
-    <div style="margin-top:14px;padding:0 1rem;max-width:1300px;margin-left:auto;margin-right:auto">
+  <!-- ══ TAB: REPORTS (تقارير) ══════════════════════════════ -->
+  <div class="tab-pane" id="tab-reports">
+    <div class="wrap" style="margin-top:14px">
 
-      <!-- escal stats -->
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px" id="e-stats-row"></div>
+      <!-- mini KPIs -->
+      <div class="mkrow" style="grid-template-columns:repeat(2,1fr);margin-bottom:12px" id="rp-mkrow"></div>
 
-      <!-- escal table -->
-      <div class="card" style="margin:0;padding:0;overflow:hidden">
-        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px">
-          <i data-lucide="alert-triangle" style="width:14px;height:14px;color:#d97706"></i>
-          <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">سجل التصعيدات</span>
+      <!-- تقارير حسب النوع -->
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px">
+        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+          <i data-lucide="file-bar-chart" style="width:14px;height:14px;color:var(--primary)"></i>
+          التقارير حسب النوع
         </div>
         <div class="tbl-wrap">
-          <table id="escal-table">
+          <table>
+            <thead>
+              <tr>
+                <th>نوع التقرير</th>
+                <th>العدد</th>
+                <th style="min-width:120px">النسبة</th>
+              </tr>
+            </thead>
+            <tbody id="rp-tbody">
+              <tr><td colspan="3" class="empty-row">لا توجد تقارير</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- فحص شكاوى -->
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-hdr">
+          <i data-lucide="message-circle" style="width:14px;height:14px;color:var(--primary)"></i>
+          الشكاوى وبلاغات وكيل الوزارة والنيابة
+        </div>
+        <div id="complaints-block">
+          <div class="srow"><span class="slbl">فحص الشكاوى الواردة</span><span class="sval" id="sv-complaints">—</span></div>
+          <div class="srow"><span class="slbl">المخالفات المحالة للشؤون القانونية</span><span class="sval" id="sv-legal">—</span></div>
+          <div class="srow"><span class="slbl">التصعيدات الوزارية</span><span class="sval" id="sv-ministerial">—</span></div>
+          <div class="srow"><span class="slbl">إجمالي التصعيدات الإدارية والقانونية</span><span class="sval" id="sv-escal-total">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: ESCALATIONS ══════════════════════════════════ -->
+  <div class="tab-pane" id="tab-escal">
+    <div class="wrap" style="margin-top:14px">
+
+      <!-- mini KPIs -->
+      <div class="mkrow" style="grid-template-columns:repeat(2,1fr);margin-bottom:12px" id="e-mkrow"></div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+          <i data-lucide="alert-triangle" style="width:14px;height:14px;color:#d97706"></i>
+          سجل التصعيدات
+        </div>
+        <div class="tbl-wrap">
+          <table>
             <thead>
               <tr>
                 <th>رقم CAR</th>
@@ -567,8 +572,8 @@
                 <th>التاريخ</th>
               </tr>
             </thead>
-            <tbody id="escal-tbody">
-              <tr><td colspan="4" class="empty-box">لا توجد تصعيدات</td></tr>
+            <tbody id="e-tbody">
+              <tr><td colspan="4" class="empty-row">لا توجد تصعيدات</td></tr>
             </tbody>
           </table>
         </div>
@@ -580,173 +585,128 @@
 
 <nav class="bottom-nav hidden" id="bottom-nav"></nav>
 
-<!-- SCRIPTS -->
 <script src="assets/js/config.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/nav.js"></script>
 <script>
 lucide.createIcons();
 
-/* ── STATE ───────────────────────────────────────────────── */
 let gData    = null;
 let gLoading = false;
 
-const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو',
-                   'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-
 /* ── INIT ────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  const userStr = localStorage.getItem('iag_user');
-  if (!userStr) { location.href = 'index.html'; return; }
-  const user = JSON.parse(userStr);
+  const u = localStorage.getItem('iag_user');
+  if (!u) { location.href = 'index.html'; return; }
+  const user = JSON.parse(u);
   if (user.role !== 'مدير' && user.role !== 'Admin') { location.href = 'index.html'; return; }
   document.getElementById('header-name').textContent = user.name || '';
-
-  initYearDropdown();
-  setDefaultFilters();
+  initYear();
+  setDefaultPeriod();
   applyFilters();
 });
 
-function initYearDropdown() {
+function initYear() {
   const sel = document.getElementById('f-year');
-  const now = new Date();
-  for (let y = now.getFullYear() + 1; y >= 2023; y--) {
-    const opt = document.createElement('option');
-    opt.value = y; opt.textContent = y;
-    if (y === now.getFullYear()) opt.selected = true;
-    sel.appendChild(opt);
+  const y   = new Date().getFullYear();
+  for (let i = y + 1; i >= 2023; i--) {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = i;
+    if (i === y) o.selected = true;
+    sel.appendChild(o);
   }
 }
-
-function setDefaultFilters() {
-  const now = new Date();
-  document.getElementById('f-month').value = now.getMonth() + 1;
-  syncDateFromYearMonth();
+function setDefaultPeriod() {
+  const n = new Date();
+  document.getElementById('f-month').value = n.getMonth() + 1;
+  syncDates();
 }
-
-/* ── FILTER HELPERS ──────────────────────────────────────── */
-function syncDateFromYearMonth() {
-  const y = parseInt(document.getElementById('f-year').value);
-  const m = parseInt(document.getElementById('f-month').value);
+function syncDates() {
+  const y = +document.getElementById('f-year').value;
+  const m = +document.getElementById('f-month').value;
   if (!y || !m) return;
-  const from = new Date(y, m-1, 1);
-  const to   = new Date(y, m,   0);
-  document.getElementById('f-from').value = fmt(from);
-  document.getElementById('f-to').value   = fmt(to);
+  document.getElementById('f-from').value = d2s(new Date(y, m-1, 1));
+  document.getElementById('f-to').value   = d2s(new Date(y, m,   0));
 }
+document.getElementById('f-year').addEventListener('change',  syncDates);
+document.getElementById('f-month').addEventListener('change', syncDates);
 
-function fmt(d) {
-  return d.getFullYear() + '-'
-    + String(d.getMonth()+1).padStart(2,'0') + '-'
-    + String(d.getDate()).padStart(2,'0');
+function d2s(d) {
+  return d.getFullYear() + '-' +
+    String(d.getMonth()+1).padStart(2,'0') + '-' +
+    String(d.getDate()).padStart(2,'0');
 }
-
-document.getElementById('f-year').addEventListener('change', syncDateFromYearMonth);
-document.getElementById('f-month').addEventListener('change', syncDateFromYearMonth);
-
-function getFilters() {
+function getF() {
   return {
-    dateFrom: document.getElementById('f-from').value,
-    dateTo:   document.getElementById('f-to').value,
-    unit:     document.getElementById('f-unit').value,
-    employee: document.getElementById('f-emp').value
+    dateFrom:  document.getElementById('f-from').value,
+    dateTo:    document.getElementById('f-to').value,
+    adminArea: document.getElementById('f-area').value,
+    employee:  document.getElementById('f-emp').value
   };
 }
-
 function resetFilters() {
-  const now = new Date();
-  document.getElementById('f-year').value  = now.getFullYear();
-  document.getElementById('f-month').value = now.getMonth() + 1;
-  document.getElementById('f-unit').value  = '';
+  document.getElementById('f-year').value  = new Date().getFullYear();
+  document.getElementById('f-month').value = new Date().getMonth() + 1;
+  document.getElementById('f-area').value  = '';
   document.getElementById('f-emp').value   = '';
-  syncDateFromYearMonth();
+  syncDates();
   applyFilters();
 }
-
-function renderActiveTags() {
-  const f = getFilters();
-  const tags = [];
-  if (f.dateFrom && f.dateTo)
-    tags.push({ lbl: `${f.dateFrom} → ${f.dateTo}`, key: 'date' });
-  if (f.unit)
-    tags.push({ lbl: f.unit, key: 'unit' });
-  if (f.employee)
-    tags.push({ lbl: f.employee, key: 'emp' });
-  const wrap = document.getElementById('active-tags');
-  wrap.innerHTML = tags.map(t => `
-    <span class="filter-tag">
-      <i data-lucide="filter" style="width:10px;height:10px"></i>
-      ${t.lbl}
-    </span>`).join('');
+function renderTags() {
+  const f = getF(); const tags = [];
+  if (f.dateFrom && f.dateTo) tags.push(f.dateFrom + ' ← ' + f.dateTo);
+  if (f.adminArea) tags.push(f.adminArea);
+  if (f.employee)  tags.push(f.employee);
+  document.getElementById('active-tags').innerHTML = tags.map(t =>
+    `<span class="atag"><i data-lucide="filter" style="width:9px;height:9px"></i>${t}</span>`
+  ).join('');
   lucide.createIcons();
 }
 
-/* ── LOAD DATA ───────────────────────────────────────────── */
+/* ── LOAD ────────────────────────────────────────────────── */
 async function applyFilters() {
   if (gLoading) return;
   gLoading = true;
-  renderActiveTags();
-
-  document.getElementById('kpi-grid').innerHTML = `
-    <div class="loader-box" style="grid-column:1/-1">
-      <i data-lucide="loader-2" style="width:28px;height:28px;display:block;margin:0 auto 10px;opacity:0.3" class="spin"></i>
-      جاري تحميل البيانات...
-    </div>`;
+  renderTags();
+  document.getElementById('kpi-grid').innerHTML =
+    `<div class="loader-box" style="grid-column:1/-1">
+       <i data-lucide="loader-2" style="width:28px;height:28px;display:block;margin:0 auto 10px;opacity:.3" class="spin"></i>
+       جاري تحميل البيانات...
+     </div>`;
   document.getElementById('tabs-wrap').style.display = 'none';
   lucide.createIcons();
 
   try {
-    const f = getFilters();
-    const payload = { action: 'getDashboardStats' };
-    if (f.dateFrom && f.dateTo) {
-      payload.dateFrom = f.dateFrom;
-      payload.dateTo   = f.dateTo;
-    }
-    if (f.unit)     payload.unit     = f.unit;
-    if (f.employee) payload.employee = f.employee;
+    const f   = getF();
+    const req = { action: 'getDashboardStats' };
+    if (f.dateFrom && f.dateTo) { req.dateFrom = f.dateFrom; req.dateTo = f.dateTo; }
+    if (f.adminArea) req.adminArea = f.adminArea;
+    if (f.employee)  req.employee  = f.employee;
 
-    const res  = await fetch(CONFIG.API_URL, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
+    const res  = await fetch(CONFIG.API_URL, { method:'POST', body:JSON.stringify(req) });
     const json = await res.json();
     if (!json.success) throw new Error(json.error || 'فشل التحميل');
-
     gData = json.data;
     renderAll(gData);
-    updateDropdowns(gData.unitList || [], gData.employeeList || []);
-  } catch (e) {
-    document.getElementById('kpi-grid').innerHTML = `
-      <div class="loader-box" style="grid-column:1/-1;color:var(--danger)">
-        <i data-lucide="alert-circle" style="width:28px;height:28px;display:block;margin:0 auto 10px"></i>
-        ⚠️ ${e.message}
-      </div>`;
+    fillDropdowns(gData.adminAreaList || [], gData.employeeList || []);
+  } catch(e) {
+    document.getElementById('kpi-grid').innerHTML =
+      `<div class="loader-box" style="grid-column:1/-1;color:var(--danger)">
+         <i data-lucide="alert-circle" style="width:28px;height:28px;display:block;margin:0 auto 10px"></i>
+         ⚠️ ${e.message}
+       </div>`;
     lucide.createIcons();
-  } finally {
-    gLoading = false;
-  }
+  } finally { gLoading = false; }
 }
 
-function updateDropdowns(units, employees) {
-  const fUnit = document.getElementById('f-unit');
-  const fEmp  = document.getElementById('f-emp');
-  const curUnit = fUnit.value, curEmp = fEmp.value;
-
-  fUnit.innerHTML = '<option value="">-- كل الجهات --</option>';
-  units.forEach(u => {
-    const o = document.createElement('option');
-    o.value = u; o.textContent = u;
-    if (u === curUnit) o.selected = true;
-    fUnit.appendChild(o);
-  });
-
-  fEmp.innerHTML = '<option value="">-- كل الموظفين --</option>';
-  employees.forEach(e => {
-    const o = document.createElement('option');
-    o.value = e; o.textContent = e;
-    if (e === curEmp) o.selected = true;
-    fEmp.appendChild(o);
-  });
+function fillDropdowns(areas, emps) {
+  const fa = document.getElementById('f-area');
+  const fe = document.getElementById('f-emp');
+  const ca = fa.value, ce = fe.value;
+  fa.innerHTML = '<option value="">الكل</option>';
+  areas.forEach(a => { const o=document.createElement('option'); o.value=a; o.textContent=a; if(a===ca)o.selected=true; fa.appendChild(o); });
+  fe.innerHTML = '<option value="">الكل</option>';
+  emps.forEach(e  => { const o=document.createElement('option'); o.value=e; o.textContent=e; if(e===ce)o.selected=true; fe.appendChild(o); });
 }
 
 /* ── RENDER ALL ──────────────────────────────────────────── */
@@ -756,236 +716,281 @@ function renderAll(d) {
   renderOverview(d);
   renderFindings(d);
   renderInout(d);
+  renderReports(d);
   renderEscal(d);
-
-  // update tab badges
-  document.getElementById('tab-badge-findings').textContent = s.total_findings;
-  document.getElementById('tab-badge-inout').textContent    = s.total_inout;
-  document.getElementById('tab-badge-escal').textContent    = s.total_escalations;
-
+  document.getElementById('tb-findings').textContent = s.total_findings;
+  document.getElementById('tb-inout').textContent    = s.total_inout;
+  document.getElementById('tb-reports').textContent  = s.total_reports;
+  document.getElementById('tb-escal').textContent    = s.total_escalations;
   document.getElementById('tabs-wrap').style.display = '';
   lucide.createIcons();
 }
 
-/* ── KPI CARDS ───────────────────────────────────────────── */
+/* ── KPI CARDS (8 cards) ─────────────────────────────────── */
 function renderKPIs(s) {
   const cards = [
-    { cls:'kpi-blue',   bg:'#dbeafe', ic:'map-pin',        color:'#1d4ed8', val:s.total_visits,          lbl:'الزيارات الميدانية' },
-    { cls:'kpi-red',    bg:'#fee2e2', ic:'shield-alert',   color:'#991b1b', val:s.total_findings,         lbl:'إجمالي المخالفات'  },
-    { cls:'kpi-green',  bg:'#d1fae5', ic:'check-circle-2', color:'#065f46', val:s.closed_findings,        lbl:'مخالفات مغلقة'     },
-    { cls:'kpi-orange', bg:'#ffedd5', ic:'alert-circle',   color:'#c2410c', val:s.open_findings,          lbl:'مخالفات مفتوحة'    },
-    { cls:'kpi-teal',   bg:'#ccfbf1', ic:'pie-chart',      color:'#0f766e', val:s.closure_rate + '%',     lbl:'نسبة الإغلاق'      },
-    { cls:'kpi-indigo', bg:'#e0e7ff', ic:'inbox',          color:'#4338ca', val:s.total_inout,            lbl:'المعاملات'          },
+    { cls:'kc-blue',   bg:'#dbeafe', ic:'building',        c:'#1d4ed8', v:s.visits_units,            l:'زيارات وحدات'          },
+    { cls:'kc-sky',    bg:'#e0f2fe', ic:'hospital',        c:'#0369a1', v:s.visits_hospitals,         l:'زيارات مستشفيات'       },
+    { cls:'kc-red',    bg:'#fee2e2', ic:'eye',             c:'#991b1b', v:s.total_findings,           l:'إجمالي الملاحظات'      },
+    { cls:'kc-green',  bg:'#d1fae5', ic:'check-circle-2',  c:'#065f46', v:s.closed_findings,          l:'ملاحظات مغلقة'         },
+    { cls:'kc-orange', bg:'#ffedd5', ic:'alert-circle',    c:'#c2410c', v:s.open_findings,            l:'ملاحظات مفتوحة'        },
+    { cls:'kc-teal',   bg:'#ccfbf1', ic:'inbox',           c:'#0f766e', v:s.total_inout,              l:'المعاملات الواردة'     },
+    { cls:'kc-amber',  bg:'#fef3c7', ic:'trending-up',     c:'#92400e', v:s.total_escalations,        l:'التصعيدات'             },
+    { cls:'kc-rose',   bg:'#ffe4e6', ic:'gavel',           c:'#9f1239', v:s.legal_violations,         l:'محالة للقانونية'       },
   ];
   document.getElementById('kpi-grid').innerHTML = cards.map(c => `
-    <div class="kpi-card ${c.cls}">
-      <div class="kpi-icon" style="background:${c.bg}">
-        <i data-lucide="${c.ic}" style="width:18px;height:18px;color:${c.color}"></i>
+    <div class="kc ${c.cls}">
+      <div class="kc-icon" style="background:${c.bg}">
+        <i data-lucide="${c.ic}" style="width:17px;height:17px;color:${c.c}"></i>
       </div>
-      <div class="kpi-val">${c.val}</div>
-      <div class="kpi-lbl">${c.lbl}</div>
+      <div class="kc-val">${c.v !== undefined ? c.v : '—'}</div>
+      <div class="kc-lbl">${c.l}</div>
     </div>`).join('');
   lucide.createIcons();
 }
 
 /* ── OVERVIEW TAB ────────────────────────────────────────── */
 function renderOverview(d) {
-  const s   = d.summary;
-  const by  = d.byUnit || [];
-  const f   = getFilters();
+  const s  = d.summary;
+  const by = d.byAdminArea || [];
+  const f  = getF();
+  document.getElementById('ov-period').textContent = (f.dateFrom && f.dateTo) ? f.dateFrom + ' → ' + f.dateTo : '';
 
-  // period label
-  let pLbl = '';
-  if (f.dateFrom && f.dateTo) pLbl = `${f.dateFrom} → ${f.dateTo}`;
-  document.getElementById('chart-period-lbl').textContent = pLbl;
-
-  // bar chart (top 10 by findings)
-  const top10  = by.slice(0, 10);
-  const maxVal = Math.max(...top10.map(u => u.total_findings), 1);
-  document.getElementById('unit-bar-chart').innerHTML = top10.length
-    ? top10.map(u => {
-        const pct = Math.max((u.total_findings / maxVal) * 100, u.total_findings > 0 ? 4 : 0).toFixed(1);
-        return `
-          <div class="bar-row">
-            <div class="bar-unit" title="${u.unit_name}">${u.unit_name || '—'}</div>
-            <div class="bar-track">
-              <div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#3b82f6,#0d9488)">
-                ${u.total_findings > 0 ? '<span>' + u.total_findings + '</span>' : ''}
-              </div>
+  // bar chart (top 15)
+  const top = by.slice(0, 15);
+  const mx  = Math.max(...top.map(u => u.total_findings), 1);
+  document.getElementById('ov-bar-chart').innerHTML = top.length
+    ? top.map(u => {
+        const pct   = Math.max((u.total_findings / mx) * 100, u.total_findings > 0 ? 4 : 0).toFixed(1);
+        const color = u.is_hospital ? '#7c3aed' : '#3b82f6';
+        return `<div class="bar-row">
+          <div class="bar-lbl" title="${u.area_name}">${u.area_name || '—'}</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${pct}%;background:${color}">
+              ${u.total_findings > 0 ? '<span>' + u.total_findings + '</span>' : ''}
             </div>
-            <div class="bar-num">${u.total_findings}</div>
-          </div>`;
+          </div>
+          <div class="bar-num">${u.total_findings}</div>
+          <span class="bar-tag ${u.is_hospital ? 'bar-hosp' : 'bar-admin'}">${u.is_hospital ? 'مستشفى' : 'إدارة'}</span>
+        </div>`;
       }).join('')
-    : '<div class="empty-box">لا توجد بيانات</div>';
+    : '<div class="empty-row">لا توجد بيانات</div>';
 
   // summary stats
-  const stats = [
-    { lbl:'إجمالي الزيارات الميدانية',    val: s.total_visits },
-    { lbl:'إجمالي المخالفات',             val: s.total_findings },
-    { lbl:'مخالفات مغلقة',                val: s.closed_findings },
-    { lbl:'مخالفات مفتوحة',               val: s.open_findings },
-    { lbl:'نسبة الإغلاق',                 val: s.closure_rate + '%' },
-    { lbl:'متوسط أيام الإغلاق',           val: s.avg_closure_days + ' يوم' },
-    { lbl:'إجمالي المعاملات الواردة',     val: s.total_inout },
-    { lbl:'التزام SLA',                   val: s.sla_compliance_rate + '%' },
-    { lbl:'التصعيدات الإجمالية',          val: s.total_escalations },
-    { lbl:'التصعيدات الوزارية',           val: s.ministerial_escalations },
-    { lbl:'الشكاوى',                      val: s.total_complaints },
-  ];
-  document.getElementById('summary-stats').innerHTML = stats.map(r =>
-    `<div class="stat-row">
-       <span class="stat-lbl">${r.lbl}</span>
-       <span class="stat-val">${r.val}</span>
-     </div>`
-  ).join('');
+  document.getElementById('ov-summary').innerHTML = [
+    { l:'زيارات وحدات',              v: s.visits_units },
+    { l:'زيارات مستشفيات',           v: s.visits_hospitals },
+    { l:'إجمالي الملاحظات',          v: s.total_findings },
+    { l:'ملاحظات مغلقة',             v: s.closed_findings },
+    { l:'ملاحظات مفتوحة/جارية',      v: s.open_findings },
+    { l:'نسبة الإغلاق',              v: s.closure_rate + '%' },
+    { l:'متوسط أيام الإغلاق',        v: s.avg_closure_days + ' يوم' },
+    { l:'المعاملات الواردة',         v: s.total_inout },
+    { l:'التزام SLA',                v: s.sla_compliance_rate + '%' },
+    { l:'الشكاوى',                   v: s.total_complaints },
+    { l:'التصعيدات الإجمالية',       v: s.total_escalations },
+    { l:'التصعيدات الوزارية',        v: s.ministerial_escalations },
+    { l:'محالة للشؤون القانونية',    v: s.legal_violations },
+    { l:'التقارير الصادرة',          v: s.total_reports },
+  ].map(r => `<div class="srow"><span class="slbl">${r.l}</span><span class="sval">${r.v}</span></div>`).join('');
 
   // overview table
-  document.getElementById('overview-tbody').innerHTML = by.length
+  document.getElementById('ov-tbody').innerHTML = by.length
     ? by.map(u => {
-        const rateClass = u.closure_rate >= 70 ? '' : 'danger';
-        return `
-          <tr>
-            <td style="font-weight:800">${u.unit_name || '—'}</td>
-            <td class="td-num">${u.total_findings}</td>
-            <td class="td-num" style="color:#059669">${u.closed_findings}</td>
-            <td class="td-num" style="color:#dc2626">${u.open_findings}</td>
-            <td>
-              <div class="rate-bar">
-                <div class="rate-track">
-                  <div class="rate-fill ${rateClass}" style="width:${u.closure_rate}%"></div>
-                </div>
-                <span class="td-rate" style="font-size:0.72rem">${u.closure_rate}%</span>
-              </div>
-            </td>
-            <td class="td-num">${u.total_inout}</td>
-            <td class="td-rate">${u.sla_rate > 0 ? u.sla_rate + '%' : '—'}</td>
-          </tr>`;
+        const rc = u.closure_rate >= 70 ? '' : 'low';
+        return `<tr>
+          <td style="font-weight:800">${u.area_name || '—'}</td>
+          <td><span class="badge ${u.is_hospital ? 'b-hosp' : 'b-admin'}">${u.is_hospital ? 'مستشفى' : 'إدارة صحية'}</span></td>
+          <td class="tn">${u.total_findings}</td>
+          <td class="tn" style="color:#059669">${u.closed_findings}</td>
+          <td class="tn" style="color:#dc2626">${u.open_findings}</td>
+          <td>
+            <div class="rbar">
+              <div class="rtrack"><div class="rfill ${rc}" style="width:${u.closure_rate}%"></div></div>
+              <span style="font-size:.72rem;font-weight:800">${u.closure_rate}%</span>
+            </div>
+          </td>
+        </tr>`;
       }).join('')
-    : '<tr><td colspan="7" class="empty-box">لا توجد بيانات</td></tr>';
+    : '<tr><td colspan="6" class="empty-row">لا توجد بيانات</td></tr>';
 }
 
 /* ── FINDINGS TAB ────────────────────────────────────────── */
 function renderFindings(d) {
   const s    = d.summary;
   const list = d.findingsList || [];
+  const cls  = d.classifyBreakdown || [];
+  const by   = d.byAdminArea || [];
 
-  document.getElementById('f-stats-row').innerHTML = [
-    { bg:'#fee2e2', c:'#991b1b', ic:'shield-alert', val:s.total_findings,  lbl:'إجمالي المخالفات' },
-    { bg:'#d1fae5', c:'#065f46', ic:'check-circle', val:s.closed_findings, lbl:'مغلقة'             },
-    { bg:'#ffedd5', c:'#c2410c', ic:'clock',         val:s.open_findings,   lbl:'مفتوحة / جارية'   },
+  // mini KPIs
+  document.getElementById('f-mkrow').innerHTML = [
+    { bg:'#fee2e2', c:'#991b1b', ic:'eye',          v:s.total_findings,  l:'إجمالي الملاحظات' },
+    { bg:'#d1fae5', c:'#065f46', ic:'check-circle', v:s.closed_findings, l:'مغلقة'            },
+    { bg:'#ffedd5', c:'#c2410c', ic:'clock',         v:s.open_findings,   l:'مفتوحة'           },
+    { bg:'#fef3c7', c:'#92400e', ic:'clock-4',       v:s.avg_closure_days + 'd', l:'متوسط الإغلاق' },
   ].map(c => `
-    <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:10px">
-      <div style="width:36px;height:36px;background:${c.bg};border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <i data-lucide="${c.ic}" style="width:17px;height:17px;color:${c.c}"></i>
+    <div class="mkcell">
+      <div class="mki" style="background:${c.bg}">
+        <i data-lucide="${c.ic}" style="width:16px;height:16px;color:${c.c}"></i>
       </div>
-      <div>
-        <div style="font-size:1.5rem;font-weight:900;color:var(--text-1)">${c.val}</div>
-        <div style="font-size:0.68rem;font-weight:700;color:var(--text-2)">${c.lbl}</div>
-      </div>
+      <div><div class="mkv">${c.v}</div><div class="mkl">${c.l}</div></div>
     </div>`).join('');
 
-  document.getElementById('findings-count-lbl').textContent =
-    list.length < 100 ? `${list.length} مخالفة` : `أول 100 من ${s.total_findings}`;
-
-  document.getElementById('findings-tbody').innerHTML = list.length
-    ? list.map((f, i) => {
-        const stCls = f.status === 'مغلق' ? 'badge-closed'
-                    : f.status === 'مفتوح' ? 'badge-open'
-                    : 'badge-in-progress';
-        const sevCls = /عالي|high/i.test(f.severity) ? 'sev-high'
-                     : /متوسط|medium/i.test(f.severity) ? 'sev-medium' : 'sev-low';
-        return `
-          <tr>
-            <td style="color:var(--text-3)">${i+1}</td>
-            <td style="font-weight:700;max-width:120px;overflow:hidden;text-overflow:ellipsis" title="${f.unit}">${f.unit || '—'}</td>
-            <td>${f.date}</td>
-            <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis" title="${f.section}">${f.section || '—'}</td>
-            <td style="font-family:monospace;font-size:0.7rem">${f.code || '—'}</td>
-            <td class="${sevCls}">${f.severity || '—'}</td>
-            <td><span class="badge ${stCls}">${f.status || '—'}</span></td>
-            <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis" title="${f.officer}">${f.officer || '—'}</td>
-          </tr>`;
+  // classify
+  const clsTotal = cls.reduce((a, c) => a + c.count, 0);
+  document.getElementById('f-classify-list').innerHTML = cls.length
+    ? cls.map(c => {
+        const pct = clsTotal > 0 ? Math.round((c.count / clsTotal) * 100) : 0;
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:.76rem">
+          <span style="font-weight:700;color:var(--text-1)">${c.classify}</span>
+          <span style="font-weight:800;color:var(--text-2)">${c.count} <span style="color:var(--text-3);font-size:.65rem">(${pct}%)</span></span>
+        </div>`;
       }).join('')
-    : '<tr><td colspan="8" class="empty-box">لا توجد مخالفات في هذا النطاق</td></tr>';
+    : '<div class="empty-row">—</div>';
+
+  // hospital vs admin split
+  const hospTotal  = by.filter(u => u.is_hospital).reduce((a, u) => a + u.total_findings, 0);
+  const adminTotal = by.filter(u => !u.is_hospital).reduce((a, u) => a + u.total_findings, 0);
+  const grandTotal = hospTotal + adminTotal || 1;
+  document.getElementById('f-type-split').innerHTML = `
+    <div class="srow"><span class="slbl">🏥 مستشفيات</span><span class="sval">${hospTotal} <span style="font-size:.68rem;color:var(--text-3)">(${Math.round(hospTotal/grandTotal*100)}%)</span></span></div>
+    <div class="srow"><span class="slbl">🏢 إدارات صحية</span><span class="sval">${adminTotal} <span style="font-size:.68rem;color:var(--text-3)">(${Math.round(adminTotal/grandTotal*100)}%)</span></span></div>
+  `;
+
+  // count label
+  document.getElementById('f-count-lbl').textContent =
+    list.length < 100 ? list.length + ' ملاحظة' : 'أول 100 من ' + s.total_findings;
+
+  // table
+  document.getElementById('f-tbody').innerHTML = list.length
+    ? list.map((r, i) => {
+        const stCls = r.status === 'مغلق'  ? 'b-closed'
+                    : r.status === 'مفتوح' ? 'b-open' : 'b-progress';
+        const svCls = /عالي|high/i.test(r.severity) ? 'color:#dc2626;font-weight:800'
+                    : /متوسط|med/i.test(r.severity)  ? 'color:#d97706;font-weight:800'
+                    : 'color:#059669';
+        return `<tr>
+          <td style="color:var(--text-3)">${i+1}</td>
+          <td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;font-weight:700" title="${r.area}">${r.area || '—'}</td>
+          <td><span class="badge ${r.isHosp ? 'b-hosp' : 'b-admin'}">${r.isHosp ? 'مستشفى' : 'إدارة'}</span></td>
+          <td>${r.date}</td>
+          <td style="max-width:90px;overflow:hidden;text-overflow:ellipsis" title="${r.section}">${r.section || '—'}</td>
+          <td style="font-family:monospace;font-size:.68rem">${r.code || '—'}</td>
+          <td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;font-size:.68rem" title="${r.classify}">${r.classify || '—'}</td>
+          <td style="${svCls}">${r.severity || '—'}</td>
+          <td><span class="badge ${stCls}">${r.status || '—'}</span></td>
+          <td style="max-width:90px;overflow:hidden;text-overflow:ellipsis" title="${r.officer}">${r.officer || '—'}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="10" class="empty-row">لا توجد ملاحظات في هذا النطاق</td></tr>';
 }
 
 /* ── INOUT TAB ───────────────────────────────────────────── */
 function renderInout(d) {
-  const s  = d.summary;
-  const by = d.byUnit || [];
+  const s   = d.summary;
+  const byT = d.byInoutType || [];
 
-  document.getElementById('io-stats-row').innerHTML = [
-    { bg:'#e0e7ff', c:'#4338ca', ic:'inbox',   val:s.total_inout,          lbl:'إجمالي المعاملات' },
-    { bg:'#d1fae5', c:'#065f46', ic:'check',   val:s.sla_compliance_rate + '%', lbl:'التزام SLA'   },
-    { bg:'#fef3c7', c:'#92400e', ic:'message-circle', val:s.total_complaints, lbl:'الشكاوى'        },
+  document.getElementById('io-mkrow').innerHTML = [
+    { bg:'#e0e7ff', c:'#4338ca', ic:'inbox',   v:s.total_inout,          l:'إجمالي المعاملات' },
+    { bg:'#d1fae5', c:'#065f46', ic:'check',   v:s.sla_compliance_rate+'%', l:'التزام SLA'    },
+    { bg:'#fef3c7', c:'#92400e', ic:'message-circle', v:s.total_complaints, l:'الشكاوى'       },
   ].map(c => `
-    <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:10px">
-      <div style="width:36px;height:36px;background:${c.bg};border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <i data-lucide="${c.ic}" style="width:17px;height:17px;color:${c.c}"></i>
+    <div class="mkcell">
+      <div class="mki" style="background:${c.bg}">
+        <i data-lucide="${c.ic}" style="width:16px;height:16px;color:${c.c}"></i>
       </div>
-      <div>
-        <div style="font-size:1.5rem;font-weight:900;color:var(--text-1)">${c.val}</div>
-        <div style="font-size:0.68rem;font-weight:700;color:var(--text-2)">${c.lbl}</div>
-      </div>
+      <div><div class="mkv">${c.v}</div><div class="mkl">${c.l}</div></div>
     </div>`).join('');
 
-  const rows = by.filter(u => u.total_inout > 0);
-  document.getElementById('inout-tbody').innerHTML = rows.length
-    ? rows.map(u => {
-        const slaPct = u.sla_rate;
-        const rateClass = slaPct >= 80 ? '' : 'danger';
-        return `
-          <tr>
-            <td style="font-weight:800">${u.unit_name || '—'}</td>
-            <td class="td-num">${u.total_inout}</td>
-            <td>
-              ${slaPct > 0 ? `
-                <div class="rate-bar">
-                  <div class="rate-track">
-                    <div class="rate-fill ${rateClass}" style="width:${slaPct}%"></div>
-                  </div>
-                  <span class="td-rate" style="font-size:0.72rem">${slaPct}%</span>
-                </div>` : '<span style="color:var(--text-3);font-size:0.72rem">—</span>'}
-            </td>
-          </tr>`;
+  document.getElementById('io-type-tbody').innerHTML = byT.length
+    ? byT.map(t => {
+        const rc = t.sla_rate > 0 && t.sla_rate < 80 ? 'low' : '';
+        return `<tr>
+          <td style="font-weight:800">${t.type}</td>
+          <td class="tn">${t.total}</td>
+          <td class="tn" style="color:#059669">${t.done}</td>
+          <td class="tn" style="color:#d97706">${t.pending}</td>
+          <td>${t.sla_rate > 0
+            ? `<div class="rbar"><div class="rtrack"><div class="rfill ${rc}" style="width:${t.sla_rate}%"></div></div><span style="font-size:.72rem;font-weight:800">${t.sla_rate}%</span></div>`
+            : '<span style="color:var(--text-3);font-size:.72rem">—</span>'
+          }</td>
+        </tr>`;
       }).join('')
-    : '<tr><td colspan="3" class="empty-box">لا توجد معاملات في هذا النطاق</td></tr>';
+    : '<tr><td colspan="5" class="empty-row">لا توجد معاملات في هذا النطاق</td></tr>';
 }
 
-/* ── ESCALATIONS TAB ─────────────────────────────────────── */
+/* ── REPORTS TAB ─────────────────────────────────────────── */
+function renderReports(d) {
+  const s   = d.summary;
+  const byR = d.byReportType || [];
+  const tot = s.total_reports;
+
+  document.getElementById('rp-mkrow').innerHTML = [
+    { bg:'#dbeafe', c:'#1d4ed8', ic:'file-text',  v: tot,                    l:'إجمالي التقارير الصادرة' },
+    { bg:'#ffe4e6', c:'#9f1239', ic:'gavel',       v: s.legal_violations,     l:'محالة للشؤون القانونية' },
+  ].map(c => `
+    <div class="mkcell">
+      <div class="mki" style="background:${c.bg}">
+        <i data-lucide="${c.ic}" style="width:16px;height:16px;color:${c.c}"></i>
+      </div>
+      <div><div class="mkv">${c.v}</div><div class="mkl">${c.l}</div></div>
+    </div>`).join('');
+
+  document.getElementById('rp-tbody').innerHTML = byR.length
+    ? byR.map(r => {
+        const pct = tot > 0 ? Math.round((r.total / tot) * 100) : 0;
+        return `<tr>
+          <td style="font-weight:800">${r.type}</td>
+          <td class="tn">${r.total}</td>
+          <td>
+            <div class="rbar">
+              <div class="rtrack"><div class="rfill" style="width:${pct}%"></div></div>
+              <span style="font-size:.72rem;font-weight:800">${pct}%</span>
+            </div>
+          </td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="3" class="empty-row">لا توجد تقارير في هذا النطاق</td></tr>';
+
+  // complaints & legal block
+  document.getElementById('sv-complaints').textContent    = s.total_complaints;
+  document.getElementById('sv-legal').textContent         = s.legal_violations;
+  document.getElementById('sv-ministerial').textContent   = s.ministerial_escalations;
+  document.getElementById('sv-escal-total').textContent   = s.total_escalations;
+}
+
+/* ── ESCAL TAB ───────────────────────────────────────────── */
 function renderEscal(d) {
   const s    = d.summary;
   const list = d.escalList || [];
 
-  document.getElementById('e-stats-row').innerHTML = [
-    { bg:'#ffedd5', c:'#c2410c', ic:'trending-up', val:s.total_escalations,       lbl:'إجمالي التصعيدات' },
-    { bg:'#ede9fe', c:'#5b21b6', ic:'landmark',    val:s.ministerial_escalations, lbl:'تصعيدات وزارية'   },
+  document.getElementById('e-mkrow').innerHTML = [
+    { bg:'#ffedd5', c:'#c2410c', ic:'trending-up', v:s.total_escalations,       l:'إجمالي التصعيدات'  },
+    { bg:'#ede9fe', c:'#5b21b6', ic:'landmark',    v:s.ministerial_escalations, l:'تصعيدات وزارية'    },
   ].map(c => `
-    <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:10px">
-      <div style="width:36px;height:36px;background:${c.bg};border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <i data-lucide="${c.ic}" style="width:17px;height:17px;color:${c.c}"></i>
+    <div class="mkcell">
+      <div class="mki" style="background:${c.bg}">
+        <i data-lucide="${c.ic}" style="width:16px;height:16px;color:${c.c}"></i>
       </div>
-      <div>
-        <div style="font-size:1.5rem;font-weight:900;color:var(--text-1)">${c.val}</div>
-        <div style="font-size:0.68rem;font-weight:700;color:var(--text-2)">${c.lbl}</div>
-      </div>
+      <div><div class="mkv">${c.v}</div><div class="mkl">${c.l}</div></div>
     </div>`).join('');
 
-  document.getElementById('escal-tbody').innerHTML = list.length
+  document.getElementById('e-tbody').innerHTML = list.length
     ? list.map(e => {
         const isMin = e.type && e.type.indexOf('وزاري') >= 0;
-        return `
-          <tr>
-            <td style="font-family:monospace;font-size:0.72rem">${e.car_id || '—'}</td>
-            <td style="font-weight:700">${e.unit || '—'}</td>
-            <td><span class="badge ${isMin ? 'badge-ministerial' : 'badge-in-progress'}">${e.type || '—'}</span></td>
-            <td>${e.date}</td>
-          </tr>`;
+        const isLeg = e.type && e.type.indexOf('قانوني') >= 0;
+        const bc    = isMin ? 'b-min' : isLeg ? 'b-legal' : 'b-progress';
+        return `<tr>
+          <td style="font-family:monospace;font-size:.7rem">${e.car_id || '—'}</td>
+          <td style="font-weight:800">${e.unit || '—'}</td>
+          <td><span class="badge ${bc}">${e.type || '—'}</span></td>
+          <td>${e.date}</td>
+        </tr>`;
       }).join('')
-    : '<tr><td colspan="4" class="empty-box">لا توجد تصعيدات في هذا النطاق</td></tr>';
+    : '<tr><td colspan="4" class="empty-row">لا توجد تصعيدات في هذا النطاق</td></tr>';
 }
 
-/* ── TABS ────────────────────────────────────────────────── */
+/* ── TABS / MENU ─────────────────────────────────────────── */
 function switchTab(id, btn) {
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -993,8 +998,6 @@ function switchTab(id, btn) {
   btn.classList.add('active');
   lucide.createIcons();
 }
-
-/* ── MENU / AUTH ─────────────────────────────────────────── */
 function toggleMenu() {
   document.getElementById('side-menu').classList.toggle('open');
   document.getElementById('menu-overlay').classList.toggle('open');
@@ -1005,6 +1008,5 @@ function closeMenu() {
 }
 function logout() { localStorage.clear(); location.href = 'index.html'; }
 </script>
-
 </body>
 </html>
