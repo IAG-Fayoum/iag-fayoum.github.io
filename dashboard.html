@@ -1,402 +1,1009 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0f766e">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="manifest" href="manifest.json">
-    <title>لوحة الإحصائيات | IAG System</title>
-    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <title>لوحة الإحصائيات | IAG System</title>
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <style>
+    /* ── FILTER BAR ─────────────────────────────────────────── */
+    .filter-bar {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 1rem;
+      position: sticky; top: 0; z-index: 40;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .filter-row {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end;
+      max-width: 1300px; margin: 0 auto;
+    }
+    .filter-group {
+      display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 110px;
+    }
+    .filter-group label {
+      font-size: 0.65rem; font-weight: 800; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .filter-input {
+      height: 34px; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0 8px;
+      font-family: 'Cairo', sans-serif; font-size: 0.78rem;
+      color: var(--text-1); background: var(--surface-1);
+      width: 100%; outline: none; transition: border 0.15s;
+    }
+    .filter-input:focus { border-color: var(--primary); }
+    .filter-sep {
+      width: 1px; background: var(--border); align-self: stretch;
+      margin: 2px 4px; flex-shrink: 0;
+    }
+    .filter-actions { display: flex; gap: 6px; align-items: flex-end; flex-shrink: 0; }
+    .btn-apply {
+      height: 34px; padding: 0 14px;
+      background: var(--primary); color: white;
+      border: none; border-radius: var(--radius-sm);
+      font-family: 'Cairo', sans-serif; font-size: 0.8rem; font-weight: 800;
+      cursor: pointer; transition: opacity 0.15s; white-space: nowrap;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .btn-apply:hover { opacity: 0.88; }
+    .btn-reset {
+      height: 34px; padding: 0 10px;
+      background: var(--surface-2); color: var(--text-2);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      font-family: 'Cairo', sans-serif; font-size: 0.78rem; font-weight: 700;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-reset:hover { background: var(--surface-3,#e5e7eb); }
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/theme.css">
+    /* ── KPI GRID ────────────────────────────────────────────── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px; padding: 12px 1rem 0;
+      max-width: 1300px; margin: 0 auto;
+    }
+    @media (min-width: 600px)  { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1024px) { .kpi-grid { grid-template-columns: repeat(6, 1fr); } }
 
-    <style>
-        /* KPI CARDS */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 0 1rem;
-            margin: -3rem auto 1rem;
-            position: relative; z-index: 20;
-            max-width: 1300px;
-        }
-        @media (min-width: 768px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+    .kpi-card {
+      background: white; border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 14px 12px 12px;
+      box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s; cursor: default;
+    }
+    .kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .kpi-card::before {
+      content: ''; position: absolute; top: 0; right: 0;
+      width: 4px; height: 100%; border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    }
+    .kpi-blue::before   { background: #3b82f6; }
+    .kpi-red::before    { background: #dc2626; }
+    .kpi-green::before  { background: #059669; }
+    .kpi-orange::before { background: #f97316; }
+    .kpi-teal::before   { background: #0d9488; }
+    .kpi-indigo::before { background: #6366f1; }
 
-        .kpi-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 1.1rem 1rem;
-            box-shadow: var(--shadow-sm);
-            display: flex; flex-direction: column; gap: 8px;
-            position: relative; overflow: hidden;
-            transition: box-shadow 0.2s, transform 0.2s;
-        }
-        .kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .kpi-card::after {
-            content: ''; position: absolute; bottom: 0; left: 0;
-            width: 100%; height: 3px;
-        }
-        .kpi-top { display: flex; align-items: center; justify-content: space-between; }
-        .kpi-icon {
-            width: 40px; height: 40px; border-radius: var(--radius-sm);
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
-        .kpi-val { font-size: 2rem; font-weight: 900; line-height: 1; }
-        .kpi-lbl { font-size: 0.72rem; font-weight: 700; color: var(--text-2); }
-        .kpi-delta {
-            display: inline-flex; align-items: center; gap: 3px;
-            font-size: 0.7rem; font-weight: 700; padding: 2px 8px;
-            border-radius: 20px;
-        }
-        .delta-up   { background: #d1fae5; color: #065f46; }
-        .delta-down { background: #fee2e2; color: #991b1b; }
-        .delta-same { background: var(--surface-2); color: var(--text-3); }
+    .kpi-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 8px;
+    }
+    .kpi-val { font-size: 1.8rem; font-weight: 900; line-height: 1; color: var(--text-1); }
+    .kpi-lbl { font-size: 0.68rem; font-weight: 700; color: var(--text-2); margin-top: 4px; }
 
-        /* accent bars */
-        .kpi-visits::after    { background: #3b82f6; }
-        .kpi-closure::after   { background: #059669; }
-        .kpi-open::after      { background: #dc2626; }
-        .kpi-escalation::after{ background: #d97706; }
+    /* ── TABS ────────────────────────────────────────────────── */
+    .tabs-wrap {
+      max-width: 1300px; margin: 14px auto 0; padding: 0 1rem;
+    }
+    .tabs-bar {
+      display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none;
+      border-bottom: 2px solid var(--border);
+    }
+    .tabs-bar::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex-shrink: 0; padding: 9px 18px;
+      font-family: 'Cairo', sans-serif; font-size: 0.82rem; font-weight: 700;
+      color: var(--text-3); background: transparent; border: none;
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      cursor: pointer; transition: color 0.15s, border-color 0.15s;
+      display: flex; align-items: center; gap: 6px; white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--text-1); }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-badge {
+      background: var(--surface-2); color: var(--text-3);
+      border-radius: 20px; padding: 1px 7px; font-size: 0.65rem; font-weight: 800;
+    }
+    .tab-btn.active .tab-badge { background: rgba(15,118,110,0.12); color: var(--primary); }
 
-        /* SECTION TITLE */
-        .section-title {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 0.88rem; font-weight: 800; color: var(--text-1);
-            padding: 0 1rem; max-width: 1300px; margin: 1.25rem auto 0.5rem;
-        }
+    .tab-pane { display: none; padding: 14px 0 80px; }
+    .tab-pane.active { display: block; }
 
-        /* CHART CARD */
-        .chart-card {
-            background: white; border: 1px solid var(--border);
-            border-radius: var(--radius-lg); padding: 1.25rem;
-            margin: 0 1rem 1rem; max-width: 1300px;
-            box-shadow: var(--shadow-sm);
-        }
-        @media (min-width: 1024px) { .chart-card { margin: 0 auto 1rem; } }
-        .chart-title {
-            font-size: 0.82rem; font-weight: 800; color: var(--text-2);
-            margin-bottom: 1rem; display: flex; align-items: center; gap: 6px;
-        }
+    /* ── SECTION HEADER ──────────────────────────────────────── */
+    .sec-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px; padding: 0 1rem;
+      max-width: 1300px; margin-left: auto; margin-right: auto;
+    }
+    .sec-title {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.85rem; font-weight: 800; color: var(--text-1);
+    }
+    .sec-sub { font-size: 0.72rem; color: var(--text-3); font-weight: 600; }
 
-        /* BAR CHART */
-        .bar-chart { display: flex; flex-direction: column; gap: 10px; }
-        .bar-row { display: flex; align-items: center; gap: 10px; }
-        .bar-label {
-            width: 110px; flex-shrink: 0;
-            font-size: 0.72rem; font-weight: 700; color: var(--text-2);
-            text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .bar-track {
-            flex: 1; height: 22px; background: var(--surface-2);
-            border-radius: 6px; overflow: hidden; position: relative;
-        }
-        .bar-fill {
-            height: 100%; border-radius: 6px;
-            transition: width 0.7s cubic-bezier(0.4,0,0.2,1);
-            display: flex; align-items: center; justify-content: flex-end;
-            padding-right: 8px;
-        }
-        .bar-fill-val {
-            font-size: 0.65rem; font-weight: 800; color: white;
-            white-space: nowrap;
-        }
-        .bar-val {
-            width: 36px; flex-shrink: 0;
-            font-size: 0.75rem; font-weight: 800; color: var(--text-1);
-            text-align: left;
-        }
+    /* ── CARDS WRAPPER ───────────────────────────────────────── */
+    .card {
+      background: white; border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.1rem;
+      box-shadow: var(--shadow-sm); margin: 0 1rem 12px;
+      max-width: 1300px;
+    }
+    @media (min-width: 1332px) { .card { margin-left: auto; margin-right: auto; } }
 
-        /* COMPARISON TABLE */
-        .compare-grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 12px; margin: 0 1rem 1rem; max-width: 1300px;
-        }
-        @media (min-width: 1024px) { .compare-grid { margin: 0 auto 1rem; } }
-        @media (max-width: 640px)  { .compare-grid { grid-template-columns: 1fr; } }
+    /* ── BAR CHART ───────────────────────────────────────────── */
+    .bar-list { display: flex; flex-direction: column; gap: 8px; }
+    .bar-row { display: flex; align-items: center; gap: 8px; }
+    .bar-unit {
+      width: 130px; flex-shrink: 0; font-size: 0.7rem; font-weight: 700;
+      color: var(--text-2); text-align: right; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .bar-track {
+      flex: 1; height: 20px; background: var(--surface-2);
+      border-radius: 5px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; border-radius: 5px;
+      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+      display: flex; align-items: center; justify-content: flex-end;
+      padding-left: 7px;
+    }
+    .bar-fill span { font-size: 0.62rem; font-weight: 800; color: white; white-space: nowrap; }
+    .bar-num {
+      width: 30px; flex-shrink: 0;
+      font-size: 0.72rem; font-weight: 800; color: var(--text-1); text-align: left;
+    }
 
-        .compare-card {
-            background: white; border: 1px solid var(--border);
-            border-radius: var(--radius-lg); padding: 1rem;
-            box-shadow: var(--shadow-sm);
-        }
-        .compare-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 7px 0; border-bottom: 1px solid var(--border);
-            font-size: 0.8rem;
-        }
-        .compare-row:last-child { border-bottom: none; }
-        .compare-lbl { font-weight: 700; color: var(--text-2); }
-        .compare-vals { display: flex; gap: 12px; align-items: center; }
-        .cv-curr { font-weight: 900; color: var(--text-1); }
-        .cv-prev { font-size: 0.72rem; color: var(--text-3); }
+    /* ── DATA TABLE ──────────────────────────────────────────── */
+    .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.75rem; font-family: 'Cairo', sans-serif;
+    }
+    th {
+      background: var(--surface-2); padding: 8px 10px;
+      font-weight: 800; color: var(--text-2); white-space: nowrap;
+      text-align: right; border-bottom: 2px solid var(--border);
+      position: sticky; top: 0;
+    }
+    td {
+      padding: 7px 10px; border-bottom: 1px solid var(--border);
+      color: var(--text-1); white-space: nowrap; text-align: right;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface-1); }
+    .td-num { font-weight: 800; }
+    .td-rate { font-weight: 800; }
 
-        /* LOADER */
-        .dash-loader {
-            text-align: center; padding: 3rem; color: var(--text-3);
-            font-size: 0.88rem; font-weight: 700;
-        }
+    /* ── STATUS BADGES ───────────────────────────────────────── */
+    .badge {
+      display: inline-block; padding: 2px 9px; border-radius: 20px;
+      font-size: 0.65rem; font-weight: 800;
+    }
+    .badge-open   { background: #fee2e2; color: #991b1b; }
+    .badge-closed { background: #d1fae5; color: #065f46; }
+    .badge-in-progress { background: #fef3c7; color: #92400e; }
+    .badge-ministerial { background: #ede9fe; color: #5b21b6; }
+    .badge-other { background: var(--surface-2); color: var(--text-2); }
 
-        .hidden { display: none !important; }
-    </style>
+    /* ── SEVERITY ────────────────────────────────────────────── */
+    .sev-high   { color: #dc2626; font-weight: 800; }
+    .sev-medium { color: #d97706; font-weight: 800; }
+    .sev-low    { color: #059669; font-weight: 700; }
+
+    /* ── RATE CELL ───────────────────────────────────────────── */
+    .rate-bar {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .rate-track {
+      flex: 1; height: 6px; background: var(--surface-2);
+      border-radius: 3px; overflow: hidden; min-width: 50px;
+    }
+    .rate-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, #059669, #0d9488);
+    }
+    .rate-fill.danger { background: linear-gradient(90deg, #ef4444, #f97316); }
+
+    /* ── OVERVIEW GRID ───────────────────────────────────────── */
+    .overview-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 12px; padding: 0 1rem;
+      max-width: 1300px; margin: 0 auto;
+    }
+    @media (min-width: 900px) { .overview-grid { grid-template-columns: 3fr 2fr; } }
+
+    /* ── SUMMARY STATS ───────────────────────────────────────── */
+    .stat-list { display: flex; flex-direction: column; gap: 1px; }
+    .stat-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 0.78rem;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-lbl { color: var(--text-2); font-weight: 700; }
+    .stat-val { font-weight: 900; color: var(--text-1); }
+
+    /* ── LOADER / EMPTY ──────────────────────────────────────── */
+    .loader-box {
+      text-align: center; padding: 3rem 1rem;
+      color: var(--text-3); font-size: 0.85rem; font-weight: 700;
+    }
+    .empty-box {
+      text-align: center; padding: 2.5rem 1rem;
+      color: var(--text-3); font-size: 0.82rem; font-weight: 700;
+    }
+
+    /* ── FILTER TAGS ──────────────────────────────────────────── */
+    .active-filters {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 6px 1rem 0; max-width: 1300px; margin: 0 auto;
+    }
+    .filter-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(15,118,110,0.08); color: var(--primary);
+      border: 1px solid rgba(15,118,110,0.2);
+      border-radius: 20px; padding: 3px 10px;
+      font-size: 0.68rem; font-weight: 800;
+    }
+    .filter-tag button {
+      background: none; border: none; cursor: pointer;
+      color: var(--primary); font-size: 0.75rem; padding: 0; line-height: 1;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 0.8s linear infinite; }
+    .hidden { display: none !important; }
+  </style>
 </head>
 <body>
 
 <!-- SIDE MENU -->
 <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
 <aside class="side-menu" id="side-menu">
-    <div class="side-menu-header">
-        <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:44px;height:44px;background:rgba(255,255,255,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center">
-                <i data-lucide="layout-dashboard" style="width:22px;height:22px;color:white"></i>
-            </div>
-            <div>
-                <div style="font-weight:800;font-size:0.9rem;color:white" id="menu-user">—</div>
-                <div style="font-size:0.72rem;color:#99f6e4" id="menu-role"></div>
-            </div>
-        </div>
+  <div class="side-menu-header">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:44px;height:44px;background:rgba(255,255,255,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center">
+        <i data-lucide="layout-dashboard" style="width:22px;height:22px;color:white"></i>
+      </div>
+      <div>
+        <div style="font-weight:800;font-size:0.9rem;color:white" id="menu-user">—</div>
+        <div style="font-size:0.72rem;color:#99f6e4" id="menu-role"></div>
+      </div>
     </div>
-    <div class="side-menu-body">
-        <nav id="side-nav"></nav>
-    </div>
-    <div class="menu-footer">
-        <button onclick="logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);gap:8px;justify-content:center">
-            <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
-        </button>
-    </div>
+  </div>
+  <div class="side-menu-body">
+    <nav id="side-nav"></nav>
+  </div>
+  <div class="menu-footer">
+    <button onclick="logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);gap:8px;justify-content:center">
+      <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
+    </button>
+  </div>
 </aside>
 
 <!-- HEADER -->
 <header class="page-header">
-    <div class="header-top">
-        <button class="header-btn" onclick="toggleMenu()">
-            <i data-lucide="menu" style="width:20px;height:20px"></i>
-        </button>
-        <div class="header-center">
-            <div class="header-badge">
-                <i data-lucide="layout-dashboard" style="width:12px;height:12px"></i>
-                الإحصائيات
-            </div>
-            <h1 class="header-title">إدارة المراجعة الداخلية والحوكمة</h1>
-            <p class="header-sub">Internal Audit & Governance</p>
-            <p class="header-user" id="header-name"></p>
-        </div>
-        <button class="header-btn" onclick="window.location.href='notifications.html'">
-            <i data-lucide="bell" style="width:20px;height:20px"></i>
-            <span class="notif-dot"></span>
-        </button>
+  <div class="header-top">
+    <button class="header-btn" onclick="toggleMenu()">
+      <i data-lucide="menu" style="width:20px;height:20px"></i>
+    </button>
+    <div class="header-center">
+      <div class="header-badge">
+        <i data-lucide="layout-dashboard" style="width:12px;height:12px"></i>
+        الإحصائيات
+      </div>
+      <h1 class="header-title">إدارة المراجعة الداخلية والحوكمة</h1>
+      <p class="header-sub">Internal Audit &amp; Governance</p>
+      <p class="header-user" id="header-name"></p>
     </div>
+    <button class="header-btn" onclick="window.location.href='notifications.html'">
+      <i data-lucide="bell" style="width:20px;height:20px"></i>
+    </button>
+  </div>
 </header>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-row">
+
+    <!-- Quick: Year + Month -->
+    <div class="filter-group" style="min-width:80px;max-width:90px">
+      <label>السنة</label>
+      <select class="filter-input" id="f-year"></select>
+    </div>
+    <div class="filter-group" style="min-width:100px;max-width:120px">
+      <label>الشهر</label>
+      <select class="filter-input" id="f-month">
+        <option value="">-- كل الشهور --</option>
+        <option value="1">يناير</option><option value="2">فبراير</option>
+        <option value="3">مارس</option><option value="4">أبريل</option>
+        <option value="5">مايو</option><option value="6">يونيو</option>
+        <option value="7">يوليو</option><option value="8">أغسطس</option>
+        <option value="9">سبتمبر</option><option value="10">أكتوبر</option>
+        <option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+      </select>
+    </div>
+
+    <div class="filter-sep"></div>
+
+    <!-- Custom date range -->
+    <div class="filter-group" style="min-width:120px">
+      <label>من تاريخ</label>
+      <input type="date" class="filter-input" id="f-from">
+    </div>
+    <div class="filter-group" style="min-width:120px">
+      <label>إلى تاريخ</label>
+      <input type="date" class="filter-input" id="f-to">
+    </div>
+
+    <div class="filter-sep"></div>
+
+    <!-- Unit + Employee -->
+    <div class="filter-group" style="min-width:140px">
+      <label>الجهة / الوحدة</label>
+      <select class="filter-input" id="f-unit">
+        <option value="">-- كل الجهات --</option>
+      </select>
+    </div>
+    <div class="filter-group" style="min-width:140px">
+      <label>الموظف المكلف</label>
+      <select class="filter-input" id="f-emp">
+        <option value="">-- كل الموظفين --</option>
+      </select>
+    </div>
+
+    <!-- Buttons -->
+    <div class="filter-actions">
+      <button class="btn-apply" onclick="applyFilters()">
+        <i data-lucide="search" style="width:13px;height:13px"></i>
+        تطبيق
+      </button>
+      <button class="btn-reset" onclick="resetFilters()">إعادة تعيين</button>
+    </div>
+  </div>
+
+  <!-- Active filter tags -->
+  <div class="active-filters" id="active-tags"></div>
+</div>
 
 <!-- KPI CARDS -->
 <div class="kpi-grid" id="kpi-grid">
-    <div class="dash-loader" style="grid-column:1/-1">
-        <i data-lucide="loader-2" style="width:28px;height:28px;display:block;margin:0 auto 8px;opacity:0.4;animation:spin 0.8s linear infinite"></i>
-        جاري تحميل البيانات...
-    </div>
+  <div class="loader-box" style="grid-column:1/-1">
+    <i data-lucide="loader-2" style="width:30px;height:30px;display:block;margin:0 auto 10px;opacity:0.3" class="spin"></i>
+    جاري تحميل البيانات...
+  </div>
 </div>
 
-<!-- BAR CHART -->
-<div class="section-title hidden" id="sec-chart">
-    <i data-lucide="bar-chart-2" style="width:18px;height:18px;color:var(--primary)"></i>
-    نظرة عامة — الشهر الحالي
-</div>
-<div class="chart-card hidden" id="chart-card">
-    <div class="chart-title">
-        <i data-lucide="activity" style="width:14px;height:14px"></i>
-        مقارنة المؤشرات
-    </div>
-    <div class="bar-chart" id="bar-chart"></div>
-</div>
+<!-- TABS -->
+<div class="tabs-wrap" id="tabs-wrap" style="display:none">
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('overview', this)">
+      <i data-lucide="layout-grid" style="width:14px;height:14px"></i>
+      نظرة عامة
+    </button>
+    <button class="tab-btn" onclick="switchTab('findings', this)">
+      <i data-lucide="shield-alert" style="width:14px;height:14px"></i>
+      المخالفات
+      <span class="tab-badge" id="tab-badge-findings">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('inout', this)">
+      <i data-lucide="inbox" style="width:14px;height:14px"></i>
+      المعاملات
+      <span class="tab-badge" id="tab-badge-inout">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('escal', this)">
+      <i data-lucide="trending-up" style="width:14px;height:14px"></i>
+      التصعيدات
+      <span class="tab-badge" id="tab-badge-escal">0</span>
+    </button>
+  </div>
 
-<!-- MONTH COMPARISON -->
-<div class="section-title hidden" id="sec-compare">
-    <i data-lucide="git-compare" style="width:18px;height:18px;color:var(--accent)"></i>
-    مقارنة هذا الشهر بالشهر السابق
-</div>
-<div class="compare-grid hidden" id="compare-grid">
-    <div class="compare-card" id="compare-left"></div>
-    <div class="compare-card" id="compare-right"></div>
-</div>
+  <!-- ── TAB: OVERVIEW ──────────────────────────────────────── -->
+  <div class="tab-pane active" id="tab-overview">
+
+    <div class="overview-grid" style="margin-top:14px">
+
+      <!-- Bar chart: top units by findings -->
+      <div class="card" style="margin:0">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px">
+          <i data-lucide="bar-chart-2" style="width:15px;height:15px;color:var(--primary)"></i>
+          <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">المخالفات حسب الجهة</span>
+          <span style="font-size:0.68rem;color:var(--text-3);margin-right:auto" id="chart-period-lbl"></span>
+        </div>
+        <div class="bar-list" id="unit-bar-chart">
+          <div class="empty-box">لا توجد بيانات</div>
+        </div>
+      </div>
+
+      <!-- Summary stats panel -->
+      <div class="card" style="margin:0">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px">
+          <i data-lucide="activity" style="width:15px;height:15px;color:var(--primary)"></i>
+          <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">ملخص المؤشرات</span>
+        </div>
+        <div class="stat-list" id="summary-stats"></div>
+      </div>
+
+    </div>
+
+    <!-- Per-unit overview table -->
+    <div style="margin-top:12px;padding:0 1rem;max-width:1300px;margin-left:auto;margin-right:auto">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+        <i data-lucide="table-2" style="width:14px;height:14px;color:var(--primary)"></i>
+        <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">تفصيل حسب الجهة</span>
+      </div>
+      <div class="card" style="margin:0;padding:0;overflow:hidden">
+        <div class="tbl-wrap">
+          <table id="overview-table">
+            <thead>
+              <tr>
+                <th>الجهة / الوحدة</th>
+                <th>المخالفات</th>
+                <th>مغلقة</th>
+                <th>مفتوحة</th>
+                <th style="min-width:130px">نسبة الإغلاق</th>
+                <th>المعاملات</th>
+                <th>SLA %</th>
+              </tr>
+            </thead>
+            <tbody id="overview-tbody">
+              <tr><td colspan="7" class="empty-box">لا توجد بيانات</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: FINDINGS ─────────────────────────────────────── -->
+  <div class="tab-pane" id="tab-findings">
+    <div style="margin-top:14px;padding:0 1rem;max-width:1300px;margin-left:auto;margin-right:auto">
+
+      <!-- findings stats row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px" id="f-stats-row"></div>
+
+      <!-- findings table -->
+      <div class="card" style="margin:0;padding:0;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px">
+          <div style="display:flex;align-items:center;gap:7px">
+            <i data-lucide="list" style="width:14px;height:14px;color:var(--primary)"></i>
+            <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">تفاصيل المخالفات</span>
+          </div>
+          <span style="font-size:0.68rem;color:var(--text-3)" id="findings-count-lbl"></span>
+        </div>
+        <div class="tbl-wrap">
+          <table id="findings-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>الجهة</th>
+                <th>التاريخ</th>
+                <th>القسم / المجال</th>
+                <th>الكود</th>
+                <th>الخطورة</th>
+                <th>الحالة</th>
+                <th>الموظف</th>
+              </tr>
+            </thead>
+            <tbody id="findings-tbody">
+              <tr><td colspan="8" class="empty-box">لا توجد بيانات</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: INOUT ─────────────────────────────────────────── -->
+  <div class="tab-pane" id="tab-inout">
+    <div style="margin-top:14px;padding:0 1rem;max-width:1300px;margin-left:auto;margin-right:auto">
+
+      <!-- inout stats row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px" id="io-stats-row"></div>
+
+      <!-- inout by unit table -->
+      <div class="card" style="margin:0;padding:0;overflow:hidden">
+        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px">
+          <i data-lucide="building-2" style="width:14px;height:14px;color:var(--primary)"></i>
+          <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">المعاملات حسب الجهة</span>
+        </div>
+        <div class="tbl-wrap">
+          <table id="inout-table">
+            <thead>
+              <tr>
+                <th>الجهة / الوحدة</th>
+                <th>إجمالي المعاملات</th>
+                <th>نسبة الالتزام بـ SLA</th>
+              </tr>
+            </thead>
+            <tbody id="inout-tbody">
+              <tr><td colspan="3" class="empty-box">لا توجد بيانات</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: ESCALATIONS ──────────────────────────────────── -->
+  <div class="tab-pane" id="tab-escal">
+    <div style="margin-top:14px;padding:0 1rem;max-width:1300px;margin-left:auto;margin-right:auto">
+
+      <!-- escal stats -->
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px" id="e-stats-row"></div>
+
+      <!-- escal table -->
+      <div class="card" style="margin:0;padding:0;overflow:hidden">
+        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px">
+          <i data-lucide="alert-triangle" style="width:14px;height:14px;color:#d97706"></i>
+          <span style="font-size:0.82rem;font-weight:800;color:var(--text-1)">سجل التصعيدات</span>
+        </div>
+        <div class="tbl-wrap">
+          <table id="escal-table">
+            <thead>
+              <tr>
+                <th>رقم CAR</th>
+                <th>الجهة</th>
+                <th>نوع التصعيد</th>
+                <th>التاريخ</th>
+              </tr>
+            </thead>
+            <tbody id="escal-tbody">
+              <tr><td colspan="4" class="empty-box">لا توجد تصعيدات</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tabs-wrap -->
 
 <nav class="bottom-nav hidden" id="bottom-nav"></nav>
 
+<!-- SCRIPTS -->
 <script src="assets/js/config.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/nav.js"></script>
 <script>
-    lucide.createIcons();
+lucide.createIcons();
 
-    document.addEventListener('DOMContentLoaded', async () => {
-        const userStr = localStorage.getItem('iag_user');
-        if (!userStr) { window.location.href = 'index.html'; return; }
+/* ── STATE ───────────────────────────────────────────────── */
+let gData    = null;
+let gLoading = false;
 
-        const user = JSON.parse(userStr);
-        if (user.role !== 'مدير' && user.role !== 'Admin') {
-            window.location.href = 'index.html';
-            return;
-        }
+const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو',
+                   'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 
-        document.getElementById('header-name').textContent = user.name || '';
-        await loadStats();
+/* ── INIT ────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  const userStr = localStorage.getItem('iag_user');
+  if (!userStr) { location.href = 'index.html'; return; }
+  const user = JSON.parse(userStr);
+  if (user.role !== 'مدير' && user.role !== 'Admin') { location.href = 'index.html'; return; }
+  document.getElementById('header-name').textContent = user.name || '';
+
+  initYearDropdown();
+  setDefaultFilters();
+  applyFilters();
+});
+
+function initYearDropdown() {
+  const sel = document.getElementById('f-year');
+  const now = new Date();
+  for (let y = now.getFullYear() + 1; y >= 2023; y--) {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = y;
+    if (y === now.getFullYear()) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+function setDefaultFilters() {
+  const now = new Date();
+  document.getElementById('f-month').value = now.getMonth() + 1;
+  syncDateFromYearMonth();
+}
+
+/* ── FILTER HELPERS ──────────────────────────────────────── */
+function syncDateFromYearMonth() {
+  const y = parseInt(document.getElementById('f-year').value);
+  const m = parseInt(document.getElementById('f-month').value);
+  if (!y || !m) return;
+  const from = new Date(y, m-1, 1);
+  const to   = new Date(y, m,   0);
+  document.getElementById('f-from').value = fmt(from);
+  document.getElementById('f-to').value   = fmt(to);
+}
+
+function fmt(d) {
+  return d.getFullYear() + '-'
+    + String(d.getMonth()+1).padStart(2,'0') + '-'
+    + String(d.getDate()).padStart(2,'0');
+}
+
+document.getElementById('f-year').addEventListener('change', syncDateFromYearMonth);
+document.getElementById('f-month').addEventListener('change', syncDateFromYearMonth);
+
+function getFilters() {
+  return {
+    dateFrom: document.getElementById('f-from').value,
+    dateTo:   document.getElementById('f-to').value,
+    unit:     document.getElementById('f-unit').value,
+    employee: document.getElementById('f-emp').value
+  };
+}
+
+function resetFilters() {
+  const now = new Date();
+  document.getElementById('f-year').value  = now.getFullYear();
+  document.getElementById('f-month').value = now.getMonth() + 1;
+  document.getElementById('f-unit').value  = '';
+  document.getElementById('f-emp').value   = '';
+  syncDateFromYearMonth();
+  applyFilters();
+}
+
+function renderActiveTags() {
+  const f = getFilters();
+  const tags = [];
+  if (f.dateFrom && f.dateTo)
+    tags.push({ lbl: `${f.dateFrom} → ${f.dateTo}`, key: 'date' });
+  if (f.unit)
+    tags.push({ lbl: f.unit, key: 'unit' });
+  if (f.employee)
+    tags.push({ lbl: f.employee, key: 'emp' });
+  const wrap = document.getElementById('active-tags');
+  wrap.innerHTML = tags.map(t => `
+    <span class="filter-tag">
+      <i data-lucide="filter" style="width:10px;height:10px"></i>
+      ${t.lbl}
+    </span>`).join('');
+  lucide.createIcons();
+}
+
+/* ── LOAD DATA ───────────────────────────────────────────── */
+async function applyFilters() {
+  if (gLoading) return;
+  gLoading = true;
+  renderActiveTags();
+
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="loader-box" style="grid-column:1/-1">
+      <i data-lucide="loader-2" style="width:28px;height:28px;display:block;margin:0 auto 10px;opacity:0.3" class="spin"></i>
+      جاري تحميل البيانات...
+    </div>`;
+  document.getElementById('tabs-wrap').style.display = 'none';
+  lucide.createIcons();
+
+  try {
+    const f = getFilters();
+    const payload = { action: 'getDashboardStats' };
+    if (f.dateFrom && f.dateTo) {
+      payload.dateFrom = f.dateFrom;
+      payload.dateTo   = f.dateTo;
+    }
+    if (f.unit)     payload.unit     = f.unit;
+    if (f.employee) payload.employee = f.employee;
+
+    const res  = await fetch(CONFIG.API_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
     });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'فشل التحميل');
 
-    function toggleMenu() {
-        document.getElementById('side-menu').classList.toggle('open');
-        document.getElementById('menu-overlay').classList.toggle('open');
-    }
-    function closeMenu() {
-        document.getElementById('side-menu').classList.remove('open');
-        document.getElementById('menu-overlay').classList.remove('open');
-    }
-    function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+    gData = json.data;
+    renderAll(gData);
+    updateDropdowns(gData.unitList || [], gData.employeeList || []);
+  } catch (e) {
+    document.getElementById('kpi-grid').innerHTML = `
+      <div class="loader-box" style="grid-column:1/-1;color:var(--danger)">
+        <i data-lucide="alert-circle" style="width:28px;height:28px;display:block;margin:0 auto 10px"></i>
+        ⚠️ ${e.message}
+      </div>`;
+    lucide.createIcons();
+  } finally {
+    gLoading = false;
+  }
+}
 
-    async function loadStats() {
-        try {
-            const res  = await fetch(CONFIG.API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'getDashboardStats' })
-            });
-            const data = await res.json();
-            if (!data.success) throw new Error(data.error || 'فشل التحميل');
-            render(data.current, data.previous);
-        } catch (e) {
-            document.getElementById('kpi-grid').innerHTML =
-                '<div class="dash-loader" style="grid-column:1/-1;color:var(--danger)">⚠️ ' + e.message + '</div>';
-        }
-    }
+function updateDropdowns(units, employees) {
+  const fUnit = document.getElementById('f-unit');
+  const fEmp  = document.getElementById('f-emp');
+  const curUnit = fUnit.value, curEmp = fEmp.value;
 
-    function delta(curr, prev, higherIsBetter = true) {
-        if (!prev || prev === 0) return { cls: 'delta-same', icon: '—', pct: '' };
-        const diff = ((curr - prev) / prev) * 100;
-        const abs  = Math.abs(diff).toFixed(0);
-        if (Math.abs(diff) < 1) return { cls: 'delta-same', icon: '→', pct: abs + '%' };
-        const up = diff > 0;
-        const good = higherIsBetter ? up : !up;
-        return {
-            cls:  good ? 'delta-up' : 'delta-down',
-            icon: up ? '↑' : '↓',
-            pct:  abs + '%'
-        };
-    }
+  fUnit.innerHTML = '<option value="">-- كل الجهات --</option>';
+  units.forEach(u => {
+    const o = document.createElement('option');
+    o.value = u; o.textContent = u;
+    if (u === curUnit) o.selected = true;
+    fUnit.appendChild(o);
+  });
 
-    function render(cur, prev) {
-        // ── KPI CARDS ──
-        const kpis = [
-            {
-                id: 'visits', cls: 'kpi-visits',
-                icon: 'map-pin', iconBg: '#dbeafe', iconColor: '#1d4ed8',
-                val: cur.total_visits,
-                lbl: 'الزيارات الميدانية',
-                d: delta(cur.total_visits, prev.total_visits, true)
-            },
-            {
-                id: 'closure', cls: 'kpi-closure',
-                icon: 'check-circle-2', iconBg: '#d1fae5', iconColor: '#065f46',
-                val: cur.closure_rate + '%',
-                lbl: 'نسبة الإغلاق',
-                d: delta(cur.closure_rate, prev.closure_rate, true)
-            },
-            {
-                id: 'open', cls: 'kpi-open',
-                icon: 'shield-alert', iconBg: '#fee2e2', iconColor: '#991b1b',
-                val: cur.open_findings,
-                lbl: 'مخالفات مفتوحة',
-                d: delta(cur.open_findings, prev.open_findings, false)
-            },
-            {
-                id: 'escalation', cls: 'kpi-escalation',
-                icon: 'trending-up', iconBg: '#fef3c7', iconColor: '#92400e',
-                val: cur.total_escalations,
-                lbl: 'التصعيدات',
-                d: delta(cur.total_escalations, prev.total_escalations, false)
-            }
-        ];
+  fEmp.innerHTML = '<option value="">-- كل الموظفين --</option>';
+  employees.forEach(e => {
+    const o = document.createElement('option');
+    o.value = e; o.textContent = e;
+    if (e === curEmp) o.selected = true;
+    fEmp.appendChild(o);
+  });
+}
 
-        document.getElementById('kpi-grid').innerHTML = kpis.map(k => `
-            <div class="kpi-card ${k.cls}">
-                <div class="kpi-top">
-                    <div class="kpi-icon" style="background:${k.iconBg}">
-                        <i data-lucide="${k.icon}" style="width:20px;height:20px;color:${k.iconColor}"></i>
-                    </div>
-                    <span class="kpi-delta ${k.d.cls}">${k.d.icon} ${k.d.pct}</span>
-                </div>
-                <div class="kpi-val">${k.val}</div>
-                <div class="kpi-lbl">${k.lbl}</div>
+/* ── RENDER ALL ──────────────────────────────────────────── */
+function renderAll(d) {
+  const s = d.summary;
+  renderKPIs(s);
+  renderOverview(d);
+  renderFindings(d);
+  renderInout(d);
+  renderEscal(d);
+
+  // update tab badges
+  document.getElementById('tab-badge-findings').textContent = s.total_findings;
+  document.getElementById('tab-badge-inout').textContent    = s.total_inout;
+  document.getElementById('tab-badge-escal').textContent    = s.total_escalations;
+
+  document.getElementById('tabs-wrap').style.display = '';
+  lucide.createIcons();
+}
+
+/* ── KPI CARDS ───────────────────────────────────────────── */
+function renderKPIs(s) {
+  const cards = [
+    { cls:'kpi-blue',   bg:'#dbeafe', ic:'map-pin',        color:'#1d4ed8', val:s.total_visits,          lbl:'الزيارات الميدانية' },
+    { cls:'kpi-red',    bg:'#fee2e2', ic:'shield-alert',   color:'#991b1b', val:s.total_findings,         lbl:'إجمالي المخالفات'  },
+    { cls:'kpi-green',  bg:'#d1fae5', ic:'check-circle-2', color:'#065f46', val:s.closed_findings,        lbl:'مخالفات مغلقة'     },
+    { cls:'kpi-orange', bg:'#ffedd5', ic:'alert-circle',   color:'#c2410c', val:s.open_findings,          lbl:'مخالفات مفتوحة'    },
+    { cls:'kpi-teal',   bg:'#ccfbf1', ic:'pie-chart',      color:'#0f766e', val:s.closure_rate + '%',     lbl:'نسبة الإغلاق'      },
+    { cls:'kpi-indigo', bg:'#e0e7ff', ic:'inbox',          color:'#4338ca', val:s.total_inout,            lbl:'المعاملات'          },
+  ];
+  document.getElementById('kpi-grid').innerHTML = cards.map(c => `
+    <div class="kpi-card ${c.cls}">
+      <div class="kpi-icon" style="background:${c.bg}">
+        <i data-lucide="${c.ic}" style="width:18px;height:18px;color:${c.color}"></i>
+      </div>
+      <div class="kpi-val">${c.val}</div>
+      <div class="kpi-lbl">${c.lbl}</div>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+/* ── OVERVIEW TAB ────────────────────────────────────────── */
+function renderOverview(d) {
+  const s   = d.summary;
+  const by  = d.byUnit || [];
+  const f   = getFilters();
+
+  // period label
+  let pLbl = '';
+  if (f.dateFrom && f.dateTo) pLbl = `${f.dateFrom} → ${f.dateTo}`;
+  document.getElementById('chart-period-lbl').textContent = pLbl;
+
+  // bar chart (top 10 by findings)
+  const top10  = by.slice(0, 10);
+  const maxVal = Math.max(...top10.map(u => u.total_findings), 1);
+  document.getElementById('unit-bar-chart').innerHTML = top10.length
+    ? top10.map(u => {
+        const pct = Math.max((u.total_findings / maxVal) * 100, u.total_findings > 0 ? 4 : 0).toFixed(1);
+        return `
+          <div class="bar-row">
+            <div class="bar-unit" title="${u.unit_name}">${u.unit_name || '—'}</div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#3b82f6,#0d9488)">
+                ${u.total_findings > 0 ? '<span>' + u.total_findings + '</span>' : ''}
+              </div>
             </div>
-        `).join('');
+            <div class="bar-num">${u.total_findings}</div>
+          </div>`;
+      }).join('')
+    : '<div class="empty-box">لا توجد بيانات</div>';
 
-        // ── BAR CHART ──
-        const bars = [
-            { lbl: 'إجمالي الزيارات',   val: cur.total_visits,      color: '#3b82f6' },
-            { lbl: 'إجمالي المخالفات',  val: cur.total_findings,    color: '#dc2626' },
-            { lbl: 'مخالفات مغلقة',     val: cur.closed_findings,   color: '#059669' },
-            { lbl: 'مخالفات مفتوحة',    val: cur.open_findings,     color: '#f97316' },
-            { lbl: 'التصعيدات',         val: cur.total_escalations, color: '#d97706' },
-            { lbl: 'الشكاوى',           val: cur.total_complaints,  color: '#8b5cf6' },
-            { lbl: 'المعاملات',         val: cur.total_inout,       color: '#0891b2' },
-        ];
-        const maxVal = Math.max(...bars.map(b => b.val), 1);
+  // summary stats
+  const stats = [
+    { lbl:'إجمالي الزيارات الميدانية',    val: s.total_visits },
+    { lbl:'إجمالي المخالفات',             val: s.total_findings },
+    { lbl:'مخالفات مغلقة',                val: s.closed_findings },
+    { lbl:'مخالفات مفتوحة',               val: s.open_findings },
+    { lbl:'نسبة الإغلاق',                 val: s.closure_rate + '%' },
+    { lbl:'متوسط أيام الإغلاق',           val: s.avg_closure_days + ' يوم' },
+    { lbl:'إجمالي المعاملات الواردة',     val: s.total_inout },
+    { lbl:'التزام SLA',                   val: s.sla_compliance_rate + '%' },
+    { lbl:'التصعيدات الإجمالية',          val: s.total_escalations },
+    { lbl:'التصعيدات الوزارية',           val: s.ministerial_escalations },
+    { lbl:'الشكاوى',                      val: s.total_complaints },
+  ];
+  document.getElementById('summary-stats').innerHTML = stats.map(r =>
+    `<div class="stat-row">
+       <span class="stat-lbl">${r.lbl}</span>
+       <span class="stat-val">${r.val}</span>
+     </div>`
+  ).join('');
 
-        document.getElementById('bar-chart').innerHTML = bars.map(b => {
-            const pct = Math.max((b.val / maxVal) * 100, b.val > 0 ? 4 : 0).toFixed(1);
-            return `
-            <div class="bar-row">
-                <div class="bar-label">${b.lbl}</div>
-                <div class="bar-track">
-                    <div class="bar-fill" style="width:${pct}%;background:${b.color}">
-                        ${b.val > 0 ? '<span class="bar-fill-val">' + b.val + '</span>' : ''}
-                    </div>
+  // overview table
+  document.getElementById('overview-tbody').innerHTML = by.length
+    ? by.map(u => {
+        const rateClass = u.closure_rate >= 70 ? '' : 'danger';
+        return `
+          <tr>
+            <td style="font-weight:800">${u.unit_name || '—'}</td>
+            <td class="td-num">${u.total_findings}</td>
+            <td class="td-num" style="color:#059669">${u.closed_findings}</td>
+            <td class="td-num" style="color:#dc2626">${u.open_findings}</td>
+            <td>
+              <div class="rate-bar">
+                <div class="rate-track">
+                  <div class="rate-fill ${rateClass}" style="width:${u.closure_rate}%"></div>
                 </div>
-                <div class="bar-val">${b.val}</div>
-            </div>`;
-        }).join('');
+                <span class="td-rate" style="font-size:0.72rem">${u.closure_rate}%</span>
+              </div>
+            </td>
+            <td class="td-num">${u.total_inout}</td>
+            <td class="td-rate">${u.sla_rate > 0 ? u.sla_rate + '%' : '—'}</td>
+          </tr>`;
+      }).join('')
+    : '<tr><td colspan="7" class="empty-box">لا توجد بيانات</td></tr>';
+}
 
-        // ── MONTH COMPARISON ──
-        const compareItems = [
-            { lbl: 'الزيارات',         curr: cur.total_visits,          prev: prev.total_visits },
-            { lbl: 'المخالفات',        curr: cur.total_findings,         prev: prev.total_findings },
-            { lbl: 'المغلقة',          curr: cur.closed_findings,        prev: prev.closed_findings },
-            { lbl: 'نسبة الإغلاق',    curr: cur.closure_rate + '%',     prev: prev.closure_rate + '%', raw: false },
-            { lbl: 'متوسط أيام الإغلاق', curr: cur.avg_closure_days + ' يوم', prev: prev.avg_closure_days + ' يوم', raw: false },
-            { lbl: 'التصعيدات',       curr: cur.total_escalations,      prev: prev.total_escalations },
-            { lbl: 'الوزارية',        curr: cur.ministerial_escalations,prev: prev.ministerial_escalations },
-            { lbl: 'الشكاوى',         curr: cur.total_complaints,       prev: prev.total_complaints },
-            { lbl: 'المعاملات',       curr: cur.total_inout,            prev: prev.total_inout },
-            { lbl: 'SLA Compliance',  curr: cur.sla_compliance_rate + '%', prev: prev.sla_compliance_rate + '%', raw: false },
-        ];
+/* ── FINDINGS TAB ────────────────────────────────────────── */
+function renderFindings(d) {
+  const s    = d.summary;
+  const list = d.findingsList || [];
 
-        const half = Math.ceil(compareItems.length / 2);
-        const leftItems  = compareItems.slice(0, half);
-        const rightItems = compareItems.slice(half);
+  document.getElementById('f-stats-row').innerHTML = [
+    { bg:'#fee2e2', c:'#991b1b', ic:'shield-alert', val:s.total_findings,  lbl:'إجمالي المخالفات' },
+    { bg:'#d1fae5', c:'#065f46', ic:'check-circle', val:s.closed_findings, lbl:'مغلقة'             },
+    { bg:'#ffedd5', c:'#c2410c', ic:'clock',         val:s.open_findings,   lbl:'مفتوحة / جارية'   },
+  ].map(c => `
+    <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;background:${c.bg};border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i data-lucide="${c.ic}" style="width:17px;height:17px;color:${c.c}"></i>
+      </div>
+      <div>
+        <div style="font-size:1.5rem;font-weight:900;color:var(--text-1)">${c.val}</div>
+        <div style="font-size:0.68rem;font-weight:700;color:var(--text-2)">${c.lbl}</div>
+      </div>
+    </div>`).join('');
 
-        function renderCompareCard(items) {
-            return items.map(item => `
-                <div class="compare-row">
-                    <span class="compare-lbl">${item.lbl}</span>
-                    <div class="compare-vals">
-                        <span class="cv-curr">${item.curr}</span>
-                        <span class="cv-prev">السابق: ${item.prev}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
+  document.getElementById('findings-count-lbl').textContent =
+    list.length < 100 ? `${list.length} مخالفة` : `أول 100 من ${s.total_findings}`;
 
-        document.getElementById('compare-left').innerHTML  = renderCompareCard(leftItems);
-        document.getElementById('compare-right').innerHTML = renderCompareCard(rightItems);
+  document.getElementById('findings-tbody').innerHTML = list.length
+    ? list.map((f, i) => {
+        const stCls = f.status === 'مغلق' ? 'badge-closed'
+                    : f.status === 'مفتوح' ? 'badge-open'
+                    : 'badge-in-progress';
+        const sevCls = /عالي|high/i.test(f.severity) ? 'sev-high'
+                     : /متوسط|medium/i.test(f.severity) ? 'sev-medium' : 'sev-low';
+        return `
+          <tr>
+            <td style="color:var(--text-3)">${i+1}</td>
+            <td style="font-weight:700;max-width:120px;overflow:hidden;text-overflow:ellipsis" title="${f.unit}">${f.unit || '—'}</td>
+            <td>${f.date}</td>
+            <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis" title="${f.section}">${f.section || '—'}</td>
+            <td style="font-family:monospace;font-size:0.7rem">${f.code || '—'}</td>
+            <td class="${sevCls}">${f.severity || '—'}</td>
+            <td><span class="badge ${stCls}">${f.status || '—'}</span></td>
+            <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis" title="${f.officer}">${f.officer || '—'}</td>
+          </tr>`;
+      }).join('')
+    : '<tr><td colspan="8" class="empty-box">لا توجد مخالفات في هذا النطاق</td></tr>';
+}
 
-        // show sections
-        ['sec-chart','chart-card','sec-compare','compare-grid'].forEach(id => {
-            document.getElementById(id).classList.remove('hidden');
-        });
+/* ── INOUT TAB ───────────────────────────────────────────── */
+function renderInout(d) {
+  const s  = d.summary;
+  const by = d.byUnit || [];
 
-        lucide.createIcons();
-    }
+  document.getElementById('io-stats-row').innerHTML = [
+    { bg:'#e0e7ff', c:'#4338ca', ic:'inbox',   val:s.total_inout,          lbl:'إجمالي المعاملات' },
+    { bg:'#d1fae5', c:'#065f46', ic:'check',   val:s.sla_compliance_rate + '%', lbl:'التزام SLA'   },
+    { bg:'#fef3c7', c:'#92400e', ic:'message-circle', val:s.total_complaints, lbl:'الشكاوى'        },
+  ].map(c => `
+    <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;background:${c.bg};border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i data-lucide="${c.ic}" style="width:17px;height:17px;color:${c.c}"></i>
+      </div>
+      <div>
+        <div style="font-size:1.5rem;font-weight:900;color:var(--text-1)">${c.val}</div>
+        <div style="font-size:0.68rem;font-weight:700;color:var(--text-2)">${c.lbl}</div>
+      </div>
+    </div>`).join('');
+
+  const rows = by.filter(u => u.total_inout > 0);
+  document.getElementById('inout-tbody').innerHTML = rows.length
+    ? rows.map(u => {
+        const slaPct = u.sla_rate;
+        const rateClass = slaPct >= 80 ? '' : 'danger';
+        return `
+          <tr>
+            <td style="font-weight:800">${u.unit_name || '—'}</td>
+            <td class="td-num">${u.total_inout}</td>
+            <td>
+              ${slaPct > 0 ? `
+                <div class="rate-bar">
+                  <div class="rate-track">
+                    <div class="rate-fill ${rateClass}" style="width:${slaPct}%"></div>
+                  </div>
+                  <span class="td-rate" style="font-size:0.72rem">${slaPct}%</span>
+                </div>` : '<span style="color:var(--text-3);font-size:0.72rem">—</span>'}
+            </td>
+          </tr>`;
+      }).join('')
+    : '<tr><td colspan="3" class="empty-box">لا توجد معاملات في هذا النطاق</td></tr>';
+}
+
+/* ── ESCALATIONS TAB ─────────────────────────────────────── */
+function renderEscal(d) {
+  const s    = d.summary;
+  const list = d.escalList || [];
+
+  document.getElementById('e-stats-row').innerHTML = [
+    { bg:'#ffedd5', c:'#c2410c', ic:'trending-up', val:s.total_escalations,       lbl:'إجمالي التصعيدات' },
+    { bg:'#ede9fe', c:'#5b21b6', ic:'landmark',    val:s.ministerial_escalations, lbl:'تصعيدات وزارية'   },
+  ].map(c => `
+    <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;background:${c.bg};border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i data-lucide="${c.ic}" style="width:17px;height:17px;color:${c.c}"></i>
+      </div>
+      <div>
+        <div style="font-size:1.5rem;font-weight:900;color:var(--text-1)">${c.val}</div>
+        <div style="font-size:0.68rem;font-weight:700;color:var(--text-2)">${c.lbl}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('escal-tbody').innerHTML = list.length
+    ? list.map(e => {
+        const isMin = e.type && e.type.indexOf('وزاري') >= 0;
+        return `
+          <tr>
+            <td style="font-family:monospace;font-size:0.72rem">${e.car_id || '—'}</td>
+            <td style="font-weight:700">${e.unit || '—'}</td>
+            <td><span class="badge ${isMin ? 'badge-ministerial' : 'badge-in-progress'}">${e.type || '—'}</span></td>
+            <td>${e.date}</td>
+          </tr>`;
+      }).join('')
+    : '<tr><td colspan="4" class="empty-box">لا توجد تصعيدات في هذا النطاق</td></tr>';
+}
+
+/* ── TABS ────────────────────────────────────────────────── */
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  lucide.createIcons();
+}
+
+/* ── MENU / AUTH ─────────────────────────────────────────── */
+function toggleMenu() {
+  document.getElementById('side-menu').classList.toggle('open');
+  document.getElementById('menu-overlay').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('side-menu').classList.remove('open');
+  document.getElementById('menu-overlay').classList.remove('open');
+}
+function logout() { localStorage.clear(); location.href = 'index.html'; }
 </script>
 
 </body>
