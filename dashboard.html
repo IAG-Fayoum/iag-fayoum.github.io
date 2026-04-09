@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <title>لوحة الإحصائيات | IAG System</title>
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/theme.css">
+
+    <style>
+        /* KPI CARDS */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 1rem;
+            margin: -3rem auto 1rem;
+            position: relative; z-index: 20;
+            max-width: 1300px;
+        }
+        @media (min-width: 768px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+
+        .kpi-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.1rem 1rem;
+            box-shadow: var(--shadow-sm);
+            display: flex; flex-direction: column; gap: 8px;
+            position: relative; overflow: hidden;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .kpi-card::after {
+            content: ''; position: absolute; bottom: 0; left: 0;
+            width: 100%; height: 3px;
+        }
+        .kpi-top { display: flex; align-items: center; justify-content: space-between; }
+        .kpi-icon {
+            width: 40px; height: 40px; border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .kpi-val { font-size: 2rem; font-weight: 900; line-height: 1; }
+        .kpi-lbl { font-size: 0.72rem; font-weight: 700; color: var(--text-2); }
+        .kpi-delta {
+            display: inline-flex; align-items: center; gap: 3px;
+            font-size: 0.7rem; font-weight: 700; padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .delta-up   { background: #d1fae5; color: #065f46; }
+        .delta-down { background: #fee2e2; color: #991b1b; }
+        .delta-same { background: var(--surface-2); color: var(--text-3); }
+
+        /* accent bars */
+        .kpi-visits::after    { background: #3b82f6; }
+        .kpi-closure::after   { background: #059669; }
+        .kpi-open::after      { background: #dc2626; }
+        .kpi-escalation::after{ background: #d97706; }
+
+        /* SECTION TITLE */
+        .section-title {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.88rem; font-weight: 800; color: var(--text-1);
+            padding: 0 1rem; max-width: 1300px; margin: 1.25rem auto 0.5rem;
+        }
+
+        /* CHART CARD */
+        .chart-card {
+            background: white; border: 1px solid var(--border);
+            border-radius: var(--radius-lg); padding: 1.25rem;
+            margin: 0 1rem 1rem; max-width: 1300px;
+            box-shadow: var(--shadow-sm);
+        }
+        @media (min-width: 1024px) { .chart-card { margin: 0 auto 1rem; } }
+        .chart-title {
+            font-size: 0.82rem; font-weight: 800; color: var(--text-2);
+            margin-bottom: 1rem; display: flex; align-items: center; gap: 6px;
+        }
+
+        /* BAR CHART */
+        .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+        .bar-row { display: flex; align-items: center; gap: 10px; }
+        .bar-label {
+            width: 110px; flex-shrink: 0;
+            font-size: 0.72rem; font-weight: 700; color: var(--text-2);
+            text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .bar-track {
+            flex: 1; height: 22px; background: var(--surface-2);
+            border-radius: 6px; overflow: hidden; position: relative;
+        }
+        .bar-fill {
+            height: 100%; border-radius: 6px;
+            transition: width 0.7s cubic-bezier(0.4,0,0.2,1);
+            display: flex; align-items: center; justify-content: flex-end;
+            padding-right: 8px;
+        }
+        .bar-fill-val {
+            font-size: 0.65rem; font-weight: 800; color: white;
+            white-space: nowrap;
+        }
+        .bar-val {
+            width: 36px; flex-shrink: 0;
+            font-size: 0.75rem; font-weight: 800; color: var(--text-1);
+            text-align: left;
+        }
+
+        /* COMPARISON TABLE */
+        .compare-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 12px; margin: 0 1rem 1rem; max-width: 1300px;
+        }
+        @media (min-width: 1024px) { .compare-grid { margin: 0 auto 1rem; } }
+        @media (max-width: 640px)  { .compare-grid { grid-template-columns: 1fr; } }
+
+        .compare-card {
+            background: white; border: 1px solid var(--border);
+            border-radius: var(--radius-lg); padding: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .compare-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 7px 0; border-bottom: 1px solid var(--border);
+            font-size: 0.8rem;
+        }
+        .compare-row:last-child { border-bottom: none; }
+        .compare-lbl { font-weight: 700; color: var(--text-2); }
+        .compare-vals { display: flex; gap: 12px; align-items: center; }
+        .cv-curr { font-weight: 900; color: var(--text-1); }
+        .cv-prev { font-size: 0.72rem; color: var(--text-3); }
+
+        /* LOADER */
+        .dash-loader {
+            text-align: center; padding: 3rem; color: var(--text-3);
+            font-size: 0.88rem; font-weight: 700;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<!-- SIDE MENU -->
+<div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
+<aside class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+        <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:44px;height:44px;background:rgba(255,255,255,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center">
+                <i data-lucide="layout-dashboard" style="width:22px;height:22px;color:white"></i>
+            </div>
+            <div>
+                <div style="font-weight:800;font-size:0.9rem;color:white" id="menu-user">—</div>
+                <div style="font-size:0.72rem;color:#99f6e4" id="menu-role"></div>
+            </div>
+        </div>
+    </div>
+    <div class="side-menu-body">
+        <nav id="side-nav"></nav>
+    </div>
+    <div class="menu-footer">
+        <button onclick="logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);gap:8px;justify-content:center">
+            <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
+        </button>
+    </div>
+</aside>
+
+<!-- HEADER -->
+<header class="page-header">
+    <div class="header-top">
+        <button class="header-btn" onclick="toggleMenu()">
+            <i data-lucide="menu" style="width:20px;height:20px"></i>
+        </button>
+        <div class="header-center">
+            <div class="header-badge">
+                <i data-lucide="layout-dashboard" style="width:12px;height:12px"></i>
+                الإحصائيات
+            </div>
+            <h1 class="header-title">إدارة المراجعة الداخلية والحوكمة</h1>
+            <p class="header-sub">Internal Audit & Governance</p>
+            <p class="header-user" id="header-name"></p>
+        </div>
+        <button class="header-btn" onclick="window.location.href='notifications.html'">
+            <i data-lucide="bell" style="width:20px;height:20px"></i>
+            <span class="notif-dot"></span>
+        </button>
+    </div>
+</header>
+
+<!-- KPI CARDS -->
+<div class="kpi-grid" id="kpi-grid">
+    <div class="dash-loader" style="grid-column:1/-1">
+        <i data-lucide="loader-2" style="width:28px;height:28px;display:block;margin:0 auto 8px;opacity:0.4;animation:spin 0.8s linear infinite"></i>
+        جاري تحميل البيانات...
+    </div>
+</div>
+
+<!-- BAR CHART -->
+<div class="section-title hidden" id="sec-chart">
+    <i data-lucide="bar-chart-2" style="width:18px;height:18px;color:var(--primary)"></i>
+    نظرة عامة — الشهر الحالي
+</div>
+<div class="chart-card hidden" id="chart-card">
+    <div class="chart-title">
+        <i data-lucide="activity" style="width:14px;height:14px"></i>
+        مقارنة المؤشرات
+    </div>
+    <div class="bar-chart" id="bar-chart"></div>
+</div>
+
+<!-- MONTH COMPARISON -->
+<div class="section-title hidden" id="sec-compare">
+    <i data-lucide="git-compare" style="width:18px;height:18px;color:var(--accent)"></i>
+    مقارنة هذا الشهر بالشهر السابق
+</div>
+<div class="compare-grid hidden" id="compare-grid">
+    <div class="compare-card" id="compare-left"></div>
+    <div class="compare-card" id="compare-right"></div>
+</div>
+
+<nav class="bottom-nav hidden" id="bottom-nav"></nav>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/nav.js"></script>
+<script>
+    lucide.createIcons();
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const userStr = localStorage.getItem('iag_user');
+        if (!userStr) { window.location.href = 'index.html'; return; }
+
+        const user = JSON.parse(userStr);
+        if (user.role !== 'مدير' && user.role !== 'Admin') {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        document.getElementById('header-name').textContent = user.name || '';
+        await loadStats();
+    });
+
+    function toggleMenu() {
+        document.getElementById('side-menu').classList.toggle('open');
+        document.getElementById('menu-overlay').classList.toggle('open');
+    }
+    function closeMenu() {
+        document.getElementById('side-menu').classList.remove('open');
+        document.getElementById('menu-overlay').classList.remove('open');
+    }
+    function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+    async function loadStats() {
+        try {
+            const res  = await fetch(CONFIG.API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'getDashboardStats' })
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || 'فشل التحميل');
+            render(data.current, data.previous);
+        } catch (e) {
+            document.getElementById('kpi-grid').innerHTML =
+                '<div class="dash-loader" style="grid-column:1/-1;color:var(--danger)">⚠️ ' + e.message + '</div>';
+        }
+    }
+
+    function delta(curr, prev, higherIsBetter = true) {
+        if (!prev || prev === 0) return { cls: 'delta-same', icon: '—', pct: '' };
+        const diff = ((curr - prev) / prev) * 100;
+        const abs  = Math.abs(diff).toFixed(0);
+        if (Math.abs(diff) < 1) return { cls: 'delta-same', icon: '→', pct: abs + '%' };
+        const up = diff > 0;
+        const good = higherIsBetter ? up : !up;
+        return {
+            cls:  good ? 'delta-up' : 'delta-down',
+            icon: up ? '↑' : '↓',
+            pct:  abs + '%'
+        };
+    }
+
+    function render(cur, prev) {
+        // ── KPI CARDS ──
+        const kpis = [
+            {
+                id: 'visits', cls: 'kpi-visits',
+                icon: 'map-pin', iconBg: '#dbeafe', iconColor: '#1d4ed8',
+                val: cur.total_visits,
+                lbl: 'الزيارات الميدانية',
+                d: delta(cur.total_visits, prev.total_visits, true)
+            },
+            {
+                id: 'closure', cls: 'kpi-closure',
+                icon: 'check-circle-2', iconBg: '#d1fae5', iconColor: '#065f46',
+                val: cur.closure_rate + '%',
+                lbl: 'نسبة الإغلاق',
+                d: delta(cur.closure_rate, prev.closure_rate, true)
+            },
+            {
+                id: 'open', cls: 'kpi-open',
+                icon: 'shield-alert', iconBg: '#fee2e2', iconColor: '#991b1b',
+                val: cur.open_findings,
+                lbl: 'مخالفات مفتوحة',
+                d: delta(cur.open_findings, prev.open_findings, false)
+            },
+            {
+                id: 'escalation', cls: 'kpi-escalation',
+                icon: 'trending-up', iconBg: '#fef3c7', iconColor: '#92400e',
+                val: cur.total_escalations,
+                lbl: 'التصعيدات',
+                d: delta(cur.total_escalations, prev.total_escalations, false)
+            }
+        ];
+
+        document.getElementById('kpi-grid').innerHTML = kpis.map(k => `
+            <div class="kpi-card ${k.cls}">
+                <div class="kpi-top">
+                    <div class="kpi-icon" style="background:${k.iconBg}">
+                        <i data-lucide="${k.icon}" style="width:20px;height:20px;color:${k.iconColor}"></i>
+                    </div>
+                    <span class="kpi-delta ${k.d.cls}">${k.d.icon} ${k.d.pct}</span>
+                </div>
+                <div class="kpi-val">${k.val}</div>
+                <div class="kpi-lbl">${k.lbl}</div>
+            </div>
+        `).join('');
+
+        // ── BAR CHART ──
+        const bars = [
+            { lbl: 'إجمالي الزيارات',   val: cur.total_visits,      color: '#3b82f6' },
+            { lbl: 'إجمالي المخالفات',  val: cur.total_findings,    color: '#dc2626' },
+            { lbl: 'مخالفات مغلقة',     val: cur.closed_findings,   color: '#059669' },
+            { lbl: 'مخالفات مفتوحة',    val: cur.open_findings,     color: '#f97316' },
+            { lbl: 'التصعيدات',         val: cur.total_escalations, color: '#d97706' },
+            { lbl: 'الشكاوى',           val: cur.total_complaints,  color: '#8b5cf6' },
+            { lbl: 'المعاملات',         val: cur.total_inout,       color: '#0891b2' },
+        ];
+        const maxVal = Math.max(...bars.map(b => b.val), 1);
+
+        document.getElementById('bar-chart').innerHTML = bars.map(b => {
+            const pct = Math.max((b.val / maxVal) * 100, b.val > 0 ? 4 : 0).toFixed(1);
+            return `
+            <div class="bar-row">
+                <div class="bar-label">${b.lbl}</div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width:${pct}%;background:${b.color}">
+                        ${b.val > 0 ? '<span class="bar-fill-val">' + b.val + '</span>' : ''}
+                    </div>
+                </div>
+                <div class="bar-val">${b.val}</div>
+            </div>`;
+        }).join('');
+
+        // ── MONTH COMPARISON ──
+        const compareItems = [
+            { lbl: 'الزيارات',         curr: cur.total_visits,          prev: prev.total_visits },
+            { lbl: 'المخالفات',        curr: cur.total_findings,         prev: prev.total_findings },
+            { lbl: 'المغلقة',          curr: cur.closed_findings,        prev: prev.closed_findings },
+            { lbl: 'نسبة الإغلاق',    curr: cur.closure_rate + '%',     prev: prev.closure_rate + '%', raw: false },
+            { lbl: 'متوسط أيام الإغلاق', curr: cur.avg_closure_days + ' يوم', prev: prev.avg_closure_days + ' يوم', raw: false },
+            { lbl: 'التصعيدات',       curr: cur.total_escalations,      prev: prev.total_escalations },
+            { lbl: 'الوزارية',        curr: cur.ministerial_escalations,prev: prev.ministerial_escalations },
+            { lbl: 'الشكاوى',         curr: cur.total_complaints,       prev: prev.total_complaints },
+            { lbl: 'المعاملات',       curr: cur.total_inout,            prev: prev.total_inout },
+            { lbl: 'SLA Compliance',  curr: cur.sla_compliance_rate + '%', prev: prev.sla_compliance_rate + '%', raw: false },
+        ];
+
+        const half = Math.ceil(compareItems.length / 2);
+        const leftItems  = compareItems.slice(0, half);
+        const rightItems = compareItems.slice(half);
+
+        function renderCompareCard(items) {
+            return items.map(item => `
+                <div class="compare-row">
+                    <span class="compare-lbl">${item.lbl}</span>
+                    <div class="compare-vals">
+                        <span class="cv-curr">${item.curr}</span>
+                        <span class="cv-prev">السابق: ${item.prev}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('compare-left').innerHTML  = renderCompareCard(leftItems);
+        document.getElementById('compare-right').innerHTML = renderCompareCard(rightItems);
+
+        // show sections
+        ['sec-chart','chart-card','sec-compare','compare-grid'].forEach(id => {
+            document.getElementById(id).classList.remove('hidden');
+        });
+
+        lucide.createIcons();
+    }
+</script>
+
+</body>
+</html>
