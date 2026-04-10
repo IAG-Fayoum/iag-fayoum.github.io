@@ -12,10 +12,11 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/iag-theme.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
 
@@ -67,12 +68,12 @@
     <aside class="side-menu" id="side-menu">
         <div class="side-menu-header">
             <div style="display:flex;align-items:center;gap:12px">
-                <div style="width:44px;height:44px;background:rgba(255,255,255,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                    <i data-lucide="shield-check" style="width:22px;height:22px;color:white"></i>
+                <div style="width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <i data-lucide="user" style="width:20px;height:20px;color:white"></i>
                 </div>
                 <div>
-                    <div style="font-weight:800;font-size:0.9rem;color:white" id="menu-user">Admin</div>
-                    <div style="font-size:0.72rem;color:#99f6e4">مدير النظام</div>
+                    <div style="font-weight:900;font-size:0.9rem;color:white" id="menu-user">Admin</div>
+                    <div style="font-size:0.72rem;color:#99f6e4;font-weight:800">مدير النظام</div>
                 </div>
             </div>
         </div>
@@ -96,8 +97,11 @@
                     <i data-lucide="shield-check" style="width:12px;height:12px"></i>
                     لوحة التحكم
                 </div>
-                <h1 class="header-title">إدارة المراجعة الداخلية والحوكمة</h1>
-                <p class="header-sub">Internal Audit & Governance</p>
+                <h1 class="header-title">
+                    <img src="assets/icons/icon-192.png" class="header-logo" alt="شعار">
+                    إدارة المراجعة الداخلية والحوكمة
+                </h1>
+                <p class="header-sub">Internal Audit &amp; Governance</p>
                 <p class="header-user" id="header-name"></p>
             </div>
             <button class="header-btn" onclick="window.location.href='notifications.html'">
