@@ -105,11 +105,13 @@ body {
 .menu-overlay { background: rgba(15,23,42,0.4) !important; backdrop-filter: blur(3px) !important; }
 
 /* ══ iOS SAFE AREA ══ */
-/* Bottom nav: يحسب مساحة الـ Home Indicator */
+/* Bottom nav: الارتفاع يزيد بمقدار الـ Home Indicator — مش يتضغط */
 .bottom-nav {
-    padding-bottom: env(safe-area-inset-bottom) !important;
+    height: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    align-items: flex-start !important; /* الأيقونات تبقى فوق، مش في المنتصف المضغوط */
 }
 /* الـ body يترك مساحة كافية للأسفل */
 body {
-    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
 }
