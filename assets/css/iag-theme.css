@@ -114,3 +114,28 @@ body {
 body {
     padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
 }
+
+/* ══ TURBO DRIVE TRANSITIONS ══ */
+/* شريط التحميل — بلون الـ Brand */
+.turbo-progress-bar {
+    height: 3px !important;
+    background: linear-gradient(90deg, #14b8a6, #0f766e) !important;
+}
+
+/* Fade-in سلس بعد كل انتقال */
+@keyframes turboPageIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+/* يطبق على محتوى الصفحة (الكارت، الكونتينر، الـ wrapper) */
+.forms-container,
+.cards-container,
+.tabs-wrapper,
+.filter-container,
+.settings-container,
+.stats-wrapper,
+.kpi-strip,
+.tab-bar,
+.files-container {
+    animation: turboPageIn 0.22s ease both;
+}

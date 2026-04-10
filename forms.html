@@ -231,7 +231,7 @@
     <nav class="bottom-nav lg:hidden hidden" id="bottom-nav"></nav>
 
     <div id="float-login-btn" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 lg:hidden hidden">
-        <button onclick="window.location.href='index.html'" class="bg-teal-600 text-white px-6 py-3 rounded-full shadow-lg font-bold flex items-center gap-2">
+        <button onclick="Turbo.visit('index.html')" class="bg-teal-600 text-white px-6 py-3 rounded-full shadow-lg font-bold flex items-center gap-2">
             <i data-lucide="log-in" class="w-5 h-5"></i> تسجيل دخول
         </button>
     </div>
@@ -280,24 +280,24 @@
         }
         
         function handleAuthAction() {
-            window.location.href = 'index.html'; // يوجه للدخول
+            Turbo.visit('index.html'); // يوجه للدخول
         }
 
         function logout() {
             localStorage.removeItem('iag_user');
             localStorage.removeItem('iag_last_page');
-            window.location.href = 'index.html';
+            Turbo.visit('index.html');
         }
 
         function goBack() {
             const userStr = localStorage.getItem('iag_user');
             if (userStr) {
                 const user = JSON.parse(userStr);
-                if (user.role === 'مدير' || user.role === 'Admin') window.location.href = 'admin.html';
-                else if (user.role === 'منسق') window.location.href = 'coordinator.html';
-                else window.location.href = 'employee.html';
+                if (user.role === 'مدير' || user.role === 'Admin') Turbo.visit('admin.html');
+                else if (user.role === 'منسق') Turbo.visit('coordinator.html');
+                else Turbo.visit('employee.html');
             } else {
-                window.location.href = 'index.html';
+                Turbo.visit('index.html');
             }
         }
     </script>
