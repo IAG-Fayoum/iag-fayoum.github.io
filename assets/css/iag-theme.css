@@ -105,11 +105,10 @@ body {
 .menu-overlay { background: rgba(15,23,42,0.4) !important; backdrop-filter: blur(3px) !important; }
 
 /* ══ iOS SAFE AREA ══ */
-/* Bottom nav: الارتفاع يزيد بمقدار الـ Home Indicator — مش يتضغط */
+/* Bottom nav: الارتفاع يزيد للأسفل — الأيقونات تبقى في مكانها */
 .bottom-nav {
     height: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
     padding-bottom: env(safe-area-inset-bottom, 0px) !important;
-    align-items: flex-start !important; /* الأيقونات تبقى فوق، مش في المنتصف المضغوط */
 }
 /* الـ body يترك مساحة كافية للأسفل */
 body {
