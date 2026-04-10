@@ -36,7 +36,7 @@ body {
     background-image:
         radial-gradient(ellipse at top right, rgba(20,184,166,0.25) 0%, transparent 60%),
         radial-gradient(ellipse at bottom left, rgba(4,120,115,0.3) 0%, transparent 60%);
-    padding: 1.25rem 1.5rem 4.5rem;
+    padding: max(1.25rem, env(safe-area-inset-top)) 1.5rem 4.5rem;
     position: relative; z-index: 10;
     box-shadow: 0 4px 24px rgba(5,50,45,0.4);
 }
@@ -103,3 +103,13 @@ body {
 .menu-item.active svg { color: #0f766e !important; }
 .menu-footer { border-top: 1px solid #f1f5f9 !important; padding: 0.75rem !important; background: #f8fafc !important; }
 .menu-overlay { background: rgba(15,23,42,0.4) !important; backdrop-filter: blur(3px) !important; }
+
+/* ══ iOS SAFE AREA ══ */
+/* Bottom nav: يحسب مساحة الـ Home Indicator */
+.bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+}
+/* الـ body يترك مساحة كافية للأسفل */
+body {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+}

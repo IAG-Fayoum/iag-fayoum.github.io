@@ -30,7 +30,7 @@
             background-image:
                 radial-gradient(ellipse at top right, rgba(20,184,166,0.25) 0%, transparent 60%),
                 radial-gradient(ellipse at bottom left, rgba(4,120,115,0.3) 0%, transparent 60%);
-            padding: 1.25rem 1.5rem 4.5rem;
+            padding: max(1.25rem, env(safe-area-inset-top)) 1.5rem 4.5rem;
             position: relative; z-index: 10;
             box-shadow: 0 4px 24px rgba(5,50,45,0.4);
         }
