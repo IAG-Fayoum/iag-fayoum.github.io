@@ -64,16 +64,27 @@ body {
     margin-bottom: 0; font-family: sans-serif;
 }
 
-/* ══ SIDEBAR ══ */
+/* ══ SIDEBAR (Floating Card Style) ══ */
 .side-menu {
     background: #ffffff !important;
-    border-left: 1px solid #e2e8f0 !important;
-    box-shadow: -4px 0 20px rgba(0,0,0,0.08) !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: -4px 10px 30px rgba(0,0,0,0.08) !important;
+    /* Floating style */
+    top: 1rem !important;
+    height: auto !important;
+    bottom: auto !important;
+    max-height: calc(100vh - 2rem) !important;
+    border-radius: 20px !important;
+    right: -320px !important; /* hidden by default */
+}
+.side-menu.open {
+    right: 1rem !important; /* slide in with gap */
 }
 .side-menu-header {
     background: #0a5c56 !important;
     border-bottom: none !important;
     padding: 1.25rem 1rem !important;
+    border-radius: 20px 20px 0 0 !important;
 }
 #menu-user { color: white !important; font-size: 0.95rem !important; font-weight: 900 !important; }
 #menu-role { color: #99f6e4 !important; font-size: 0.72rem !important; font-weight: 800 !important; letter-spacing: 0.5px; }
@@ -101,7 +112,12 @@ body {
     font-weight: 900 !important;
 }
 .menu-item.active svg { color: #0f766e !important; }
-.menu-footer { border-top: 1px solid #f1f5f9 !important; padding: 0.75rem !important; background: #f8fafc !important; }
+.menu-footer { 
+    border-top: 1px solid #f1f5f9 !important; 
+    padding: 0.75rem !important; 
+    background: #f8fafc !important; 
+    border-radius: 0 0 20px 20px !important;
+}
 .menu-overlay { background: rgba(15,23,42,0.4) !important; backdrop-filter: blur(3px) !important; }
 
 /* ══ iOS SAFE AREA ══ */
