@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a5c56">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <title>الملاحظات المرصودة | IAG System</title>
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/iag-theme.css">
+    <link rel="stylesheet" href="assets/css/findings.css">
+</head>
+<body>
+
+<!-- SIDE MENU -->
+<div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
+<aside class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+        <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center">
+                <i data-lucide="user" style="width:20px;height:20px;color:white"></i>
+            </div>
+            <div>
+                <div style="font-weight:900;font-size:0.9rem;color:white" id="menu-user">—</div>
+                <div style="font-size:0.72rem;color:#99f6e4;font-weight:800" id="menu-role"></div>
+            </div>
+        </div>
+    </div>
+    <div class="side-menu-body">
+        <nav id="side-nav"></nav>
+    </div>
+    <div class="menu-footer">
+        <button onclick="auth.logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);gap:8px;justify-content:center">
+            <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
+        </button>
+    </div>
+</aside>
+
+<!-- HEADER -->
+<header class="page-header">
+    <div class="header-top">
+        <button class="header-btn" onclick="toggleMenu()">
+            <i data-lucide="menu" style="width:20px;height:20px"></i>
+        </button>
+        <div class="header-center">
+            <div class="header-badge">
+                <i data-lucide="shield-alert" style="width:12px;height:12px"></i>
+                الملاحظات المرصودة
+            </div>
+            <h1 class="header-title">
+                <img src="assets/icons/icon-192.png" class="header-logo" alt="شعار">إدارة المراجعة الداخلية والحوكمة
+            </h1>
+            <p class="header-sub">Internal Audit &amp; Governance</p>
+            <p class="header-user" id="hdr-sub"></p>
+        </div>
+        <button class="header-btn" onclick="window.location.href='notifications.html'">
+            <i data-lucide="bell" style="width:20px;height:20px"></i>
+            <span class="notif-dot"></span>
+        </button>
+    </div>
+</header>
+
+<!-- FILTER CARD -->
+<div class="filter-container">
+    <div class="filter-grid">
+        <div>
+            <label class="f-label" id="f-label-1">الإدارة الصحية</label>
+            <select class="f-input" id="f-admin" onchange="onAdminChange()">
+                <option value="">الكل</option>
+            </select>
+        </div>
+        <div>
+            <label class="f-label" id="f-label-2">اختر الوحدة</label>
+            <select class="f-input" id="f-unit" onchange="onFilterChange()">
+                <option value="">الكل</option>
+            </select>
+        </div>
+        <div>
+            <label class="f-label">من تاريخ</label>
+            <input type="date" class="f-input" id="f-start" onchange="onFilterChange()">
+        </div>
+        <div>
+            <label class="f-label">إلى تاريخ</label>
+            <input type="date" class="f-input" id="f-end" onchange="onFilterChange()">
+        </div>
+    </div>
+    <div>
+        <label class="f-label">نوع المنشأة</label>
+        <div class="type-toggle">
+            <button class="type-btn active" id="tb-all"  onclick="setType('')">الكل</button>
+            <button class="type-btn"        id="tb-hosp" onclick="setType('مستشفى')">مستشفيات</button>
+            <button class="type-btn"        id="tb-unit" onclick="setType('وحدة')">وحدات صحية</button>
+        </div>
+    </div>
+</div>
+
+<!-- KPI STRIP -->
+<div class="kpi-strip">
+    <div class="kpi-card">
+        <div class="kpi-num" style="color:#0a5c56" id="k-open-units">—</div>
+        <div class="kpi-lbl">وحدات مفتوحة</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-num" style="color:#dc2626" id="k-late">—</div>
+        <div class="kpi-lbl">متأخر</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-num" style="color:#d97706" id="k-suspended">—</div>
+        <div class="kpi-lbl">معلق</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-num" style="color:#7c3aed" id="k-legal">—</div>
+        <div class="kpi-lbl">قانوني</div>
+    </div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+    <button class="tab-btn active"    id="tab-btn-active"    onclick="switchTab('active')">
+        <span class="tab-count" id="tc-active">0</span> نشط
+    </button>
+    <button class="tab-btn"           id="tab-btn-suspended" onclick="switchTab('suspended')">
+        <span class="tab-count" id="tc-suspended">0</span> معلق
+    </button>
+    <button class="tab-btn tab-legal" id="tab-btn-legal"     onclick="switchTab('legal')">
+        <span class="tab-count" id="tc-legal">0</span> قانوني
+    </button>
+    <button class="tab-btn"           id="tab-btn-closed"    onclick="switchTab('closed')">
+        <span class="tab-count" id="tc-closed">0</span> مغلق
+    </button>
+</div>
+
+<!-- TAB PANEL: نشط -->
+<div class="tab-panel active" id="panel-active">
+    <div class="loader-box">
+        <i data-lucide="loader-2" style="width:36px;height:36px;color:#0a5c56" class="spin"></i>
+        <p class="loader-lbl">جاري تحميل البيانات...</p>
+    </div>
+</div>
+
+<!-- TAB PANEL: معلق -->
+<div class="tab-panel" id="panel-suspended">
+    <div class="empty-box">جاري التحميل...</div>
+</div>
+
+<!-- TAB PANEL: قانوني -->
+<div class="tab-panel" id="panel-legal">
+    <div class="empty-box">جاري التحميل...</div>
+</div>
+
+<!-- TAB PANEL: مغلق -->
+<div class="tab-panel" id="panel-closed">
+    <div class="empty-box">جاري التحميل...</div>
+</div>
+
+<!-- BULK ACTION BAR -->
+<div class="bulk-bar" id="bulk-bar">
+    <span class="bulk-label">تم تحديد <strong id="bulk-count">0</strong> مخالفة</span>
+    <button class="bulk-close-btn" onclick="bulkClose()">✅ قفل الكل</button>
+    <span class="bulk-cancel" onclick="clearSelection()">إلغاء</span>
+</div>
+
+<!-- SUSPEND MODAL -->
+<div class="modal-overlay" id="suspend-modal">
+    <div class="modal-box">
+        <p class="modal-title">⏸ تعليق المخالفة</p>
+        <label class="modal-lbl">الجهة المسؤولة <span style="color:#dc2626">*</span></label>
+        <input class="modal-input" id="modal-party" placeholder="مثال: مدير الوحدة، قسم الصيانة..." maxlength="120">
+        <label class="modal-lbl">ملاحظة (اختياري)</label>
+        <input class="modal-input" id="modal-comment" placeholder="سبب التعليق..." maxlength="250">
+        <div class="modal-btns">
+            <button class="modal-cancel-btn" onclick="closeSuspendModal()">إلغاء</button>
+            <button class="modal-submit-btn" id="modal-submit-btn" onclick="submitSuspend()">تعليق</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottom-nav"></nav>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/nav.js"></script>
+<script src="assets/js/findings.js" defer></script>
+</body>
+</html>
