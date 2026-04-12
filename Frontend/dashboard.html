@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a5c56">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <title>لوحة الإحصائيات | IAG System</title>
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/iag-theme.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body>
+
+<!-- SIDE MENU -->
+<div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
+<aside class="side-menu" id="side-menu">
+  <div class="side-menu-header">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center"><i data-lucide="user" style="width:20px;height:20px;color:white"></i></div>
+      <div>
+        <div style="font-weight:900;font-size:0.9rem;color:white" id="menu-user">—</div>
+        <div style="font-size:.72rem;color:#99f6e4;font-weight:800" id="menu-role"></div>
+      </div>
+    </div>
+  </div>
+  <div class="side-menu-body"><nav id="side-nav"></nav></div>
+  <div class="menu-footer">
+    <button onclick="logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);gap:8px;justify-content:center">
+      <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
+    </button>
+  </div>
+</aside>
+
+<!-- HEADER -->
+<header class="page-header">
+  <div class="header-top">
+    <button class="header-btn" onclick="toggleMenu()">
+      <i data-lucide="menu" style="width:20px;height:20px"></i>
+    </button>
+    <div class="header-center">
+      <div class="header-badge">
+        <i data-lucide="layout-dashboard" style="width:12px;height:12px"></i>
+        الإحصائيات
+      </div>
+      <h1 class="header-title"><img src="assets/icons/icon-192.png" class="header-logo" alt="شعار">إدارة المراجعة الداخلية والحوكمة</h1>
+      <p class="header-sub">Internal Audit &amp; Governance</p>
+      <p class="header-user" id="header-name"></p>
+    </div>
+    <button class="header-btn" onclick="location.href='notifications.html'">
+      <i data-lucide="bell" style="width:20px;height:20px"></i>
+    </button>
+  </div>
+</header>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-row">
+    <div class="fg" style="max-width:85px">
+      <label>السنة</label>
+      <select class="fi" id="f-year"></select>
+    </div>
+    <div class="fg" style="max-width:115px">
+      <label>الشهر</label>
+      <select class="fi" id="f-month">
+        <option value="">كل الشهور</option>
+        <option value="1">يناير</option><option value="2">فبراير</option>
+        <option value="3">مارس</option><option value="4">أبريل</option>
+        <option value="5">مايو</option><option value="6">يونيو</option>
+        <option value="7">يوليو</option><option value="8">أغسطس</option>
+        <option value="9">سبتمبر</option><option value="10">أكتوبر</option>
+        <option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+      </select>
+    </div>
+    <div class="fsep"></div>
+    <div class="fg" style="min-width:120px">
+      <label>من تاريخ</label>
+      <input type="date" class="fi" id="f-from">
+    </div>
+    <div class="fg" style="min-width:120px">
+      <label>إلى تاريخ</label>
+      <input type="date" class="fi" id="f-to">
+    </div>
+    <div class="fsep"></div>
+    <div class="fg" style="min-width:145px">
+      <label>الإدارة / المستشفى</label>
+      <select class="fi" id="f-area">
+        <option value="">الكل</option>
+      </select>
+    </div>
+    <div class="fg" style="min-width:140px">
+      <label>الموظف المكلف</label>
+      <select class="fi" id="f-emp">
+        <option value="">الكل</option>
+      </select>
+    </div>
+    <div class="fbtns">
+      <button class="btn-apply" onclick="applyFilters()">
+        <i data-lucide="search" style="width:13px;height:13px"></i> تطبيق
+      </button>
+      <button class="btn-reset" onclick="resetFilters()">إعادة تعيين</button>
+    </div>
+  </div>
+  <div class="active-tags" id="active-tags"></div>
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-grid" id="kpi-grid">
+  <div class="loader-box" style="grid-column:1/-1">
+    <i data-lucide="loader-2" style="width:30px;height:30px;display:block;margin:0 auto 10px;opacity:.3" class="spin"></i>
+    جاري تحميل البيانات...
+  </div>
+</div>
+
+<!-- TABS -->
+<div id="tabs-wrap" style="display:none">
+  <div class="tabs-wrap">
+    <div class="tabs-bar">
+      <button class="tab-btn active" onclick="switchTab('overview',this)">
+        <i data-lucide="layout-grid" style="width:13px;height:13px"></i> نظرة عامة
+      </button>
+      <button class="tab-btn" onclick="switchTab('findings',this)">
+        <i data-lucide="eye" style="width:13px;height:13px"></i> الملاحظات
+        <span class="tbadge" id="tb-findings">0</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('inout',this)">
+        <i data-lucide="inbox" style="width:13px;height:13px"></i> المعاملات
+        <span class="tbadge" id="tb-inout">0</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('reports',this)">
+        <i data-lucide="file-text" style="width:13px;height:13px"></i> التقارير
+        <span class="tbadge" id="tb-reports">0</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('escal',this)">
+        <i data-lucide="trending-up" style="width:13px;height:13px"></i> التصعيد
+        <span class="tbadge" id="tb-escal">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ TAB: OVERVIEW ══ -->
+  <div class="tab-pane active" id="tab-overview">
+    <div class="ov-grid">
+
+      <div class="card" style="margin:0">
+        <div class="card-hdr">
+          <i data-lucide="bar-chart-2" style="width:15px;height:15px;color:var(--primary)"></i>
+          الملاحظات حسب الجهة
+          <span class="card-hdr-sub" id="ov-period"></span>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <span style="display:flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;color:var(--text-3)">
+            <span style="width:10px;height:10px;background:#3b82f6;border-radius:2px;display:inline-block"></span> إدارة صحية
+          </span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;color:var(--text-3)">
+            <span style="width:10px;height:10px;background:#7c3aed;border-radius:2px;display:inline-block"></span> مستشفى
+          </span>
+        </div>
+        <div class="bar-list" id="ov-bar-chart">
+          <div class="empty-row">لا توجد بيانات</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin:0">
+        <div class="card-hdr">
+          <i data-lucide="activity" style="width:15px;height:15px;color:var(--primary)"></i>
+          ملخص المؤشرات
+        </div>
+        <div id="ov-summary"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px" class="wrap">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+        <i data-lucide="table-2" style="width:14px;height:14px;color:var(--primary)"></i>
+        <span style="font-size:.82rem;font-weight:800;color:var(--text-1)">تفصيل حسب الجهة</span>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>الجهة</th>
+                <th>النوع</th>
+                <th>الملاحظات</th>
+                <th>مغلقة</th>
+                <th>مفتوحة</th>
+                <th style="min-width:120px">نسبة الإغلاق</th>
+              </tr>
+            </thead>
+            <tbody id="ov-tbody">
+              <tr><td colspan="6" class="empty-row">لا توجد بيانات</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: FINDINGS ══ -->
+  <div class="tab-pane" id="tab-findings">
+    <div class="wrap" style="margin-top:14px">
+      <div class="mkrow" style="grid-template-columns:repeat(4,1fr)" id="f-mkrow"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="card">
+          <div class="card-hdr">
+            <i data-lucide="pie-chart" style="width:14px;height:14px;color:var(--primary)"></i>
+            تصنيف الملاحظات
+          </div>
+          <div id="f-classify-list"><div class="empty-row">—</div></div>
+        </div>
+        <div class="card">
+          <div class="card-hdr">
+            <i data-lucide="building-2" style="width:14px;height:14px;color:var(--primary)"></i>
+            الملاحظات حسب إدارات وحدات / مستشفيات
+          </div>
+          <div id="f-type-split"><div class="empty-row">—</div></div>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:12px 14px 10px;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+            <i data-lucide="list" style="width:14px;height:14px;color:var(--primary)"></i>
+            تفاصيل الملاحظات
+          </div>
+          <span style="font-size:.68rem;color:var(--text-3)" id="f-count-lbl"></span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>الجهة</th><th>النوع</th><th>التاريخ</th>
+                <th>القسم</th><th>الكود</th><th>التصنيف</th>
+                <th>الخطورة</th><th>الحالة</th><th>الموظف</th>
+              </tr>
+            </thead>
+            <tbody id="f-tbody">
+              <tr><td colspan="10" class="empty-row">لا توجد ملاحظات</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: INOUT ══ -->
+  <div class="tab-pane" id="tab-inout">
+    <div class="wrap" style="margin-top:14px">
+      <div class="mkrow" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px" id="io-mkrow"></div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px">
+        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+          <i data-lucide="layers" style="width:14px;height:14px;color:var(--primary)"></i>
+          المعاملات حسب النوع
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>نوع المعاملة</th><th>الإجمالي</th>
+                <th>منجزة</th><th>قيد التنفيذ</th>
+                <th style="min-width:130px">التزام SLA</th>
+              </tr>
+            </thead>
+            <tbody id="io-type-tbody">
+              <tr><td colspan="5" class="empty-row">لا توجد معاملات</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: REPORTS ══ -->
+  <div class="tab-pane" id="tab-reports">
+    <div class="wrap" style="margin-top:14px">
+      <div class="mkrow" style="grid-template-columns:repeat(2,1fr);margin-bottom:12px" id="rp-mkrow"></div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px">
+        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+          <i data-lucide="file-bar-chart" style="width:14px;height:14px;color:var(--primary)"></i>
+          التقارير حسب النوع
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>نوع التقرير</th><th>العدد</th>
+                <th style="min-width:120px">النسبة</th>
+              </tr>
+            </thead>
+            <tbody id="rp-tbody">
+              <tr><td colspan="3" class="empty-row">لا توجد تقارير</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-hdr">
+          <i data-lucide="message-circle" style="width:14px;height:14px;color:var(--primary)"></i>
+          الشكاوى وبلاغات وكيل الوزارة والنيابة
+        </div>
+        <div id="complaints-block">
+          <div class="srow"><span class="slbl">فحص الشكاوى الواردة</span><span class="sval" id="sv-complaints">—</span></div>
+          <div class="srow"><span class="slbl">المخالفات المحالة للشؤون القانونية</span><span class="sval" id="sv-legal">—</span></div>
+          <div class="srow"><span class="slbl">التصعيدات الوزارية</span><span class="sval" id="sv-ministerial">—</span></div>
+          <div class="srow"><span class="slbl">إجمالي التصعيدات الإدارية والقانونية</span><span class="sval" id="sv-escal-total">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: ESCALATIONS ══ -->
+  <div class="tab-pane" id="tab-escal">
+    <div class="wrap" style="margin-top:14px">
+      <div class="mkrow" style="grid-template-columns:repeat(2,1fr);margin-bottom:12px" id="e-mkrow"></div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+          <i data-lucide="alert-triangle" style="width:14px;height:14px;color:#d97706"></i>
+          سجل التصعيدات
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>رقم CAR</th><th>الجهة</th>
+                <th>نوع التصعيد</th><th>التاريخ</th>
+              </tr>
+            </thead>
+            <tbody id="e-tbody">
+              <tr><td colspan="4" class="empty-row">لا توجد تصعيدات</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tabs-wrap -->
+
+<nav class="bottom-nav hidden" id="bottom-nav"></nav>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/nav.js"></script>
+<script src="assets/js/dashboard.js"></script>
+</body>
+</html>

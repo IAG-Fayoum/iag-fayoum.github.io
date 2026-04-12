@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <script>location.replace('findings.html');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <title>الإجراءات التصحيحية | IAG System</title>
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/theme.css">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        :root { --primary: #0f766e; }
+
+        /* HEADER */
+        .main-header {
+            background: #020617;
+            background-image: radial-gradient(circle at top right, #0f766e 0%, transparent 40%), radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
+            color: white; padding: 1.5rem 1.5rem 5rem; position: relative; z-index: 10;
+            padding-top: max(1.5rem, env(safe-area-inset-top));
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; }
+        .header-btn { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; display: flex; align-items: center; justify-content: center; color: white; }
+        .header-btn:hover { background: rgba(255,255,255,0.2); }
+        .dept-title { font-size: 1rem; font-weight: 800; text-align: center; margin-top: 6px; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; font-family: sans-serif; }
+
+        /* FILTER CARD */
+        .filter-container {
+            margin: -3.5rem 1rem 1.5rem; position: relative; z-index: 20;
+            background: rgba(255,255,255,0.97); backdrop-filter: blur(20px);
+            border-radius: 20px; padding: 1.25rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid #fff;
+        }
+        @media (min-width: 1024px) { .filter-container { max-width: 1100px; margin: -3.5rem auto 1.5rem; } }
+
+        .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (min-width: 768px) { .filter-grid { grid-template-columns: 1fr 1fr 1fr auto; align-items: end; } }
+
+        .f-label { font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; display: block; }
+        .f-input {
+            width: 100%; height: 44px; border: 2px solid #f1f5f9; border-radius: 12px;
+            font-size: 0.88rem; font-weight: 600; outline: none; background: #f8fafc;
+            color: #334155; transition: 0.2s; padding: 0 10px; font-family: 'Cairo', sans-serif;
+        }
+        .f-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
+
+        .btn-refresh {
+            height: 44px; padding: 0 16px; background: var(--primary); color: white;
+            border: none; border-radius: 12px; font-family: 'Cairo', sans-serif; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap;
+        }
+        .btn-refresh:hover { background: #0d6b63; }
+
+        /* RESULTS BAR */
+        .results-bar {
+            padding: 0 1rem 0.75rem; max-width: 1100px; margin: 0 auto;
+            font-size: 0.8rem; font-weight: 700; color: #64748b;
+        }
+
+        /* SECTION CARDS */
+        .cards-container { padding: 0 1rem 2rem; max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+        @media (min-width: 1024px) { .cards-container { display: grid; grid-template-columns: repeat(2, 1fr); } }
+
+        .section-card {
+            background: white; border-radius: 18px; border: 1px solid #e2e8f0;
+            border-right: 5px solid var(--primary); overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04); transition: 0.2s;
+        }
+        .section-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        .section-card.status-مفتوح  { border-right-color: #dc2626; }
+        .section-card.status-جاري   { border-right-color: #d97706; }
+        .section-card.status-مغلق   { border-right-color: #059669; }
+        .section-card.status-معلق   { border-right-color: #7c3aed; }
+
+        .card-header {
+            padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid #f1f5f9;
+            display: flex; justify-content: space-between; align-items: center; gap: 8px;
+        }
+        .car-id-badge { background: #f0fdfa; color: var(--primary); font-size: 0.8rem; font-weight: 900; padding: 3px 10px; border-radius: 20px; border: 1px solid #ccfbf1; white-space: nowrap; }
+        .unit-name { font-size: 0.85rem; font-weight: 800; color: #1e293b; }
+        .section-name { font-size: 0.75rem; color: #64748b; font-weight: 700; margin-top: 2px; }
+
+        .card-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+        /* Findings */
+        .findings-block { background: #fefce8; border: 1px solid #fef08a; border-radius: 10px; padding: 10px 12px; }
+        .findings-label { font-size: 0.7rem; font-weight: 800; color: #92400e; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+        .findings-text { font-size: 0.85rem; color: #1e293b; line-height: 1.6; }
+
+        /* Portal response */
+        .portal-block { border-radius: 10px; padding: 10px 12px; }
+        .portal-block.has-response { background: #f0fdf4; border: 1px solid #bbf7d0; }
+        .portal-block.no-response  { background: #f8fafc; border: 1px solid #e2e8f0; }
+        .portal-label { font-size: 0.7rem; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .badge-replied { background: #d1fae5; color: #065f46; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+        .badge-no-reply { background: #f1f5f9; color: #94a3b8; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+        .portal-text { font-size: 0.82rem; color: #374151; line-height: 1.5; }
+
+        /* Status + Note */
+        .form-label { font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; display: block; }
+        .status-select {
+            width: 100%; height: 40px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+            font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 700;
+            background: #f8fafc; color: #1e293b; outline: none; padding: 0 10px;
+            transition: 0.2s; cursor: pointer;
+        }
+        .status-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); background: white; }
+
+        .hold-reason-block { margin-top: 8px; }
+        .f-text { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 8px 12px; font-family: 'Cairo', sans-serif; font-size: 0.85rem; outline: none; background: #f8fafc; color: #1e293b; transition: 0.2s; resize: vertical; min-height: 70px; }
+        .f-text:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); background: white; }
+        .f-text.required-field { border-color: #fca5a5; background: #fff5f5; }
+
+        .card-footer { padding: 12px 16px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; }
+        .btn-save {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px;
+            background: var(--primary); color: white; border: none; border-radius: 10px;
+            font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 800;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-save:hover { background: #0d6b63; transform: translateY(-1px); }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* SIDE MENU */
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+        .side-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .menu-open .side-menu { right: 0; }
+        .menu-open .side-menu-overlay { opacity: 1; pointer-events: auto; }
+
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 90; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 0.65rem; font-weight: 600; width: 60px; }
+        .nav-btn.active { color: var(--primary); }
+
+        .loader-box { text-align: center; padding: 4rem; color: #94a3b8; }
+        .empty-box { text-align: center; padding: 3rem; color: #64748b; background: white; border-radius: 16px; border: 1px dashed #e2e8f0; }
+        .hidden { display: none !important; }
+
+        .toast {
+            position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%);
+            background: #0f766e; color: white; padding: 10px 22px; border-radius: 12px;
+            font-size: 0.85rem; font-weight: 700; z-index: 300; display: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .toast.show { display: block; animation: fadeIn 0.2s; }
+        .toast.error { background: #dc2626; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="side-menu-overlay" onclick="toggleMenu()" id="menu-overlay"></div>
+    <aside class="side-menu" id="side-menu">
+        <div class="p-6 bg-teal-50 border-b border-teal-100 text-center">
+            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
+                <i data-lucide="user" class="w-8 h-8 text-teal-700"></i>
+            </div>
+            <h3 class="font-bold text-teal-900 text-sm" id="menu-user">...</h3>
+            <p class="text-xs text-teal-600" id="menu-role">...</p>
+        </div>
+        <nav class="flex-1 p-4 space-y-2" id="side-nav"></nav>
+        <div class="p-4 border-t">
+            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-lg text-sm">
+                <i data-lucide="log-out" class="w-5 h-5"></i> تسجيل خروج
+            </button>
+        </div>
+    </aside>
+
+    <header class="main-header">
+        <div class="max-w-[1100px] mx-auto">
+            <div class="header-top">
+                <button onclick="toggleMenu()" class="header-btn">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <div class="text-center">
+                    <div class="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-xs font-bold text-teal-100 mb-2 border border-white/10">
+                        <i data-lucide="clipboard-check" class="w-3 h-3"></i> الإجراءات التصحيحية
+                    </div>
+                    <h1 class="dept-title">CAR — الأقسام والملاحظات</h1>
+                    <p class="dept-subtitle">Corrective Action Reports</p>
+                </div>
+                <button onclick="window.location.href='notifications.html'" class="header-btn relative">
+                    <i data-lucide="bell" class="w-6 h-6"></i>
+                    <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- FILTER CARD -->
+    <div class="filter-container">
+        <div class="filter-grid">
+            <div>
+                <label class="f-label">الإدارة الصحية</label>
+                <select id="f-admin" class="f-input" onchange="onAdminChange()">
+                    <option value="">كل الإدارات</option>
+                </select>
+            </div>
+            <div>
+                <label class="f-label">الوحدة</label>
+                <select id="f-unit" class="f-input" onchange="applyFilters()">
+                    <option value="">كل الوحدات</option>
+                </select>
+            </div>
+            <div>
+                <label class="f-label">الحالة</label>
+                <select id="f-status" class="f-input" onchange="applyFilters()">
+                    <option value="">الكل</option>
+                    <option value="مفتوح">مفتوح</option>
+                    <option value="جاري">جاري</option>
+                    <option value="مغلق">مغلق</option>
+                    <option value="معلق">معلق</option>
+                </select>
+            </div>
+            <div>
+                <label class="f-label text-transparent hidden md:block">.</label>
+                <button onclick="reload()" class="btn-refresh">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i> تحديث
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="results-bar" id="results-bar"></div>
+
+    <div class="cards-container" id="cards-container">
+        <div class="loader-box col-span-2">
+            <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto mb-3 text-teal-600"></i>
+            <p class="font-bold">جاري تحميل البيانات...</p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <nav class="bottom-nav lg:hidden" id="bottom-nav"></nav>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/nav.js"></script>
+    <script>
+        lucide.createIcons();
+
+        let allSections = [];
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (typeof auth === 'undefined') { window.location.href = 'index.html'; return; }
+            const user = auth.checkAuth();
+            if (!user) { window.location.href = 'index.html'; return; }
+
+            // مراجع فني only — redirect أي دور آخر
+            const r = user.role || '';
+            if (r === 'مدير' || r === 'Admin' || r === 'منسق') {
+                window.location.href = 'coordinator.html';
+                return;
+            }
+            if (!r || r.trim() === '') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            currentUser = user;
+            document.getElementById('menu-user').textContent = user.name;
+            document.getElementById('menu-role').textContent = user.role;
+
+            await loadSections();
+        });
+
+        function toggleMenu() { document.body.classList.toggle('menu-open'); }
+        function logout() { localStorage.removeItem('iag_user'); localStorage.removeItem('iag_last_page'); window.location.href = 'index.html'; }
+
+        async function loadSections() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = `
+                <div class="loader-box col-span-2">
+                    <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto mb-3 text-teal-600"></i>
+                    <p class="font-bold">جاري تحميل البيانات...</p>
+                </div>`;
+            lucide.createIcons();
+
+            try {
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getCARSections' })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    allSections = data.sections || [];
+                    populateDropdowns();
+                    applyFilters();
+                } else {
+                    container.innerHTML = `<div class="empty-box"><p class="font-bold">${data.error || 'لا توجد بيانات'}</p></div>`;
+                }
+            } catch (e) {
+                container.innerHTML = `<div class="empty-box text-red-500 col-span-2"><i data-lucide="wifi-off" class="w-8 h-8 mx-auto mb-2"></i><p class="font-bold">خطأ في الاتصال بالخادم</p></div>`;
+                lucide.createIcons();
+            }
+        }
+
+        function reload() { allSections = []; loadSections(); }
+
+        function populateDropdowns() {
+            // الإدارات الصحية
+            const admins = [...new Set(allSections.map(s => s.admin_area).filter(Boolean))].sort();
+            document.getElementById('f-admin').innerHTML =
+                '<option value="">كل الإدارات</option>' +
+                admins.map(a => `<option value="${a}">${a}</option>`).join('');
+            // وحدات — كل الوحدات بدون فلتر
+            populateUnitDropdown('');
+        }
+
+        function populateUnitDropdown(adminFilter) {
+            const src = adminFilter
+                ? allSections.filter(s => s.admin_area === adminFilter)
+                : allSections;
+            const units = [...new Set(src.map(s => s.unit_name).filter(Boolean))].sort();
+            document.getElementById('f-unit').innerHTML =
+                '<option value="">كل الوحدات</option>' +
+                units.map(u => `<option value="${u}">${u}</option>`).join('');
+        }
+
+        function onAdminChange() {
+            const adminVal = document.getElementById('f-admin').value;
+            populateUnitDropdown(adminVal);
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const adminFilter  = document.getElementById('f-admin').value;
+            const unitFilter   = document.getElementById('f-unit').value;
+            const statusFilter = document.getElementById('f-status').value;
+
+            let filtered = allSections;
+            if (adminFilter)  filtered = filtered.filter(s => s.admin_area === adminFilter);
+            if (unitFilter)   filtered = filtered.filter(s => s.unit_name  === unitFilter);
+            if (statusFilter) filtered = filtered.filter(s => (s.staff_status || 'مفتوح') === statusFilter);
+
+            document.getElementById('results-bar').textContent =
+                filtered.length ? `عرض ${filtered.length} قسم` : '';
+
+            renderCards(filtered);
+        }
+
+        function renderCards(sections) {
+            const container = document.getElementById('cards-container');
+            if (!sections.length) {
+                container.innerHTML = `<div class="empty-box col-span-2"><p class="font-bold">لا توجد أقسام بهذه الفلاتر</p></div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = sections.map((s, idx) => buildCard(s, idx)).join('');
+            lucide.createIcons();
+        }
+
+        function buildCard(s, idx) {
+            const status = s.staff_status || 'مفتوح';
+            const hasResponse = s.portal_response && s.portal_response.trim() !== '';
+            const isMaglaq = status === 'معلق';
+
+            const portalBlock = hasResponse
+                ? `<div class="portal-block has-response">
+                    <div class="portal-label">
+                        <i data-lucide="message-circle" style="width:13px;height:13px;color:#059669"></i>
+                        <span class="font-bold text-green-800" style="font-size:0.7rem">رد الإدارة الصحية</span>
+                        <span class="badge-replied">تم الرد</span>
+                    </div>
+                    <p class="portal-text">${escHtml(s.portal_response)}</p>
+                  </div>`
+                : `<div class="portal-block no-response">
+                    <div class="portal-label">
+                        <i data-lucide="message-circle-off" style="width:13px;height:13px;color:#94a3b8"></i>
+                        <span class="font-bold text-gray-400" style="font-size:0.7rem">رد الإدارة الصحية</span>
+                        <span class="badge-no-reply">لا يوجد رد</span>
+                    </div>
+                  </div>`;
+
+            const statusOptions = ['مفتوح','جاري','مغلق','معلق'];
+            const statusSel = `<select class="status-select" id="status-${idx}" onchange="onStatusChange(${idx})">
+                ${statusOptions.map(o => `<option value="${o}" ${status === o ? 'selected' : ''}>${o}</option>`).join('')}
+            </select>`;
+
+            const holdDisplay = isMaglaq ? '' : 'display:none';
+            const holdRequired = isMaglaq ? 'required-field' : '';
+
+            return `
+            <div class="section-card status-${status}" id="card-${idx}" data-car-id="${escAttr(s.car_id)}" data-section="${escAttr(s.section_name)}">
+                <div class="card-header">
+                    <div>
+                        <div class="unit-name">${escHtml(s.unit_name || '—')}</div>
+                        <div class="section-name">${escHtml(s.section_name || '—')}</div>
+                        ${s.admin_area ? `<div style="font-size:0.7rem;color:#0f766e;font-weight:700;margin-top:2px">${escHtml(s.admin_area)}</div>` : ''}
+                    </div>
+                    <span class="car-id-badge">${escHtml(s.car_id || '—')}</span>
+                </div>
+                <div class="card-body">
+                    <div class="findings-block">
+                        <div class="findings-label">
+                            <i data-lucide="alert-triangle" style="width:13px;height:13px"></i> الملاحظات
+                        </div>
+                        <p class="findings-text">${escHtml(s.findings_text || 'لا توجد ملاحظات')}</p>
+                    </div>
+
+                    ${portalBlock}
+
+                    <div>
+                        <label class="form-label">الحالة</label>
+                        ${statusSel}
+                        <div id="hold-reason-block-${idx}" class="hold-reason-block" style="${holdDisplay}">
+                            <label class="form-label" style="margin-top:8px">سبب التعليق <span class="text-red-500">*</span></label>
+                            <input type="text" id="hold-reason-${idx}" class="f-text ${holdRequired}" placeholder="اكتب سبب التعليق..." style="min-height:unset;height:40px;resize:none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="form-label">ملاحظات الموظف</label>
+                        <textarea id="note-${idx}" class="f-text" placeholder="أي ملاحظات إضافية...">${escHtml(s.staff_note || '')}</textarea>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn-save" id="btn-${idx}" onclick="saveSection(${idx})">
+                        <i data-lucide="save" style="width:15px;height:15px"></i> حفظ
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        function onStatusChange(idx) {
+            const val = document.getElementById('status-' + idx).value;
+            const block = document.getElementById('hold-reason-block-' + idx);
+            const field = document.getElementById('hold-reason-' + idx);
+            if (val === 'معلق') {
+                block.style.display = '';
+                field.classList.add('required-field');
+            } else {
+                block.style.display = 'none';
+                field.classList.remove('required-field');
+                field.value = '';
+            }
+        }
+
+        async function saveSection(idx) {
+            const card    = document.getElementById('card-' + idx);
+            const carId   = card.dataset.carId;
+            const section = card.dataset.section;
+            const newStatus  = document.getElementById('status-' + idx).value;
+            const holdReason = document.getElementById('hold-reason-' + idx)?.value?.trim() || '';
+            const staffNote  = document.getElementById('note-' + idx).value.trim();
+            const btn        = document.getElementById('btn-' + idx);
+
+            if (newStatus === 'معلق' && !holdReason) {
+                document.getElementById('hold-reason-' + idx).focus();
+                showToast('يرجى إدخال سبب التعليق', true);
+                return;
+            }
+
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="animate-pulse">جاري الحفظ...</span>';
+
+            try {
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'updateSectionStatus',
+                        carId: carId,
+                        sectionName: section,
+                        newStatus: newStatus,
+                        holdReason: holdReason,
+                        staffNote: staffNote,
+                        updatedBy: currentUser.name
+                    })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('✅ تم حفظ التعديل');
+                    // Update card border color
+                    card.className = card.className.replace(/status-\S+/, 'status-' + newStatus);
+                } else {
+                    showToast('❌ ' + (data.error || 'فشل الحفظ'), true);
+                }
+            } catch (e) {
+                showToast('❌ خطأ في الاتصال', true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+                lucide.createIcons();
+            }
+        }
+
+        function showToast(msg, isError) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => { t.className = 'toast'; }, 2800);
+        }
+
+        function escHtml(str) {
+            return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+        function escAttr(str) {
+            return String(str || '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        }
+    </script>
+</body>
+</html>

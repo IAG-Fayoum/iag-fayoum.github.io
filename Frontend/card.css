@@ -1,0 +1,270 @@
+/* ═══════════════════════════════════════════════════════
+   IAG SYSTEM — UNIFIED TASK CARD
+   الكارت الموحد لكل صفحات النظام
+   يُستدعى بنفس renderCard(task, role) في كل صفحة
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+    --c-new:      #3b82f6;
+    --c-pending:  #16a34a;
+    --c-approved: #047857;
+    --c-followup: #6b7280;
+    --c-late:     #dc2626;
+    --c-primary:  #0f766e;
+}
+
+/* ── الكارت الأساسي ── */
+.iag-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    border-right: 5px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.15s, box-shadow 0.15s;
+    overflow: hidden;
+    font-family: 'Cairo', sans-serif;
+}
+.iag-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.09);
+}
+
+/* ── ألوان البورد الجانبي حسب الحالة ── */
+.iag-card.s-new      { border-right-color: var(--c-new); }
+.iag-card.s-pending  { border-right-color: var(--c-pending); }
+.iag-card.s-approved { border-right-color: var(--c-approved); }
+.iag-card.s-followup { border-right-color: var(--c-followup); }
+.iag-card.s-late     { border-right-color: var(--c-late); }
+
+/* ── رأس الكارت ── */
+.iag-card-head {
+    padding: 12px 14px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── بادجات النوع ── */
+.iag-type-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+.tp-in   { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.tp-out  { background: #f0fdf4; color: #047857; border: 1px solid #bbf7d0; }
+.tp-cmp  { background: #faf5ff; color: #7c3aed; border: 1px solid #e9d5ff; }
+.tp-mro  { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+
+/* ── بادجات الحالة ── */
+.iag-status-pill {
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+.sp-new      { background: #eff6ff; color: var(--c-new);      border: 1px solid #bfdbfe; }
+.sp-pending  { background: #f0fdf4; color: var(--c-pending);   border: 1px solid #bbf7d0; }
+.sp-approved { background: #ecfdf5; color: var(--c-approved);  border: 1px solid #a7f3d0; }
+.sp-followup { background: #f8fafc; color: var(--c-followup);  border: 1px solid #e2e8f0; }
+.sp-late     { background: #fef2f2; color: var(--c-late);     border: 1px solid #fecaca; }
+
+/* ── جسم الكارت ── */
+.iag-card-body {
+    padding: 2px 14px 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.iag-subject {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.55;
+}
+
+.iag-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: #475569;
+    font-weight: 600;
+}
+.iag-row svg { flex-shrink: 0; color: var(--c-primary); }
+.iag-row .mono {
+    margin-right: auto;
+    font-size: 0.65rem;
+    color: #94a3b8;
+    font-family: monospace;
+    font-weight: 700;
+}
+
+/* ── بادج الأهمية ── */
+.iag-imp {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.66rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+.imp-high   { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.imp-medium { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+.imp-normal { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+
+/* ── بادج القضية ── */
+.iag-case {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.66rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: #faf5ff;
+    color: #7c3aed;
+    border: 1px solid #e9d5ff;
+}
+
+/* ── بادج ناقص ── */
+.iag-missing-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+/* ── صف المرفقات ── */
+.iag-attachments {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 8px 14px 4px;
+    border-top: 1px solid #f8fafc;
+}
+.iag-att {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    transition: 0.15s;
+    text-decoration: none;
+}
+.att-has    { background: #f0fdf4; color: #065f46; border-color: #a7f3d0; }
+.att-has:hover { background: #dcfce7; }
+.att-warn   { background: #fef9c3; color: #92400e; border-color: #fde68a; }
+.att-warn:hover { background: #fef08a; }
+.att-none   { background: #f8fafc; color: #cbd5e1; border-color: #e2e8f0; cursor: default; pointer-events: none; }
+.att-action { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+.att-action:hover { background: #dbeafe; }
+
+/* ── Footer actions ── */
+.iag-card-footer {
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.iag-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #475569;
+    font-family: 'Cairo', sans-serif;
+    transition: 0.15s;
+    text-decoration: none;
+}
+
+/* أنواع الأزرار */
+.iag-btn-manage  { color: #0f766e; border-color: #99f6e4; background: #f0fdfa; }
+.iag-btn-manage:hover  { background: #ccfbf1; }
+
+.iag-btn-details { color: #475569; border-color: #e5e7eb; background: #f8fafc; }
+.iag-btn-details:hover { background: #f1f5f9; }
+
+.iag-btn-word    { color: #1d4ed8; border-color: #bfdbfe; background: #eff6ff; }
+.iag-btn-word:hover    { background: #dbeafe; }
+
+.iag-btn-assign  { color: #dc2626; border-color: #fecaca; background: #fef2f2; }
+.iag-btn-assign:hover  { background: #fee2e2; }
+
+.iag-btn-disabled {
+    color: #94a3b8; border-color: #e2e8f0; background: #f8fafc;
+    cursor: default; pointer-events: none;
+}
+
+/* ── حقول التعديل المباشر (للمنسق) ── */
+.iag-edit-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+.iag-edit-input {
+    flex: 1;
+    height: 36px;
+    border: 1.5px solid #fde68a;
+    border-radius: 8px;
+    padding: 0 10px;
+    font-size: 0.85rem;
+    font-family: 'Cairo', sans-serif;
+    color: #1e293b;
+    background: #fffbeb;
+    outline: none;
+    transition: 0.2s;
+}
+.iag-edit-input:focus { border-color: var(--c-primary); background: white; box-shadow: 0 0 0 2px rgba(15,118,110,.1); }
+.iag-edit-save {
+    height: 36px;
+    padding: 0 14px;
+    background: var(--c-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    white-space: nowrap;
+    transition: 0.15s;
+}
+.iag-edit-save:hover    { background: #0d6b63; }
+.iag-edit-save:disabled { background: #94a3b8; cursor: not-allowed; }

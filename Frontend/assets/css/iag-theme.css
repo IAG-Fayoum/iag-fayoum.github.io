@@ -1,0 +1,132 @@
+/* ═══════════════════════════════════════════════════════════
+   IAG FAYOUM — DESIGN SYSTEM
+   وزارة الصحة والسكان — إدارة المراجعة الداخلية والحوكمة
+   ═══════════════════════════════════════════════════════════
+   VERSION: 2.0  |  THEME: Premium Enterprise Light Mode
+   ─────────────────────────────────────────────────────────
+   BRAND COLORS:
+     Header BG    : #0a5c56  (Teal Dark)
+     Sidebar BG   : #ffffff  (White)
+     Sidebar Head : #0a5c56  (Same as Header)
+     Body BG      : #f1f5f9  (Slate 100)
+     Primary CTA  : #0f766e  (Teal 700)
+   STATUS COLORS:
+     Late     🔴 : #dc2626
+     New      🔵 : #2563eb
+     Pending  🟠 : #d97706
+     Approved 🟢 : #059669
+     Followup 🟣 : #7c3aed
+   ═══════════════════════════════════════════════════════════ */
+
+/* ══ BASE ══ */
+* { box-sizing: border-box; }
+body {
+    font-family: 'Cairo', sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+    font-size: 14px;
+    padding-bottom: 100px;
+    -webkit-tap-highlight-color: transparent;
+    margin: 0;
+}
+
+/* ══ HEADER ══ */
+.page-header {
+    background: #0a5c56;
+    background-image:
+        radial-gradient(ellipse at top right, rgba(20,184,166,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse at bottom left, rgba(4,120,115,0.3) 0%, transparent 60%);
+    padding: max(1.25rem, env(safe-area-inset-top)) 1.5rem 4.5rem;
+    position: relative; z-index: 10;
+    box-shadow: 0 4px 24px rgba(5,50,45,0.4);
+}
+.header-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.95);
+    padding: 4px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.25); backdrop-filter: blur(8px);
+    margin-bottom: 10px; letter-spacing: 0.3px;
+}
+.header-title {
+    font-size: 1.15rem; font-weight: 900; color: white;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-bottom: 3px; line-height: 1.3;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.header-logo {
+    width: 34px; height: 34px; object-fit: contain;
+    mix-blend-mode: screen; flex-shrink: 0;
+    border-radius: 4px; opacity: 0.92;
+}
+.header-sub {
+    font-size: 0.72rem; color: rgba(255,255,255,0.6);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 0; font-family: sans-serif;
+}
+
+/* ══ SIDEBAR (Floating Card Style) ══ */
+.side-menu {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: -4px 10px 30px rgba(0,0,0,0.08) !important;
+    /* Floating style */
+    top: 1.25rem !important;
+    height: calc(100vh - 2.5rem) !important;
+    bottom: auto !important;
+    border-radius: 20px !important;
+    right: -320px !important; /* hidden by default */
+}
+.side-menu.open {
+    right: 1.25rem !important; /* slide in with gap */
+}
+.side-menu-header {
+    background: #0a5c56 !important;
+    border-bottom: none !important;
+    padding: 1.25rem 1rem !important;
+    border-radius: 20px 20px 0 0 !important;
+    flex-shrink: 0 !important;
+}
+#menu-user { color: white !important; font-size: 0.95rem !important; font-weight: 900 !important; }
+#menu-role { color: #99f6e4 !important; font-size: 0.72rem !important; font-weight: 800 !important; letter-spacing: 0.5px; }
+.side-menu-body { padding: 0.5rem 0 !important; background: white !important; flex: 1 !important; overflow-y: auto !important; }
+.menu-item {
+    display: flex !important; align-items: center !important; gap: 12px !important;
+    color: #334155 !important; font-weight: 700 !important;
+    padding: 11px 20px !important; font-size: 0.88rem !important;
+    border-right: 3px solid transparent !important;
+    transition: all 0.15s !important; background: transparent !important;
+    text-decoration: none !important; font-family: 'Cairo', sans-serif !important;
+    border-radius: 0 !important; width: 100% !important; box-sizing: border-box !important;
+}
+.menu-item svg { color: #94a3b8 !important; flex-shrink: 0; transition: color 0.15s; }
+.menu-item:hover {
+    background: #f0fdf9 !important;
+    color: #0f766e !important;
+    border-right-color: #14b8a6 !important;
+}
+.menu-item:hover svg { color: #0f766e !important; }
+.menu-item.active {
+    background: #f0fdfa !important;
+    color: #0f766e !important;
+    border-right-color: #0f766e !important;
+    font-weight: 900 !important;
+}
+.menu-item.active svg { color: #0f766e !important; }
+.menu-footer { 
+    border-top: 1px solid #f1f5f9 !important; 
+    padding: 0.75rem !important; 
+    background: #f8fafc !important; 
+    border-radius: 0 0 20px 20px !important;
+}
+.menu-overlay { background: rgba(15,23,42,0.4) !important; backdrop-filter: blur(3px) !important; }
+
+/* ══ iOS SAFE AREA ══ */
+/* Bottom nav: الارتفاع يزيد للأسفل — الأيقونات تبقى في مكانها */
+.bottom-nav {
+    height: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+}
+/* الـ body يترك مساحة كافية للأسفل */
+body {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+}

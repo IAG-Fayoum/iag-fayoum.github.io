@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <title>ملف الموظف | IAG System</title>
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/iag-theme.css">
+    <link rel="stylesheet" href="card.css">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 14px; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        :root { --primary: #0f766e; }
+
+        /* HEADER */
+        .main-header { background: #020617; background-image: radial-gradient(circle at top right, #0f766e 0%, transparent 40%), radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%); color: white; padding: 1rem 1.5rem 3.5rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; position: relative; z-index: 10; padding-top: max(1rem, env(safe-area-inset-top)); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .header-btn { padding: 8px; color: white; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .header-btn:hover { background: rgba(255,255,255,0.2); }
+        .breadcrumbs { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #ccfbf1; margin-bottom: 6px; opacity: 0.9; }
+        .breadcrumbs span { opacity: 0.7; }
+        .breadcrumbs strong { font-weight: 700; color: white; }
+        .dept-title { font-size: 1rem; font-weight: 800; line-height: 1.2; text-align: center; }
+        .dept-subtitle { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-align: center; direction: ltr; margin-top: 2px; font-family: sans-serif; }
+
+        /* FILTER */
+        .filter-container { margin: -2.5rem 1rem 1rem; position: relative; z-index: 20; background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+        .filter-grid { display: flex; flex-direction: column; gap: 12px; }
+        @media (min-width: 1024px) { .filter-container { max-width: 1300px; margin: -2.5rem auto 1rem; } .filter-grid { flex-direction: row; align-items: flex-end; } .filter-item-search { flex: 2; } .filter-item { flex: 1; } }
+        .f-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 6px; display: block; }
+        .f-input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; background: #fff; color: #1e293b; transition: 0.2s; padding: 0 8px; font-family: 'Cairo', sans-serif; }
+        .f-input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
+        .search-wrapper { position: relative; }
+        .search-input { padding-right: 12px; padding-left: 40px; background-color: #f8fafc; }
+        .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; color: #94a3b8; pointer-events: none; }
+        .btn-print { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 10px; height: 44px; width: 44px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .btn-print:hover { background: #e2e8f0; color: #0f766e; border-color: #0f766e; }
+
+        /* STATS */
+        .stats-wrapper { padding: 0 1rem 1rem; max-width: 1300px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+        .stats-row-big { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stats-row-small { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .stat-card-big { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px; text-align: center; cursor: pointer; height: 90px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.15s; }
+        .stat-card-big.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
+        .stat-card-big.active .lbl, .stat-card-big.active .num { color: #0f766e !important; }
+        .stat-card-big .num { font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+        .stat-card-big .lbl { font-size: 0.85rem; font-weight: 700; color: #64748b; }
+        .stat-card-small { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px; text-align: center; cursor: pointer; min-height: 75px; display: flex; flex-direction: column; justify-content: center; transition: 0.15s; }
+        .stat-card-small.active { background: #ccfbf1 !important; border-color: #0f766e !important; border-width: 2px !important; outline: 3px solid rgba(15,118,110,0.25); outline-offset: 2px; }
+        .stat-card-small.active .lbl, .stat-card-small.active .num { color: #0f766e !important; }
+        .stat-card-small .num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+        .stat-card-small .lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; }
+        .txt-total { color: #334155; } .txt-late { color: #dc2626; } .txt-new { color: #3b82f6; }
+        .txt-pending { color: #16a34a; } .txt-approved { color: #047857; } .txt-followup { color: #6b7280; }
+
+        /* TABS */
+        .tabs-bar { max-width: 1300px; margin: 0 1rem 10px; background: white; border: 1px solid #e2e8f0; border-radius: 14px; display: flex; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        @media (min-width: 1024px) { .tabs-bar { margin: 0 auto 10px; } }
+        .tab-btn { flex: 1; height: 46px; font-size: 0.82rem; font-weight: 700; color: #64748b; background: none; border: none; cursor: pointer; font-family: 'Cairo', sans-serif; border-bottom: 2.5px solid transparent; transition: 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0fdfa; }
+        .tab-btn:not(:last-child) { border-left: 1px solid #f1f5f9; }
+
+        /* CARDS GRID */
+        .cards-container { padding: 0 1rem 5rem; display: grid; gap: 12px; max-width: 1300px; margin: 0 auto; grid-template-columns: 1fr; }
+        @media (min-width: 768px)  { .cards-container { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1280px) { .cards-container { grid-template-columns: repeat(3, 1fr); } }
+
+        /* ══ ملفاتي — DRIVE TREE ══ */
+        .files-container { padding: 0 1rem 5rem; max-width: 1300px; margin: 0 auto; }
+
+        /* فلتر الملفات — داخل نفس filter-container */
+        .files-filter-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .files-search-box { flex: 1; min-width: 180px; position: relative; }
+        .files-search-box input { width: 100%; height: 44px; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0 44px 0 12px; font-size: 0.9rem; font-family: 'Cairo', sans-serif; background: #f8fafc; outline: none; color: #1e293b; transition: 0.2s; }
+        .files-search-box input:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); background: white; }
+        .files-search-box .fsi { position: absolute; right: 14px; top: 12px; width: 18px; height: 18px; color: #94a3b8; pointer-events: none; }
+        .type-filter-btn { height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #cbd5e1; background: white; font-size: 0.82rem; font-weight: 700; color: #64748b; cursor: pointer; font-family: 'Cairo', sans-serif; transition: 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+        .type-filter-btn.active-all  { background: #f0fdfa; color: #0f766e; border-color: #99f6e4; }
+        .type-filter-btn.active-insp { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
+        .type-filter-btn.active-comp { background: #faf5ff; color: #7c3aed; border-color: #e9d5ff; }
+
+        /* شجرة الملفات */
+        .tree-section { background: white; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+
+        /* رأس القسم (تقارير المرور / فحص الشكاوى) */
+        .tree-section-head { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+        .tree-section-head.insp { background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-bottom: 1px solid #fed7aa; }
+        .tree-section-head.comp { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-bottom: 1px solid #e9d5ff; }
+        .tree-section-title { font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 9px; }
+        .tree-section-title.insp { color: #c2410c; }
+        .tree-section-title.comp { color: #7c3aed; }
+        .tree-count { font-size: 0.7rem; font-weight: 700; padding: 2px 10px; border-radius: 10px; }
+        .tree-count.insp { background: #fed7aa; color: #92400e; }
+        .tree-count.comp { background: #e9d5ff; color: #6d28d9; }
+
+        /* السنة */
+        .year-row { padding: 10px 16px 10px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #f8fafc; border-bottom: 1px solid #f1f5f9; transition: background 0.15s; }
+        .year-row:hover { background: #f1f5f9; }
+        .year-label { font-size: 0.88rem; font-weight: 800; color: #334155; display: flex; align-items: center; gap: 7px; }
+        .year-count-pill { font-size: 0.65rem; font-weight: 700; background: #e2e8f0; color: #64748b; padding: 1px 8px; border-radius: 10px; }
+
+        /* الشهر */
+        .month-row { padding: 8px 16px 8px 28px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid #f8fafc; transition: background 0.15s; }
+        .month-row:hover { background: #f8fafc; }
+        .month-label { font-size: 0.82rem; font-weight: 700; color: #475569; display: flex; align-items: center; gap: 7px; }
+        .month-count-pill { font-size: 0.63rem; font-weight: 700; background: #ccfbf1; color: #0f766e; padding: 1px 8px; border-radius: 10px; }
+
+        /* الجهة (للمرور فقط) */
+        .entity-row { padding: 7px 16px 7px 36px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid #f8fafc; transition: background 0.15s; }
+        .entity-row:hover { background: #f8fafc; }
+        .entity-label { font-size: 0.8rem; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 6px; }
+        .entity-count-pill { font-size: 0.6rem; font-weight: 700; background: #fff7ed; color: #c2410c; padding: 1px 7px; border-radius: 10px; }
+
+        /* الملفات */
+        .files-list { display: none; }
+        .files-list.open { display: block; }
+
+        .file-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 44px; border-bottom: 1px solid #f8fafc; transition: background 0.1s; }
+        .file-item:last-child { border-bottom: none; }
+        .file-item:hover { background: #f8fafc; }
+        .file-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; }
+        .fi-doc   { background: #eff6ff; }
+        .fi-sheet { background: #f0fdf4; }
+        .fi-pdf   { background: #fef2f2; }
+        .fi-other { background: #f8fafc; }
+        .file-info { flex: 1; min-width: 0; }
+        .file-name { font-size: 0.8rem; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-meta { font-size: 0.63rem; color: #94a3b8; font-weight: 600; margin-top: 2px; }
+        .file-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .btn-file-open { display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid; cursor: pointer; font-family: 'Cairo', sans-serif; transition: 0.15s; white-space: nowrap; }
+        .btn-edit { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+        .btn-edit:hover { background: #dbeafe; }
+        .btn-view { background: #f0fdf4; color: #047857; border-color: #a7f3d0; }
+        .btn-view:hover { background: #dcfce7; }
+
+        /* فولدر مرفقات */
+        .att-folder-row { display: flex; align-items: center; gap: 8px; padding: 7px 16px 7px 44px; background: #fffbeb; border-bottom: 1px solid #fef3c7; cursor: pointer; transition: background 0.15s; }
+        .att-folder-row:hover { background: #fef9c3; }
+        .att-folder-label { font-size: 0.78rem; font-weight: 700; color: #92400e; display: flex; align-items: center; gap: 6px; }
+
+        /* BOTTOM SHEET MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(3px); padding-bottom: env(safe-area-inset-bottom); }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+        @media (min-width: 640px) { .modal-overlay { align-items: center; } }
+        .modal-box { background: white; width: 100%; max-width: 580px; max-height: 90vh; border-radius: 22px 22px 0 0; overflow: hidden; display: flex; flex-direction: column; animation: slideUp 0.28s ease; }
+        @media (min-width: 640px) { .modal-box { border-radius: 18px; width: 95%; max-height: 85vh; animation: fadeIn 0.2s; } }
+        .sheet-handle { width: 40px; height: 4px; background: #e2e8f0; border-radius: 4px; margin: 10px auto 0; flex-shrink: 0; }
+        @media (min-width: 640px) { .sheet-handle { display: none; } }
+        .data-item { border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 6px; }
+        .data-label { font-size: 0.75rem; color: #64748b; font-weight: 700; }
+        .data-val { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
+
+        .loader-box { grid-column: 1/-1; text-align: center; padding: 4rem; color: #94a3b8; }
+        .empty-box { grid-column: 1/-1; text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
+        .empty-files { text-align: center; padding: 3rem; color: #64748b; border: 1px dashed #e2e8f0; border-radius: 12px; background: white; }
+
+        @keyframes fadeIn  { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes spin    { to { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; }
+        .hidden { display: none !important; }
+        .chev { transition: transform 0.2s; }
+        .chev.open { transform: rotate(180deg); }
+    </style>
+</head>
+<body>
+
+<!-- SIDE MENU -->
+<div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
+<aside class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+        <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center">
+                <i data-lucide="user" style="width:20px;height:20px;color:white"></i>
+            </div>
+            <div>
+                <div style="font-weight:900;font-size:0.9rem;color:white" id="menu-user">—</div>
+                <div style="font-size:0.72rem;color:#99f6e4;font-weight:800" id="menu-role"></div>
+            </div>
+        </div>
+    </div>
+    <div class="side-menu-body">
+        <nav id="side-nav"></nav>
+    </div>
+    <div class="menu-footer">
+        <button onclick="logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);gap:8px;justify-content:center">
+            <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
+        </button>
+    </div>
+</aside>
+
+<!-- HEADER -->
+<header class="page-header">
+    <div class="header-top">
+        <button class="header-btn" onclick="toggleMenu()">
+            <i data-lucide="menu" style="width:20px;height:20px"></i>
+        </button>
+        <div class="header-center">
+            <div class="header-badge">
+                <i data-lucide="user" style="width:12px;height:12px"></i>
+                ملفي
+            </div>
+            <h1 class="header-title">
+                <img src="assets/icons/icon-192.png" class="header-logo" alt="شعار الإدارة">
+                إدارة المراجعة الداخلية والحوكمة
+            </h1>
+            <p class="header-sub">Internal Audit &amp; Governance</p>
+            <p class="header-user" id="header-emp-name"></p>
+        </div>
+        <button class="header-btn" onclick="window.location.href='notifications.html'">
+            <i data-lucide="bell" style="width:20px;height:20px"></i>
+            <span class="notif-dot"></span>
+        </button>
+    </div>
+</header>
+
+<!-- FILTER CONTAINER (shared) -->
+<div class="filter-container" id="filter-bar">
+
+    <!-- فلتر مهامي -->
+    <div id="filter-tasks-view" class="filter-grid">
+        <div class="filter-item-search">
+            <label class="f-label">بحث شامل</label>
+            <div class="search-wrapper">
+                <input type="text" id="f-search" class="f-input search-input" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
+                <i data-lucide="search" class="search-icon"></i>
+            </div>
+        </div>
+        <div class="filter-item">
+            <label class="f-label">الجهة</label>
+            <select id="f-source" class="f-input px-2" onchange="applyFilters()">
+                <option value="">كل الجهات</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label class="f-label">من تاريخ</label>
+            <input type="date" id="f-start" class="f-input px-2" onchange="applyFilters()">
+        </div>
+        <div class="filter-item">
+            <label class="f-label">إلى تاريخ</label>
+            <input type="date" id="f-end" class="f-input px-2" onchange="applyFilters()">
+        </div>
+        <div class="flex gap-2 items-end">
+            <button onclick="window.print()" class="btn-print" title="طباعة">
+                <i data-lucide="printer" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- فلتر ملفاتي -->
+    <div id="filter-files-view" class="files-filter-row hidden">
+        <div class="files-search-box">
+            <i data-lucide="search" class="fsi"></i>
+            <input type="text" id="files-search" placeholder="ابحث في ملفاتك..." oninput="renderFilesTree()">
+        </div>
+        <button class="type-filter-btn active-all" id="ftype-all"  onclick="setFileType('all')">الكل</button>
+        <button class="type-filter-btn"            id="ftype-insp" onclick="setFileType('insp')">🔍 مرور</button>
+        <button class="type-filter-btn"            id="ftype-comp" onclick="setFileType('comp')">📣 شكاوى</button>
+    </div>
+
+</div>
+
+<!-- STATS (مهامي فقط) -->
+<div class="stats-wrapper" id="stats-wrapper">
+    <div class="stats-row-big">
+        <div class="stat-card-big active" onclick="filterStatus('')" id="st-total">
+            <span class="num txt-total" id="c-total">0</span><span class="lbl">الإجمالي</span>
+        </div>
+        <div class="stat-card-big" onclick="filterStatus('متأخر')" id="st-late">
+            <span class="num txt-late" id="c-late">0</span><span class="lbl">متأخر</span>
+        </div>
+    </div>
+    <div class="stats-row-small">
+        <div class="stat-card-small" onclick="filterStatus('جديد')" id="st-new">
+            <span class="num txt-new" id="c-new">0</span><span class="lbl">جديد</span>
+        </div>
+        <div class="stat-card-small" onclick="filterStatus('بانتظار')" id="st-pending">
+            <span class="num txt-pending" id="c-pending">0</span><span class="lbl">بانتظار الاعتماد</span>
+        </div>
+        <div class="stat-card-small" onclick="filterStatus('تم')" id="st-approved">
+            <span class="num txt-approved" id="c-approved">0</span><span class="lbl">تم الاعتماد</span>
+        </div>
+        <div class="stat-card-small" onclick="filterStatus('متابعة')" id="st-followup">
+            <span class="num txt-followup" id="c-followup">0</span><span class="lbl">بحاجة متابعة</span>
+        </div>
+    </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+    <button class="tab-btn active" id="tab-tasks" onclick="switchTab('tasks')">
+        <i data-lucide="list-checks" class="w-4 h-4"></i> مهامي
+    </button>
+    <button class="tab-btn" id="tab-myfiles" onclick="switchTab('myfiles')">
+        <i data-lucide="folder-open" class="w-4 h-4"></i> ملفاتي
+    </button>
+</div>
+
+<!-- TASKS VIEW -->
+<div id="view-tasks">
+    <div class="cards-container" id="tasks-list">
+        <div class="loader-box">
+            <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto mb-3 text-teal-600"></i>
+            <p class="font-bold text-gray-500">جاري تحميل مهامك...</p>
+        </div>
+    </div>
+</div>
+
+<!-- ملفاتي VIEW -->
+<div id="view-myfiles" class="hidden">
+    <div class="files-container">
+        <!-- محتوى الشجرة -->
+        <div id="files-tree-content">
+            <div class="empty-files">
+                <i data-lucide="loader-2" style="width:32px;height:32px;display:block;margin:0 auto 10px;color:#0f766e" class="animate-spin"></i>
+                <p class="font-bold">جاري تحميل ملفاتك من Drive...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BOTTOM SHEET MODAL -->
+<div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+        <div class="sheet-handle"></div>
+        <div class="modal-header">
+            <div>
+                <h3 class="font-bold text-lg text-gray-900">تفاصيل المعاملة</h3>
+                <p class="text-xs text-gray-500 font-mono" id="m-id">#...</p>
+            </div>
+            <button onclick="closeModal()" class="p-2 bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="m-content"></div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav lg:hidden" id="bottom-nav"></nav>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/nav.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════
+   IAG SYSTEM — card.js
+   الدالة الموحدة لتوليد الكارت
+   الاستخدام:  container.innerHTML = tasks.map(t => renderCard(t, currentRole)).join('');
+   الأدوار:    'مدير' | 'منسق' | 'موظف'
+   ═══════════════════════════════════════════════════════ */
+
+/* ── ثوابت الجهات القانونية ── */
+const CARD_CASE_ENTITIES = [
+    '\u0627\u0644\u0646\u064A\u0627\u0628\u0629 \u0627\u0644\u0625\u062F\u0627\u0631\u064A\u0629',       // النيابة الإدارية
+    '\u0646\u064A\u0627\u0628\u0629',                                                                    // نيابة
+    '\u0627\u0644\u0634\u0624\u0648\u0646 \u0627\u0644\u0642\u0627\u0646\u0648\u0646\u064A\u0629',       // الشؤون القانونية
+    '\u0634\u0626\u0648\u0646 \u0642\u0627\u0646\u0648\u0646\u064A\u0629',                               // شئون قانونية
+    '\u0634.\u0642',                                                                                     // ش.ق
+    '\u0634 \u0642',                                                                                     // ش ق
+    '\u062F\u064A\u0648\u0627\u0646 \u0627\u0644\u0648\u0632\u0627\u0631\u0629',                         // ديوان الوزارة
+    '\u0647\u064A\u0626\u0629 \u0627\u0644\u0631\u0642\u0627\u0628\u0629 \u0627\u0644\u0625\u062F\u0627\u0631\u064A\u0629', // هيئة الرقابة الإدارية
+    '\u062F\u064A\u0648\u0627\u0646 \u0627\u0644\u0645\u062D\u0627\u0641\u0638\u0629',                   // ديوان المحافظة
+    '\u0627\u0644\u062C\u0647\u0627\u0632 \u0627\u0644\u0645\u0631\u0643\u0632\u064A',                   // الجهاز المركزي
+    '\u0627\u0644\u062A\u0646\u0638\u064A\u0645 \u0648\u0627\u0644\u0625\u062F\u0627\u0631\u0629',       // التنظيم والإدارة
+    '\u0627\u0644\u0645\u062F\u064A\u0631\u064A\u0629 \u0627\u0644\u0645\u0627\u0644\u064A\u0629',       // المديرية المالية
+    '\u0645\u062D\u0644\u064A\u0627\u062A',                                                              // محليات
+    '\u0645\u0643\u062A\u0628 \u0648\u0643\u064A\u0644 \u0627\u0644\u0648\u0632\u0627\u0631\u0629'       // مكتب وكيل الوزارة
+];
+
+/* ════════════════════════════════════════
+   renderCard — الدالة الرئيسية
+   ════════════════════════════════════════ */
+function renderCard(t, role) {
+    const isCoord   = (role === 'مدير' || role === 'منسق');
+    const isEmployee= (role === 'موظف');
+
+    const status    = t.status || '';
+    const docType   = (t.transactionType || t.docType || '');
+    const isOut     = docType.includes('صادر');
+    const isCmp     = docType.includes('شكو') || docType.includes('شكا');
+    const isMro     = docType.toLowerCase().includes('مرور') || docType.includes('فحص');
+    const isApproved= status.includes('تم الاعتماد');
+    const isPending = status.includes('بانتظار');
+    const isLate    = status.includes('متأخر');
+    const isCaseEnt = CARD_CASE_ENTITIES.some(ce => (t.source||'').includes(ce));
+
+    const hasAttach = _hasVal(t.attachment);
+    const hasReview = _hasVal(t.reviewFile);
+    const hasArchive= _hasVal(t.archive);
+
+    /* ── CSS class الحالة ── */
+    let sClass = 's-new';
+    if      (isLate)      sClass = 's-late';
+    else if (isPending)   sClass = 's-pending';
+    else if (isApproved)  sClass = 's-approved';
+    else if (status.includes('متابعة')) sClass = 's-followup';
+
+    /* ── status pill ── */
+    let spClass = 'sp-new';
+    if      (isLate)      spClass = 'sp-late';
+    else if (isPending)   spClass = 'sp-pending';
+    else if (isApproved)  spClass = 'sp-approved';
+    else if (status.includes('متابعة')) spClass = 'sp-followup';
+
+    /* ── type pill ── */
+    let typeTxt = '📥 وارد', tpClass = 'tp-in';
+    if      (isOut) { typeTxt = '📤 صادر'; tpClass = 'tp-out'; }
+    else if (isCmp) { typeTxt = '📣 شكوى'; tpClass = 'tp-cmp'; }
+    else if (isMro) { typeTxt = '🔍 مرور'; tpClass = 'tp-mro'; }
+
+    /* ── الأهمية ── */
+    let impHtml = '';
+    if (t.importance) {
+        const ic = t.importance === 'عاجل جداً' ? 'imp-high'
+                 : t.importance === 'عاجل'       ? 'imp-medium' : 'imp-normal';
+        const ie = t.importance === 'عاجل جداً' ? '🔴'
+                 : t.importance === 'عاجل'       ? '🟠' : '🟢';
+        impHtml = `<span class="iag-imp ${ic}">${ie} ${t.importance}</span>`;
+    }
+
+    /* ── القضية ── */
+    let caseHtml = '';
+    if (isCaseEnt && _hasVal(t.caseNumber)) {
+        caseHtml = `<span class="iag-case">⚖️ قضية ${t.caseNumber}/${t.caseYear||''}</span>`;
+    }
+
+    /* ── المنسق: النواقص ── */
+    const missing = isCoord ? _getMissing(t, isOut, isCaseEnt, isApproved) : [];
+
+    /* ══ المرفقات ══ */
+    let attRow = _buildAttachments(t, isCoord, isEmployee, isOut, isApproved, isPending,
+                                   hasAttach, hasReview, hasArchive);
+
+    /* ══ الـ Footer ══ */
+    let footer = '';
+    if (isCoord) {
+        footer = _coordFooter(t, missing, hasReview, hasArchive, isApproved, isPending);
+    } else {
+        footer = _empFooter(t, hasReview, isPending, isApproved);
+    }
+
+    /* ══ الحقل القابل للتعديل للمنسق ══ */
+    let editSection = '';
+    if (isCoord && missing.length > 0) {
+        editSection = _buildEditFields(t, missing, isCaseEnt);
+    }
+
+    return `
+<div class="iag-card ${sClass}" data-id="${t.id}">
+
+    <div class="iag-card-head">
+        <span class="iag-type-pill ${tpClass}">${typeTxt}</span>
+        <span class="iag-status-pill ${spClass}">${status}</span>
+    </div>
+
+    <div class="iag-card-body">
+        <div class="iag-subject">${t.subject}</div>
+
+        <div class="iag-row">
+            ${_icon('building-2')}
+            <span>${t.source || 'غير محدد'}</span>
+        </div>
+
+        ${t.entity && t.entity !== t.source ? `
+        <div class="iag-row">
+            ${_icon('map-pin')}
+            <span>${t.entity}</span>
+        </div>` : ''}
+
+        <div class="iag-row">
+            ${_icon('calendar')}
+            <span>${_fmtDate(t.date)}</span>
+            <span class="mono">#${t.id}</span>
+        </div>
+
+        <div class="iag-row">
+            ${_icon('user')}
+            ${isCoord
+                ? _assigneeCoord(t)
+                : `<span style="color:#0f766e;font-weight:700">${t.assignee || '-'}</span>`
+            }
+        </div>
+
+        ${impHtml || caseHtml ? `
+        <div class="iag-row" style="flex-wrap:wrap;gap:5px">
+            ${impHtml}${caseHtml}
+            ${isCoord && missing.includes('case') && isCaseEnt
+                ? `<span class="iag-missing-badge">⚠ رقم القضية ناقص</span>` : ''}
+        </div>` : ''}
+
+        ${editSection}
+    </div>
+
+    ${attRow}
+
+    <div class="iag-card-footer">${footer}</div>
+</div>`;
+}
+
+/* ════════════════════════════════════════
+   دوال مساعدة داخلية
+   ════════════════════════════════════════ */
+
+function _hasVal(v) {
+    return v && v.toString().trim() !== '' && v.toString().trim() !== 'undefined';
+}
+
+function _getMissing(t, isOut, isCaseEnt, isApproved) {
+    const m = [];
+    if (!t.assignee || !t.assignee.trim()) m.push('assignee');
+    if (isCaseEnt && !_hasVal(t.caseNumber))  m.push('case');
+    if (isApproved && !_hasVal(t.archive))     m.push('archive');
+    if (!isOut && !_hasVal(t.attachment))      m.push('attachment');
+    return m;
+}
+
+function _buildAttachments(t, isCoord, isEmployee, isOut, isApproved, isPending,
+                            hasAttach, hasReview, hasArchive) {
+    let pills = [];
+
+    /* الموظف + معتمد → لا روابط، الموضوع مغلق */
+    if (isEmployee && isApproved) {
+        return `<div class="iag-attachments">
+            <span class="iag-att" style="background:#f0fdf4;color:#047857;border-color:#a7f3d0;font-weight:700;gap:5px">
+                ✅ تم الاعتماد والأرشفة
+            </span>
+        </div>`;
+    }
+
+    /* 📥 مرفق الوارد */
+    if (hasAttach) {
+        pills.push(`<a href="${t.attachment}" target="_blank" class="iag-att att-has">📥 مرفق الوارد</a>`);
+    } else if (!isOut) {
+        if (isCoord) {
+            pills.push(`<button onclick="event.stopPropagation();iagOpenModal('${t.id}')" class="iag-att att-warn">⚠ مرفق الوارد ناقص</button>`);
+        } else {
+            pills.push(`<span class="iag-att att-none">📥 لا يوجد مرفق</span>`);
+        }
+    }
+
+    /* 📄 ملف المراجعة */
+    if (hasReview) {
+        if (isEmployee && isPending) {
+            pills.push(`<a href="${t.reviewFile}" target="_blank" class="iag-att att-action">✏️ فتح للتعديل</a>`);
+        } else {
+            pills.push(`<a href="${t.reviewFile}" target="_blank" class="iag-att att-has">📄 ملف المراجعة</a>`);
+        }
+    } else if (isPending && isCoord) {
+        pills.push(`<span class="iag-att att-warn">⚠ ملف المراجعة ناقص</span>`);
+    } else {
+        pills.push(`<span class="iag-att att-none">📄 المراجعة</span>`);
+    }
+
+    /* 📎 الصادر النهائي */
+    if (hasArchive) {
+        pills.push(`<a href="${t.archive}" target="_blank" class="iag-att att-has">📎 الصادر النهائي</a>`);
+    } else if (isApproved && isCoord) {
+        pills.push(`<button onclick="event.stopPropagation();iagOpenArchiveUpload('${t.id}')" class="iag-att att-warn">⚠ الصادر ناقص</button>`);
+    } else {
+        pills.push(`<span class="iag-att att-none">📎 الصادر</span>`);
+    }
+
+    return `<div class="iag-attachments">${pills.join('')}</div>`;
+}
+
+function _coordFooter(t, missing, hasReview, hasArchive, isApproved, isPending) {
+    return `
+        <button onclick="event.stopPropagation();iagOpenModal('${t.id}')"
+            class="iag-btn iag-btn-manage">
+            ${_icon('edit')} إدارة ومعالجة
+        </button>`;
+}
+
+function _empFooter(t, hasReview, isPending, isApproved) {
+    /* معتمد ومؤرشف → الموضوع مغلق، فقط زر التفاصيل */
+    if (isApproved) {
+        return `
+            <button onclick="event.stopPropagation();iagOpenModal('${t.id}')"
+                class="iag-btn iag-btn-details">
+                ${_icon('eye')} التفاصيل
+            </button>
+            <span style="font-size:0.72rem;font-weight:700;color:#047857;display:flex;align-items:center;gap:4px;margin-right:auto">
+                ${_icon('lock')} مغلق
+            </span>`;
+    }
+
+    if (hasReview && isPending) {
+        return `
+            <a href="${t.reviewFile}" target="_blank"
+               onclick="event.stopPropagation()"
+               class="iag-btn iag-btn-word">
+               ${_icon('file-edit')} فتح للتعديل
+            </a>
+            <button onclick="event.stopPropagation();iagOpenModal('${t.id}')"
+                class="iag-btn iag-btn-details">
+                ${_icon('eye')} التفاصيل
+            </button>`;
+    }
+    return `
+        <button onclick="event.stopPropagation();iagOpenModal('${t.id}')"
+            class="iag-btn iag-btn-details">
+            ${_icon('eye')} التفاصيل
+        </button>`;
+}
+
+function _assigneeCoord(t) {
+    if (t.assignee && t.assignee.trim()) {
+        return `<span style="color:#0f766e;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            ${t.assignee}
+            <button onclick="event.stopPropagation();iagOpenReassign('${t.id}')"
+                style="font-size:0.65rem;background:#f1f5f9;border:1px solid #e2e8f0;padding:2px 8px;border-radius:6px;cursor:pointer;color:#475569;font-family:'Cairo',sans-serif;font-weight:700">
+                تغيير
+            </button>
+        </span>`;
+    }
+    return `<span style="color:#dc2626;font-weight:700;display:flex;align-items:center;gap:6px">
+        ⚠ غير موزع
+        <button onclick="event.stopPropagation();iagOpenReassign('${t.id}')"
+            style="font-size:0.65rem;background:#fef2f2;border:1px solid #fecaca;padding:2px 8px;border-radius:6px;cursor:pointer;color:#dc2626;font-family:'Cairo',sans-serif;font-weight:700">
+            تعيين
+        </button>
+    </span>`;
+}
+
+function _buildEditFields(t, missing, isCaseEnt) {
+    let html = '';
+    if (missing.includes('assignee')) {
+        html += `
+        <div class="iag-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+            <span style="font-size:0.7rem;color:#92400e;font-weight:700">⚠ الموظف المكلف ناقص</span>
+            <div class="iag-edit-row">
+                <input class="iag-edit-input" id="edit-assignee-${t.id}" placeholder="اسم الموظف">
+                <button class="iag-edit-save" onclick="event.stopPropagation();iagSaveField('${t.id}','assignee',this)">حفظ</button>
+            </div>
+        </div>`;
+    }
+    if (missing.includes('case') && isCaseEnt) {
+        html += `
+        <div class="iag-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+            <span style="font-size:0.7rem;color:#92400e;font-weight:700">⚠ رقم القضية ناقص</span>
+            <div class="iag-edit-row">
+                <input class="iag-edit-input" id="edit-caseNumber-${t.id}" placeholder="رقم القضية" style="max-width:110px">
+                <input class="iag-edit-input" id="edit-caseYear-${t.id}" placeholder="${new Date().getFullYear()}" style="max-width:80px">
+                <button class="iag-edit-save" onclick="event.stopPropagation();iagSaveCaseField('${t.id}',this)">حفظ</button>
+            </div>
+        </div>`;
+    }
+    return html;
+}
+
+function _icon(name) {
+    return `<i data-lucide="${name}" style="width:14px;height:14px;flex-shrink:0"></i>`;
+}
+
+function _fmtDate(d) {
+    if (!d) return '-';
+    const p = d.split('/');
+    if (p.length !== 3) return d;
+    return new Date(p[2], p[1]-1, p[0])
+        .toLocaleDateString('ar-EG', { day:'numeric', month:'long', year:'numeric' });
+}
+
+/* ════════════════════════════════════════
+   Hooks — يجب تعريفها في كل صفحة
+   تُستدعى من داخل الكارت
+   ════════════════════════════════════════
+   iagOpenModal(id)          ← فتح modal التفاصيل
+   iagOpenReassign(id)       ← modal إعادة التكليف (منسق فقط)
+   iagOpenArchiveUpload(id)  ← رفع الصادر (منسق فقط)
+   iagSaveField(id, field, btn)     ← حفظ حقل ناقص
+   iagSaveCaseField(id, btn)        ← حفظ رقم القضية
+   ════════════════════════════════════════ */
+
+</script>
+<script>
+lucide.createIcons();
+
+let myTasks      = [];
+let myFiles      = { inspections: [], complaints: [] };
+let filesLoaded  = false;
+let currentUser  = null;
+let currentStatusFilter = '';
+let currentTab   = 'tasks';
+let activeFileType = 'all';
+
+/* ══ INIT ══ */
+document.addEventListener('DOMContentLoaded', async () => {
+    if (typeof auth === 'undefined') { window.location.href = 'index.html'; return; }
+    const user = auth.checkAuth();
+    if (!user) { window.location.href = 'index.html'; return; }
+    currentUser = user;
+
+    if ((user.role||'').includes('مدير') || (user.role||'').includes('منسق')) {
+        window.location.href = 'coordinator.html'; return;
+    }
+
+    document.getElementById('menu-user').textContent       = user.name;
+    document.getElementById('menu-role').textContent       = user.role || '';
+    document.getElementById('header-emp-name').textContent = user.name;
+
+    const now = new Date();
+    const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0');
+    const lastDay = new Date(y, now.getMonth()+1, 0).getDate();
+    document.getElementById('f-start').value = `${y}-${m}-01`;
+    document.getElementById('f-end').value   = `${y}-${m}-${lastDay}`;
+
+    await loadTasks(user.name);
+});
+
+/* ══ LOAD TASKS ══ */
+async function loadTasks(username) {
+    try {
+        const res  = await fetch(CONFIG.API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'getAllData', role: 'موظف', name: username })
+        });
+        const data = await res.json();
+        if (data.success) {
+            const all = data.tasks || [];
+            myTasks = all.filter(t => (t.assignee||'').trim() === username.trim());
+            const sources = [...new Set(myTasks.map(t => t.source).filter(Boolean))].sort();
+            const sel = document.getElementById('f-source');
+            sources.forEach(s => { sel.innerHTML += `<option value="${s}">${s}</option>`; });
+            try {
+                applyFilters();
+            } catch(renderErr) {
+                console.error('renderCard error:', renderErr);
+                showEmpty('خطأ في عرض البيانات: ' + renderErr.message);
+            }
+        } else {
+            showEmpty('لا توجد بيانات');
+        }
+    } catch(e) {
+        console.error('loadTasks network error:', e);
+        showEmpty('خطأ في الاتصال بالخادم');
+    }
+}
+
+/* ══ LOAD FILES من Drive (الهيكل الجديد) ══ */
+async function loadFiles(username) {
+    if (filesLoaded) return;
+    const container = document.getElementById('files-tree-content');
+    container.innerHTML = `
+        <div class="empty-files">
+            <i data-lucide="loader-2" style="width:32px;height:32px;display:block;margin:0 auto 10px;color:#0f766e" class="animate-spin"></i>
+            <p class="font-bold">جاري تحميل ملفاتك من Drive...</p>
+        </div>`;
+    lucide.createIcons();
+    try {
+        const res  = await fetch(CONFIG.API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'getEmployeeFiles', name: username })
+        });
+        const data = await res.json();
+        if (data.success) {
+            myFiles = {
+                inspections: data.inspections || [],
+                complaints:  data.complaints  || []
+            };
+            filesLoaded = true;
+            renderFilesTree();
+        } else {
+            container.innerHTML = `<div class="empty-files"><p class="font-bold text-red-500">خطأ: ${data.error || 'فشل تحميل الملفات'}</p></div>`;
+        }
+    } catch(e) {
+        container.innerHTML = `<div class="empty-files"><p class="font-bold text-red-500">خطأ في الاتصال بالخادم</p></div>`;
+    }
+    lucide.createIcons();
+}
+
+/* ══ TABS ══ */
+function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+
+    const isTask = tab === 'tasks';
+    document.getElementById('view-tasks').classList.toggle('hidden', !isTask);
+    document.getElementById('view-myfiles').classList.toggle('hidden', isTask);
+    document.getElementById('stats-wrapper').classList.toggle('hidden', !isTask);
+
+    // تبديل محتوى الـ filter container بدل إخفائه
+    document.getElementById('filter-tasks-view').classList.toggle('hidden', !isTask);
+    document.getElementById('filter-files-view').classList.toggle('hidden', isTask);
+
+    if (tab === 'myfiles') loadFiles(currentUser.name);
+}
+
+/* ══ FILE TYPE FILTER ══ */
+function setFileType(type) {
+    activeFileType = type;
+    document.querySelectorAll('.type-filter-btn').forEach(b => {
+        b.className = 'type-filter-btn';
+    });
+    const cls = type === 'all' ? 'active-all' : type === 'insp' ? 'active-insp' : 'active-comp';
+    document.getElementById('ftype-' + type).classList.add(cls);
+    renderFilesTree();
+}
+
+/* ══ RENDER FILES TREE ══ */
+function renderFilesTree() {
+    const container = document.getElementById('files-tree-content');
+    const query     = (document.getElementById('files-search').value || '').toLowerCase();
+
+    const showInsp = activeFileType !== 'comp';
+    const showComp = activeFileType !== 'insp';
+
+    /* فلتر البحث */
+    const filterFiles = (files) => files.filter(f =>
+        !query || f.name.toLowerCase().includes(query) ||
+        (f.entity||'').toLowerCase().includes(query) ||
+        (f.month||'').toLowerCase().includes(query)
+    );
+
+    const inspFiles = showInsp ? filterFiles(myFiles.inspections) : [];
+    const compFiles = showComp ? filterFiles(myFiles.complaints)  : [];
+
+    if (!inspFiles.length && !compFiles.length) {
+        container.innerHTML = `
+            <div class="empty-files">
+                <i data-lucide="folder-open" style="width:36px;height:36px;color:#e2e8f0;display:block;margin:0 auto 10px"></i>
+                <p class="font-bold">${query ? 'لا توجد نتائج مطابقة' : 'لا توجد ملفات بعد'}</p>
+            </div>`;
+        lucide.createIcons(); return;
+    }
+
+    let html = '';
+
+    /* ── قسم تقارير المرور ── */
+    if (showInsp && inspFiles.length) {
+        html += buildSection(inspFiles, 'insp', '🔍 تقارير المرور', true);
+    }
+
+    /* ── قسم فحص الشكاوى ── */
+    if (showComp && compFiles.length) {
+        html += buildSection(compFiles, 'comp', '📣 فحص الشكاوى', false);
+    }
+
+    container.innerHTML = html;
+    lucide.createIcons();
+}
+
+/* ══ بناء قسم (مرور أو شكاوى) ══ */
+function buildSection(files, sType, title, hasEntity) {
+    /* تجميع: سنة → شهر → (جهة→ملفات) أو (ملفات مباشرة) */
+    const grouped = {};
+    files.forEach(f => {
+        const y = f.year  || 'غير محدد';
+        const m = f.month || 'غير محدد';
+        const e = f.entity|| '';
+        if (!grouped[y]) grouped[y] = {};
+        if (!grouped[y][m]) grouped[y][m] = {};
+        const key = hasEntity ? (e || 'عام') : '__direct__';
+        if (!grouped[y][m][key]) grouped[y][m][key] = [];
+        grouped[y][m][key].push(f);
+    });
+
+    const totalCount = files.length;
+    const uid = sType + '_' + Date.now();
+
+    let html = `
+    <div class="tree-section">
+        <div class="tree-section-head ${sType}" onclick="toggleBlock('sec-${uid}',this)">
+            <div class="tree-section-title ${sType}">${title}</div>
+            <div style="display:flex;align-items:center;gap:8px">
+                <span class="tree-count ${sType}">${totalCount} ملف</span>
+                <i data-lucide="chevron-down" style="width:16px;height:16px" class="chev open"></i>
+            </div>
+        </div>
+        <div id="sec-${uid}">`;
+
+    Object.keys(grouped).sort((a,b) => b-a).forEach(year => {
+        const yearData   = grouped[year];
+        const yearCount  = Object.values(yearData).reduce((s,m) => s + Object.values(m).reduce((ss,arr) => ss+arr.length, 0), 0);
+        const yearUid    = sType + '_y_' + year;
+
+        html += `
+            <div class="year-row" onclick="toggleBlock('${yearUid}',this)">
+                <div class="year-label">
+                    <i data-lucide="calendar" style="width:14px;height:14px;color:#0f766e"></i>
+                    ${year}
+                    <span class="year-count-pill">${yearCount} ملف</span>
+                </div>
+                <i data-lucide="chevron-down" style="width:14px;height:14px;color:#94a3b8" class="chev open"></i>
+            </div>
+            <div id="${yearUid}">`;
+
+        Object.keys(yearData).sort().forEach(month => {
+            const monthData  = yearData[month];
+            const monthCount = Object.values(monthData).reduce((s,arr) => s+arr.length, 0);
+            const monthUid   = sType + '_m_' + year + '_' + month.replace(/\s/g,'_');
+
+            html += `
+                <div class="month-row" onclick="toggleBlock('${monthUid}',this)">
+                    <div class="month-label">
+                        <i data-lucide="calendar-days" style="width:13px;height:13px;color:#0f766e"></i>
+                        ${month}
+                        <span class="month-count-pill">${monthCount} ملف</span>
+                    </div>
+                    <i data-lucide="chevron-down" style="width:13px;height:13px;color:#94a3b8" class="chev open"></i>
+                </div>
+                <div id="${monthUid}" class="files-list open">`;
+
+            if (hasEntity) {
+                /* تقارير المرور: جهة → ملفات */
+                Object.keys(monthData).sort().forEach(entity => {
+                    const entityFiles = monthData[entity];
+                    const isAtt = entity.includes('مرفقات');
+                    const entityUid = sType + '_e_' + year + '_' + month.replace(/\s/g,'_') + '_' + entity.replace(/\s/g,'_');
+
+                    if (isAtt) {
+                        html += `
+                        <div class="att-folder-row" onclick="toggleBlock('${entityUid}',this)">
+                            <div class="att-folder-label">
+                                <i data-lucide="paperclip" style="width:13px;height:13px"></i>
+                                ${entity}
+                                <span style="font-size:0.6rem;background:#fde68a;color:#92400e;padding:1px 7px;border-radius:10px;font-weight:700">${entityFiles.length}</span>
+                            </div>
+                            <i data-lucide="chevron-down" style="width:13px;height:13px;color:#92400e" class="chev open"></i>
+                        </div>
+                        <div id="${entityUid}" class="files-list open">
+                            ${entityFiles.map(f => buildFileItem(f)).join('')}
+                        </div>`;
+                    } else {
+                        html += `
+                        <div class="entity-row" onclick="toggleBlock('${entityUid}',this)">
+                            <div class="entity-label">
+                                <i data-lucide="building-2" style="width:13px;height:13px;color:#c2410c"></i>
+                                ${entity}
+                                <span class="entity-count-pill">${entityFiles.length}</span>
+                            </div>
+                            <i data-lucide="chevron-down" style="width:13px;height:13px;color:#94a3b8" class="chev open"></i>
+                        </div>
+                        <div id="${entityUid}" class="files-list open">
+                            ${entityFiles.map(f => buildFileItem(f)).join('')}
+                        </div>`;
+                    }
+                });
+            } else {
+                /* فحص الشكاوى: ملفات مباشرة */
+                const directFiles = Object.values(monthData).flat();
+                html += directFiles.map(f => buildFileItem(f)).join('');
+            }
+
+            html += `</div>`; // month block
+        });
+
+        html += `</div>`; // year block
+    });
+
+    html += `</div></div>`; // section
+
+    return html;
+}
+
+/* ══ بناء عنصر ملف ══ */
+/* ══ تحليل اسم الملف لعرض معلومات واضحة ══ */
+function _parseFileName(name) {
+    if (!name) return { title: name, sub: '' };
+
+    // شكوى: COMP-{num} - {جهة} - {تاريخ}
+    const compMatch = name.match(/^COMP-(\S+)\s*-\s*(.+?)\s*-\s*(.+)$/);
+    if (compMatch) {
+        return {
+            title: 'شكوى #' + compMatch[1],
+            sub:   compMatch[2].trim() + ' • ' + compMatch[3].trim()
+        };
+    }
+
+    // مرور: تقرير مرور ... - {جهة} - {تاريخ}
+    const mroMatch = name.match(/^(.+?)\s*-\s*(.+?)\s*-\s*(\d.+)$/);
+    if (mroMatch) {
+        // العنوان = آخر جزء من نوع التقرير (اختصار)
+        const typeShort = mroMatch[1].replace('تقرير مرور فني ', '').replace('تقرير ', '').trim();
+        return {
+            title: mroMatch[2].trim(),
+            sub:   typeShort + ' • ' + mroMatch[3].trim()
+        };
+    }
+
+    return { title: name, sub: '' };
+}
+
+function buildFileItem(f) {
+    const isDoc   = f.isDoc || f.mimeType === 'application/vnd.google-apps.document' ||
+                    f.mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    const isSheet = f.mimeType === 'application/vnd.google-apps.spreadsheet';
+    const isPdf   = f.mimeType === 'application/pdf';
+
+    const icon  = isDoc ? '📄' : isSheet ? '📊' : isPdf ? '📕' : '📁';
+    const fiCls = isDoc ? 'fi-doc' : isSheet ? 'fi-sheet' : isPdf ? 'fi-pdf' : 'fi-other';
+
+    const btnHtml = isDoc
+        ? `<a href="${f.url}" target="_blank" class="btn-file-open btn-edit">
+               <i data-lucide="file-edit" style="width:12px;height:12px"></i> تعديل
+           </a>`
+        : `<a href="${f.url}" target="_blank" class="btn-file-open btn-view">
+               <i data-lucide="eye" style="width:12px;height:12px"></i> عرض
+           </a>`;
+
+    const parsed = _parseFileName(f.name);
+    const metaParts = [];
+    if (parsed.sub)    metaParts.push(parsed.sub);
+    if (f.modified)    metaParts.push(f.modified);
+
+    return `
+    <div class="file-item">
+        <div class="file-icon ${fiCls}">${icon}</div>
+        <div class="file-info">
+            <div class="file-name" title="${f.name}">${parsed.title}</div>
+            ${metaParts.length ? `<div class="file-meta">${metaParts.join(' • ')}</div>` : ''}
+        </div>
+        <div class="file-actions">${btnHtml}</div>
+    </div>`;
+}
+
+/* ══ Toggle block ══ */
+function toggleBlock(id, triggerEl) {
+    const block = document.getElementById(id);
+    if (!block) return;
+    const isOpen = block.style.display !== 'none';
+    block.style.display = isOpen ? 'none' : 'block';
+    const chev = triggerEl.querySelector('.chev');
+    if (chev) chev.classList.toggle('open', !isOpen);
+}
+
+/* ══ TASKS: STATUS FILTER ══ */
+function filterStatus(status) {
+    currentStatusFilter = (currentStatusFilter === status) ? '' : status;
+    document.querySelectorAll('.stat-card-big, .stat-card-small').forEach(el => el.classList.remove('active'));
+    const map = { '':'st-total','جديد':'st-new','بانتظار':'st-pending','تم':'st-approved','متابعة':'st-followup','متأخر':'st-late' };
+    const key = status ? (Object.keys(map).find(k => k && status.includes(k)) || '') : '';
+    const el  = document.getElementById(map[key] || 'st-total');
+    if (el) el.classList.add('active');
+    applyFilters();
+}
+
+function applyFilters() {
+    const search = document.getElementById('f-search').value.toLowerCase();
+    const src    = document.getElementById('f-source').value;
+    const start  = document.getElementById('f-start').value;
+    const end    = document.getElementById('f-end').value;
+
+    const base = myTasks.filter(t => {
+        if (search && !(`${t.subject}${t.id}${t.source}${t.entity||''}`).toLowerCase().includes(search)) return false;
+        if (src && t.source !== src) return false;
+        if (start && end && t.date) {
+            const iso = _parseDateISO(t.date);
+            if (iso && (iso < start || iso > end)) return false;
+        }
+        return true;
+    });
+
+    /* إحصائيات */
+    let c = { total:0, new:0, pending:0, approved:0, followup:0, late:0 };
+    base.forEach(t => {
+        c.total++;
+        const s = t.status||'';
+        if      (s.includes('متأخر'))   c.late++;
+        else if (s.includes('جديد'))    c.new++;
+        else if (s.includes('بانتظار')) c.pending++;
+        else if (s.includes('تم'))      c.approved++;
+        else if (s.includes('متابعة'))  c.followup++;
+    });
+    document.getElementById('c-total').textContent    = c.total;
+    document.getElementById('c-late').textContent     = c.late;
+    document.getElementById('c-new').textContent      = c.new;
+    document.getElementById('c-pending').textContent  = c.pending;
+    document.getElementById('c-approved').textContent = c.approved;
+    document.getElementById('c-followup').textContent = c.followup;
+
+    const displayed = base.filter(t =>
+        !currentStatusFilter || (t.status||'').includes(currentStatusFilter)
+    );
+
+    const container = document.getElementById('tasks-list');
+    if (!displayed.length) {
+        container.innerHTML = `<div class="empty-box">لا توجد نتائج مطابقة</div>`;
+        lucide.createIcons(); return;
+    }
+    container.innerHTML = displayed.map(t => renderCard(t, 'موظف')).join('');
+    lucide.createIcons();
+}
+
+/* ══ HOOKS من card.js ══ */
+function iagOpenModal(id)         { openModal(id); }
+function iagOpenReassign(id)      {}
+function iagOpenArchiveUpload(id) {}
+function iagSaveField(id,f,btn)   {}
+function iagSaveCaseField(id,btn) {}
+
+/* ══ DETAIL MODAL ══ */
+function openModal(id) {
+    const t = myTasks.find(x => x.id == id);
+    if (!t) return;
+    document.getElementById('m-id').textContent = '#' + t.id;
+
+    const ro = (lbl, val) => val
+        ? `<div class="data-item"><span class="data-label">${lbl}</span><p class="data-val">${val}</p></div>`
+        : '';
+
+    const isApproved = (t.status||'').includes('تم الاعتماد');
+    const hasWord    = _hasVal(t.reviewFile);
+    const hasArch    = _hasVal(t.archive);
+    const hasAtt     = _hasVal(t.attachment);
+    const isPending  = (t.status||'').includes('بانتظار');
+
+    let html = '';
+    html += ro('الموضوع',       `<span style="font-weight:800;line-height:1.6">${t.subject}</span>`);
+    html += ro('الجهة الواردة', t.source);
+    html += ro('محل التنفيذ',   t.entity);
+    html += ro('نوع المعاملة',  t.transactionType || t.docType);
+    html += ro('تاريخ الوارد',  _fmtDate(t.date));
+    html += ro('تاريخ التكليف', _fmtDate(t.assignDate));
+    html += ro('تاريخ الإنجاز', t.completionDate ? _fmtDate(t.completionDate) : null);
+    html += ro('الأهمية',       t.importance);
+    html += ro('الحالة',        `<span style="color:#0f766e;font-weight:800">${t.status}</span>`);
+    if (t.caseNumber) html += ro('رقم القضية', `${t.caseNumber} / ${t.caseYear||''}`);
+    if (t.notes) html += `
+        <div style="background:#fefce8;padding:10px;border-radius:10px;border:1px solid #fde68a;margin-bottom:8px">
+            <span class="data-label" style="color:#92400e">ملاحظات</span>
+            <p class="data-val" style="color:#1e293b">${t.notes}</p>
+        </div>`;
+
+    /* ── أزرار الملفات ── */
+    html += `<div style="margin-top:14px;padding-top:12px;border-top:1px solid #f1f5f9;display:flex;flex-wrap:wrap;gap:8px">`;
+
+    if (isApproved) {
+        /* معتمد → الموضوع مغلق، لا أزرار */
+        html += `
+        <div style="width:100%;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px">
+            <i data-lucide="lock" style="width:20px;height:20px;color:#15803d;flex-shrink:0"></i>
+            <div>
+                <p style="font-weight:800;color:#15803d;font-size:0.9rem;margin:0">تم اعتماد وأرشفة هذا الموضوع</p>
+                <p style="font-size:0.75rem;color:#4ade80;margin:2px 0 0;font-weight:600">لا يمكن التعديل أو الوصول للملفات</p>
+            </div>
+        </div>`;
+    } else {
+        if (hasWord && isPending)
+            html += `<a href="${t.reviewFile}" target="_blank" class="iag-btn iag-btn-word" style="flex:unset;padding:8px 16px">
+                <i data-lucide="file-edit" class="w-4 h-4"></i> فتح للتعديل
+            </a>`;
+        else if (hasWord)
+            html += `<a href="${t.reviewFile}" target="_blank" class="iag-btn iag-btn-details" style="flex:unset;padding:8px 16px">
+                <i data-lucide="file-text" class="w-4 h-4"></i> ملف المراجعة
+            </a>`;
+        if (hasAtt)
+            html += `<a href="${t.attachment}" target="_blank" class="iag-btn" style="flex:unset;padding:8px 16px;color:#2563eb;border-color:#bfdbfe;background:#eff6ff">
+                <i data-lucide="paperclip" class="w-4 h-4"></i> مرفق الوارد
+            </a>`;
+        if (hasArch)
+            html += `<a href="${t.archive}" target="_blank" class="iag-btn" style="flex:unset;padding:8px 16px;color:#047857;border-color:#a7f3d0;background:#f0fdf4">
+                <i data-lucide="archive" class="w-4 h-4"></i> الصادر النهائي
+            </a>`;
+        if (!hasWord && !hasAtt && !hasArch)
+            html += `<span style="font-size:0.8rem;color:#94a3b8;font-weight:600">لا توجد ملفات مرتبطة بعد</span>`;
+    }
+
+    html += `</div>`;
+
+    document.getElementById('m-content').innerHTML = html;
+    document.getElementById('detail-modal').classList.add('open');
+    lucide.createIcons();
+}
+
+function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
+function toggleMenu() {
+    document.getElementById('side-menu').classList.toggle('open');
+    document.getElementById('menu-overlay').classList.toggle('open');
+}
+function closeMenu() {
+    document.getElementById('side-menu').classList.remove('open');
+    document.getElementById('menu-overlay').classList.remove('open');
+}
+function logout() { localStorage.removeItem('iag_user'); localStorage.removeItem('iag_last_page'); window.location.href = 'index.html'; }
+
+function showEmpty(msg) {
+    document.getElementById('tasks-list').innerHTML =
+        `<div class="empty-box"><i data-lucide="alert-circle" style="width:30px;height:30px;color:#e2e8f0;display:block;margin:0 auto 8px"></i><p style="font-weight:700">${msg}</p></div>`;
+    lucide.createIcons();
+}
+
+function _hasVal(v) { return v && v.toString().trim() !== '' && v.toString().trim() !== 'undefined'; }
+
+function _parseDateISO(d) {
+    if (!d) return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+    const p = d.split('/');
+    return p.length === 3 ? `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}` : null;
+}
+
+function _fmtDate(d) {
+    if (!d) return '-';
+    const p = d.split('/');
+    if (p.length !== 3) return d;
+    return new Date(p[2], p[1]-1, p[0]).toLocaleDateString('ar-EG', { day:'numeric', month:'long', year:'numeric' });
+}
+
+function _fmtSize(bytes) {
+    if (!bytes || bytes === 0) return '';
+    if (bytes < 1024)       return bytes + ' B';
+    if (bytes < 1024*1024)  return (bytes/1024).toFixed(0) + ' KB';
+    return (bytes/1024/1024).toFixed(1) + ' MB';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+/* IAG System - Optimized CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: #f8f9fa;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 260px;
+  height: 100vh;
+  background: white;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.08);
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.sidebar-logo {
+  padding: 24px;
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: white;
+}
+
+.sidebar-logo.admin {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  color: #495057;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+  border-right: 3px solid transparent;
+}
+
+.sidebar-item:hover,
+.sidebar-item.active {
+  background: #e6f7f5;
+  border-right-color: #0f766e;
+  color: #0f766e;
+}
+
+.sidebar-item.admin:hover,
+.sidebar-item.admin.active {
+  background: #fef2f2;
+  border-right-color: #dc2626;
+  color: #dc2626;
+}
+
+/* Main Content */
+.main-content {
+  margin-right: 260px;
+  padding: 24px;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-bottom: 24px;
+  border: 1px solid #e9ecef;
+}
+
+/* Header Card */
+.header-card {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: white;
+  border: none;
+}
+
+.header-card.admin {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+/* Filters */
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.filter-label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.875rem;
+  margin-bottom: 8px;
+  color: #475569;
+}
+
+/* Form Elements */
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-weight: 600;
+  font-family: 'Cairo', sans-serif;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #0f766e;
+}
+
+button {
+  background: #0f766e;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Cairo', sans-serif;
+}
+
+button:hover {
+  background: #115e59;
+}
+
+button.admin {
+  background: #dc2626;
+}
+
+button.admin:hover {
+  background: #b91c1c;
+}
+
+/* Task Grid */
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.task-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.task-card:hover {
+  border-color: #0f766e;
+  box-shadow: 0 4px 16px rgba(15, 118, 110, 0.1);
+  transform: translateY(-2px);
+}
+
+.task-card.admin:hover {
+  border-color: #dc2626;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.1);
+}
+
+.task-done {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.task-pending {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+/* Task Elements */
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  align-items: start;
+}
+
+.task-id {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #1e293b;
+}
+
+.task-subject {
+  color: #475569;
+  font-weight: 600;
+  margin-bottom: 12px;
+  min-height: 45px;
+  line-height: 1.5;
+}
+
+.task-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+/* Badges */
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badge-done {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Reassign Box */
+.reassign-box {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px dashed #cbd5e1;
+  margin-top: 12px;
+}
+
+.reassign-current {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.reassign-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.reassign-controls select {
+  flex-grow: 1;
+  padding: 8px;
+  font-size: 0.85rem;
+}
+
+.reassign-controls button {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  width: auto;
+}
+
+/* Employee Group */
+.employee-group {
+  margin-bottom: 30px;
+}
+
+.employee-header {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Loading */
+.loading {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.loading.hidden {
+  display: none;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e9ecef;
+  border-top-color: #0f766e;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Utilities */
+.flex {
+  display: flex;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+
+.text-center { text-align: center; }
+.font-bold { font-weight: 700; }
+.text-sm { font-size: 0.875rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(100%);
+    transition: transform 0.3s;
+  }
+  
+  .sidebar.active {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-right: 0;
+    padding: 16px;
+  }
+  
+  .task-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .task-card {
+    padding: 16px;
+  }
+  
+  .card {
+    padding: 16px;
+  }
+}
