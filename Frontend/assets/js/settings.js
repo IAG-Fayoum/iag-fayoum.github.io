@@ -1,22 +1,30 @@
-// settings.js — إجراءات / IAG System
+/**
+ * settings.js — إجراءات / IAG System
+ *
+ * Sprint 2 Block A: fully migrated to core layer.
+ * - Session: IAGSession (no direct localStorage)
+ * - API:     IAGApi    (no direct fetch)
+ * - UI:      IAGFeedback (no alert/confirm)
+ */
 
 lucide.createIcons();
 
+let currentUser = null;
+
 document.addEventListener('DOMContentLoaded', () => {
-    const userStr = localStorage.getItem('iag_user');
-    if (!userStr) { window.location.href = 'index.html'; return; }
+    currentUser = IAGSession.requireAuth();
 
-    const user = JSON.parse(userStr);
-    document.getElementById('menu-user').textContent = user.name;
-    document.getElementById('menu-role').textContent = user.role;
-
-    // Security Check
-    if (user.role !== 'مدير' && user.role !== 'Admin' && user.role !== 'منسق') {
-        alert('عفواً، هذه الصفحة للمدراء والمنسقين فقط');
-        window.location.href = 'index.html';
+    if (currentUser.role !== 'مدير' && currentUser.role !== 'Admin' && currentUser.role !== 'منسق') {
+        IAGFeedback.showError('عفواً، هذه الصفحة للمدراء والمنسقين فقط');
+        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
         return;
     }
+
+    document.getElementById('menu-user').textContent = currentUser.name;
+    document.getElementById('menu-role').textContent = currentUser.role;
 });
+
+// ── Navigation ────────────────────────────────────────────────────────────────
 
 function toggleMenu() {
     document.getElementById('side-menu').classList.toggle('open');
@@ -28,83 +36,59 @@ function closeMenu() {
     document.getElementById('menu-overlay').classList.remove('open');
 }
 
-function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+function logout() {
+    IAGSession.logout();
+}
 
-// --- Real API Actions ---
+// ── Actions ───────────────────────────────────────────────────────────────────
 
 async function handleReassign() {
-    const taskId = document.getElementById('reassign-id').value;
-    const newEmp = document.getElementById('reassign-name').value;
-    const btn = document.getElementById('btn-reassign');
+    const taskId = document.getElementById('reassign-id').value.trim();
+    const newEmp = document.getElementById('reassign-name').value.trim();
+    const btn    = document.getElementById('btn-reassign');
 
-    if (!taskId || !newEmp) { alert('يرجى ملء جميع الحقول'); return; }
+    if (!taskId || !newEmp) { IAGFeedback.showError('يرجى ملء جميع الحقول'); return; }
 
     const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<span class="loading-text">جاري التنفيذ...</span>';
+    btn.innerHTML = '<span>جاري التنفيذ...</span>';
     btn.disabled = true;
 
-    try {
-        const user = JSON.parse(localStorage.getItem('iag_user'));
-        const res = await fetch(CONFIG.API_URL, {
-            method: 'POST',
-            body: JSON.stringify({
-                action: 'reassignTask',
-                taskId: taskId,
-                newEmployee: newEmp,
-                updatedBy: user.name
-            })
-        });
-        const data = await res.json();
+    const { ok, error } = await IAGApi.reassignTask(taskId, newEmp, currentUser.name);
 
-        if (data.success) {
-            alert('✅ تم نقل المهمة بنجاح');
-            document.getElementById('reassign-id').value = '';
-            document.getElementById('reassign-name').value = '';
-        } else {
-            alert('❌ خطأ: ' + (data.error || 'لم يتم التعديل'));
-        }
-    } catch (e) {
-        alert('❌ خطأ في الاتصال');
-    } finally {
-        btn.innerHTML = originalHTML;
-        btn.disabled = false;
+    btn.innerHTML = originalHTML;
+    btn.disabled = false;
+    lucide.createIcons();
+
+    if (ok) {
+        IAGFeedback.showSuccess('تم نقل المهمة بنجاح');
+        document.getElementById('reassign-id').value   = '';
+        document.getElementById('reassign-name').value = '';
+    } else {
+        IAGFeedback.showError(error || 'لم يتم التعديل');
     }
 }
 
 async function handleStatus() {
-    const taskId = document.getElementById('status-id').value;
+    const taskId    = document.getElementById('status-id').value.trim();
     const newStatus = document.getElementById('status-val').value;
-    const btn = document.getElementById('btn-status');
+    const btn       = document.getElementById('btn-status');
 
-    if (!taskId) { alert('يرجى إدخال رقم المهمة'); return; }
+    if (!taskId) { IAGFeedback.showError('يرجى إدخال رقم المهمة'); return; }
 
     const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<span class="loading-text">جاري الحفظ...</span>';
+    btn.innerHTML = '<span>جاري الحفظ...</span>';
     btn.disabled = true;
 
-    try {
-        const user = JSON.parse(localStorage.getItem('iag_user'));
-        const res = await fetch(CONFIG.API_URL, {
-            method: 'POST',
-            body: JSON.stringify({
-                action: 'updateStatus',
-                taskId: taskId,
-                newStatus: newStatus,
-                updatedBy: user.name
-            })
-        });
-        const data = await res.json();
+    const { ok, error } = await IAGApi.updateStatus(taskId, newStatus, currentUser.name);
 
-        if (data.success) {
-            alert('✅ تم تحديث الحالة بنجاح');
-            document.getElementById('status-id').value = '';
-        } else {
-            alert('❌ خطأ: ' + (data.error || 'لم يتم التعديل'));
-        }
-    } catch (e) {
-        alert('❌ خطأ في الاتصال');
-    } finally {
-        btn.innerHTML = originalHTML;
-        btn.disabled = false;
+    btn.innerHTML = originalHTML;
+    btn.disabled = false;
+    lucide.createIcons();
+
+    if (ok) {
+        IAGFeedback.showSuccess('تم تحديث الحالة بنجاح');
+        document.getElementById('status-id').value = '';
+    } else {
+        IAGFeedback.showError(error || 'لم يتم التعديل');
     }
 }

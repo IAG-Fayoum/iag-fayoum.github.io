@@ -1,5 +1,12 @@
 /* notifications.css — الإشعارات / IAG System */
 
+/* Icon size utilities (used instead of inline style="width/height") */
+.icon-xs { width: 12px; height: 12px; flex-shrink: 0; }
+.icon-sm { width: 16px; height: 16px; flex-shrink: 0; }
+.icon-md { width: 24px; height: 24px; flex-shrink: 0; }
+.icon-lg { width: 32px; height: 32px; flex-shrink: 0; }
+.icon-xl { width: 40px; height: 40px; flex-shrink: 0; }
+
 body {
     font-family: 'Cairo', sans-serif;
     background-color: #f1f5f9;

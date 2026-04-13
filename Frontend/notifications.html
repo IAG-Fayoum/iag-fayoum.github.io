@@ -12,8 +12,10 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/theme.css">
-    <link rel="stylesheet" href="assets/css/iag-theme.css">
+
+    <!-- Design System (single entrypoint) -->
+    <link rel="stylesheet" href="assets/css/system/iag-design-system.css">
+    <!-- Page-specific styles -->
     <link rel="stylesheet" href="assets/css/notifications.css">
 </head>
 <body>
@@ -21,11 +23,13 @@
     <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
     <aside class="side-menu" id="side-menu">
         <div class="side-menu-header">
-            <div style="display:flex;align-items:center;gap:12px">
-                <div style="width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center"><i data-lucide="user" style="width:20px;height:20px;color:white"></i></div>
-                <div>
-                    <div style="font-weight:900;font-size:0.9rem;color:white" id="menu-user">—</div>
-                    <div style="font-size:0.72rem;color:#99f6e4;font-weight:800" id="menu-role"></div>
+            <div class="menu-user-row">
+                <div class="menu-avatar">
+                    <i data-lucide="user"></i>
+                </div>
+                <div class="menu-user-info">
+                    <div id="menu-user">—</div>
+                    <div id="menu-role"></div>
                 </div>
             </div>
         </div>
@@ -33,45 +37,64 @@
             <nav id="side-nav"></nav>
         </div>
         <div class="menu-footer">
-            <button onclick="logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);gap:8px;justify-content:center">
-                <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
+            <button onclick="logout()" class="btn btn-logout">
+                <i data-lucide="log-out" class="icon-sm"></i> تسجيل خروج
             </button>
         </div>
     </aside>
 
     <header class="page-header">
         <div class="header-top">
-            <button class="header-btn" onclick="toggleMenu()">
-                <i data-lucide="menu" style="width:20px;height:20px"></i>
+            <button class="header-btn" onclick="toggleMenu()" aria-label="القائمة">
+                <i data-lucide="menu" class="icon-md"></i>
             </button>
             <div class="header-center">
                 <div class="header-badge">
-                    <i data-lucide="bell" style="width:12px;height:12px"></i>
+                    <i data-lucide="bell" class="icon-xs"></i>
                     الإشعارات
                 </div>
-                <h1 class="header-title"><img src="assets/icons/icon-192.png" class="header-logo" alt="شعار">إدارة المراجعة الداخلية والحوكمة</h1>
+                <h1 class="header-title">
+                    <img src="assets/icons/icon-192.png" class="header-logo" alt="شعار">
+                    إدارة المراجعة الداخلية والحوكمة
+                </h1>
                 <p class="header-sub">Internal Audit &amp; Governance</p>
             </div>
-            <button class="header-btn" onclick="goBack()">
-                <i data-lucide="arrow-right" style="width:20px;height:20px"></i>
+            <button class="header-btn" onclick="goBack()" aria-label="رجوع">
+                <i data-lucide="arrow-right" class="icon-md"></i>
             </button>
         </div>
     </header>
 
     <div class="notif-stats">
         <div class="stat-card">
-            <div class="stat-icon icon-bg-blue"><i data-lucide="bell" style="width:24px;height:24px" class="icon-clr-blue"></i></div>
-            <div><div class="stat-num stat-num-blue" id="total-notifs">0</div><div class="stat-lbl">الإجمالي</div></div>
+            <div class="stat-icon icon-bg-blue">
+                <i data-lucide="bell" class="icon-md icon-clr-blue"></i>
+            </div>
+            <div>
+                <div class="stat-num stat-num-blue" id="total-notifs">0</div>
+                <div class="stat-lbl">الإجمالي</div>
+            </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon icon-bg-orange"><i data-lucide="bell-ring" style="width:24px;height:24px" class="icon-clr-orange"></i></div>
-            <div><div class="stat-num stat-num-orange" id="unread-notifs">0</div><div class="stat-lbl">غير مقروء</div></div>
+            <div class="stat-icon icon-bg-orange">
+                <i data-lucide="bell-ring" class="icon-md icon-clr-orange"></i>
+            </div>
+            <div>
+                <div class="stat-num stat-num-orange" id="unread-notifs">0</div>
+                <div class="stat-lbl">غير مقروء</div>
+            </div>
         </div>
     </div>
 
     <div class="actions-box">
-        <button onclick="markAllAsRead()" class="action-btn"><i data-lucide="check-check" style="width:16px;height:16px"></i> تحديد الكل كمقروء</button>
-        <button onclick="clearAllNotifications()" class="action-btn btn-danger"><i data-lucide="trash-2" style="width:16px;height:16px"></i> حذف الكل</button>
+        <button onclick="markAllAsRead()" class="action-btn">
+            <i data-lucide="check-check" class="icon-sm"></i>
+            تحديد الكل كمقروء
+        </button>
+        <button onclick="clearAllNotifications()" class="action-btn btn-danger">
+            <i data-lucide="trash-2" class="icon-sm"></i>
+            حذف الكل
+        </button>
     </div>
 
     <div class="filters-section">
@@ -89,11 +112,15 @@
     </div>
 
     <div class="notifs-container" id="notifs-list">
-        <div class="loader-box"><i data-lucide="loader-2" style="width:32px;height:32px;color:#0a5c56" class="spin"></i></div>
+        <div class="loader-box">
+            <i data-lucide="loader-2" class="icon-lg spin" id="initial-spinner"></i>
+        </div>
     </div>
 
     <div class="empty-state hidden" id="empty-state">
-        <div class="empty-icon"><i data-lucide="bell-off" style="width:40px;height:40px;color:#cbd5e1"></i></div>
+        <div class="empty-icon">
+            <i data-lucide="bell-off" class="icon-xl"></i>
+        </div>
         <h3 class="empty-title">لا توجد إشعارات</h3>
     </div>
 
@@ -101,7 +128,9 @@
         <div class="modal-box">
             <div class="modal-header">
                 <h3 class="modal-header-title">تفاصيل الإشعار</h3>
-                <button onclick="closeNotifModal()" class="modal-close-btn"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+                <button onclick="closeNotifModal()" class="modal-close-btn" aria-label="إغلاق">
+                    <i data-lucide="x" class="icon-md"></i>
+                </button>
             </div>
             <div class="modal-body" id="modal-content"></div>
             <div class="modal-footer">
@@ -112,9 +141,14 @@
 
     <nav class="bottom-nav" id="bottom-nav"></nav>
 
+    <!-- Core layer (must load before page script) -->
     <script src="assets/js/config.js"></script>
-    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/core/api.js"></script>
+    <script src="assets/js/core/session.js"></script>
+    <script src="assets/js/core/ui-feedback.js"></script>
+    <!-- Shared nav (reads session via localStorage, compatible with session.js) -->
     <script src="assets/js/nav.js"></script>
+    <!-- Page script -->
     <script src="assets/js/notifications.js" defer></script>
 </body>
 </html>

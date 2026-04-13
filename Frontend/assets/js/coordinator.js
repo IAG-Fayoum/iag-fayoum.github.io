@@ -594,7 +594,7 @@ function openSourcePicker(taskId, currentVal, btnEl) {
 async function confirmSourceUpdate(taskId, btnEl) {
     const sel   = document.getElementById('source-select-' + taskId);
     const value = sel ? sel.value.trim() : '';
-    if (!value) { alert('يرجى اختيار الجهة أولاً'); return; }
+    if (!value) { IAGFeedback.showError('يرجى اختيار الجهة أولاً'); return; }
 
     const confirmed = confirm('تأكيد تغيير الجهة إلى:\n"' + value + '"');
     if (!confirmed) return;
@@ -697,7 +697,7 @@ async function saveFieldUpdate(taskId, fieldName, btnEl) {
     const input = document.getElementById(`edit-${fieldName}-${taskId}`);
     if (!input) return;
     const value = input.value.trim();
-    if (!value) { alert('يرجى إدخال القيمة أولاً'); return; }
+    if (!value) { IAGFeedback.showError('يرجى إدخال القيمة أولاً'); return; }
 
     const origText = btnEl.textContent;
     btnEl.textContent = 'جاري...'; btnEl.disabled = true;
@@ -722,7 +722,7 @@ async function saveFieldUpdate(taskId, fieldName, btnEl) {
 async function uploadArchiveFile(taskId, inputEl) {
     const file = inputEl.files[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { alert('حجم الملف أكبر من 10 ميجا'); return; }
+    if (file.size > 10 * 1024 * 1024) { IAGFeedback.showError('حجم الملف أكبر من 10 ميجا'); return; }
 
     const area   = document.getElementById(`upload-area-${taskId}`);
     const status = document.getElementById(`upload-status-${taskId}`);
@@ -790,7 +790,7 @@ async function confirmReassign() {
     const taskId = document.getElementById('reassign-task-id').value;
     const newEmp = document.getElementById('reassign-select').value;
     const btn    = document.getElementById('btn-confirm-reassign');
-    if (!newEmp) { alert('يرجى اختيار موظف'); return; }
+    if (!newEmp) { IAGFeedback.showError('يرجى اختيار موظف'); return; }
 
     if (confirm(`هل أنت متأكد من تغيير المكلف إلى ${newEmp}؟`)) {
         btn.textContent = 'جاري الاتصال...'; btn.disabled = true;

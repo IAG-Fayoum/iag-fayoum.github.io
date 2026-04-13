@@ -1,0 +1,188 @@
+/**
+ * admin.css — لوحة التحكم / IAG System
+ *
+ * Page-specific styles for admin.html.
+ * All values use design tokens from iag-design-system.css.
+ * No hardcoded colors or dimensions.
+ */
+
+/* ── Stats ───────────────────────────────────────────────────────────────────── */
+
+.admin-stats-wrapper {
+    max-width: var(--content-max);
+    margin: calc(var(--header-overlap) * -1) auto var(--space-4);
+    padding: 0 var(--space-4);
+    position: relative;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.admin-stats-main {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+}
+
+.admin-stat-main {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.admin-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+}
+
+.admin-stat-small {
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    text-align: center;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 72px;
+}
+
+/* ── Quick Actions ───────────────────────────────────────────────────────────── */
+
+.admin-actions-section {
+    max-width: var(--content-max);
+    margin: 0 auto var(--space-6);
+    padding: 0 var(--space-4);
+}
+
+.section-title {
+    font-weight: 800;
+    color: var(--text-1);
+    margin-bottom: var(--space-3);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+}
+
+.admin-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+    .admin-actions-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.admin-action-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-weight: 700;
+    color: var(--text-2);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.15s, box-shadow 0.15s;
+    height: 88px;
+    font-family: var(--font-primary);
+    min-height: 44px;
+}
+
+.admin-action-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.admin-action-btn.btn-primary {
+    background: var(--primary);
+    color: var(--on-primary);
+    border: none;
+    box-shadow: 0 4px 12px rgba(10, 92, 86, 0.25);
+}
+
+.admin-action-btn.btn-primary:hover {
+    background: var(--primary-dark);
+    color: var(--on-primary);
+}
+
+/* ── Table ───────────────────────────────────────────────────────────────────── */
+
+.admin-table-section {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 0 var(--space-4) var(--space-8);
+}
+
+.table-id {
+    font-weight: 800;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+}
+
+.table-subject {
+    font-weight: 700;
+    color: var(--text-1);
+}
+
+.table-assignee {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* ── Status badge variants not in components.css ────────────────────────────── */
+
+.badge-followup {
+    background: var(--surface-2);
+    color: var(--text-2);
+}
+
+/* ── Modal ───────────────────────────────────────────────────────────────────── */
+
+.f-group {
+    margin-bottom: var(--space-4);
+}
+
+.f-textarea {
+    height: auto;
+    resize: vertical;
+    min-height: 80px;
+}
+
+.btn-icon-sm {
+    width: 32px;
+    height: 32px;
+    min-height: 32px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--primary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.btn-icon-sm:hover {
+    background: var(--primary-light);
+}
