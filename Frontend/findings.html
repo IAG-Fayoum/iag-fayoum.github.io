@@ -11,8 +11,9 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/theme.css">
-    <link rel="stylesheet" href="assets/css/iag-theme.css">
+    <!-- Design System (single entrypoint) -->
+    <link rel="stylesheet" href="assets/css/system/iag-design-system.css">
+    <!-- Page-specific styles -->
     <link rel="stylesheet" href="assets/css/findings.css">
 </head>
 <body>
@@ -21,13 +22,13 @@
 <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
 <aside class="side-menu" id="side-menu">
     <div class="side-menu-header">
-        <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center">
-                <i data-lucide="user" style="width:20px;height:20px;color:white"></i>
+        <div class="menu-user-row">
+            <div class="menu-avatar">
+                <i data-lucide="user"></i>
             </div>
-            <div>
-                <div style="font-weight:900;font-size:0.9rem;color:white" id="menu-user">—</div>
-                <div style="font-size:0.72rem;color:#99f6e4;font-weight:800" id="menu-role"></div>
+            <div class="menu-user-info">
+                <div id="menu-user">—</div>
+                <div id="menu-role"></div>
             </div>
         </div>
     </div>
@@ -35,8 +36,8 @@
         <nav id="side-nav"></nav>
     </div>
     <div class="menu-footer">
-        <button onclick="auth.logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);gap:8px;justify-content:center">
-            <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
+        <button onclick="IAGSession.logout()" class="btn btn-logout">
+            <i data-lucide="log-out" class="icon-sm"></i> تسجيل خروج
         </button>
     </div>
 </aside>
@@ -44,12 +45,12 @@
 <!-- HEADER -->
 <header class="page-header">
     <div class="header-top">
-        <button class="header-btn" onclick="toggleMenu()">
-            <i data-lucide="menu" style="width:20px;height:20px"></i>
+        <button class="header-btn" onclick="toggleMenu()" aria-label="القائمة">
+            <i data-lucide="menu" class="icon-md"></i>
         </button>
         <div class="header-center">
             <div class="header-badge">
-                <i data-lucide="shield-alert" style="width:12px;height:12px"></i>
+                <i data-lucide="shield-alert" class="icon-xs"></i>
                 الملاحظات المرصودة
             </div>
             <h1 class="header-title">
@@ -58,8 +59,8 @@
             <p class="header-sub">Internal Audit &amp; Governance</p>
             <p class="header-user" id="hdr-sub"></p>
         </div>
-        <button class="header-btn" onclick="window.location.href='notifications.html'">
-            <i data-lucide="bell" style="width:20px;height:20px"></i>
+        <button class="header-btn" onclick="window.location.href='notifications.html'" aria-label="الإشعارات">
+            <i data-lucide="bell" class="icon-md"></i>
             <span class="notif-dot"></span>
         </button>
     </div>
@@ -102,19 +103,19 @@
 <!-- KPI STRIP -->
 <div class="kpi-strip">
     <div class="kpi-card">
-        <div class="kpi-num" style="color:#0a5c56" id="k-open-units">—</div>
+        <div class="kpi-num kpi-primary" id="k-open-units">—</div>
         <div class="kpi-lbl">وحدات مفتوحة</div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-num" style="color:#dc2626" id="k-late">—</div>
+        <div class="kpi-num kpi-danger" id="k-late">—</div>
         <div class="kpi-lbl">متأخر</div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-num" style="color:#d97706" id="k-suspended">—</div>
+        <div class="kpi-num kpi-warning" id="k-suspended">—</div>
         <div class="kpi-lbl">معلق</div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-num" style="color:#7c3aed" id="k-legal">—</div>
+        <div class="kpi-num kpi-legal" id="k-legal">—</div>
         <div class="kpi-lbl">قانوني</div>
     </div>
 </div>
@@ -138,7 +139,7 @@
 <!-- TAB PANEL: نشط -->
 <div class="tab-panel active" id="panel-active">
     <div class="loader-box">
-        <i data-lucide="loader-2" style="width:36px;height:36px;color:#0a5c56" class="spin"></i>
+        <i data-lucide="loader-2" class="loader-icon spin"></i>
         <p class="loader-lbl">جاري تحميل البيانات...</p>
     </div>
 </div>
@@ -180,15 +181,13 @@
     </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav" id="bottom-nav"></nav>
 
 <script src="assets/js/config.js"></script>
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/nav.js"></script>
+<script src="assets/js/core/api.js"></script>
+<script src="assets/js/core/session.js"></script>
+<script src="assets/js/core/ui-feedback.js"></script>
 <script src="assets/js/findings.js" defer></script>
 </body>
 </html>

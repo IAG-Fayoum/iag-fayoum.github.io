@@ -11,9 +11,9 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/theme.css">
-    <link rel="stylesheet" href="assets/css/iag-theme.css">
-    <link rel="stylesheet" href="card.css">
+    <!-- Design System (single entrypoint) -->
+    <link rel="stylesheet" href="assets/css/system/iag-design-system.css">
+    <!-- Page-specific styles -->
     <link rel="stylesheet" href="assets/css/employee.css">
 </head>
 <body>
@@ -22,13 +22,13 @@
 <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
 <aside class="side-menu" id="side-menu">
     <div class="side-menu-header">
-        <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center">
-                <i data-lucide="user" style="width:20px;height:20px;color:white"></i>
+        <div class="menu-user-row">
+            <div class="menu-avatar">
+                <i data-lucide="user"></i>
             </div>
-            <div>
-                <div style="font-weight:900;font-size:0.9rem;color:white" id="menu-user">—</div>
-                <div style="font-size:0.72rem;color:#99f6e4;font-weight:800" id="menu-role"></div>
+            <div class="menu-user-info">
+                <div id="menu-user">—</div>
+                <div id="menu-role"></div>
             </div>
         </div>
     </div>
@@ -36,8 +36,8 @@
         <nav id="side-nav"></nav>
     </div>
     <div class="menu-footer">
-        <button onclick="logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);gap:8px;justify-content:center">
-            <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
+        <button onclick="IAGSession.logout()" class="btn btn-logout">
+            <i data-lucide="log-out" class="icon-sm"></i> تسجيل خروج
         </button>
     </div>
 </aside>
@@ -45,12 +45,12 @@
 <!-- HEADER -->
 <header class="page-header">
     <div class="header-top">
-        <button class="header-btn" onclick="toggleMenu()">
-            <i data-lucide="menu" style="width:20px;height:20px"></i>
+        <button class="header-btn" onclick="toggleMenu()" aria-label="القائمة">
+            <i data-lucide="menu" class="icon-md"></i>
         </button>
         <div class="header-center">
             <div class="header-badge">
-                <i data-lucide="user" style="width:12px;height:12px"></i>
+                <i data-lucide="user" class="icon-xs"></i>
                 ملفي
             </div>
             <h1 class="header-title">
@@ -60,8 +60,8 @@
             <p class="header-sub">Internal Audit &amp; Governance</p>
             <p class="header-user" id="header-emp-name"></p>
         </div>
-        <button class="header-btn" onclick="window.location.href='notifications.html'">
-            <i data-lucide="bell" style="width:20px;height:20px"></i>
+        <button class="header-btn" onclick="window.location.href='notifications.html'" aria-label="الإشعارات">
+            <i data-lucide="bell" class="icon-md"></i>
             <span class="notif-dot"></span>
         </button>
     </div>
@@ -76,7 +76,7 @@
             <label class="f-label">بحث شامل</label>
             <div class="search-wrapper">
                 <input type="text" id="f-search" class="f-input search-input" placeholder="رقم، موضوع، جهة..." oninput="applyFilters()">
-                <i data-lucide="search" class="search-icon"></i>
+                <i data-lucide="search" class="search-icon icon-sm"></i>
             </div>
         </div>
         <div class="filter-item">
@@ -142,10 +142,10 @@
 <!-- TABS -->
 <div class="tabs-bar">
     <button class="tab-btn active" id="tab-tasks" onclick="switchTab('tasks')">
-        <i data-lucide="list-checks" style="width:16px;height:16px"></i> مهامي
+        <i data-lucide="list-checks" class="icon-sm"></i> مهامي
     </button>
     <button class="tab-btn" id="tab-myfiles" onclick="switchTab('myfiles')">
-        <i data-lucide="folder-open" style="width:16px;height:16px"></i> ملفاتي
+        <i data-lucide="folder-open" class="icon-sm"></i> ملفاتي
     </button>
 </div>
 
@@ -153,8 +153,8 @@
 <div id="view-tasks">
     <div class="cards-container" id="tasks-list">
         <div class="loader-box">
-            <i data-lucide="loader-2" style="width:40px;height:40px;display:block;margin:0 auto 12px;color:#0a5c56" class="animate-spin"></i>
-            <p style="font-weight:700;color:#94a3b8">جاري تحميل مهامك...</p>
+            <i data-lucide="loader-2" class="loader-icon animate-spin"></i>
+            <p class="loader-lbl">جاري تحميل مهامك...</p>
         </div>
     </div>
 </div>
@@ -164,8 +164,8 @@
     <div class="files-container">
         <div id="files-tree-content">
             <div class="empty-files">
-                <i data-lucide="loader-2" style="width:32px;height:32px;display:block;margin:0 auto 10px;color:#0a5c56" class="animate-spin"></i>
-                <p style="font-weight:700">جاري تحميل ملفاتك من Drive...</p>
+                <i data-lucide="loader-2" class="loader-icon animate-spin"></i>
+                <p class="loader-lbl">جاري تحميل ملفاتك من Drive...</p>
             </div>
         </div>
     </div>
@@ -177,11 +177,11 @@
         <div class="sheet-handle"></div>
         <div class="modal-header">
             <div>
-                <h3 style="font-weight:800;font-size:1rem;color:#0f172a">تفاصيل المعاملة</h3>
-                <p style="font-size:0.72rem;color:#94a3b8;font-family:monospace" id="m-id">#...</p>
+                <h3 class="modal-title-text">تفاصيل المعاملة</h3>
+                <p class="modal-id-text" id="m-id">#...</p>
             </div>
             <button onclick="closeModal()" class="modal-close-btn">
-                <i data-lucide="x" style="width:20px;height:20px"></i>
+                <i data-lucide="x" class="icon-md"></i>
             </button>
         </div>
         <div class="modal-body" id="m-content"></div>
@@ -192,8 +192,9 @@
 <nav class="bottom-nav" id="bottom-nav"></nav>
 
 <script src="assets/js/config.js"></script>
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/nav.js"></script>
+<script src="assets/js/core/api.js"></script>
+<script src="assets/js/core/session.js"></script>
+<script src="assets/js/core/ui-feedback.js"></script>
 <script src="assets/js/employee.js"></script>
 </body>
 </html>

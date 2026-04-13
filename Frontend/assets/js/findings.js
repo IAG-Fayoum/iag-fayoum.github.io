@@ -1,4 +1,11 @@
-// findings.js — الملاحظات المرصودة / IAG System
+/**
+ * findings.js — الملاحظات المرصودة / IAG System
+ *
+ * Sprint 3 Block B: fully migrated to core layer.
+ * - Session: IAGSession (no direct localStorage / auth.js)
+ * - API:     IAGApi    (no direct fetch / local post())
+ * - UI:      IAGFeedback (no local showToast)
+ */
 
 lucide.createIcons();
 
@@ -9,77 +16,57 @@ let activeType       = '';
 let pendingSuspendId = null;
 let currentUser      = null;
 let selectedFindings = new Set();
-let toastTimer;
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', async () => {
-    const user = auth.checkAuth();
-    if (!user) { location.href = 'index.html'; return; }
+    currentUser = IAGSession.requireAuth();
 
-    const role = (user.role || '').trim();
+    const role = (currentUser.role || '').trim();
     if (role.includes('منسق') && !role.includes('مدير')) {
         location.href = 'coordinator.html'; return;
     }
 
-    currentUser = user;
-    document.getElementById('menu-user').textContent = user.name || '';
-    document.getElementById('menu-role').textContent = user.jobTitle || user.role || '';
-    document.getElementById('hdr-sub').textContent   = (user.name || '') + ' — ' + (user.jobTitle || user.role || '');
+    document.getElementById('menu-user').textContent = currentUser.name || '';
+    document.getElementById('menu-role').textContent = currentUser.jobTitle || currentUser.role || '';
+    document.getElementById('hdr-sub').textContent   = (currentUser.name || '') + ' — ' + (currentUser.jobTitle || currentUser.role || '');
 
     await Promise.all([loadFindings(), loadPortalData()]);
     lucide.createIcons();
 });
 
-// ── API ──
-async function post(body) {
-    const res = await fetch(CONFIG.API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(body)
-    });
-    return res.json();
-}
-
 // ── LOAD FINDINGS ──
 async function loadFindings() {
-    try {
-        const res = await post({ action: 'getFindings' });
-        console.log('[findings] getFindings response:', res);
+    IAGFeedback.showLoading('جاري تحميل البيانات...');
+    const result = await IAGApi.request('getFindings');
+    IAGFeedback.hideLoading();
 
-        if (!res.success) {
-            showPanelError('panel-active', 'تعذر تحميل البيانات: ' + (res.error || ''));
-            return;
-        }
-
-        allFindings = (res.findings || []).map(f => ({
-            ...f,
-            status: (String(f.status || '').trim()) || 'مفتوح'
-        }));
-
-        console.log('[findings] total loaded:', allFindings.length,
-            '| statuses:', allFindings.reduce((acc, f) => { acc[f.status] = (acc[f.status]||0)+1; return acc; }, {}));
-
-        populateDropdowns();
-        render();
-    } catch (e) {
-        console.error('[findings] load error:', e);
-        showPanelError('panel-active', 'خطأ في الاتصال بالخادم');
+    if (!result.ok) {
+        showPanelError('panel-active', 'تعذر تحميل البيانات: ' + (result.error || ''));
+        return;
     }
+
+    const findings = (result.data && result.data.findings) || [];
+    allFindings = findings.map(f => ({
+        ...f,
+        status: (String(f.status || '').trim()) || 'مفتوح'
+    }));
+
+    populateDropdowns();
+    render();
 }
 
 // ── PORTAL DATA (badge) ──
 async function loadPortalData() {
-    try {
-        const res = await post({ action: 'getCARSections' });
-        if (!res.success) return;
-        portalMap = {};
-        (res.sections || []).forEach(s => {
-            const unit = (s.unit_name || s.facility_name || '').trim();
-            if (unit && (s.portal_status === 'تم الرد' || s.portal_reply)) {
-                portalMap[unit] = (portalMap[unit] || 0) + 1;
-            }
-        });
-    } catch (e) { /* optional */ }
+    const result = await IAGApi.request('getCARSections');
+    if (!result.ok) return;
+    portalMap = {};
+    const sections = (result.data && result.data.sections) || [];
+    sections.forEach(s => {
+        const unit = (s.unit_name || s.facility_name || '').trim();
+        if (unit && (s.portal_status === 'تم الرد' || s.portal_reply)) {
+            portalMap[unit] = (portalMap[unit] || 0) + 1;
+        }
+    });
 }
 
 // ─────────────────────────────────────────
@@ -424,28 +411,22 @@ async function handleAction(btn, findingId, newStatus) {
     btn.disabled = true;
     btn.textContent = '...';
 
-    try {
-        const res = await post({
-            action:     'updateFindingStatus',
-            finding_id: findingId,
-            status:     newStatus,
-            updated_by: (currentUser && currentUser.name) || 'مستخدم'
-        });
+    const result = await IAGApi.request('updateFindingStatus', {
+        finding_id: findingId,
+        status:     newStatus,
+        updated_by: (currentUser && currentUser.name) || 'مستخدم'
+    });
 
-        if (!res.success) {
-            showToast('خطأ: ' + (res.error || 'فشل التحديث'), 'error');
-            btn.disabled = false; btn.textContent = origLabel;
-            return;
-        }
-
-        updateLocalStatus(findingId, newStatus);
-        const msgs2 = { 'مغلق': '✅ تم قفل المخالفة', 'قانوني': '⚖️ تمت الإحالة للقانون', 'مفتوح': '🔓 تمت إعادة فتح المخالفة' };
-        showToast(msgs2[newStatus] || 'تم التحديث', 'success');
-        render(); lucide.createIcons();
-    } catch (e) {
-        showToast('خطأ في الاتصال', 'error');
+    if (!result.ok) {
+        IAGFeedback.showError('خطأ: ' + (result.error || 'فشل التحديث'));
         btn.disabled = false; btn.textContent = origLabel;
+        return;
     }
+
+    updateLocalStatus(findingId, newStatus);
+    const msgs2 = { 'مغلق': 'تم قفل المخالفة', 'قانوني': 'تمت الإحالة للقانون', 'مفتوح': 'تمت إعادة فتح المخالفة' };
+    IAGFeedback.showSuccess(msgs2[newStatus] || 'تم التحديث');
+    render(); lucide.createIcons();
 }
 
 // ── BULK ACTIONS ──
@@ -478,18 +459,15 @@ async function bulkClose() {
 
     let done = 0;
     for (const fid of ids) {
-        try {
-            const res = await post({
-                action:     'updateFindingStatus',
-                finding_id: fid,
-                status:     'مغلق',
-                updated_by: (currentUser && currentUser.name) || 'مستخدم'
-            });
-            if (res.success) { updateLocalStatus(fid, 'مغلق'); done++; }
-        } catch (e) { /* continue */ }
+        const res = await IAGApi.request('updateFindingStatus', {
+            finding_id: fid,
+            status:     'مغلق',
+            updated_by: (currentUser && currentUser.name) || 'مستخدم'
+        });
+        if (res.ok) { updateLocalStatus(fid, 'مغلق'); done++; }
     }
 
-    showToast(`✅ تم قفل ${done} من ${count} مخالفة`, 'success');
+    IAGFeedback.showSuccess(`تم قفل ${done} من ${count} مخالفة`);
     render(); lucide.createIcons();
 }
 
@@ -521,26 +499,23 @@ async function submitSuspend() {
     const btn = document.getElementById('modal-submit-btn');
     btn.disabled = true; btn.textContent = '...';
 
-    try {
-        const res = await post({
-            action:            'updateFindingStatus',
-            finding_id:        pendingSuspendId,
-            status:            'معلق',
-            responsible_party: party,
-            comment:           comment,
-            updated_by:        (currentUser && currentUser.name) || 'مستخدم'
-        });
+    const result = await IAGApi.request('updateFindingStatus', {
+        finding_id:        pendingSuspendId,
+        status:            'معلق',
+        responsible_party: party,
+        comment:           comment,
+        updated_by:        (currentUser && currentUser.name) || 'مستخدم'
+    });
 
-        if (!res.success) {
-            showToast('خطأ: ' + (res.error || 'فشل التحديث'), 'error');
-        } else {
-            const idx = allFindings.findIndex(f => (f.finding_id || f.uuid) === pendingSuspendId);
-            if (idx > -1) { allFindings[idx].status = 'معلق'; allFindings[idx].responsible_party = party; }
-            showToast('⏸ تم تعليق المخالفة', 'success');
-            closeSuspendModal();
-            render(); lucide.createIcons();
-        }
-    } catch (e) { showToast('خطأ في الاتصال', 'error'); }
+    if (!result.ok) {
+        IAGFeedback.showError('خطأ: ' + (result.error || 'فشل التحديث'));
+    } else {
+        const idx = allFindings.findIndex(f => (f.finding_id || f.uuid) === pendingSuspendId);
+        if (idx > -1) { allFindings[idx].status = 'معلق'; allFindings[idx].responsible_party = party; }
+        IAGFeedback.showSuccess('تم تعليق المخالفة');
+        closeSuspendModal();
+        render(); lucide.createIcons();
+    }
 
     btn.disabled = false; btn.textContent = 'تعليق';
 }
@@ -585,17 +560,7 @@ function daysSince(dateStr) {
 
 function showPanelError(panelId, msg) {
     document.getElementById(panelId).innerHTML =
-        `<div class="empty-box" style="border-color:#fecaca;color:#dc2626">${esc(msg)}</div>`;
-}
-
-function showToast(msg, type) {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.className = 'toast' + (type ? ' ' + type : '');
-    void el.offsetWidth;
-    el.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+        `<div class="empty-box empty-box--error">${esc(msg)}</div>`;
 }
 
 function toggleMenu() {

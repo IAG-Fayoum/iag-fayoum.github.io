@@ -133,6 +133,78 @@ const IAGApi = (() => {
         return request('markNotifRead', { notifId, name: username });
     }
 
+    /** Mark a single notification as read (legacy action name used by backend) */
+    function markAsRead(notifId) {
+        return request('markAsRead', { notifId });
+    }
+
+    /** Delete a single notification */
+    function deleteNotification(notifId) {
+        return request('deleteNotification', { notifId });
+    }
+
+    /** Mark all notifications as read for a user */
+    function markAllRead(username) {
+        return request('markAllRead', { name: username });
+    }
+
+    /** Delete all notifications for a user */
+    function deleteAllNotifications(username) {
+        return request('deleteAllNotifications', { name: username });
+    }
+
+    /** Admin: update task status with optional notes */
+    function adminUpdateStatus(taskId, newStatus, notes, updatedBy) {
+        return request('adminUpdateStatus', { taskId, newStatus, notes, updatedBy });
+    }
+
+    /** Admin: send a custom email to an employee */
+    function sendCustomEmail(toEmployee, subject, body) {
+        return request('sendCustomEmail', { toEmployee, subject, body });
+    }
+
+    /** Admin: broadcast a notification to one or all employees */
+    function broadcastNotification(target, message) {
+        return request('broadcastNotification', { target, message });
+    }
+
+    // ── Block B Endpoint Helpers (Sprint 3) ──────────────────────────────────
+
+    /** Employee: get Drive files for an employee */
+    function getEmployeeFiles(username) {
+        return request('getEmployeeFiles', { name: username });
+    }
+
+    /** Findings: load all findings */
+    function getFindings() {
+        return request('getFindings');
+    }
+
+    /** Findings: update a finding's status */
+    function updateFindingStatus(findingId, status, updatedBy, extra = {}) {
+        return request('updateFindingStatus', { finding_id: findingId, status, updated_by: updatedBy, ...extra });
+    }
+
+    /** Findings: load CAR sections (for portal badge in findings page) */
+    function getCARSections() {
+        return request('getCARSections');
+    }
+
+    /** Portal: login for health-area managers */
+    function portalLogin(adminCode, pin) {
+        return request('portalLogin', { admin_code: adminCode, pin });
+    }
+
+    /** Portal: load sections for a health-area manager */
+    function portalGetSections(adminCode) {
+        return request('portalGetSections', { admin_code: adminCode });
+    }
+
+    /** Portal: submit a response for a CAR section */
+    function portalSubmitResponse(adminCode, carId, sectionName, response) {
+        return request('portalSubmitResponse', { admin_code: adminCode, car_id: carId, section_name: sectionName, response });
+    }
+
     // ── Public API ────────────────────────────────────────────────────────────
 
     return {
@@ -145,6 +217,21 @@ const IAGApi = (() => {
         uploadArchiveFile,
         getNotifications,
         markNotifRead,
+        markAsRead,
+        deleteNotification,
+        markAllRead,
+        deleteAllNotifications,
+        adminUpdateStatus,
+        sendCustomEmail,
+        broadcastNotification,
+        // Block B (Sprint 3)
+        getEmployeeFiles,
+        getFindings,
+        updateFindingStatus,
+        getCARSections,
+        portalLogin,
+        portalGetSections,
+        portalSubmitResponse,
     };
 
 })();

@@ -295,18 +295,15 @@ let currentTab   = 'tasks';
 let activeFileType = 'all';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    if (typeof auth === 'undefined') { window.location.href = 'index.html'; return; }
-    const user = auth.checkAuth();
-    if (!user) { window.location.href = 'index.html'; return; }
-    currentUser = user;
+    currentUser = IAGSession.requireAuth();
 
-    if ((user.role||'').includes('مدير') || (user.role||'').includes('منسق')) {
+    if ((currentUser.role||'').includes('مدير') || (currentUser.role||'').includes('منسق')) {
         window.location.href = 'coordinator.html'; return;
     }
 
-    document.getElementById('menu-user').textContent       = user.name;
-    document.getElementById('menu-role').textContent       = user.role || '';
-    document.getElementById('header-emp-name').textContent = user.name;
+    document.getElementById('menu-user').textContent       = currentUser.name;
+    document.getElementById('menu-role').textContent       = currentUser.role || '';
+    document.getElementById('header-emp-name').textContent = currentUser.name;
 
     const now = new Date();
     const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0');
@@ -314,34 +311,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('f-start').value = `${y}-${m}-01`;
     document.getElementById('f-end').value   = `${y}-${m}-${lastDay}`;
 
-    await loadTasks(user.name);
+    await loadTasks(currentUser.name);
 });
 
 async function loadTasks(username) {
-    try {
-        const res  = await fetch(CONFIG.API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'getAllData', role: 'موظف', name: username })
-        });
-        const data = await res.json();
-        if (data.success) {
-            const all = data.tasks || [];
-            myTasks = all.filter(t => (t.assignee||'').trim() === username.trim());
-            const sources = [...new Set(myTasks.map(t => t.source).filter(Boolean))].sort();
-            const sel = document.getElementById('f-source');
-            sources.forEach(s => { sel.innerHTML += `<option value="${s}">${s}</option>`; });
-            try {
-                applyFilters();
-            } catch(renderErr) {
-                console.error('renderCard error:', renderErr);
-                showEmpty('خطأ في عرض البيانات: ' + renderErr.message);
-            }
-        } else {
-            showEmpty('لا توجد بيانات');
-        }
-    } catch(e) {
-        console.error('loadTasks network error:', e);
+    IAGFeedback.showLoading('جاري تحميل مهامك...');
+    const result = await IAGApi.request('getAllData', { role: 'موظف', name: username });
+    IAGFeedback.hideLoading();
+
+    if (!result.ok) {
         showEmpty('خطأ في الاتصال بالخادم');
+        IAGFeedback.showError(result.error || 'فشل تحميل المهام');
+        return;
+    }
+
+    const all = (result.data && result.data.tasks) || [];
+    myTasks = all.filter(t => (t.assignee||'').trim() === username.trim());
+    const sources = [...new Set(myTasks.map(t => t.source).filter(Boolean))].sort();
+    const sel = document.getElementById('f-source');
+    sources.forEach(s => { sel.innerHTML += `<option value="${s}">${s}</option>`; });
+    try {
+        applyFilters();
+    } catch(renderErr) {
+        console.error('renderCard error:', renderErr);
+        showEmpty('خطأ في عرض البيانات: ' + renderErr.message);
     }
 }
 
@@ -350,28 +343,21 @@ async function loadFiles(username) {
     const container = document.getElementById('files-tree-content');
     container.innerHTML = `
         <div class="empty-files">
-            <i data-lucide="loader-2" style="width:32px;height:32px;display:block;margin:0 auto 10px;color:#0a5c56" class="animate-spin"></i>
-            <p style="font-weight:700">جاري تحميل ملفاتك من Drive...</p>
+            <i data-lucide="loader-2" class="loader-icon animate-spin"></i>
+            <p class="loader-lbl">جاري تحميل ملفاتك من Drive...</p>
         </div>`;
     lucide.createIcons();
-    try {
-        const res  = await fetch(CONFIG.API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'getEmployeeFiles', name: username })
-        });
-        const data = await res.json();
-        if (data.success) {
-            myFiles = {
-                inspections: data.inspections || [],
-                complaints:  data.complaints  || []
-            };
-            filesLoaded = true;
-            renderFilesTree();
-        } else {
-            container.innerHTML = `<div class="empty-files"><p style="font-weight:700;color:#dc2626">خطأ: ${data.error || 'فشل تحميل الملفات'}</p></div>`;
-        }
-    } catch(e) {
-        container.innerHTML = `<div class="empty-files"><p style="font-weight:700;color:#dc2626">خطأ في الاتصال بالخادم</p></div>`;
+    const result = await IAGApi.request('getEmployeeFiles', { name: username });
+    if (result.ok) {
+        myFiles = {
+            inspections: (result.data && result.data.inspections) || [],
+            complaints:  (result.data && result.data.complaints)  || []
+        };
+        filesLoaded = true;
+        renderFilesTree();
+    } else {
+        container.innerHTML = `<div class="empty-files"><p class="error-text">خطأ: ${result.error || 'فشل تحميل الملفات'}</p></div>`;
+        IAGFeedback.showError(result.error || 'فشل تحميل الملفات');
     }
     lucide.createIcons();
 }
@@ -420,8 +406,8 @@ function renderFilesTree() {
     if (!inspFiles.length && !compFiles.length) {
         container.innerHTML = `
             <div class="empty-files">
-                <i data-lucide="folder-open" style="width:36px;height:36px;color:#e2e8f0;display:block;margin:0 auto 10px"></i>
-                <p style="font-weight:700">${query ? 'لا توجد نتائج مطابقة' : 'لا توجد ملفات بعد'}</p>
+                <i data-lucide="folder-open" class="empty-icon"></i>
+                <p class="empty-lbl">${query ? 'لا توجد نتائج مطابقة' : 'لا توجد ملفات بعد'}</p>
             </div>`;
         lucide.createIcons(); return;
     }

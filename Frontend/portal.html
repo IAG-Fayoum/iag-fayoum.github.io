@@ -4,216 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
     <title>بوابة الإدارة الصحية | IAG System</title>
     <link rel="icon" type="image/png" href="assets/icons/favicon.png">
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/theme.css">
-
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Cairo', sans-serif; background: #f8fafc; font-size: 14px; -webkit-tap-highlight-color: transparent; min-height: 100vh; }
-        :root {
-            --primary: #0f766e;
-            --primary-dark: #0d6b63;
-            --primary-light: #f0fdfa;
-            --border: #e2e8f0;
-            --text: #0f172a;
-            --muted: #64748b;
-            --faint: #94a3b8;
-        }
-
-        /* ── LOGIN SCREEN ── */
-        .login-screen {
-            min-height: 100vh; display: flex; align-items: center; justify-content: center;
-            background: #020617;
-            background-image:
-                radial-gradient(circle at top right, #0f766e 0%, transparent 50%),
-                radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 50%);
-            padding: 1.5rem;
-        }
-
-        .login-card {
-            background: rgba(255,255,255,0.97); backdrop-filter: blur(20px);
-            border-radius: 24px; padding: 2.5rem;
-            width: 100%; max-width: 420px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-            animation: fadeUp 0.4s ease;
-        }
-
-        .login-logo {
-            width: 64px; height: 64px; background: var(--primary-light);
-            border-radius: 18px; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 1.25rem;
-        }
-
-        .login-title { font-size: 1.2rem; font-weight: 800; color: var(--text); text-align: center; margin-bottom: 4px; }
-        .login-sub { font-size: 0.8rem; color: var(--muted); text-align: center; margin-bottom: 0.25rem; }
-        .login-sub2 { font-size: 0.72rem; color: var(--faint); text-align: center; margin-bottom: 2rem; }
-
-        .f-label { font-size: 0.78rem; font-weight: 700; color: var(--muted); display: block; margin-bottom: 6px; }
-        .f-input {
-            width: 100%; height: 48px; border: 2px solid var(--border); border-radius: 12px;
-            padding: 0 14px; font-family: 'Cairo', sans-serif; font-size: 0.95rem;
-            font-weight: 600; color: var(--text); background: white; outline: none;
-            transition: 0.2s;
-        }
-        .f-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(15,118,110,0.1); }
-        .field-group { margin-bottom: 1.1rem; }
-
-        .error-msg { font-size: 0.82rem; color: #dc2626; text-align: center; margin-bottom: 1rem; display: none; }
-        .error-msg.show { display: block; }
-
-        .btn-login {
-            width: 100%; height: 50px; background: var(--primary); color: white;
-            border: none; border-radius: 12px; font-family: 'Cairo', sans-serif;
-            font-size: 1rem; font-weight: 800; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn-login:hover { background: var(--primary-dark); }
-        .btn-login:disabled { opacity: 0.65; cursor: not-allowed; }
-
-        .lock-note {
-            margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border);
-            font-size: 0.75rem; color: var(--faint); text-align: center;
-            display: flex; align-items: center; justify-content: center; gap: 5px;
-        }
-
-        /* ── MAIN APP ── */
-        .main-app { display: none; }
-
-        .main-header {
-            background: #020617;
-            background-image:
-                radial-gradient(circle at top right, #0f766e 0%, transparent 40%),
-                radial-gradient(circle at bottom left, #1d4ed8 0%, transparent 40%);
-            padding: 1.5rem 1.5rem 4rem;
-            padding-top: max(1.5rem, env(safe-area-inset-top));
-        }
-        .header-row { display: flex; align-items: center; justify-content: space-between; }
-        .header-info { flex: 1; }
-        .header-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px; padding: 4px 12px; font-size: 0.72rem;
-            font-weight: 700; color: #ccfbf1; margin-bottom: 8px;
-        }
-        .header-name { font-size: 1.1rem; font-weight: 800; color: white; margin-bottom: 2px; }
-        .header-sub { font-size: 0.78rem; color: #94a3b8; }
-
-        .btn-logout {
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            color: white; padding: 8px 14px; border-radius: 10px;
-            font-family: 'Cairo', sans-serif; font-size: 0.8rem; font-weight: 700;
-            cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;
-            flex-shrink: 0;
-        }
-        .btn-logout:hover { background: rgba(255,255,255,0.2); }
-
-        /* ── STATS BAR ── */
-        .stats-bar {
-            margin: -2.5rem 1rem 1.5rem; position: relative; z-index: 20;
-            background: rgba(255,255,255,0.97); backdrop-filter: blur(20px);
-            border-radius: 20px; padding: 1rem 1.25rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid white;
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-        }
-        @media (min-width: 768px) { .stats-bar { max-width: 800px; margin: -2.5rem auto 1.5rem; } }
-
-        .stat-item { text-align: center; }
-        .stat-num { font-size: 1.4rem; font-weight: 900; line-height: 1; margin-bottom: 2px; }
-        .stat-lbl { font-size: 0.68rem; font-weight: 700; color: var(--muted); }
-        .s-total   { color: #334155; }
-        .s-pending { color: #d97706; }
-        .s-done    { color: #059669; }
-
-        /* ── SECTIONS ── */
-        .content-wrap { padding: 0 1rem 3rem; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
-
-        .section-card {
-            background: white; border-radius: 18px; border: 1px solid var(--border);
-            border-right: 5px solid var(--primary); overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04); transition: 0.2s;
-        }
-        .section-card.replied { border-right-color: #059669; }
-        .section-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-
-        .sc-header {
-            padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid #f1f5f9;
-            display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
-        }
-        .car-badge { background: #f0fdfa; color: var(--primary); font-size: 0.78rem; font-weight: 900; padding: 3px 10px; border-radius: 20px; border: 1px solid #ccfbf1; white-space: nowrap; }
-        .facility-name { font-size: 0.9rem; font-weight: 800; color: var(--text); }
-        .section-name-txt { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-
-        .badge-replied { background: #d1fae5; color: #065f46; font-size: 0.68rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
-        .badge-pending { background: #fef3c7; color: #92400e; font-size: 0.68rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
-
-        .sc-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
-
-        .findings-block { background: #fefce8; border: 1px solid #fef08a; border-radius: 10px; padding: 10px 12px; }
-        .block-label { font-size: 0.7rem; font-weight: 800; color: #92400e; margin-bottom: 5px; display: flex; align-items: center; gap: 4px; }
-        .findings-text { font-size: 0.85rem; color: var(--text); line-height: 1.7; }
-
-        .prev-response-block { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 12px; }
-        .prev-label { font-size: 0.7rem; font-weight: 800; color: #065f46; margin-bottom: 5px; display: flex; align-items: center; gap: 4px; }
-        .prev-text { font-size: 0.85rem; color: #374151; line-height: 1.6; }
-        .prev-date { font-size: 0.7rem; color: var(--faint); margin-top: 5px; }
-
-        .response-label { font-size: 0.78rem; font-weight: 800; color: var(--muted); margin-bottom: 6px; display: block; }
-        .response-textarea {
-            width: 100%; border: 2px solid var(--border); border-radius: 12px;
-            padding: 10px 12px; font-family: 'Cairo', sans-serif; font-size: 0.88rem;
-            font-weight: 600; color: var(--text); background: #f8fafc; outline: none;
-            resize: vertical; min-height: 90px; transition: 0.2s;
-        }
-        .response-textarea:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
-        .response-textarea:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .sc-footer { padding: 12px 16px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; }
-        .btn-submit {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 9px 22px; background: var(--primary); color: white;
-            border: none; border-radius: 10px; font-family: 'Cairo', sans-serif;
-            font-size: 0.88rem; font-weight: 800; cursor: pointer; transition: 0.2s;
-        }
-        .btn-submit:hover { background: var(--primary-dark); transform: translateY(-1px); }
-        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .btn-submitted { background: #059669; }
-        .btn-submitted:hover { background: #047857; }
-
-        /* ── EMPTY / LOADER ── */
-        .loader-wrap { text-align: center; padding: 4rem 1rem; color: var(--faint); }
-        .empty-wrap { background: white; border-radius: 16px; padding: 3rem; text-align: center; border: 1px dashed var(--border); }
-
-        /* ── TOAST ── */
-        .toast {
-            position: fixed; bottom: 2rem; left: 50%;
-            transform: translateX(-50%) translateY(80px);
-            background: #0f172a; color: white; padding: 10px 22px;
-            border-radius: 12px; font-size: 0.85rem; font-weight: 700;
-            z-index: 500; opacity: 0; transition: all 0.3s;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .toast.success { background: #059669; }
-        .toast.error   { background: #dc2626; }
-
-        /* ── SPINNER ── */
-        .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
-
-        @keyframes spin    { to { transform: rotate(360deg); } }
-        @keyframes fadeUp  { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+    <!-- Design System (single entrypoint) -->
+    <link rel="stylesheet" href="assets/css/system/iag-design-system.css">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="assets/css/portal.css">
 </head>
 <body>
 
     <!-- LOGIN SCREEN -->
-    <div class="login-screen" id="login-screen">
+    <div class="login-screen" id="login-screen" style="display:none">
         <div class="login-card">
             <div class="login-logo">
-                <i data-lucide="landmark" style="width:32px;height:32px;color:var(--primary)"></i>
+                <i data-lucide="landmark" class="icon-portal-logo"></i>
             </div>
             <h1 class="login-title">بوابة الإدارة الصحية</h1>
             <p class="login-sub">إدارة المراجعة الداخلية والحوكمة</p>
@@ -221,22 +30,24 @@
 
             <div class="field-group">
                 <label class="f-label" for="inp-code">كود الإدارة</label>
-                <input type="text" id="inp-code" class="f-input" placeholder="أدخل كود الإدارة" autocomplete="off" onkeydown="if(event.key==='Enter')document.getElementById('inp-pin').focus()">
+                <input type="text" id="inp-code" class="f-input" placeholder="أدخل كود الإدارة" autocomplete="off"
+                    onkeydown="if(event.key==='Enter')document.getElementById('inp-pin').focus()">
             </div>
             <div class="field-group">
                 <label class="f-label" for="inp-pin">رمز الدخول (PIN)</label>
-                <input type="password" id="inp-pin" class="f-input" placeholder="أدخل رمز الدخول" maxlength="6" onkeydown="if(event.key==='Enter')doLogin()">
+                <input type="password" id="inp-pin" class="f-input" placeholder="أدخل رمز الدخول" maxlength="6"
+                    onkeydown="if(event.key==='Enter')doLogin()">
             </div>
 
             <p class="error-msg" id="login-error"></p>
 
             <button class="btn-login" id="btn-login" onclick="doLogin()">
-                <i data-lucide="log-in" style="width:18px;height:18px"></i>
+                <i data-lucide="log-in" class="icon-md"></i>
                 تسجيل الدخول
             </button>
 
             <p class="lock-note">
-                <i data-lucide="shield-alert" style="width:14px;height:14px"></i>
+                <i data-lucide="shield-alert" class="icon-sm"></i>
                 سيتم قفل الحساب بعد 5 محاولات فاشلة
             </p>
         </div>
@@ -246,18 +57,18 @@
     <div class="main-app" id="main-app">
 
         <header class="main-header">
-            <div style="max-width:800px;margin:0 auto">
+            <div class="header-inner">
                 <div class="header-row">
                     <div class="header-info">
                         <div class="header-badge">
-                            <i data-lucide="building-2" style="width:12px;height:12px"></i>
+                            <i data-lucide="building-2" class="icon-xs"></i>
                             بوابة الإدارة الصحية
                         </div>
                         <div class="header-name" id="hdr-manager">...</div>
                         <div class="header-sub" id="hdr-admin">...</div>
                     </div>
                     <button class="btn-logout" onclick="doLogout()">
-                        <i data-lucide="log-out" style="width:15px;height:15px"></i>
+                        <i data-lucide="log-out" class="icon-sm"></i>
                         خروج
                     </button>
                 </div>
@@ -280,286 +91,17 @@
         </div>
 
         <div class="content-wrap" id="content-wrap">
-            <div class="loader-wrap" id="loader">
-                <div class="spinner" style="border-color:rgba(15,118,110,0.2);border-top-color:var(--primary);width:36px;height:36px;margin:0 auto 1rem"></div>
-                <p style="font-weight:700;color:var(--muted)">جاري تحميل البيانات...</p>
+            <div class="loader-wrap">
+                <div class="spinner-lg"></div>
+                <p class="loader-text">جاري تحميل البيانات...</p>
             </div>
         </div>
 
     </div>
 
-    <div class="toast" id="toast"></div>
-
     <script src="assets/js/config.js"></script>
-    <script>
-        lucide.createIcons();
-
-        let session = null;
-        let allSections = [];
-
-        // ── INIT ──────────────────────────────────────────────────
-        (function init() {
-            const saved = sessionStorage.getItem('iag_portal_session');
-            if (saved) {
-                try {
-                    session = JSON.parse(saved);
-                    showApp();
-                    return;
-                } catch(e) {}
-            }
-            document.getElementById('login-screen').style.display = 'flex';
-        })();
-
-        // ── LOGIN ─────────────────────────────────────────────────
-        async function doLogin() {
-            const code = document.getElementById('inp-code').value.trim();
-            const pin  = document.getElementById('inp-pin').value.trim();
-            const errEl = document.getElementById('login-error');
-            const btn   = document.getElementById('btn-login');
-
-            errEl.classList.remove('show');
-            if (!code || !pin) {
-                errEl.textContent = 'يرجى إدخال كود الإدارة ورمز الدخول';
-                errEl.classList.add('show');
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span>';
-
-            try {
-                const res  = await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'portalLogin', admin_code: code, pin: pin })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    session = {
-                        admin_code  : code,
-                        admin_name  : data.admin_name  || code,
-                        manager_name: data.manager_name || 'مدير الإدارة'
-                    };
-                    sessionStorage.setItem('iag_portal_session', JSON.stringify(session));
-                    showApp();
-                    showToast('مرحباً ' + session.manager_name, 'success');
-                } else {
-                    errEl.textContent = data.error || 'بيانات غير صحيحة';
-                    errEl.classList.add('show');
-                }
-            } catch(e) {
-                errEl.textContent = 'خطأ في الاتصال — تحقق من الإنترنت';
-                errEl.classList.add('show');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="log-in" style="width:18px;height:18px"></i> تسجيل الدخول';
-                lucide.createIcons();
-            }
-        }
-
-        function doLogout() {
-            sessionStorage.removeItem('iag_portal_session');
-            session = null;
-            allSections = [];
-            document.getElementById('main-app').style.display = 'none';
-            document.getElementById('login-screen').style.display = 'flex';
-            document.getElementById('inp-code').value = '';
-            document.getElementById('inp-pin').value = '';
-            document.getElementById('login-error').classList.remove('show');
-        }
-
-        // ── SHOW APP ──────────────────────────────────────────────
-        function showApp() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            document.getElementById('hdr-manager').textContent = session.manager_name;
-            document.getElementById('hdr-admin').textContent   = 'إدارة: ' + session.admin_name;
-            loadSections();
-        }
-
-        // ── LOAD SECTIONS ─────────────────────────────────────────
-        async function loadSections() {
-            const wrap = document.getElementById('content-wrap');
-            wrap.innerHTML = `
-                <div class="loader-wrap">
-                    <div class="spinner" style="border-color:rgba(15,118,110,0.2);border-top-color:var(--primary);width:36px;height:36px;margin:0 auto 1rem"></div>
-                    <p style="font-weight:700;color:var(--muted)">جاري تحميل البيانات...</p>
-                </div>`;
-
-            try {
-                const res  = await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'portalGetSections', admin_code: session.admin_code })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    const raw = data.sections || [];
-                    // فلترة بالإدارة الصحية المسجلة
-                    const adminName = session.admin_name || '';
-                    allSections = adminName
-                        ? raw.filter(s => (s.admin_area || s.facility_name || '').indexOf(adminName) !== -1)
-                        : raw;
-                    updateStats();
-                    renderSections();
-                } else {
-                    wrap.innerHTML = `<div class="empty-wrap"><p style="font-weight:700;color:#dc2626">${data.error || 'فشل تحميل البيانات'}</p></div>`;
-                }
-            } catch(e) {
-                wrap.innerHTML = `<div class="empty-wrap"><p style="font-weight:700;color:#dc2626">خطأ في الاتصال</p></div>`;
-            }
-        }
-
-        function updateStats() {
-            const total   = allSections.length;
-            const replied = allSections.filter(s => s.portal_response && s.portal_response.trim()).length;
-            const pending = total - replied;
-            document.getElementById('st-total').textContent   = total;
-            document.getElementById('st-pending').textContent = pending;
-            document.getElementById('st-done').textContent    = replied;
-        }
-
-        function renderSections() {
-            const wrap = document.getElementById('content-wrap');
-            if (!allSections.length) {
-                wrap.innerHTML = `
-                    <div class="empty-wrap">
-                        <i data-lucide="check-circle-2" style="width:48px;height:48px;color:#059669;margin-bottom:1rem"></i>
-                        <p style="font-size:1rem;font-weight:800;color:var(--text);margin-bottom:6px">لا توجد ملاحظات</p>
-                        <p style="font-size:0.85rem;color:var(--muted)">جميع الملاحظات تم التعامل معها</p>
-                    </div>`;
-                lucide.createIcons();
-                return;
-            }
-            wrap.innerHTML = allSections.map((s, idx) => buildCard(s, idx)).join('');
-            lucide.createIcons();
-        }
-
-        function buildCard(s, idx) {
-            const hasReply = s.portal_response && s.portal_response.trim();
-
-            const statusBadge = hasReply
-                ? `<span class="badge-replied"><i data-lucide="check-circle" style="width:11px;height:11px"></i> تم الرد</span>`
-                : `<span class="badge-pending"><i data-lucide="clock" style="width:11px;height:11px"></i> بانتظار الرد</span>`;
-
-            const prevBlock = hasReply ? `
-                <div class="prev-response-block">
-                    <div class="prev-label">
-                        <i data-lucide="message-square-check" style="width:13px;height:13px;color:#059669"></i>
-                        ردك السابق
-                    </div>
-                    <p class="prev-text">${escHtml(s.portal_response)}</p>
-                    ${s.portal_replied_at ? `<p class="prev-date">${escHtml(s.portal_replied_at)}</p>` : ''}
-                </div>` : '';
-
-            const btnLabel = hasReply ? 'تعديل الرد' : 'إرسال الرد';
-            const btnClass = hasReply ? 'btn-submit btn-submitted' : 'btn-submit';
-
-            return `
-            <div class="section-card ${hasReply ? 'replied' : ''}" id="card-${idx}">
-                <div class="sc-header">
-                    <div>
-                        <div class="facility-name">${escHtml(s.facility_name || s.unit_name || '—')}</div>
-                        <div class="section-name-txt">${escHtml(s.section_name || '—')}</div>
-                    </div>
-                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-                        <span class="car-badge">${escHtml(s.car_id || '—')}</span>
-                        ${statusBadge}
-                    </div>
-                </div>
-                <div class="sc-body">
-                    <div class="findings-block">
-                        <div class="block-label">
-                            <i data-lucide="alert-triangle" style="width:13px;height:13px"></i>
-                            الملاحظات المرصودة
-                        </div>
-                        <p class="findings-text">${escHtml(s.findings_text || 'لا توجد تفاصيل')}</p>
-                    </div>
-
-                    ${prevBlock}
-
-                    <div>
-                        <label class="response-label" for="resp-${idx}">
-                            ${hasReply ? 'تعديل الرد' : 'الرد على الملاحظات'}
-                        </label>
-                        <textarea id="resp-${idx}" class="response-textarea"
-                            placeholder="اكتب رد الإدارة الصحية هنا — وصف الإجراءات التصحيحية المتخذة...">${escHtml(s.portal_response || '')}</textarea>
-                    </div>
-                </div>
-                <div class="sc-footer">
-                    <button class="${btnClass}" id="btn-${idx}" onclick="submitResponse(${idx})">
-                        <i data-lucide="${hasReply ? 'edit-2' : 'send'}" style="width:15px;height:15px"></i>
-                        ${btnLabel}
-                    </button>
-                </div>
-            </div>`;
-        }
-
-        // ── SUBMIT ────────────────────────────────────────────────
-        async function submitResponse(idx) {
-            const s        = allSections[idx];
-            const response = document.getElementById('resp-' + idx).value.trim();
-            const btn      = document.getElementById('btn-' + idx);
-
-            if (!response) {
-                showToast('يرجى كتابة الرد أولاً', 'error');
-                document.getElementById('resp-' + idx).focus();
-                return;
-            }
-
-            const origHtml = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span>';
-
-            try {
-                const res  = await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action      : 'portalSubmitResponse',
-                        admin_code  : session.admin_code,
-                        car_id      : s.car_id,
-                        section_name: s.section_name,
-                        response    : response
-                    })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    // Update local state
-                    allSections[idx].portal_response = response;
-                    allSections[idx].portal_replied_at = new Date().toLocaleDateString('ar-EG');
-                    showToast('✅ تم إرسال الرد بنجاح', 'success');
-                    updateStats();
-
-                    // Refresh card
-                    const card = document.getElementById('card-' + idx);
-                    card.outerHTML = buildCard(allSections[idx], idx);
-                    lucide.createIcons();
-                } else {
-                    showToast('❌ ' + (data.error || 'فشل الإرسال'), 'error');
-                    btn.disabled = false;
-                    btn.innerHTML = origHtml;
-                    lucide.createIcons();
-                }
-            } catch(e) {
-                showToast('❌ خطأ في الاتصال', 'error');
-                btn.disabled = false;
-                btn.innerHTML = origHtml;
-                lucide.createIcons();
-            }
-        }
-
-        // ── HELPERS ───────────────────────────────────────────────
-        function showToast(msg, type) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.className = 'toast show' + (type ? ' ' + type : '');
-            setTimeout(() => { t.className = 'toast'; }, 3000);
-        }
-
-        function escHtml(s) {
-            return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-        }
-    </script>
+    <script src="assets/js/core/api.js"></script>
+    <script src="assets/js/core/ui-feedback.js"></script>
+    <script src="assets/js/portal.js"></script>
 </body>
 </html>

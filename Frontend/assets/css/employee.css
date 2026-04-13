@@ -154,3 +154,12 @@ body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; font-size: 1
 .hidden { display: none !important; }
 .chev { transition: transform 0.2s; }
 .chev.open { transform: rotate(180deg); }
+
+/* Sprint 3 — token-based utility classes (no inline styles) */
+.loader-icon  { width: 36px; height: 36px; display: block; margin: 0 auto var(--space-3); color: var(--color-primary); }
+.loader-lbl   { font-weight: 700; color: var(--color-text-muted); }
+.empty-icon   { width: 36px; height: 36px; display: block; margin: 0 auto var(--space-3); color: var(--color-border); }
+.empty-lbl    { font-weight: 700; color: var(--color-text-muted); }
+.error-text   { font-weight: 700; color: var(--color-danger); }
+.modal-title-text { font-weight: 800; font-size: 1rem; color: var(--color-text); }
+.modal-id-text    { font-size: 0.72rem; color: var(--color-text-muted); font-family: monospace; }

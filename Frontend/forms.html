@@ -12,8 +12,9 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/theme.css">
-    <link rel="stylesheet" href="assets/css/iag-theme.css">
+    <!-- Design System (single entrypoint) -->
+    <link rel="stylesheet" href="assets/css/system/iag-design-system.css">
+    <!-- Page-specific styles -->
     <link rel="stylesheet" href="assets/css/forms.css">
 </head>
 <body>
@@ -21,13 +22,13 @@
     <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
     <aside class="side-menu" id="side-menu">
         <div class="side-menu-header">
-            <div style="display:flex;align-items:center;gap:12px">
-                <div style="width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center">
-                    <i data-lucide="user" style="width:20px;height:20px;color:white"></i>
+            <div class="menu-user-row">
+                <div class="menu-avatar">
+                    <i data-lucide="user"></i>
                 </div>
-                <div>
-                    <div style="font-weight:900;font-size:0.9rem;color:white" id="menu-user">—</div>
-                    <div style="font-size:0.72rem;color:#99f6e4;font-weight:800" id="menu-role"></div>
+                <div class="menu-user-info">
+                    <div id="menu-user">—</div>
+                    <div id="menu-role"></div>
                 </div>
             </div>
         </div>
@@ -35,20 +36,20 @@
             <nav id="side-nav"></nav>
         </div>
         <div class="menu-footer">
-            <button onclick="handleAuthAction()" id="auth-btn" class="btn btn-ghost" style="width:100%;gap:8px;justify-content:center">
-                <i data-lucide="log-in" style="width:16px;height:16px"></i> تسجيل دخول
+            <button onclick="handleAuthAction()" id="auth-btn" class="btn btn-logout">
+                <i data-lucide="log-in" class="icon-sm"></i> تسجيل دخول
             </button>
         </div>
     </aside>
 
     <header class="page-header">
         <div class="header-top">
-            <button class="header-btn" onclick="toggleMenu()">
-                <i data-lucide="menu" style="width:20px;height:20px"></i>
+            <button class="header-btn" onclick="toggleMenu()" aria-label="القائمة">
+                <i data-lucide="menu" class="icon-md"></i>
             </button>
             <div class="header-center">
                 <div class="header-badge">
-                    <i data-lucide="file-text" style="width:12px;height:12px"></i>
+                    <i data-lucide="file-text" class="icon-xs"></i>
                     النماذج
                 </div>
                 <h1 class="header-title">
@@ -57,8 +58,8 @@
                 </h1>
                 <p class="header-sub">Internal Audit &amp; Governance</p>
             </div>
-            <button class="header-btn hidden" id="header-notif-btn" onclick="window.location.href='notifications.html'">
-                <i data-lucide="bell" style="width:20px;height:20px"></i>
+            <button class="header-btn hidden" id="header-notif-btn" onclick="window.location.href='notifications.html'" aria-label="الإشعارات">
+                <i data-lucide="bell" class="icon-md"></i>
                 <span class="notif-dot"></span>
             </button>
         </div>
@@ -68,84 +69,84 @@
 
         <a href="https://forms.gle/an5MTjSkPj2ZuGja8" target="_blank" class="form-card fc-rose">
             <div class="form-card-top">
-                <div class="icon-box bg-rose-ic"><i data-lucide="alert-triangle" style="width:24px;height:24px"></i></div>
+                <div class="icon-box bg-rose-ic"><i data-lucide="alert-triangle" class="icon-lg"></i></div>
                 <div class="form-info">
                     <h3>المستشفيات</h3>
                     <p>نموذج المرور الفني</p>
                 </div>
             </div>
             <div class="form-card-footer">
-                <span class="open-label"><i data-lucide="external-link" style="width:13px;height:13px"></i> فتح النموذج</span>
+                <span class="open-label"><i data-lucide="external-link" class="icon-xs"></i> فتح النموذج</span>
                 <i data-lucide="arrow-left" class="ext-icon"></i>
             </div>
         </a>
 
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSeJhAdpfoQAs6wqMDUD12N_H4YnL0Xv9KITCj2pHGCaKSyhJA/viewform" target="_blank" class="form-card fc-teal">
             <div class="form-card-top">
-                <div class="icon-box bg-teal-ic"><i data-lucide="inbox" style="width:24px;height:24px"></i></div>
+                <div class="icon-box bg-teal-ic"><i data-lucide="inbox" class="icon-lg"></i></div>
                 <div class="form-info">
                     <h3>سجل الصادر والوارد</h3>
                     <p>تسجيل المعاملات والمكاتبات</p>
                 </div>
             </div>
             <div class="form-card-footer">
-                <span class="open-label"><i data-lucide="external-link" style="width:13px;height:13px"></i> فتح النموذج</span>
+                <span class="open-label"><i data-lucide="external-link" class="icon-xs"></i> فتح النموذج</span>
                 <i data-lucide="arrow-left" class="ext-icon"></i>
             </div>
         </a>
 
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSeLbdP8tzEyNFaVI53h0jfHMp3j9uJL-mLors14rIjuUQaGIg/viewform" target="_blank" class="form-card fc-rose">
             <div class="form-card-top">
-                <div class="icon-box bg-rose-ic"><i data-lucide="alert-triangle" style="width:24px;height:24px"></i></div>
+                <div class="icon-box bg-rose-ic"><i data-lucide="alert-triangle" class="icon-lg"></i></div>
                 <div class="form-info">
                     <h3>فحص الشكاوى</h3>
                     <p>منظومة الشكاوى والتحقيقات</p>
                 </div>
             </div>
             <div class="form-card-footer">
-                <span class="open-label"><i data-lucide="external-link" style="width:13px;height:13px"></i> فتح النموذج</span>
+                <span class="open-label"><i data-lucide="external-link" class="icon-xs"></i> فتح النموذج</span>
                 <i data-lucide="arrow-left" class="ext-icon"></i>
             </div>
         </a>
 
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSfe94k6Im0Y4IODqw3UCLAczVQYdKivnyZ2s8SiCAU4uTwwpA/viewform" target="_blank" class="form-card fc-amber">
             <div class="form-card-top">
-                <div class="icon-box bg-amber-ic"><i data-lucide="calculator" style="width:24px;height:24px"></i></div>
+                <div class="icon-box bg-amber-ic"><i data-lucide="calculator" class="icon-lg"></i></div>
                 <div class="form-info">
                     <h3>المرور المالي والإداري</h3>
                     <p>مراجعة الحسابات والمخزون</p>
                 </div>
             </div>
             <div class="form-card-footer">
-                <span class="open-label"><i data-lucide="external-link" style="width:13px;height:13px"></i> فتح النموذج</span>
+                <span class="open-label"><i data-lucide="external-link" class="icon-xs"></i> فتح النموذج</span>
                 <i data-lucide="arrow-left" class="ext-icon"></i>
             </div>
         </a>
 
         <a href="https://forms.gle/1xL1fZbVKxf5MHWe8" target="_blank" class="form-card fc-blue">
             <div class="form-card-top">
-                <div class="icon-box bg-blue-ic"><i data-lucide="stethoscope" style="width:24px;height:24px"></i></div>
+                <div class="icon-box bg-blue-ic"><i data-lucide="stethoscope" class="icon-lg"></i></div>
                 <div class="form-info">
                     <h3>وحدات الرعاية الأولية</h3>
                     <p>نموذج المرور الفني</p>
                 </div>
             </div>
             <div class="form-card-footer">
-                <span class="open-label"><i data-lucide="external-link" style="width:13px;height:13px"></i> فتح النموذج</span>
+                <span class="open-label"><i data-lucide="external-link" class="icon-xs"></i> فتح النموذج</span>
                 <i data-lucide="arrow-left" class="ext-icon"></i>
             </div>
         </a>
 
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSedsoD3zW51Lwd7VanPQ1hVMB3OTmmaorOATiMieTXjaOBbRw/viewform" target="_blank" class="form-card fc-violet">
             <div class="form-card-top">
-                <div class="icon-box bg-violet-ic"><i data-lucide="building-2" style="width:24px;height:24px"></i></div>
+                <div class="icon-box bg-violet-ic"><i data-lucide="building-2" class="icon-lg"></i></div>
                 <div class="form-info">
                     <h3>مرور فني مستشفيات</h3>
                     <p>المرور الفني على المستشفيات</p>
                 </div>
             </div>
             <div class="form-card-footer">
-                <span class="open-label"><i data-lucide="external-link" style="width:13px;height:13px"></i> فتح النموذج</span>
+                <span class="open-label"><i data-lucide="external-link" class="icon-xs"></i> فتح النموذج</span>
                 <i data-lucide="arrow-left" class="ext-icon"></i>
             </div>
         </a>
@@ -156,13 +157,13 @@
 
     <div id="float-login-btn" class="hidden">
         <button onclick="window.location.href='index.html'" class="btn-float-login">
-            <i data-lucide="log-in" style="width:20px;height:20px"></i> تسجيل دخول
+            <i data-lucide="log-in" class="icon-md"></i> تسجيل دخول
         </button>
     </div>
 
     <script src="assets/js/config.js"></script>
-    <script src="assets/js/auth.js"></script>
-    <script src="assets/js/nav.js"></script>
+    <script src="assets/js/core/session.js"></script>
+    <script src="assets/js/core/ui-feedback.js"></script>
     <script src="assets/js/forms.js"></script>
 </body>
 </html>

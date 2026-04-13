@@ -145,3 +145,15 @@ body { font-family: 'Cairo', sans-serif; background: #f1f5f9; font-size: 14px; p
 .modal-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .hidden { display: none !important; }
+
+/* Sprint 3 — token-based KPI colors (no inline styles) */
+.kpi-primary { color: var(--color-primary, #0a5c56); }
+.kpi-danger  { color: var(--color-danger,  #dc2626); }
+.kpi-warning { color: var(--color-warning, #d97706); }
+.kpi-legal   { color: #7c3aed; }
+
+/* Loader utility (shared with employee.css pattern) */
+.loader-icon { width: 36px; height: 36px; color: var(--color-primary, #0a5c56); }
+
+/* Error panel variant */
+.empty-box--error { border-color: #fecaca; color: #dc2626; }
