@@ -3,7 +3,7 @@
 **المشروع:** IAG-System-2026  
 **الغرض:** متابعة المراحل الرئيسية وربطها بخطط العمل في `docs/`.
 
-**آخر تحديث:** 2026-04-13 — **Frontend Audit & Archive (Phase 5 Prep)**
+**آخر تحديث:** 2026-04-14 — **Sprint 3 Block B مكتمل — Employee & Field Operations**
 
 ---
 
@@ -29,25 +29,70 @@
 
 ---
 
-## المراحل
+## المراحل (Legacy Roadmap)
 
 | # | المرحلة | الحالة | ملاحظات |
 |---|---------|--------|----------|
-| 0 | حماية البيانات (نسخ احتياطي للشيتات / تثبيت الوضع الحالي) | ⬜ لم تبدأ | تبقى وفق سياسة المؤسسة قبل تغييرات إنتاجية كبيرة. |
-| 1 | **المرحلة الأولى: التأسيس والفحص** (CLAUDE.md، هيكل `docs/`، تقرير التدقيق الفني) | ✅ **مكتملة (Done)** | تم إعداد/مراجعة التوثيق الأساسي وإكمال فحص شامل لـ `Frontend/` و`Backend/` ومخرجاته في `docs/architecture.md` (قراءة فقط للكود؛ لا تعديل على المجلدين ضمن مهمة التدقيق). |
-| 2 | **المرحلة الثانية: تنظيف وتوحيد الفرونت إند** (HTML / CSS / فصل JS، توحيد `#0a5c56`، إزالة Tailwind CDN حيث ينطبق) | 🔄 **قيد التنفيذ (In Progress)** | المرجع التنفيذي: `frontend-plan.md`. — [x] `theme.css` — [x] `index.html` — [x] `dashboard.html` — [x] `settings.html` — [x] `notifications.html` — [x] `findings.html` — [x] `forms.html` — [x] `employee.html` — [x] `coordinator.html` — [ ] `distribution.html` — [ ] `admin.html` — [ ] `car-dashboard.html` — [ ] `portal.html` — [ ] `portal_car.html` — [ ] `phc_form.html` |
-| 3 | Backend: أمان Web App + إزالة ازدواجية الدوال + Router/`doPost` | ✅ **مكتملة (Done)** | `backend-plan.md` — [x] `Backend.js` (تأمين الموجه وحل تعارض `getEmployeeFiles`) — [x] تأمين قراءات البيانات الواسعة وبوابة الإدارات — [x] حذف ازدواجية الدوال (Audit Logs/Errors) |
-| 4 | Audit Logs + Housekeeping + إعداد Clasp | 🔄 **قيد التنفيذ (In Progress)** | `backend-plan.md` — [x] بناء `Core_AuditEngine.js` وإزالة الازدواجية — [x] تطبيق على `Flow_CentralTrigger.js` — [x] تطبيق على `Core_SharedHelpers.js` — [x] تطبيق على `Core_EmailEngine.js` — [x] تطبيق على `Core_AIEngine.js` — [x] تطبيق على `Report_Complaint.js` و `Report_Financial.js` — [x] تطبيق على `Flow_FindingsEngine.js` — [x] تطبيق على `Report_TechHosp.js` و `Report_TechUnits.js` — [x] تطبيق على `Flow_CAREngine.js` و `Report_Quarterly.js` — [x] تطبيق على `Flow_FollowUpEngine.js` — [x] تطبيق على `Flow_VerificationEngine.js` — [x] تطبيق على `Flow_EscalationEngine.js` — [x] تطبيق على `Flow_AnalyticsEngine.js` — [x] **Final Audit**: إزالة ~62 `console.*` متبقية عبر 12 ملفاً (2026-04-13) — [x] **Housekeeping**: إعادة تسمية جميع الملفات وفق `Core_/Flow_/Report_/Tool_`؛ دمج Shortcuts في `Core_SharedHelpers.js`؛ إزالة ازدواجية `iag_distributeShortcuts`؛ تصحيح `Tool_TestRunner.js` (2026-04-13) — [ ] إعداد Clasp |
-| 5 | ربط Frontend بالـ Backend بعد استقرار العقود والأمان | ⬜ لم تبدأ | يشمل إصلاحات التكامل (مثل `closeCAR` / `closedBy`) عند التنفيذ. |
-| 6 | تحسينات اختيارية | ⬜ لم تبدأ | أداء، UX، توثيق تشغيلي إضافي. |
+| 0 | حماية البيانات (نسخ احتياطي للشيتات) | ⬜ لم تبدأ | وفق سياسة المؤسسة قبل تغييرات إنتاجية كبيرة. |
+| 1 | التأسيس والفحص (CLAUDE.md، `docs/`، تقرير التدقيق الفني) | ✅ مكتملة | `architecture.md` يوثق نتائج الفحص. |
+| 2 | تنظيف وتوحيد الفرونت إند (إزالة Tailwind، توحيد `#0a5c56`) | ✅ مكتملة | جميع الصفحات النشطة تم تنظيفها. |
+| 3 | Backend: أمان + إزالة الازدواجية + Router | ✅ مكتملة | `backend-plan.md` |
+| 4 | Audit Logs + Housekeeping | ✅ مكتملة | إعادة تسمية الملفات، دمج Shortcuts، إزالة console.* |
+| 5 | **Phase 5 Frontend — Core + Design System + Block Migrations** | 🔄 **قيد التنفيذ** | انظر جدول Phase 5 أدناه |
+| 6 | ربط Frontend بالـ Backend (تكامل كامل) | ⬜ لم تبدأ | بعد اكتمال Phase 5 |
+| 7 | تحسينات اختيارية | ⬜ لم تبدأ | أداء، UX، توثيق تشغيلي إضافي |
 
 ---
 
-## الوضع الحالي للمشروع (ملخص)
+## Phase 5 — Frontend Evolution (المرحلة النشطة)
 
-- **التوثيق:** `CLAUDE.md` يحدد قواعد الهوية (`#0a5c56`، بدون Tailwind) وهيكل المجلدات؛ `docs/architecture.md` يوثّق نتائج الفحص الفني الأخيرة.
-- **الفرونت إند:** صفحات متعددة بـ CSS/JS مضمّن، تعارض ألوان الهيدر مع `theme.css`/`iag-theme.css`، واعتماد Tailwind عبر CDN في معظم الصفحات — العمل المخطط له في المرحلة 2.
-- **الباك إند:** Web App علني (`ANYONE_ANONYMOUS`) مع ثغرات ثقة موثقة (حقول عميل، مسارات بوابة، رفع ملفات، …) وتعارض تعريف `handleGetEmployeeFiles` — العمل المخطط له في المرحلة 3 و`backend-plan.md`.
+المرجع التنفيذي: [`frontend-master-plan.md`](frontend-master-plan.md) · [`frontend-rules.md`](frontend-rules.md)
+
+### Sprints
+
+| Sprint | الوصف | الحالة | الصفحات |
+|--------|-------|--------|---------|
+| **1A** | Core Logic Foundation (api.js + session.js + ui-feedback.js) | ✅ **مكتمل** | — |
+| **1B** | Design System Core (tokens + base + components + ios) | ✅ **مكتمل** | — |
+| **2** | Block A — Management & Coordination | ✅ **مكتمل** | `admin` · `coordinator` · `settings` · `notifications` |
+| **3** | Block B — Employee & Field Operations | ✅ **مكتمل** | `employee` · `forms` · `findings` · `portal` |
+| **4** | Block C — Analytics & Dashboard + Final Consolidation | ⬜ لم تبدأ | `dashboard` · `distribution` · `index` |
+
+### تفاصيل Sprint 1A (2026-04-13)
+- إنشاء `core/api.js`: طبقة موحدة لكل الاتصالات، response normalization (`ok/success` → `ok`)، timeout support
+- إنشاء `core/session.js`: `getUser / setUser / clearSession / requireAuth / logout`، مفاتيح `iag_user / iag_last_page / iag_session_ts`
+- إنشاء `core/ui-feedback.js`: loading overlay + toast (success/error/info)
+
+### تفاصيل Sprint 1B (2026-04-13)
+- إنشاء `assets/css/system/tokens.css` — متغيرات اللون والمسافات والنص
+- إنشاء `assets/css/system/base.css` — Reset + RTL defaults + typography
+- إنشاء `assets/css/system/components.css` — buttons, cards, tables, forms, badges
+- إنشاء `assets/css/system/ios.css` — safe-area + 44px tap targets
+- إنشاء `assets/css/system/iag-design-system.css` — الـ entrypoint الوحيد
+
+### تفاصيل Sprint 2 — Block A (2026-04-14)
+- `admin.html + admin.js` — صفحة جديدة كاملة، IAGSession + IAGApi + IAGFeedback
+- `coordinator.js` — Pilot Page: IAGSession + IAGApi (لا fetch مباشر)
+- `notifications.html/js` — design system + IAGSession + IAGApi + IAGFeedback
+- `settings.html/js` — design system + IAGSession + IAGFeedback
+- إزالة جميع `style="..."` inline من Block A
+- `auth.js` + `nav.js` محذوفة من script tags Block A
+
+### تفاصيل Sprint 3 — Block B (2026-04-14)
+- `employee.html/js` — IAGSession.requireAuth()، IAGApi لـ tasks + files، IAGFeedback للتحميل والأخطاء
+- `forms.html/js` — صفحة عامة (بدون requireAuth)، IAGSession.getUser() للضيوف والمسجلين
+- `findings.html/js` — IAGSession + IAGApi لكل calls، IAGFeedback يحل محل showToast() المحلية، حذف `<div class="toast">`
+- `portal.html` — إعادة بناء كاملة: استخراج 200 سطر `<style>` → `portal.css`، استخراج `<script>` → `portal.js`، كل fetch() → IAGApi
+- `core/api.js` — إضافة 7 endpoints: `getEmployeeFiles, getFindings, updateFindingStatus, getCARSections, portalLogin, portalGetSections, portalSubmitResponse`
+- ملاحظة: portal يستخدم `sessionStorage` (استثناء موثق — نوع مستخدم مختلف)
+
+---
+
+## الوضع الحالي للمشروع (ملخص — 2026-04-14)
+
+- **Frontend:** 8 من 11 صفحة مهاجرة بالكامل لـ core runtime (IAGApi + IAGSession + IAGFeedback + IAG Design System). المتبقي: Block C (`dashboard`, `distribution`, `index`).
+- **Backend:** مكتمل — Audit Engine مطبق، ملفات مُعاد تسميتها، `console.*` محذوفة، الكود نظيف 100%.
+- **التوثيق:** `CLAUDE.md` + `frontend-rules.md` + `frontend-master-plan.md` + `system_blueprint.md` محدّثة وتحكم كل عمل.
 
 ---
 
