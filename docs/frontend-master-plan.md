@@ -403,7 +403,26 @@ Start here in a fresh session with no extra context:
 
 ---
 
-## 13) Execution Note
+## 13) Governance & Protection Rules
+
+All frontend work across every Sprint is governed by the **Frontend Constitution**:
+
+> **[docs/frontend-rules.md](frontend-rules.md)** — mandatory reading before starting any Sprint or making any structural change.
+
+### Enforcement Summary
+
+| Rule | Document |
+|------|----------|
+| No inline styles, token-only CSS | [frontend-rules.md §1](frontend-rules.md#1-css--ui-governance) |
+| All API calls via `core/api.js` | [frontend-rules.md §2](frontend-rules.md#2-api--data-integrity) |
+| Roles defined in `core/session.js` | [frontend-rules.md §3](frontend-rules.md#3-role-definitions-the-source-of-truth) |
+| Pilot on `coordinator.html` first | [frontend-rules.md §4](frontend-rules.md#4-change-protocol) |
+
+No Sprint is considered in-scope if it violates these rules. Non-conforming code must be corrected before merge.
+
+---
+
+## 14) Execution Note
 
 This plan intentionally favors **speed with control**:
 
