@@ -3,7 +3,7 @@
 **المشروع:** IAG-System-2026  
 **الغرض:** متابعة المراحل الرئيسية وربطها بخطط العمل في `docs/`.
 
-**آخر تحديث:** 2026-04-13 — **Housekeeping & Refactoring Completed** — إعادة تسمية جميع ملفات Backend/ وفق معيار `Core_/Flow_/Report_/Tool_`؛ دمج منطق Shortcuts في `Core_SharedHelpers.js` وحذف `Core_FolderShortcuts.js`؛ إزالة الـ wrapper المكرر `iag_distributeShortcuts` من `Report_TechUnits.js`؛ تصحيح مراجع قديمة في `Tool_TestRunner.js`.
+**آخر تحديث:** 2026-04-13 — **System Blueprint Created** — إنشاء `docs/system_blueprint.md` كمرجع دائم للنظام (هيكل الملفات · تدفق المنطق · الدوال المشتركة · تكامل الـ Frontend). — إعادة تسمية جميع ملفات Backend/ وفق معيار `Core_/Flow_/Report_/Tool_`؛ دمج منطق Shortcuts في `Core_SharedHelpers.js` وحذف `Core_FolderShortcuts.js`؛ إزالة الـ wrapper المكرر `iag_distributeShortcuts` من `Report_TechUnits.js`؛ تصحيح مراجع قديمة في `Tool_TestRunner.js`.
 
 ---
 
@@ -52,5 +52,6 @@
 - **2026-04-13:** [المرحلة 4 / Audit Logs] تطبيق `15_AuditEngine.js` على `11_FollowUpEngine.js` — تغليف `followUpEngine_processNewCARs_direct_` واستبدال دوال التسجيل. `11_Folderv8_shortcuts.js` كان نظيفاً بالفعل (try/catch + Logger.log بلا govV8_*).
 - **2026-04-13:** [المرحلة 4 / Audit Logs] تطبيق `15_AuditEngine.js` على `12_VerificationEngine.js` و `13_EscalationEngine.js` — تغليف الدوال الرئيسية واستبدال جميع `govV8_audit`/`govV8_logError`.
 - **2026-04-13:** [المرحلة 4 / Audit Logs] تطبيق `15_AuditEngine.js` على `14_AnalyticsEngine.js` — تغليف `analytics_computeLive_` و `analytics_computeFiltered_` و `analytics_writeSnapshot_` بـ try/catch وإضافة `auditEngine_logEvent` عند كتابة الـ snapshot.
+- **2026-04-13:** [System Blueprint] إنشاء `docs/system_blueprint.md` — مرجع دائم يوثّق هيكل الملفات، طبقات المنطق، الدوال المشتركة، Sheet Registry، قواعد الكتابة، ومسار التكامل المستقبلي مع الـ Frontend.
 - **2026-04-13:** [المرحلة 4 / Housekeeping] إعادة تسمية جميع ملفات `Backend/` وفق معيار `Core_/Flow_/Report_/Tool_` (22 ملفاً)؛ دمج منطق Shortcuts الكامل من `Core_FolderShortcuts.js` في `Core_SharedHelpers.js` وحذف الملف الأصلي؛ إضافة alias `folderV8_distributeShortcuts_` للتوافق مع الاستدعاءات الموجودة؛ إزالة الـ wrapper المكرر `iag_distributeShortcuts` من `Report_TechUnits.js`؛ تصحيح `Tool_TestRunner.js` — استبدال `rptTechHospV7_createTechnicalReport` بـ `rptTechHosp_onSubmit` و`techUnitsV8_create_` بـ `rptTechUnits_testLastRow`.
 - **2026-04-13:** [المرحلة 4 / Final Audit] تدقيق شامل على الـ Backend بالكامل (01-15) — اكتشاف وإزالة ~62 استدعاء `console.log/warn/error` متبقياً عبر 12 ملفاً: `02_SharedHelpers` (9)، `03_CentralTrigger` (11)، `04_EmailEngine` (3)، `05_AIEngine` (11)، `06_Report_Complaint` (1)، `08_Report_TechHosp` (9)، `09_Report_TechUnits` (11)، `10_CAREngine` (1)، `11_FollowUpEngine` (1)، `12_VerificationEngine` (1)، `13_EscalationEngine` (2)، `14_AnalyticsEngine` (1). استُبدلت بـ `auditEngine_logEvent`/`auditEngine_logError` أو حُذفت (traces). جميع ملفات الإنتاج نظيفة 100%. المرحلة 4 مكتملة لوجستياً — الباقي فقط إعداد Clasp.
