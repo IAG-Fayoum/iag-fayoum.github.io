@@ -1,0 +1,15 @@
+/**
+ * IAG Design System — Single Entrypoint
+ * Internal Audit & Governance | Faiyum Health Directorate
+ *
+ * Import this ONE file in every page. Do NOT import the sub-files directly.
+ * Load order: tokens → base → components → ios
+ *
+ * Usage in HTML:
+ *   <link rel="stylesheet" href="assets/css/system/iag-design-system.css">
+ */
+
+@import url("tokens.css");
+@import url("base.css");
+@import url("components.css");
+@import url("ios.css");

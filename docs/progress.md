@@ -3,6 +3,28 @@
 **المشروع:** IAG-System-2026  
 **الغرض:** متابعة المراحل الرئيسية وربطها بخطط العمل في `docs/`.
 
+**آخر تحديث:** 2026-04-13 — **Frontend Audit & Archive (Phase 5 Prep)**
+
+---
+
+## أرشفة الملفات القديمة — Frontend/legacy/ (2026-04-13)
+
+تم نقل الملفات التالية إلى `Frontend/legacy/` (لم تُحذف — محفوظة للمرجعية):
+
+| الملف | السبب |
+|-------|-------|
+| `car.html` | stub إعادة توجيه فقط → `findings.html` |
+| `car-dashboard.html` | لوحة قديمة، محلّها `findings.html` |
+| `phc_form.html` | نموذج قديم، غير مرتبط بالنافيجيشن |
+| `portal_car.html` | نسخة بوابة قديمة، محلّها `portal.html` |
+| `card.css` | ملف CSS في مجلد الجذر بلا استخدام |
+| `card.js` | ملف JS في مجلد الجذر بلا استخدام |
+| `restyle.js` | سكريبت مؤقت، لا وظيفة إنتاجية |
+| `PLAN.md` | التوثيق ينتمي لـ `docs/`، لا لـ `Frontend/` |
+| `WORKFLOW.md` | نفس السبب — مُدمج في `system_blueprint.md` |
+
+---
+
 **آخر تحديث:** 2026-04-13 — **System Blueprint Created** — إنشاء `docs/system_blueprint.md` كمرجع دائم للنظام (هيكل الملفات · تدفق المنطق · الدوال المشتركة · تكامل الـ Frontend). — إعادة تسمية جميع ملفات Backend/ وفق معيار `Core_/Flow_/Report_/Tool_`؛ دمج منطق Shortcuts في `Core_SharedHelpers.js` وحذف `Core_FolderShortcuts.js`؛ إزالة الـ wrapper المكرر `iag_distributeShortcuts` من `Report_TechUnits.js`؛ تصحيح مراجع قديمة في `Tool_TestRunner.js`.
 
 ---

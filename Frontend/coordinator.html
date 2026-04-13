@@ -12,7 +12,7 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/system/iag-design-system.css">
     <link rel="stylesheet" href="assets/css/coordinator.css">
 </head>
 <body>
@@ -20,13 +20,13 @@
     <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
     <aside class="side-menu" id="side-menu">
         <div class="side-menu-header">
-            <div style="display:flex;align-items:center;gap:12px">
-                <div style="width:44px;height:44px;background:rgba(255,255,255,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                    <i data-lucide="user" style="width:22px;height:22px;color:white"></i>
+            <div class="menu-user-row">
+                <div class="menu-avatar">
+                    <i data-lucide="user"></i>
                 </div>
-                <div>
-                    <div style="font-weight:800;font-size:0.9rem;color:white" id="menu-user">...</div>
-                    <div style="font-size:0.72rem;color:#99f6e4" id="menu-role">منسق</div>
+                <div class="menu-user-info">
+                    <div id="menu-user">...</div>
+                    <div id="menu-role">منسق</div>
                 </div>
             </div>
         </div>
@@ -34,8 +34,8 @@
             <nav id="side-nav"></nav>
         </div>
         <div class="menu-footer">
-            <button onclick="logout()" class="btn btn-ghost" style="width:100%;color:var(--danger);justify-content:center">
-                <i data-lucide="log-out" style="width:16px;height:16px"></i> تسجيل خروج
+            <button onclick="logout()" class="btn btn-ghost btn-logout">
+                <i data-lucide="log-out"></i> تسجيل خروج
             </button>
         </div>
     </aside>
@@ -43,18 +43,18 @@
     <header class="page-header">
         <div class="header-top">
             <button class="header-btn" onclick="toggleMenu()">
-                <i data-lucide="menu" style="width:20px;height:20px"></i>
+                <i data-lucide="menu"></i>
             </button>
             <div class="header-center">
                 <div class="header-badge">
-                    <i data-lucide="layout-dashboard" style="width:12px;height:12px"></i>
+                    <i data-lucide="layout-dashboard"></i>
                     صفحة المنسق
                 </div>
                 <h1 class="header-title"><img src="assets/icons/icon-192.png" class="header-logo" alt="شعار الإدارة"> إدارة المراجعة الداخلية والحوكمة</h1>
-                <p class="header-sub">Internal Audit & Governance</p>
+                <p class="header-sub">Internal Audit &amp; Governance — Faiyum Health Directorate</p>
             </div>
             <button class="header-btn" onclick="window.location.href='notifications.html'">
-                <i data-lucide="bell" style="width:20px;height:20px"></i>
+                <i data-lucide="bell"></i>
                 <span class="notif-dot"></span>
             </button>
         </div>
@@ -95,17 +95,17 @@
             </div>
             <div class="filter-item-btn filter-actions">
                 <!-- زر النواقص -->
-                <button onclick="toggleMissingData()" id="btn-missing" class="btn-missing" title="عرض النواقص فقط">
-                    <i data-lucide="alert-triangle" style="width:16px;height:16px"></i>
+                <button onclick="toggleMissingData()" id="btn-missing" class="btn-danger-ghost" title="عرض النواقص فقط">
+                    <i data-lucide="alert-triangle"></i>
                     النواقص
                 </button>
                 <!-- زر تبديل العرض -->
-                <button onclick="toggleViewMode()" id="btn-view" class="btn-print" title="تبديل الجدول / الكروت">
-                    <i data-lucide="table" id="icon-view" style="width:20px;height:20px"></i>
+                <button onclick="toggleViewMode()" id="btn-view" class="btn-icon" title="تبديل الجدول / الكروت">
+                    <i data-lucide="table" id="icon-view"></i>
                 </button>
                 <!-- طباعة -->
-                <button onclick="window.print()" class="btn-print" title="طباعة">
-                    <i data-lucide="printer" style="width:20px;height:20px"></i>
+                <button onclick="window.print()" class="btn-icon" title="طباعة">
+                    <i data-lucide="printer"></i>
                 </button>
             </div>
         </div>
@@ -137,13 +137,13 @@
     <!-- Context Bar -->
     <div class="context-bar" id="context-bar" style="display:none">
         <span class="ctx-label">عرض:</span>
-        <div id="ctx-chips" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"></div>
+        <div id="ctx-chips" class="ctx-chips-row"></div>
     </div>
 
     <!-- Cards View -->
     <div class="cards-container" id="tasks-list">
         <div class="loader-box">
-            <i data-lucide="loader-2" class="spin" style="width:32px;height:32px;margin:0 auto 8px;color:#0f766e"></i>
+            <i data-lucide="loader-2" class="spin loader-icon"></i>
             <p>جاري تحميل البيانات...</p>
         </div>
     </div>
@@ -160,7 +160,7 @@
                         <th>المكلف</th>
                         <th>الحالة</th>
                         <th>النواقص</th>
-                        <th style="text-align:center">إجراء</th>
+                        <th class="text-center">إجراء</th>
                     </tr>
                 </thead>
                 <tbody id="tasks-table-body"></tbody>
@@ -173,13 +173,13 @@
         <div class="modal-box">
             <div class="modal-header">
                 <div>
-                    <h3 style="font-size:1.05rem;font-weight:800;color:#1e293b;margin:0">تفاصيل المعاملة</h3>
-                    <p style="font-size:0.75rem;color:#64748b;font-family:monospace;margin:0" id="m-id">#...</p>
+                    <h3 class="modal-title">تفاصيل المعاملة</h3>
+                    <p class="modal-id" id="m-id">#...</p>
                 </div>
-                <button onclick="closeModal()" class="modal-close-btn"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+                <button onclick="closeModal()" class="modal-close-btn"><i data-lucide="x"></i></button>
             </div>
             <div class="modal-body">
-                <div style="display:flex;flex-direction:column;gap:12px" id="m-content"></div>
+                <div class="modal-detail-list" id="m-content"></div>
             </div>
         </div>
     </div>
@@ -188,17 +188,17 @@
     <div class="modal-overlay" id="modal-reassign" onclick="if(event.target===this)closeEnhancementModal('modal-reassign')">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 style="font-size:1.05rem;font-weight:800;margin:0">تغيير الموظف المكلف</h3>
-                <button onclick="closeEnhancementModal('modal-reassign')" class="modal-close-btn"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+                <h3 class="modal-title">تغيير الموظف المكلف</h3>
+                <button onclick="closeEnhancementModal('modal-reassign')" class="modal-close-btn"><i data-lucide="x"></i></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="reassign-task-id">
-                <label style="display:block;font-size:0.85rem;font-weight:700;color:#374151;margin-bottom:8px">اختر الموظف الجديد:</label>
+                <label class="modal-label">اختر الموظف الجديد:</label>
                 <select id="reassign-select" class="f-input modal-select">
                     <option value="">-- اختر من القائمة --</option>
                 </select>
                 <p class="modal-note">
-                    <i data-lucide="alert-circle" style="width:12px;height:12px;display:inline"></i> سيتم إشعار الموظف الجديد تلقائياً.
+                    <i data-lucide="alert-circle"></i> سيتم إشعار الموظف الجديد تلقائياً.
                 </p>
             </div>
             <div class="modal-footer">
@@ -212,12 +212,12 @@
     <div class="modal-overlay" id="modal-status" onclick="if(event.target===this)closeEnhancementModal('modal-status')">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 style="font-size:1.05rem;font-weight:800;margin:0">تغيير حالة المعاملة</h3>
-                <button onclick="closeEnhancementModal('modal-status')" class="modal-close-btn"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+                <h3 class="modal-title">تغيير حالة المعاملة</h3>
+                <button onclick="closeEnhancementModal('modal-status')" class="modal-close-btn"><i data-lucide="x"></i></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="status-task-id">
-                <label style="display:block;font-size:0.85rem;font-weight:700;color:#374151;margin-bottom:8px">اختر الحالة الجديدة:</label>
+                <label class="modal-label">اختر الحالة الجديدة:</label>
                 <select id="status-select" class="f-input modal-select">
                     <option value="جديد">جديد</option>
                     <option value="بانتظار الاعتماد">بانتظار الاعتماد</option>
@@ -235,6 +235,9 @@
     <nav class="bottom-nav" id="bottom-nav"></nav>
 
     <script src="assets/js/config.js"></script>
+    <script src="assets/js/core/session.js"></script>
+    <script src="assets/js/core/api.js"></script>
+    <script src="assets/js/core/ui-feedback.js"></script>
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/nav.js"></script>
     <script src="assets/js/coordinator.js" defer></script>

@@ -1,0 +1,117 @@
+/**
+ * IAG Design System — iOS Compatibility Layer
+ * Safe-area insets, 44px tap targets, touch scroll,
+ * and mobile-specific layout corrections.
+ *
+ * Applied on top of base + components. Never duplicates component rules.
+ */
+
+/* ── Safe-Area Variables ─────────────────────────────────────────── */
+:root {
+    --safe-top:    env(safe-area-inset-top,    0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left:   env(safe-area-inset-left,   0px);
+    --safe-right:  env(safe-area-inset-right,  0px);
+}
+
+/* ── Header Top Padding (notch / Dynamic Island) ─────────────────── */
+.page-header {
+    padding-top: max(1.25rem, env(safe-area-inset-top));
+}
+
+/* ── Bottom Nav Safe Area ────────────────────────────────────────── */
+.bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    /* min-height ensures items are reachable above home indicator */
+    min-height: calc(64px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ── Body Bottom Padding ─────────────────────────────────────────── */
+body {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
+}
+
+/* ── 44px Minimum Tap Targets ────────────────────────────────────── */
+/*
+   All interactive elements must be at least 44×44 px on touch screens.
+   The header-btn, btn, btn-icon, nav-btn, chip, menu-item, f-input already
+   declare min-height: var(--tap-min) in components.css.
+   This layer enforces it for any control that may have slipped through.
+*/
+
+button,
+[role="button"],
+a,
+select,
+input[type="checkbox"],
+input[type="radio"] {
+    /* Ensure touchable area via padding if element is naturally smaller */
+    touch-action: manipulation;
+}
+
+/* Inline icon-only buttons used in task cards / tables */
+.btn-card,
+.btn-archive-card,
+.btn-print,
+.btn-missing,
+.btn-icon {
+    min-height: var(--tap-min);
+}
+
+/* Filter action buttons */
+.filter-actions .btn-print,
+.filter-actions .btn-danger-ghost {
+    min-height: var(--tap-min);
+}
+
+/* ── Touch Scroll Containers ─────────────────────────────────────── */
+.side-menu-body,
+.modal-box,
+.table-container {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* ── Prevent Text Size Inflation on Rotation ─────────────────────── */
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+/* ── Tap Highlight ───────────────────────────────────────────────── */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Fixed Positioning Safe-Area Corrections ─────────────────────── */
+.modal-overlay {
+    /* Extend overlay under notch/home bar */
+    padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0)
+             env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+}
+
+/* ── iOS Input Zoom Prevention (< 16px triggers zoom) ────────────── */
+@media (max-width: 768px) {
+    .f-input,
+    select.f-input,
+    input.f-input,
+    textarea.f-input {
+        font-size: 1rem; /* 16px minimum prevents iOS auto-zoom */
+    }
+}
+
+/* ── Smooth Momentum Scrolling ───────────────────────────────────── */
+.cards-container,
+.table-wrapper,
+.modal-box {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ── Mobile Typography Comfort ───────────────────────────────────── */
+@media (max-width: 480px) {
+    .header-title { font-size: 1rem; }
+    .header-sub   { font-size: 0.6rem; letter-spacing: 1px; }
+    .filter-container { margin: -2.5rem 0.75rem 1.5rem; }
+    .stat-card-big .num   { font-size: 1.6rem; }
+    .stat-card-small .num { font-size: 1.2rem; }
+}

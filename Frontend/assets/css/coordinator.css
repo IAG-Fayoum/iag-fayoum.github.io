@@ -251,6 +251,7 @@ body { font-family: 'Cairo', sans-serif; background: #f1f5f9; color: #1e293b; fo
 @media (min-width: 1024px) { .context-bar { margin: 0 auto 12px; } }
 
 .loader-box { text-align: center; padding: 4rem; color: #94a3b8; }
+.loader-icon { width: 32px; height: 32px; display: block; margin: 0 auto 8px; color: #0f766e; }
 .empty-box { text-align: center; padding: 3rem; color: #94a3b8; border: 2px dashed #e2e8f0; border-radius: 16px; background: white; font-weight: 700; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -275,42 +276,4 @@ body { font-family: 'Cairo', sans-serif; background: #f1f5f9; color: #1e293b; fo
 .btn-modal-cancel { padding: 8px 16px; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; font-family: 'Cairo', sans-serif; transition: 0.2s; }
 .btn-modal-cancel:hover { background: #d1d5db; }
 
-/* ══ SIDEBAR PREMIUM OVERRIDES ══ */
-.side-menu {
-    background: #ffffff !important;
-    border-left: 1px solid #e2e8f0 !important;
-    box-shadow: -4px 0 20px rgba(0,0,0,0.08) !important;
-}
-.side-menu-header {
-    background: #0a5c56 !important;
-    border-bottom: none !important;
-    padding: 1.25rem 1rem !important;
-}
-#menu-user { color: white !important; font-size: 0.95rem !important; font-weight: 900 !important; }
-#menu-role { color: #99f6e4 !important; font-size: 0.72rem !important; font-weight: 800 !important; letter-spacing: 0.5px; }
-.side-menu-body { padding: 0.5rem 0 !important; background: white !important; }
-.menu-item {
-    display: flex !important; align-items: center !important; gap: 12px !important;
-    color: #334155 !important; font-weight: 700 !important;
-    padding: 11px 20px !important; font-size: 0.88rem !important;
-    border-right: 3px solid transparent !important;
-    transition: all 0.15s !important; background: transparent !important;
-    text-decoration: none !important; font-family: 'Cairo', sans-serif !important;
-    border-radius: 0 !important; width: 100% !important; box-sizing: border-box !important;
-}
-.menu-item svg { color: #94a3b8 !important; flex-shrink: 0; transition: color 0.15s; }
-.menu-item:hover {
-    background: #f0fdf9 !important;
-    color: #0f766e !important;
-    border-right-color: #14b8a6 !important;
-}
-.menu-item:hover svg { color: #0f766e !important; }
-.menu-item.active {
-    background: #f0fdfa !important;
-    color: #0f766e !important;
-    border-right-color: #0f766e !important;
-    font-weight: 900 !important;
-}
-.menu-item.active svg { color: #0f766e !important; }
-.menu-footer { border-top: 1px solid #f1f5f9 !important; padding: 0.75rem !important; background: #f8fafc !important; }
-.menu-overlay { background: rgba(15,23,42,0.4) !important; backdrop-filter: blur(3px) !important; }
+/* ══ SIDEBAR — design system handles this; no overrides needed ══ */

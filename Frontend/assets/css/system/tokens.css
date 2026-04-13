@@ -1,0 +1,120 @@
+/**
+ * IAG Design System — Design Tokens
+ * Internal Audit & Governance | Faiyum Health Directorate
+ *
+ * Single source of truth for all brand values.
+ * Never hard-code color/spacing/shadow literals outside this file.
+ */
+
+:root {
+
+    /* ── Brand Identity ─────────────────────────────────────────── */
+    --brand-primary:        #0a5c56;   /* Header / identity surface      */
+    --brand-primary-teal:   #0f766e;   /* Interactive primary             */
+    --brand-primary-hover:  #0d6b63;   /* Interactive primary hover       */
+    --brand-primary-light:  #f0fdfa;   /* Tinted surface / active bg      */
+    --brand-teal-muted:     #99f6e4;   /* Sub-labels on dark header       */
+    --brand-accent:         #0369a1;   /* Accent / links                  */
+
+    /* ── Semantic Status ────────────────────────────────────────── */
+    --color-danger:         #dc2626;
+    --color-danger-light:   #fef2f2;
+    --color-danger-border:  #fecaca;
+    --color-warning:        #d97706;
+    --color-warning-light:  #fef3c7;
+    --color-warning-border: #fde68a;
+    --color-success:        #059669;
+    --color-success-light:  #d1fae5;
+    --color-success-border: #a7f3d0;
+    --color-info:           #2563eb;
+    --color-info-light:     #dbeafe;
+    --color-info-border:    #bfdbfe;
+    --color-purple:         #7c3aed;
+    --color-purple-light:   #ede9fe;
+    --color-purple-border:  #ddd6fe;
+
+    /* ── Neutral Palette ────────────────────────────────────────── */
+    --color-bg:             #f1f5f9;   /* App background                  */
+    --color-surface:        #ffffff;   /* Card / panel surface            */
+    --color-surface-2:      #f8fafc;   /* Secondary surface               */
+    --color-surface-3:      #f1f5f9;   /* Tertiary / hover surface        */
+    --color-border:         #e2e8f0;
+    --color-border-strong:  #cbd5e1;
+    --color-text-1:         #0f172a;   /* Headings                        */
+    --color-text-2:         #1e293b;   /* Body                            */
+    --color-text-3:         #475569;   /* Secondary text                  */
+    --color-text-4:         #64748b;   /* Muted                           */
+    --color-text-5:         #94a3b8;   /* Placeholder / label             */
+
+    /* ── Spacing Scale ──────────────────────────────────────────── */
+    --space-1:   4px;
+    --space-2:   8px;
+    --space-3:   12px;
+    --space-4:   16px;
+    --space-5:   20px;
+    --space-6:   24px;
+    --space-8:   32px;
+    --space-10:  40px;
+    --space-12:  48px;
+    --space-16:  64px;
+
+    /* ── Border Radius ──────────────────────────────────────────── */
+    --radius-xs:  6px;
+    --radius-sm:  8px;
+    --radius-md:  12px;
+    --radius-lg:  16px;
+    --radius-xl:  20px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+
+    /* ── Shadows ─────────────────────────────────────────────────── */
+    --shadow-xs:  0 1px 2px rgba(0,0,0,0.05);
+    --shadow-sm:  0 2px 8px rgba(15,23,42,0.04);
+    --shadow-md:  0 4px 16px rgba(15,23,42,0.08);
+    --shadow-lg:  0 8px 32px rgba(15,23,42,0.10);
+    --shadow-xl:  0 12px 40px rgba(15,23,42,0.14);
+    --shadow-brand: 0 4px 12px rgba(15,118,110,0.25);
+    --shadow-brand-hover: 0 6px 18px rgba(15,118,110,0.35);
+
+    /* ── Typography ─────────────────────────────────────────────── */
+    --font-base:  'Cairo', sans-serif;
+    --font-mono:  'Consolas', 'Monaco', monospace;
+
+    --text-xs:    0.65rem;
+    --text-sm:    0.75rem;
+    --text-base:  0.875rem;   /* 14px */
+    --text-md:    0.95rem;
+    --text-lg:    1.05rem;
+    --text-xl:    1.15rem;
+    --text-2xl:   1.35rem;
+    --text-3xl:   1.6rem;
+
+    --font-normal:  400;
+    --font-semibold: 600;
+    --font-bold:    700;
+    --font-extrabold: 800;
+    --font-black:   900;
+
+    /* ── Z-Index Scale ──────────────────────────────────────────── */
+    --z-base:       1;
+    --z-sticky:     10;
+    --z-filter:     20;
+    --z-nav:        90;
+    --z-overlay:    100;
+    --z-sidebar:    200;
+    --z-modal:      300;
+    --z-toast:      400;
+    --z-loading:    9999;
+
+    /* ── Transitions ─────────────────────────────────────────────── */
+    --transition-fast:   0.15s ease;
+    --transition-base:   0.2s ease;
+    --transition-slow:   0.3s ease;
+    --transition-spring: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* ── Touch Targets (iOS) ─────────────────────────────────────── */
+    --tap-min: 44px;
+
+    /* ── Content Width ───────────────────────────────────────────── */
+    --content-max: 1300px;
+}

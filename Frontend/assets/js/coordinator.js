@@ -12,8 +12,7 @@ let isTableView     = false;
 const CASE_ENTITIES = ['النيابة الإدارية', 'نيابة', 'الشؤون القانونية', 'شئون قانونية', 'ش.ق', 'ش ق'];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    if (typeof auth === 'undefined') { window.location.href = 'index.html'; return; }
-    const user = auth.checkAuth();
+    const user = IAGSession.getUser();
     if (!user) { window.location.href = 'index.html'; return; }
 
     document.getElementById('menu-user').textContent = user.name;
@@ -39,9 +38,7 @@ function closeMenu() {
 }
 
 function logout() {
-    localStorage.removeItem('iag_user');
-    localStorage.removeItem('iag_last_page');
-    window.location.href = 'index.html';
+    IAGSession.logout();
 }
 
 function closeModal() { document.getElementById('detail-modal').classList.remove('open'); }
@@ -72,24 +69,15 @@ async function loadData(username) {
         </div>`;
     lucide.createIcons();
 
-    try {
-        const res = await fetch(CONFIG.API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'getAllData', role: 'مدير', name: username })
-        });
-        const data = await res.json();
+    const { ok, data, error } = await IAGApi.getAllData(username);
 
-        if (data.success) {
-            allTasks = data.tasks || [];
-            if (data.stats && data.stats.employees) allEmployees = data.stats.employees;
-            populateDropdowns();
-            applyFilters();
-        } else {
-            container.innerHTML = `<div class="empty-box"><i data-lucide="alert-circle" style="width:32px;height:32px;margin:0 auto 8px;color:#94a3b8"></i><p>${data.error || 'لا توجد بيانات'}</p></div>`;
-            lucide.createIcons();
-        }
-    } catch (e) {
-        container.innerHTML = `<div class="empty-box" style="color:#ef4444"><i data-lucide="wifi-off" style="width:32px;height:32px;margin:0 auto 8px"></i><p>خطأ في الاتصال بالخادم</p></div>`;
+    if (ok) {
+        allTasks = data.tasks || [];
+        if (data.stats && data.stats.employees) allEmployees = data.stats.employees;
+        populateDropdowns();
+        applyFilters();
+    } else {
+        container.innerHTML = `<div class="empty-box"><i data-lucide="alert-circle" style="width:32px;height:32px;margin:0 auto 8px;color:#94a3b8"></i><p>${error || 'لا توجد بيانات'}</p></div>`;
         lucide.createIcons();
     }
 }
@@ -614,34 +602,23 @@ async function confirmSourceUpdate(taskId, btnEl) {
     const origText = btnEl.textContent;
     btnEl.textContent = 'جاري...'; btnEl.disabled = true;
 
-    try {
-        const userStr   = localStorage.getItem('iag_user');
-        const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
+    const updatedBy = IAGSession.getUser()?.name || 'المنسق';
+    const { ok, error } = await IAGApi.updateTaskField(taskId, 'source', value, updatedBy);
 
-        const res  = await fetch(CONFIG.API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName: 'source', fieldValue: value, updatedBy })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-            const task = allTasks.find(x => x.id == taskId);
-            if (task) task.source = value;
-            const picker = document.getElementById('source-picker-' + taskId);
-            if (picker) {
-                const item  = picker.closest('.data-item');
-                const valEl = item.querySelector('.data-val');
-                if (valEl) valEl.textContent = value;
-                picker.style.display = 'none';
-            }
-            alert('✅ تم تحديث الجهة بنجاح');
-            applyFilters();
-        } else {
-            alert('❌ ' + (data.error || 'فشل الحفظ'));
-            btnEl.textContent = origText; btnEl.disabled = false;
+    if (ok) {
+        const task = allTasks.find(x => x.id == taskId);
+        if (task) task.source = value;
+        const picker = document.getElementById('source-picker-' + taskId);
+        if (picker) {
+            const item  = picker.closest('.data-item');
+            const valEl = item.querySelector('.data-val');
+            if (valEl) valEl.textContent = value;
+            picker.style.display = 'none';
         }
-    } catch (e) {
-        alert('❌ خطأ في الاتصال');
+        IAGFeedback.showSuccess('تم تحديث الجهة بنجاح');
+        applyFilters();
+    } else {
+        IAGFeedback.showError(error || 'فشل الحفظ');
         btnEl.textContent = origText; btnEl.disabled = false;
     }
 }
@@ -690,43 +667,29 @@ async function selectParentTask(taskId, parentTaskId) {
     const parentIdVal = parentTaskId.toString().startsWith('IN-') ? parentTaskId : 'IN-' + parentTaskId;
     const confirmed = confirm('تأكيد الربط بالمعاملة:\n#' + parentTaskId + ' — ' + (parentTask.subject || ''));
     if (!confirmed) return;
-    try {
-        const userStr   = localStorage.getItem('iag_user');
-        const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
-        const res  = await fetch(CONFIG.API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName: 'parentId', fieldValue: parentIdVal, updatedBy })
-        });
-        const data = await res.json();
-        if (data.success) {
-            const task = allTasks.find(x => x.id == taskId);
-            if (task) task.parentId = parentIdVal;
-            const valEl = document.getElementById('parent-val-' + taskId);
-            if (valEl) { valEl.textContent = '🔗 ' + parentIdVal; valEl.style.color = '#1d4ed8'; }
-            document.getElementById('parent-picker-' + taskId).style.display = 'none';
-            applyFilters();
-        } else { alert('❌ ' + (data.error || 'فشل الحفظ')); }
-    } catch(e) { alert('❌ خطأ في الاتصال'); }
+    const updatedBy = IAGSession.getUser()?.name || 'المنسق';
+    const { ok, error } = await IAGApi.updateTaskField(taskId, 'parentId', parentIdVal, updatedBy);
+    if (ok) {
+        const task = allTasks.find(x => x.id == taskId);
+        if (task) task.parentId = parentIdVal;
+        const valEl = document.getElementById('parent-val-' + taskId);
+        if (valEl) { valEl.textContent = '🔗 ' + parentIdVal; valEl.style.color = '#1d4ed8'; }
+        document.getElementById('parent-picker-' + taskId).style.display = 'none';
+        applyFilters();
+    } else { IAGFeedback.showError(error || 'فشل الحفظ'); }
 }
 
 async function clearParentId(taskId, btnEl) {
     if (!confirm('هل تريد إزالة الربط بالمعاملة الأصلية؟')) return;
-    try {
-        const userStr   = localStorage.getItem('iag_user');
-        const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
-        const res  = await fetch(CONFIG.API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName: 'parentId', fieldValue: ' ', updatedBy })
-        });
-        const data = await res.json();
-        if (data.success) {
-            const task = allTasks.find(x => x.id == taskId);
-            if (task) task.parentId = '';
-            const valEl = document.getElementById('parent-val-' + taskId);
-            if (valEl) { valEl.textContent = '— غير مرتبطة'; valEl.style.color = '#94a3b8'; }
-            applyFilters();
-        } else { alert('❌ ' + (data.error || 'فشل الحذف')); }
-    } catch(e) { alert('❌ خطأ في الاتصال'); }
+    const updatedBy = IAGSession.getUser()?.name || 'المنسق';
+    const { ok, error } = await IAGApi.updateTaskField(taskId, 'parentId', ' ', updatedBy);
+    if (ok) {
+        const task = allTasks.find(x => x.id == taskId);
+        if (task) task.parentId = '';
+        const valEl = document.getElementById('parent-val-' + taskId);
+        if (valEl) { valEl.textContent = '— غير مرتبطة'; valEl.style.color = '#94a3b8'; }
+        applyFilters();
+    } else { IAGFeedback.showError(error || 'فشل الحذف'); }
 }
 
 // ── Save Field Update ──
@@ -739,29 +702,18 @@ async function saveFieldUpdate(taskId, fieldName, btnEl) {
     const origText = btnEl.textContent;
     btnEl.textContent = 'جاري...'; btnEl.disabled = true;
 
-    try {
-        const userStr   = localStorage.getItem('iag_user');
-        const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
+    const updatedBy = IAGSession.getUser()?.name || 'المنسق';
+    const { ok, error } = await IAGApi.updateTaskField(taskId, fieldName, value, updatedBy);
 
-        const res  = await fetch(CONFIG.API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'updateTaskField', taskId, fieldName, fieldValue: value, updatedBy })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-            const task = allTasks.find(x => x.id == taskId);
-            if (task) task[fieldName] = value;
-            const parent = input.closest('.data-item');
-            const label  = parent.querySelector('.data-label').textContent.replace('⚠ ناقص', '').trim();
-            parent.innerHTML = `<span class="data-label">${label} ✅</span><p class="data-val">${value}</p>`;
-            applyFilters();
-        } else {
-            alert('❌ ' + (data.error || 'فشل الحفظ'));
-            btnEl.textContent = origText; btnEl.disabled = false;
-        }
-    } catch (e) {
-        alert('❌ خطأ في الاتصال');
+    if (ok) {
+        const task = allTasks.find(x => x.id == taskId);
+        if (task) task[fieldName] = value;
+        const parent = input.closest('.data-item');
+        const label  = parent.querySelector('.data-label').textContent.replace('⚠ ناقص', '').trim();
+        parent.innerHTML = `<span class="data-label">${label} ✅</span><p class="data-val">${value}</p>`;
+        applyFilters();
+    } else {
+        IAGFeedback.showError(error || 'فشل الحفظ');
         btnEl.textContent = origText; btnEl.disabled = false;
     }
 }
@@ -780,39 +732,23 @@ async function uploadArchiveFile(taskId, inputEl) {
     status.textContent = `📁 ${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
     status.style.color = '#64748b';
 
-    try {
-        const base64    = await fileToBase64(file);
-        const userStr   = localStorage.getItem('iag_user');
-        const updatedBy = userStr ? JSON.parse(userStr).name : 'المنسق';
+    const base64    = await fileToBase64(file);
+    const updatedBy = IAGSession.getUser()?.name || 'المنسق';
+    const { ok, data, error } = await IAGApi.uploadArchiveFile(
+        taskId, `صادر_${taskId}_${file.name}`, base64, file.type, updatedBy
+    );
 
-        const res  = await fetch(CONFIG.API_URL, {
-            method: 'POST',
-            body: JSON.stringify({
-                action: 'uploadArchiveFile',
-                taskId, updatedBy,
-                fileName  : `صادر_${taskId}_${file.name}`,
-                fileBase64: base64,
-                mimeType  : file.type
-            })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-            const task = allTasks.find(x => x.id == taskId);
-            if (task) task.archive = data.fileUrl;
-            const parent = area.closest('.data-item');
-            parent.innerHTML = `<span class="data-label">الصادر النهائي (الأرشيف) ✅</span>
-                <p class="data-val"><a href="${data.fileUrl}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p>`;
-            applyFilters();
-        } else {
-            alert('❌ ' + (data.error || 'فشل الرفع'));
-            area.classList.remove('uploading');
-            area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ فشل الرفع — اضغط للمحاولة مرة أخرى</p>';
-        }
-    } catch (e) {
-        alert('❌ خطأ في الاتصال');
+    if (ok) {
+        const task = allTasks.find(x => x.id == taskId);
+        if (task) task.archive = data.fileUrl;
+        const parent = area.closest('.data-item');
+        parent.innerHTML = `<span class="data-label">الصادر النهائي (الأرشيف) ✅</span>
+            <p class="data-val"><a href="${data.fileUrl}" target="_blank" style="color:#0f766e;text-decoration:underline;font-weight:700">📎 فتح الصادر</a></p>`;
+        applyFilters();
+    } else {
+        IAGFeedback.showError(error || 'فشل الرفع');
         area.classList.remove('uploading');
-        area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ خطأ — اضغط للمحاولة</p>';
+        area.innerHTML = '<p style="font-size:0.85rem;font-weight:700;color:#dc2626">❌ فشل الرفع — اضغط للمحاولة مرة أخرى</p>';
     }
 }
 
@@ -858,22 +794,14 @@ async function confirmReassign() {
 
     if (confirm(`هل أنت متأكد من تغيير المكلف إلى ${newEmp}؟`)) {
         btn.textContent = 'جاري الاتصال...'; btn.disabled = true;
-        try {
-            const userStr    = localStorage.getItem('iag_user');
-            const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
-            const res  = await fetch(CONFIG.API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'reassignTask', taskId, newEmployee: newEmp, updatedBy: currentUser })
-            });
-            const data = await res.json();
-            if (data.success) {
-                alert('✅ تم تغيير المكلف بنجاح.');
-                closeEnhancementModal('modal-reassign');
-                const u = JSON.parse(localStorage.getItem('iag_user'));
-                loadData(u.name);
-            } else { alert('❌ ' + (data.error || 'لم يتم التعديل')); }
-        } catch (err) { alert('❌ خطأ في الاتصال بالخادم'); }
-        finally { btn.textContent = 'تأكيد التغيير'; btn.disabled = false; }
+        const currentUser = IAGSession.getUser()?.name || 'المنسق';
+        const { ok, error } = await IAGApi.reassignTask(taskId, newEmp, currentUser);
+        btn.textContent = 'تأكيد التغيير'; btn.disabled = false;
+        if (ok) {
+            IAGFeedback.showSuccess('تم تغيير المكلف بنجاح');
+            closeEnhancementModal('modal-reassign');
+            loadData(currentUser);
+        } else { IAGFeedback.showError(error || 'لم يتم التعديل'); }
     }
 }
 
@@ -884,22 +812,14 @@ async function confirmStatusChange() {
 
     if (confirm(`هل أنت متأكد من تغيير الحالة إلى "${newStatus}"؟`)) {
         btn.textContent = 'جاري الحفظ...'; btn.disabled = true;
-        try {
-            const userStr    = localStorage.getItem('iag_user');
-            const currentUser = userStr ? JSON.parse(userStr).name : 'المنسق';
-            const res  = await fetch(CONFIG.API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'updateStatus', taskId, newStatus, updatedBy: currentUser })
-            });
-            const data = await res.json();
-            if (data.success) {
-                alert('✅ تم تحديث الحالة بنجاح.');
-                closeEnhancementModal('modal-status');
-                const u = JSON.parse(localStorage.getItem('iag_user'));
-                loadData(u.name);
-            } else { alert('❌ ' + (data.error || 'لم يتم التعديل')); }
-        } catch (err) { alert('❌ خطأ في الاتصال بالخادم'); }
-        finally { btn.textContent = 'حفظ الحالة'; btn.disabled = false; }
+        const currentUser = IAGSession.getUser()?.name || 'المنسق';
+        const { ok, error } = await IAGApi.updateStatus(taskId, newStatus, currentUser);
+        btn.textContent = 'حفظ الحالة'; btn.disabled = false;
+        if (ok) {
+            IAGFeedback.showSuccess('تم تحديث الحالة بنجاح');
+            closeEnhancementModal('modal-status');
+            loadData(currentUser);
+        } else { IAGFeedback.showError(error || 'لم يتم التعديل'); }
     }
 }
 
