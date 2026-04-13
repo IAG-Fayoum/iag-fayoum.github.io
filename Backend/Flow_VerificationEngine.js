@@ -19,6 +19,7 @@ function verificationEngine_processPending() {
 }
 
 function verificationEngine_processPending_direct_() {
+  try {
   var carSS    = SpreadsheetApp.openById(CONFIG.CAR_SPREADSHEET_ID);
   var followSh = carSS.getSheetByName(SHEETS.CAR_FOLLOWUP);
   var verifSh  = carSS.getSheetByName(SHEETS.CAR_VERIFICATION);
@@ -68,11 +69,15 @@ function verificationEngine_processPending_direct_() {
     processed++;
   });
 
-  console.log("✅ VerificationEngine: أنشأ " + processed);
   if (processed > 0)
-    govV8_audit("VERIFICATION_GENERATED", "أنشأ " + processed + " تحقق", "", { count: processed });
+    auditEngine_logEvent("SYSTEM", "VERIFICATION_GENERATED",
+      "أنشأ " + processed + " تحقق", "", { count: processed }, "SUCCESS");
 
   return { ok: true, processed: processed };
+  } catch (e) {
+    auditEngine_logError("verificationEngine_processPending_direct_", e, "");
+    throw e;
+  }
 }
 
 function verificationEngine_testLastBatch() {

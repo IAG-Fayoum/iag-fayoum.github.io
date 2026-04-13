@@ -116,34 +116,8 @@ function gov_getUser_() {
     return "UNKNOWN";
   }
 }
+// Audit and logging merged to 15_AuditEngine.js
 
-function govV8_audit(actionType, details, oldValue, newValue) {
-  try {
-    var ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
-    var sh = ss.getSheetByName(SHEETS.AUDIT_LOG);
-    if (!sh) return;
-    var o = (oldValue === undefined || oldValue === null) ? "" :
-            (typeof oldValue === "string" ? oldValue : JSON.stringify(oldValue));
-    var n = (newValue === undefined || newValue === null) ? "" :
-            (typeof newValue === "string" ? newValue : JSON.stringify(newValue));
-    sh.appendRow([new Date(), gov_getUser_(), actionType || "", details || "", o, n]);
-  } catch (e) {}
-}
-
-function govV8_logError(context, err) {
-  try {
-    var ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
-    var sh = ss.getSheetByName(SHEETS.ERRORS_LOG);
-    if (!sh) {
-      sh = ss.insertSheet(SHEETS.ERRORS_LOG);
-      sh.appendRow(["الوقت", "نوع_الخطأ", "الرسالة", "السياق"]);
-    }
-    var msg = (err && err.message) ? err.message : String(err || "");
-    sh.appendRow([new Date(), String(context || ""), msg, JSON.stringify({})]);
-  } catch (e) {
-    console.error("govV8_logError failed:", e.message);
-  }
-}
 
 function govV8_notify(type, message, ref) {
   try {
@@ -163,7 +137,7 @@ function govV8_notify(type, message, ref) {
       message || ""
     ]);
   } catch (e) {
-    console.warn("govV8_notify failed:", e.message);
+    auditEngine_logError("govV8_notify", e, {});
   }
 }
 
@@ -176,21 +150,21 @@ function govV8_run(contextName, options, fn) {
     try {
       var res = fn();
       if (cfg_isEnabled("USE_GOVERNANCE") && options && options.actionType) {
-        govV8_audit(options.actionType, options.details || contextName, "", "");
+        auditEngine_logEvent(typeof Session !== "undefined" ? (Session.getActiveUser().getEmail() || "SYSTEM") : "SYSTEM", options.actionType, options.details || contextName, "", "", "SUCCESS");
       }
       return { ok: true, result: res };
     } catch (err) {
-      try { govV8_logError(contextName, err); } catch (e) {}
+      try { auditEngine_logError(contextName, err && err.message ? err.message : String(err), err && err.stack ? err.stack : ""); } catch (e) {}
       if (cfg_isEnabled("USE_GOVERNANCE")) {
-        try { govV8_audit("ERROR", contextName, "", (err && err.message) ? err.message : String(err)); } catch (e) {}
+        try { auditEngine_logEvent(typeof Session !== "undefined" ? (Session.getActiveUser().getEmail() || "SYSTEM") : "SYSTEM", "ERROR", contextName, "", (err && err.message, "SUCCESS") ? err.message : String(err)); } catch (e) {}
       }
       throw err;
     }
   });
 }
 
-function gov_audit_(actionType, details, oldValue, newValue) { govV8_audit(actionType, details, oldValue, newValue); }
-function gov_logError_(context, err) { govV8_logError(context, err); }
+// gov_audit_ and gov_logError_ moved to 15_AuditEngine.js
+
 function engine_notifySafe_(type, message, ref) { govV8_notify(type, message, ref); }
 function gov_notify_(type, message, recordRef) { govV8_notify(type, message, recordRef); }
 function gov_withLock_(fn, timeoutMs) { return govV8_withLock(fn, timeoutMs); }
@@ -328,11 +302,11 @@ function folderV8_distributeToEmployee(file, fileName, officerStr, date, reportT
           while (old.hasNext()) old.next().setTrashed(true);
           file.makeCopy(fileName, monF);
         } catch (e) {
-          console.warn("folderV8_distributeToEmployee:", officer, e.message);
+          auditEngine_logError("folderV8_distributeToEmployee", e, { officer: officer });
         }
       });
   } catch (e) {
-    console.error("folderV8_distributeToEmployee:", e.message);
+    auditEngine_logError("folderV8_distributeToEmployee", e, {});
   }
 }
 
@@ -390,12 +364,11 @@ function folderV8_distributeShortcuts_(file, fileName, officerStr, date, reportT
           parents: [monF.getId()]
         });
       } catch (e) {
-        console.warn("folderV8_distributeShortcuts_:", officer, e.message);
+        auditEngine_logError("folderV8_distributeShortcuts_", e, { officer: officer });
       }
     });
   } catch (e) {
-    console.error("folderV8_distributeShortcuts_:", e.message);
-    govV8_logError("folderV8_distributeShortcuts_", e);
+    auditEngine_logError("folderV8_distributeShortcuts_", e && e.message ? e.message : String(e), e && e.stack ? e.stack : "");
   }
 }
 
@@ -421,8 +394,7 @@ function folderV8_archiveFile(file, fileName, reportType, date) {
     return attachFolder;
 
   } catch (e) {
-    console.error("folderV8_archiveFile:", e.message);
-    govV8_logError("folderV8_archiveFile", e);
+    auditEngine_logError("folderV8_archiveFile", e && e.message ? e.message : String(e), e && e.stack ? e.stack : "");
     return null;
   }
 }
@@ -435,7 +407,7 @@ function folderV8_archiveAttachments_(attachFolder, fileIds, prefix) {
       var name = (prefix ? prefix + " - " : "") + f.getName();
       f.makeCopy(name, attachFolder);
     } catch (e) {
-      console.warn("folderV8_archiveAttachments_:", e.message);
+      auditEngine_logError("folderV8_archiveAttachments_", e, { fileId: fileIds[i] });
     }
   }
 }
@@ -493,7 +465,7 @@ function workflowV8_ensureLinks(masterSh, masterMap, rowIndex) {
   });
   masterSh.getRange(rowIndex, 1, 1, masterSh.getLastColumn()).setValues([newRow]);
 
-  try { govV8_audit("FOLDERS_LINKS", "Ensure links for " + inboundId + " row=" + rowIndex, "", { workFolderUrl: folders.workFolderUrl, archiveFolderUrl: folders.archiveFolderUrl }); } catch (e) {}
+  try { auditEngine_logEvent(typeof Session !== "undefined" ? (Session.getActiveUser().getEmail() || "SYSTEM") : "SYSTEM", "FOLDERS_LINKS", "Ensure links for " + inboundId + " row=" + rowIndex, "", { workFolderUrl: folders.workFolderUrl, archiveFolderUrl: folders.archiveFolderUrl }, "SUCCESS"); } catch (e) {}
 
   return { inboundId: inboundId, work: folders.workFolderUrl, archive: folders.archiveFolderUrl };
 }
@@ -571,7 +543,7 @@ function compV8_registerReport_(p) {
     s(["المخاطب"],                               p.addressee   || "");
     sh.appendRow(row);
   } catch (e) {
-    console.warn("compV8_registerReport_:", e.message);
+    auditEngine_logError("compV8_registerReport_", e, {});
   }
 }
 
@@ -589,7 +561,7 @@ function govV8_exportPdfWithRetry_(driveFile, fileName, tries) {
       return blob;
     } catch (e) {
       if (attempt === tries) {
-        try { govV8_logError("govV8_exportPdfWithRetry_", e); } catch (_) {}
+        try { auditEngine_logError("govV8_exportPdfWithRetry_", e && e.message ? e.message : String(e), e && e.stack ? e.stack : ""); } catch (_) {}
         return null;
       }
     }
@@ -786,7 +758,7 @@ function pendingV8_resolveAll() {
     var statusVals = data.map(function (r) { return [r[5]]; });
     sh.getRange(2, 6, statusVals.length, 1).setValues(statusVals);
 
-    govV8_audit("PENDING_RESOLVE_DONE", "Resolved pending links", "", { scanned: data.length, resolved: resolved });
+    auditEngine_logEvent(typeof Session !== "undefined" ? (Session.getActiveUser().getEmail() || "SYSTEM") : "SYSTEM", "PENDING_RESOLVE_DONE", "Resolved pending links", "", { scanned: data.length, resolved: resolved }, "SUCCESS");
     return { scanned: data.length, resolved: resolved };
   });
 }
@@ -804,6 +776,7 @@ function pendingV8_findMasterRow_(masterSh, masterMap, inboundId) {
 }
 
 function pendingV8_applyStatus_(masterSh, masterMap, rowIndex, inboundId, newStatus, pendingType) {
+  try {
   var oldRow = masterSh.getRange(rowIndex, 1, 1, masterSh.getLastColumn()).getValues()[0];
   var idxStatus = masterMap["الحالة"];
   var oldStatus = idxStatus !== undefined ? oldRow[idxStatus] : "";
@@ -826,7 +799,7 @@ function pendingV8_applyStatus_(masterSh, masterMap, rowIndex, inboundId, newSta
   masterSh.getRange(rowIndex, 1, 1, masterSh.getLastColumn()).setValues([newRow]);
 
   govV8_notify("PENDING_RESOLVED", "تم حل ربط معلق: " + inboundId + " -> " + newStatus, inboundId);
-  govV8_audit("PENDING_RESOLVED", "Resolve " + inboundId + " row=" + rowIndex, oldStatus, newStatus);
+  auditEngine_logEvent(typeof Session !== "undefined" ? (Session.getActiveUser().getEmail() || "SYSTEM") : "SYSTEM", "PENDING_RESOLVED", "Resolve " + inboundId + " row=" + rowIndex, oldStatus, newStatus, "SUCCESS");
 
   if (pendingType !== "OUTBOUND") return;
 
@@ -888,12 +861,15 @@ function pendingV8_applyStatus_(masterSh, masterMap, rowIndex, inboundId, newSta
         masterSh.getRange(rowIndex, 1, 1, masterSh.getLastColumn()).setValues([inRow2]);
       }
 
-      govV8_audit("OUTBOUND_NEW_ROW", "سطر صادر جديد من pending: " + outId, "", outId);
+      auditEngine_logEvent(typeof Session !== "undefined" ? (Session.getActiveUser().getEmail() || "SYSTEM") : "SYSTEM", "OUTBOUND_NEW_ROW", "سطر صادر جديد من pending: " + outId, "", outId, "SUCCESS");
     }
   } catch (_oe) {
-    govV8_logError("pendingV8_applyStatus_ → insertOutboundRow", _oe);
+    auditEngine_logError("pendingV8_applyStatus_ → insertOutboundRow", _oe && _oe.message ? _oe.message : String(_oe), _oe && _oe.stack ? _oe.stack : "");
   }
-}
+
+  } catch (err_pend) {
+    auditEngine_logError("pendingV8_applyStatus_", err_pend.message || String(err_pend), err_pend.stack || "");
+  }}
 
 function pending_add_(type, inboundId, sourceRow, desiredStatus, details) {
   return pendingV8_add(type, inboundId, sourceRow, desiredStatus, details);
@@ -965,8 +941,224 @@ function driveV8_copyFileToFolder_(fileId, targetFolderId, newName) {
     var copy = file.makeCopy(name, folder);
     return copy.getUrl();
   } catch (e) {
-    console.warn("driveV8_copyFileToFolder_: fileId=" + fileId + " | " + e.message);
-    govV8_logError("driveV8_copyFileToFolder_", e);
+    auditEngine_logError("driveV8_copyFileToFolder_", e && e.message ? e.message : String(e), e && e.stack ? e.stack : "");
     return "";
   }
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+// SECTION: Shortcuts Distribution  (migrated from Core_FolderShortcuts.js)
+// ═══════════════════════════════════════════════════════════════
+
+var SH_EMPLOYEES_ROOT = "ملفات الموظفين";
+var SH_CAT_VISITS     = "تقارير المرور";
+var SH_CAT_COMPLAINTS = "فحص الشكوى";
+
+/**
+ * iag_distributeShortcuts — الدالة الموحدة لتوزيع Shortcuts على فولدرات الموظفين
+ *
+ * @param {GoogleAppsScript.Drive.File} originalFile  ملف Doc الأصلي في الأرشيف
+ * @param {string} reportType   نوع التقرير — مثل "المرور الفني" أو "فحص الشكوى"
+ * @param {string} entityOrId   اسم الجهة (مرور) أو رقم القيد (شكوى)
+ * @param {Date}   dateObj      تاريخ التقرير
+ * @param {string} officersText النص الخام للمكلفين — ممكن فيه أكتر من اسم
+ */
+function iag_distributeShortcuts(originalFile, reportType, entityOrId, dateObj, officersText) {
+  try {
+    Logger.log("📎 iag_distributeShortcuts | " + reportType + " | " + entityOrId);
+
+    if (!_sh_isDriveApiAvailable()) {
+      Logger.log("⚠️  Advanced Drive Service غير مفعّل — لن تُنشأ Shortcuts");
+      return;
+    }
+
+    var registeredNames = _sh_getRegisteredEmployees();
+    if (!registeredNames.length) {
+      Logger.log("⚠️  لا يوجد موظفون نشطون في شيت الموظفين");
+      return;
+    }
+
+    var matchedNames = _sh_matchOfficers(officersText, registeredNames);
+    if (!matchedNames.length) {
+      Logger.log("ℹ️  لا تطابق لأسماء موظفين في النص: [" + officersText + "]");
+      return;
+    }
+    Logger.log("👥 موظفون (" + matchedNames.length + "): " + matchedNames.join(" | "));
+
+    var category = _sh_resolveCategory(reportType);
+    var year     = String(dateObj.getFullYear());
+    var month    = _sh_monthName(dateObj);
+
+    matchedNames.forEach(function(name) {
+      try {
+        var entity = (category === SH_CAT_COMPLAINTS) ? null : entityOrId;
+        var targetFolder = _sh_getOrCreateEmployeeSubFolder(name, category, year, month, entity);
+        _sh_createShortcut(originalFile, targetFolder);
+        Logger.log("✅ " + name + " → " + [category, year, month, entity].filter(Boolean).join(" / "));
+      } catch (empErr) {
+        Logger.log("⚠️  فشل Shortcut لـ [" + name + "]: " + empErr.message);
+      }
+    });
+
+  } catch (err) {
+    Logger.log("❌ iag_distributeShortcuts: " + err.message);
+  }
+}
+
+function folderV8_distributeShortcuts_(originalFile, reportType, entityOrId, dateObj, officersText) {
+  // @deprecated — استخدم iag_distributeShortcuts مباشرة
+  iag_distributeShortcuts(originalFile, reportType, entityOrId, dateObj, officersText);
+}
+
+function _sh_getRegisteredEmployees() {
+  var ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  var sh = ss.getSheetByName(SHEETS.EMPLOYEES);
+  if (!sh || sh.getLastRow() < 2) return [];
+
+  var headers = sh.getRange(1, 1, 1, sh.getLastColumn())
+                  .getValues()[0]
+                  .map(function(h) { return String(h || "").trim(); });
+
+  var nameCol   = headers.indexOf("الاسم");
+  var activeCol = headers.indexOf("نشط");
+
+  if (nameCol === -1) {
+    Logger.log("❌ عمود 'الاسم' غير موجود في شيت الموظفين");
+    return [];
+  }
+
+  var data  = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues();
+  var names = [];
+
+  data.forEach(function(row) {
+    var name = String(row[nameCol] || "").trim();
+    if (!name) return;
+    if (activeCol !== -1) {
+      var active = row[activeCol];
+      if (active === false || String(active).toLowerCase() === "false") return;
+    }
+    names.push(name);
+  });
+
+  return names;
+}
+
+function _sh_matchOfficers(officersText, registeredNames) {
+  if (!officersText) return [];
+  var normalizedInput = _sh_normalizeText(String(officersText));
+  var matched = [];
+  registeredNames.forEach(function(fullName) {
+    if (_sh_nameFoundInText(fullName, normalizedInput)) matched.push(fullName);
+  });
+  return matched;
+}
+
+function _sh_nameFoundInText(fullName, normalizedInput) {
+  var words = fullName.trim().split(/\s+/);
+  if (normalizedInput.indexOf(_sh_normalizeText(fullName)) !== -1) return true;
+  if (words.length >= 3) {
+    for (var i = 0; i <= words.length - 3; i++) {
+      var chunk = _sh_normalizeText(words.slice(i, i + 3).join(" "));
+      if (normalizedInput.indexOf(chunk) !== -1) return true;
+    }
+  }
+  if (words.length >= 2) {
+    var twoWords = _sh_normalizeText(words.slice(0, 2).join(" "));
+    if (twoWords.length >= 6 && normalizedInput.indexOf(twoWords) !== -1) return true;
+  }
+  return false;
+}
+
+function _sh_normalizeText(str) {
+  return str
+    .replace(/[\u064B-\u065F]/g, "")
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/ى/g, "ي")
+    .trim();
+}
+
+function _sh_resolveCategory(reportType) {
+  var t = String(reportType || "");
+  if (t.indexOf("شكو") !== -1 || t.indexOf("شكاو") !== -1) return SH_CAT_COMPLAINTS;
+  return SH_CAT_VISITS;
+}
+
+function _sh_getOrCreateEmployeeSubFolder(employeeName, category, year, month, entityName) {
+  var workRoot    = DriveApp.getFolderById(CONFIG.getWorkSharedRootId());
+  var empRoot     = _sh_getOrCreate(workRoot,   SH_EMPLOYEES_ROOT);
+  var empFolder   = _sh_getOrCreate(empRoot,    employeeName);
+  var catFolder   = _sh_getOrCreate(empFolder,  category);
+  var yearFolder  = _sh_getOrCreate(catFolder,  year);
+  var monthFolder = _sh_getOrCreate(yearFolder, month);
+  if (entityName) return _sh_getOrCreate(monthFolder, entityName);
+  return monthFolder;
+}
+
+function _sh_getOrCreate(parent, name) {
+  var it = parent.getFoldersByName(name);
+  if (it.hasNext()) return it.next();
+  return parent.createFolder(name);
+}
+
+function _sh_createShortcut(originalFile, targetFolder) {
+  var targetId = originalFile.getId();
+  try {
+    var existing = Drive.Files.list({
+      q: "'" + targetFolder.getId() + "' in parents" +
+         " and mimeType = 'application/vnd.google-apps.shortcut'" +
+         " and trashed = false",
+      fields: "files(id,shortcutDetails)",
+      supportsAllDrives: true,
+      includeItemsFromAllDrives: true
+    });
+    if (existing.files && existing.files.length > 0) {
+      for (var i = 0; i < existing.files.length; i++) {
+        var f = existing.files[i];
+        if (f.shortcutDetails && f.shortcutDetails.targetId === targetId) {
+          Logger.log("⏭️  Shortcut موجود بالفعل — تم التخطي");
+          return;
+        }
+      }
+    }
+  } catch (checkErr) {
+    Logger.log("⚠️  تعذر التحقق من الـ shortcuts الموجودة: " + checkErr.message);
+  }
+  Drive.Files.create(
+    {
+      name    : originalFile.getName(),
+      mimeType: "application/vnd.google-apps.shortcut",
+      parents : [targetFolder.getId()],
+      shortcutDetails: { targetId: targetId }
+    },
+    null,
+    { supportsAllDrives: true }
+  );
+}
+
+function _sh_isDriveApiAvailable() {
+  try { var _ = Drive.Files; return true; } catch (e) { return false; }
+}
+
+function _sh_monthName(d) {
+  return ["يناير","فبراير","مارس","أبريل","مايو","يونيو",
+          "يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"][d.getMonth()];
+}
+
+/**
+ * initEmployeeFolders — تُشغَّل يدوياً مرة واحدة لإعداد الهيكل الأولي
+ */
+function initEmployeeFolders() {
+  var names = _sh_getRegisteredEmployees();
+  if (!names.length) { Logger.log("❌ لا يوجد موظفون مسجلون"); return; }
+  var workRoot = DriveApp.getFolderById(CONFIG.getWorkSharedRootId());
+  var empRoot  = _sh_getOrCreate(workRoot, SH_EMPLOYEES_ROOT);
+  names.forEach(function(name) {
+    var empFolder = _sh_getOrCreate(empRoot, name);
+    _sh_getOrCreate(empFolder, SH_CAT_VISITS);
+    _sh_getOrCreate(empFolder, SH_CAT_COMPLAINTS);
+    Logger.log("📁 تم: " + name);
+  });
+  Logger.log("✅ إنشاء فولدرات: " + names.length + " موظف");
 }

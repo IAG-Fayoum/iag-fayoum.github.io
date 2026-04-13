@@ -46,7 +46,7 @@ function rptFinAdmV8_testLastRow() {
    ============================================================ */
 
 function rptFin_create_(data, ctx) {
-  console.log("🚀 بدء إنشاء المرور المالي...");
+  auditEngine_logEvent("FIN_REPORT", "START", "بدء إنشاء المرور المالي...", { context: ctx });
   try {
     if (!data || Object.keys(data).length === 0) throw new Error("لا توجد بيانات.");
 
@@ -75,12 +75,12 @@ function rptFin_create_(data, ctx) {
     if (existing.hasNext()) {
       docFile  = existing.next();
       isNewDoc = false;
-      console.log("🔄 تحديث ملف موجود: " + fileName);
+      auditEngine_logEvent("FIN_REPORT", "INFO", "تحديث ملف موجود", { fileName: fileName });
     } else {
       docFile  = DriveApp.getFileById(templateId).makeCopy(fileName, monthFolder);
       docFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.EDIT);
       isNewDoc = true;
-      console.log("➕ إنشاء ملف جديد: " + fileName);
+      auditEngine_logEvent("FIN_REPORT", "INFO", "إنشاء ملف جديد", { fileName: fileName });
     }
 
     // ── 3.5 Update document ──
@@ -88,7 +88,11 @@ function rptFin_create_(data, ctx) {
 
     // ── 3.6 Distribute + Archive (only if new) ──
     if (isNewDoc) {
-      iag_distributeShortcuts(docFile, FIN_REPORT_TYPE, entityName, visitDateObj, officer);
+      try {
+        iag_distributeShortcuts(docFile, FIN_REPORT_TYPE, entityName, visitDateObj, officer);
+      } catch (scErr) {
+        auditEngine_logError("rptFin_shortcuts", scErr, { entityName: entityName });
+      }
     }
     folderV8_archiveFile(docFile, fileName, FIN_FOLDER_TYPE, visitDateObj);
 
@@ -96,35 +100,43 @@ function rptFin_create_(data, ctx) {
     var pdfBlob = null;
     try {
       pdfBlob = govV8_exportPdfWithRetry_(docFile, fileName);
-    } catch (pe) { console.warn("FinReport PDF:", pe.message); }
+    } catch (pe) { auditEngine_logError("rptFin_pdf", pe, { entityName: entityName }); }
 
     // ── 3.8 Email ──
-    var emailResult = emailV8_sendReportEmail({
-      reportType: FIN_REPORT_TYPE + (isNewDoc ? "" : " (محدّث)"),
-      authorName: officer,
-      entityOrId: entityName,
-      dateStr:    visitDate,
-      docUrl:     docFile.getUrl(),
-      pdfBlob:    pdfBlob
-    });
+    var emailResult = { sent: false };
+    try {
+      emailResult = emailV8_sendReportEmail({
+        reportType: FIN_REPORT_TYPE + (isNewDoc ? "" : " (محدّث)"),
+        authorName: officer,
+        entityOrId: entityName,
+        dateStr:    visitDate,
+        docUrl:     docFile.getUrl(),
+        pdfBlob:    pdfBlob
+      });
+    } catch (errEmail) {
+      auditEngine_logError("rptFin_email", errEmail, { entityName: entityName });
+    }
 
     // ── 3.9 Register ──
-    compV8_registerReport_({
-      type:        FIN_REPORT_TYPE,
-      key:         "FIN-" + entityName,
-      officer:     officer,
-      visitDate:   visitDate,
-      fileName:    fileName,
-      docUrl:      docFile.getUrl(),
-      emailStatus: emailResult.sent ? "تم" : "خطأ"
-    });
+    try {
+      compV8_registerReport_({
+        type:        FIN_REPORT_TYPE,
+        key:         "FIN-" + entityName,
+        officer:     officer,
+        visitDate:   visitDate,
+        fileName:    fileName,
+        docUrl:      docFile.getUrl(),
+        emailStatus: emailResult.sent ? "تم" : "خطأ"
+      });
+    } catch (errReg) {
+      auditEngine_logError("rptFin_registration", errReg, { entityName: entityName });
+    }
 
-    console.log("✅ اكتمل المرور المالي:", docFile.getUrl());
+    auditEngine_logEvent("FIN_REPORT", "SUCCESS", "اكتمل المرور المالي", { docUrl: docFile.getUrl() });
     return { ok: true, docUrl: docFile.getUrl(), key: "FIN-" + entityName };
 
   } catch (err) {
-    console.error("❌ rptFin_create_:", err.message);
-    govV8_logError("rptFin_create_", err);
+    auditEngine_logError("rptFin_create_", err, { entityName: (typeof entityName !== 'undefined' ? entityName : 'unknown') });
     return { ok: false, error: err.message };
   }
 }
@@ -150,7 +162,7 @@ function rptFin_updateDoc_(docId, meta, reportData, isNewDoc) {
 
   var tables = body.getTables();
   if (tables.length === 0) {
-    console.error("❌ لا يوجد جدول في المستند!");
+    auditEngine_logError("rptFin_updateDoc_", new Error("لا يوجد جدول في المستند"), { docId: docId });
     doc.saveAndClose();
     return;
   }
@@ -177,9 +189,9 @@ function rptFin_updateDoc_(docId, meta, reportData, isNewDoc) {
     newRow.appendTableCell("");
     newRow.appendTableCell("");
     targetRowIdx = table.getNumRows() - 1;
-    console.log("➕ قسم جديد: " + dept);
+    auditEngine_logEvent("FIN_REPORT", "INFO", "قسم جديد", { dept: dept });
   } else {
-    console.log("🔄 تحديث قسم: " + dept);
+    auditEngine_logEvent("FIN_REPORT", "INFO", "تحديث قسم", { dept: dept });
   }
 
   var targetRow = table.getRow(targetRowIdx);
@@ -202,7 +214,7 @@ function rptFin_updateDoc_(docId, meta, reportData, isNewDoc) {
   fillCell(targetRow.getCell(3), reportData.responsible);
 
   doc.saveAndClose();
-  console.log("✅ تم تحديث المستند");
+  auditEngine_logEvent("FIN_REPORT", "SUCCESS", "تم تحديث المستند", { docId: docId });
 }
 
 /* ============================================================

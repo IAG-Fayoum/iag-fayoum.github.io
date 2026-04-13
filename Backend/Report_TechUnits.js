@@ -102,10 +102,10 @@ function rptTechUnits_testLastRow() {
    ============================================================ */
 
 function rptTechUnits_create_(data) {
-  console.log("🏥 بدء إنشاء تقرير المرور الفني للوحدات");
+  auditEngine_logEvent("تقارير الوحدات", "النظام", "استلام استجابة مرور فني جديدة", "نجاح");
   try {
     var meta = rptTechUnits_extractMeta_(data);
-    console.log("👤 " + meta.officer + " | 🏥 " + meta.unitName + " | إدارة: " + meta.adminArea);
+    auditEngine_logEvent("تقارير الوحدات", meta.officer, "بدء إنشاء تقرير الوحدة: " + meta.unitName + " (" + meta.adminArea + ")", "نجاح");
 
     var lock = LockService.getScriptLock();
     try { lock.waitLock(15000); } catch (le) {
@@ -114,7 +114,6 @@ function rptTechUnits_create_(data) {
 
     try {
       var sections = rptTechUnits_extractSections_(data);
-      console.log("📊 الأقسام: " + sections.length);
 
       sections = rptTechUnits_correctSections_(sections);
 
@@ -152,12 +151,12 @@ function rptTechUnits_create_(data) {
       if (legalSections.length > 0) {
         try {
           legalFile = rptTechUnits_createLegalFile_(archUnit, meta, legalSections, dateStr, fileName);
-          console.log("⚖️ ملف قانوني: " + legalFile.getUrl());
-        } catch (le) { govV8_logError("rptTechUnits legal file", le); }
+          auditEngine_logEvent("تقارير الوحدات", meta.officer, "تم إنشاء ملف قانوني للوحدة: " + meta.unitName, "نجاح");
+        } catch (le) { auditEngine_logError("rptTechUnits legal file", le, { unit: meta.unitName }); }
       }
 
       try { iag_distributeShortcuts(docFile, TECH_UNITS_REPORT_TYPE, meta.unitName, visitDate, meta.officer); }
-      catch (scErr) { console.warn("Shortcuts:", scErr.message); }
+      catch (scErr) { auditEngine_logError("rptTechUnits_shortcuts", scErr, {}); }
 
       var pdfBlob = null;
       try { pdfBlob = govV8_exportPdfWithRetry_(docFile, fileName); } catch (pe) {}
@@ -176,7 +175,7 @@ function rptTechUnits_create_(data) {
           extraPdfBlobs: legalPdfBlob ? [legalPdfBlob] : [],
           legalDocUrl: legalFile ? legalFile.getUrl() : ""
         });
-      } catch (ee) { console.warn("Email:", ee.message); }
+      } catch (ee) { auditEngine_logError("rptTechUnits_email", ee, {}); }
 
       try {
         compV8_registerReport_({
@@ -185,9 +184,9 @@ function rptTechUnits_create_(data) {
           fileName: fileName, docUrl: docFile.getUrl(),
           emailStatus: emailResult.sent ? "تم" : "خطأ"
         });
-      } catch (re) { console.warn("Register:", re.message); }
+      } catch (re) { auditEngine_logError("rptTechUnits_register", re, {}); }
 
-      console.log("✅ تم إنشاء التقرير: " + docFile.getUrl());
+      auditEngine_logEvent("تقارير الوحدات", meta.officer, "تمت أرشفة وتوليد الملفات بنجاح. ملف الوحدة: " + docFile.getUrl(), "نجاح");
       return { ok: true, docUrl: docFile.getUrl(), unit: meta.unitName, legalUrl: legalFile ? legalFile.getUrl() : null };
 
     } finally {
@@ -195,8 +194,7 @@ function rptTechUnits_create_(data) {
     }
 
   } catch (err) {
-    console.error("❌ rptTechUnits_create_:", err.message);
-    govV8_logError("rptTechUnits_create_", err);
+    auditEngine_logError("rptTechUnits_create_", err, { entity: data });
     throw err;
   }
 }
@@ -621,7 +619,6 @@ function rptTechUnits_buildRecommendations_(sections, meta) {
 
 function rptTechUnits_insertImages_(body, data) {
   var attachRaw = String(data["الخاتمة والمرفقات"] || "").trim();
-  console.log("🖼️ attachRaw length: " + attachRaw.length + " | preview: " + attachRaw.substring(0, 150));
 
   var sep1 = body.appendParagraph("━━━━━━━━━━━━━━━━━━━━━━━━");
   sep1.setAlignment(DocumentApp.HorizontalAlignment.RIGHT);
@@ -675,18 +672,18 @@ function rptTechUnits_insertImages_(body, data) {
           body.appendParagraph("").setAlignment(DocumentApp.HorizontalAlignment.RIGHT);
           added++;
         }
-      } catch (imgErr) { console.warn("Image skip:", fileId, imgErr.message); }
+      } catch (imgErr) { auditEngine_logError("rptTechUnits_insertImages_", imgErr, { fileId: fileId }); }
     });
 
     if (added === 0) {
       body.appendParagraph("لم يتم إرفاق صور التوثيق الميداني في هذه الزيارة.")
           .setAlignment(DocumentApp.HorizontalAlignment.RIGHT);
     } else {
-      console.log("🖼️ أُضيفت " + added + " صورة");
+      auditEngine_logEvent("SYSTEM", "IMAGES_INSERTED", "rptTechUnits_insertImages_", "", { count: added }, "SUCCESS");
     }
 
   } catch (e) {
-    console.warn("insertImages_:", e.message);
+    auditEngine_logError("rptTechUnits_insertImages_", e, {});
     body.appendParagraph("تعذّر تحميل الصور — " + e.message)
         .setAlignment(DocumentApp.HorizontalAlignment.RIGHT);
   }
@@ -770,15 +767,6 @@ function rptTechUnits_createLegalFile_(folder, meta, legalSections, dateStr, bas
 }
 
 /* ============================================================
-   SECTION 12 — Shortcuts Alias
-   ============================================================ */
-
-function iag_distributeShortcuts(file, reportType, entityName, date, officer) {
-  try { folderV8_distributeShortcuts_(file, file.getName(), officer, date, reportType); }
-  catch (e) { console.warn("iag_distributeShortcuts:", e.message); }
-}
-
-/* ============================================================
    SECTION 12b — Test Utilities
    ============================================================ */
 
@@ -804,7 +792,7 @@ function rptTechUnits_isDuplicate_(key) {
   try {
     return !!PropertiesService.getScriptProperties().getProperty("DEDUP_RPT_" + key);
   } catch (e) {
-    console.warn("isDuplicate check failed:", e.message);
+    auditEngine_logError("rptTechUnits_isDuplicate_", e, {});
     return false;
   }
 }
@@ -814,6 +802,6 @@ function rptTechUnits_markProcessed_(key, docId) {
     PropertiesService.getScriptProperties()
       .setProperty("DEDUP_RPT_" + key, docId + "|" + new Date().toISOString());
   } catch (e) {
-    console.warn("markProcessed failed:", e.message);
+    auditEngine_logError("rptTechUnits_markProcessed_", e, {});
   }
 }

@@ -94,7 +94,7 @@ function rptComplaintV8_testLastRow() {
    ============================================================ */
 
 function rptComplaint_create_(data) {
-  console.log("🚀 بدء إنشاء تقرير فحص الشكوى (نسخة المسودة)");
+  auditEngine_logEvent("COMPLAINT_REPORT", "START", "بدء إنشاء تقرير فحص الشكوى", { data: "محاولة جديدة" });
 
   try {
     // ── 3.1 Extract fields ──
@@ -154,7 +154,7 @@ function rptComplaint_create_(data) {
     try {
       iag_distributeShortcuts(docFile, COMPLAINT_REPORT_TYPE, recordNumber, incomingDate, reviewerName);
     } catch (scErr) {
-      console.warn("Shortcut generation skipped:", scErr.message);
+      auditEngine_logError("rptComplaint_shortcuts", scErr, { recordNumber: recordNumber });
     }
 
     // ── 3.8 Fill placeholders ──
@@ -188,7 +188,7 @@ function rptComplaint_create_(data) {
         }
       }
     } catch (attachErr) {
-      console.warn("Complaint attachments:", attachErr.message);
+      auditEngine_logError("rptComplaint_attachments", attachErr, { recordNumber: recordNumber });
     }
 
     // ── 3.10 PDF ──
@@ -201,7 +201,7 @@ function rptComplaint_create_(data) {
         pdfFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
         pdfUrl = pdfFile.getUrl();
       }
-    } catch (pe) { console.warn("Complaint PDF:", pe.message); }
+    } catch (pe) { auditEngine_logError("rptComplaint_pdf", pe, { recordNumber: recordNumber }); }
 
     // ── 3.11 جلب إيميل الموظف ──
     var authorEmail = "";
@@ -223,7 +223,7 @@ function rptComplaint_create_(data) {
         }
       }
     } catch (_e) {
-      console.warn("Complaint authorEmail lookup:", _e.message);
+      auditEngine_logError("rptComplaint_authorEmail", _e, { reviewerName: reviewerName });
     }
 
     // ── 3.12 Email ──
@@ -240,7 +240,7 @@ function rptComplaint_create_(data) {
         addressee:   addresseeKey
       });
     } catch (errEmail) {
-      console.warn("Email step failed:", errEmail.message);
+      auditEngine_logError("rptComplaint_email", errEmail, { recordNumber: recordNumber });
     }
 
     // ── 3.13 Register ──
@@ -257,15 +257,14 @@ function rptComplaint_create_(data) {
         emailStatus: emailResult.sent ? "تم" : "خطأ"
       });
     } catch (errReg) {
-      console.warn("Registration step failed:", errReg.message);
+      auditEngine_logError("rptComplaint_registration", errReg, { recordNumber: recordNumber });
     }
 
-    console.log("🎉 تم إنشاء تقرير الشكوى بنجاح:", docFile.getUrl());
+    auditEngine_logEvent("COMPLAINT_REPORT", "SUCCESS", "تم إنشاء تقرير الشكوى بنجاح", { docUrl: docFile.getUrl(), key: "COMPLAINT-" + recordNumber });
     return { ok: true, docUrl: docFile.getUrl(), key: "COMPLAINT-" + recordNumber };
 
   } catch (err) {
-    console.error("❌ rptComplaint_create_:", err.message);
-    govV8_logError("rptComplaint_create_", err);
+    auditEngine_logError("rptComplaint_create_", err);
     return { ok: false, error: err.message };
   }
 }
@@ -410,6 +409,6 @@ function rptComplaint_parseDate_(raw) {
   var d = new Date(s);
   if (!isNaN(d.getTime())) return d;
 
-  console.warn("rptComplaint_parseDate_: تعذر تحليل [" + s + "] — سيُستخدم تاريخ اليوم");
+  auditEngine_logError("rptComplaint_parseDate_", new Error("تعذر تحليل [" + s + "]"), {});
   return new Date();
 }

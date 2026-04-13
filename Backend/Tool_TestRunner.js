@@ -86,32 +86,24 @@ function testFinancialReport() {
 /* ============================================================
    3. تقرير المرور الفني للمستشفيات
    الشيت: TECH_HOSP_RESPONSES
-   ينفذ: rptTechHospV7_createTechnicalReport({ namedValues })
+   ينفذ: rptTechHosp_onSubmit({ namedValues })
    ============================================================ */
 function testTechHospReport() {
   console.log("🧪 اختبار المرور الفني مستشفيات — آخر صف من TECH_HOSP_RESPONSES");
   var namedValues = testRunner_getLastRowAsNamedValues_(SHEETS.TECH_HOSP_RESPONSES);
   console.log("📋 المفاتيح:", Object.keys(namedValues).join(" | "));
-  var result = rptTechHospV7_createTechnicalReport({ namedValues: namedValues });
+  var result = rptTechHosp_onSubmit({ namedValues: namedValues });
   return testRunner_log_("testTechHospReport", result);
 }
 
 /* ============================================================
    4. تقرير المرور الفني للوحدات
    الشيت: TECH_UNITS_RESPONSES
-   ينفذ: techUnitsV8_create_ بعد حقن آخر صف في الشيت
+   ينفذ: rptTechUnits_testLastRow()
    ============================================================ */
 function testTechUnitsReport() {
   console.log("🧪 اختبار المرور الفني وحدات — آخر صف من TECH_UNITS_RESPONSES");
-  // techUnitsV8_create_ بتقرأ الشيت بنفسها — بس بنتحقق إن فيه بيانات أولاً
-  var ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
-  var sh = ss.getSheetByName(SHEETS.TECH_UNITS_RESPONSES);
-  if (!sh) throw new Error("❌ الشيت مش موجود: " + SHEETS.TECH_UNITS_RESPONSES);
-  if (sh.getLastRow() < 2) throw new Error("❌ لا توجد بيانات في: " + SHEETS.TECH_UNITS_RESPONSES);
-  var headers = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
-  var vals    = sh.getRange(sh.getLastRow(), 1, 1, sh.getLastColumn()).getValues()[0];
-  console.log("📋 المفاتيح:", headers.filter(Boolean).join(" | "));
-  var result = techUnitsV8_create_({ trigger: "MANUAL_TEST", event: false });
+  var result = rptTechUnits_testLastRow();
   return testRunner_log_("testTechUnitsReport", result);
 }
 

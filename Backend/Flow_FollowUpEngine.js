@@ -23,6 +23,7 @@ function followUpEngine_processNewCARs() {
 }
 
 function followUpEngine_processNewCARs_direct_() {
+  try {
   var carSS      = SpreadsheetApp.openById(CONFIG.CAR_SPREADSHEET_ID);
   var carSh      = carSS.getSheetByName(SHEETS.CAR);
   var followSh   = carSS.getSheetByName(SHEETS.CAR_FOLLOWUP);
@@ -88,14 +89,18 @@ function followUpEngine_processNewCARs_direct_() {
     processed++;
   });
 
-  console.log("✅ FollowUpEngine: أنشأ " + processed + " followup");
   if (processed > 0) {
-    govV8_audit("FOLLOWUP_GENERATED", "أنشأ " + processed + " متابعة", "", { count: processed });
+    auditEngine_logEvent("SYSTEM", "FOLLOWUP_GENERATED",
+      "أنشأ " + processed + " متابعة", "", { count: processed }, "SUCCESS");
     try { verificationEngine_processPending_direct_(); } catch (e) {
-      govV8_logError("followUpEngine → verificationEngine_processPending_direct_", e);
+      auditEngine_logError("followUpEngine → verificationEngine_processPending_direct_", e, "");
     }
   }
   return { ok: true, processed: processed };
+  } catch (e) {
+    auditEngine_logError("followUpEngine_processNewCARs_direct_", e, "");
+    throw e;
+  }
 }
 
 function followUpEngine_testLastBatch() {

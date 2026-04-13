@@ -50,43 +50,48 @@ function runActualReport() {
 }
 
 function generateQuarterlyReport(quarter, fiscalYear) {
-  quarter    = parseInt(quarter);
-  fiscalYear = String(fiscalYear || "").trim();
+  try {
+    quarter    = parseInt(quarter);
+    fiscalYear = String(fiscalYear || "").trim();
 
-  if (!quarter || quarter < 1 || quarter > 4) throw new Error("quarter يجب أن يكون 1-4");
-  if (!fiscalYear || fiscalYear.indexOf("-") === -1) throw new Error("fiscalYear يجب أن يكون بصيغة YYYY-YYYY");
+    if (!quarter || quarter < 1 || quarter > 4) throw new Error("quarter يجب أن يكون 1-4");
+    if (!fiscalYear || fiscalYear.indexOf("-") === -1) throw new Error("fiscalYear يجب أن يكون بصيغة YYYY-YYYY");
 
-  var dates     = qr_calcDates_(quarter, fiscalYear);
-  var dateFrom  = dates.from;
-  var dateTo    = dates.to;
-  var periodStr = dates.label;
+    var dates     = qr_calcDates_(quarter, fiscalYear);
+    var dateFrom  = dates.from;
+    var dateTo    = dates.to;
+    var periodStr = dates.label;
 
-  Logger.log("📋 التقرير: " + periodStr);
+    Logger.log("📋 التقرير: " + periodStr);
 
-  var employees   = qr_getEmployees_();
-  var hospData    = qr_getResponseData_(SHEETS.TECH_HOSP_RESPONSES, dateFrom, dateTo);
-  var unitsData   = qr_getResponseData_(SHEETS.TECH_UNITS_RESPONSES, dateFrom, dateTo);
-  var inoutData   = qr_getInoutData_(dateFrom, dateTo);
+    var employees   = qr_getEmployees_();
+    var hospData    = qr_getResponseData_(SHEETS.TECH_HOSP_RESPONSES, dateFrom, dateTo);
+    var unitsData   = qr_getResponseData_(SHEETS.TECH_UNITS_RESPONSES, dateFrom, dateTo);
+    var inoutData   = qr_getInoutData_(dateFrom, dateTo);
 
-  var hospStats = qr_calcSectionStats_(hospData);
-  var unitStats = qr_calcSectionStats_(unitsData);
+    var hospStats = qr_calcSectionStats_(hospData);
+    var unitStats = qr_calcSectionStats_(unitsData);
 
-  // توليد النصوص حسب الهيكل الجديد
-  var hospText  = qr_generateStructuredReport_(hospData,  "مستشفيات");
-  var unitsText = qr_generateStructuredReport_(unitsData, "وحدات");
+    var hospText  = qr_generateStructuredReport_(hospData,  "مستشفيات");
+    var unitsText = qr_generateStructuredReport_(unitsData, "وحدات");
 
-  var inoutStats = qr_calcInoutStats_(inoutData);
+    var inoutStats = qr_calcInoutStats_(inoutData);
 
-  var docId = qr_buildDocument_(
-    quarter, fiscalYear, periodStr,
-    employees, hospText, unitsText, inoutStats,
-    hospStats, unitStats
-  );
+    var docId = qr_buildDocument_(
+      quarter, fiscalYear, periodStr,
+      employees, hospText, unitsText, inoutStats,
+      hospStats, unitStats
+    );
 
-  Logger.log("✅ تم إنشاء التقرير: " + docId);
-  try { govV8_audit("QUARTERLY_REPORT", "Q" + quarter + " " + fiscalYear, docId, "", {}); } catch(e){}
+    Logger.log("✅ تم إنشاء التقرير: " + docId);
+    auditEngine_logEvent("SYSTEM", "QUARTERLY_REPORT",
+      "Q" + quarter + " " + fiscalYear, "", { docId: docId }, "SUCCESS");
 
-  return { ok: true, docId: docId };
+    return { ok: true, docId: docId };
+  } catch (e) {
+    auditEngine_logError("generateQuarterlyReport", e, { quarter: quarter, fiscalYear: fiscalYear });
+    throw e;
+  }
 }
 
 /* ============================================================

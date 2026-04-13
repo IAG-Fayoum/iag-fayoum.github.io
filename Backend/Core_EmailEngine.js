@@ -88,6 +88,7 @@ function emailV8_resolveRecipients(reportType) {
    ============================================================================= */
 
 function emailV8_sendTaskAssignment(params) {
+  try {
   params = params || {};
   const toEmail = String(params.toEmail || "").trim();
   if (!toEmail) throw new Error("emailV8_sendTaskAssignment: missing toEmail");
@@ -148,10 +149,14 @@ function emailV8_sendTaskAssignment(params) {
       });
     }
   } catch (_me) {
-    try { govV8_logError("emailV8_sendTaskAssignment → managerEmail", _me); } catch (_) {}
+    try { if (typeof auditEngine_logError === "function") auditEngine_logError("04_EmailEngine", "emailV8_sendTaskAssignment_managerEmail", _me); } catch (_) {}
   }
 
   return { ok: true, sent: true, to: toEmail, managerNotified: !!managerEmail };
+  } catch (err) {
+    if (typeof auditEngine_logError === "function") auditEngine_logError("04_EmailEngine", "emailV8_sendTaskAssignment", err);
+    return { ok: false, sent: false, error: String(err.message || err) };
+  }
 }
 
 /**
@@ -162,6 +167,7 @@ function emailV8_sendTaskAssignment(params) {
  * ✅ يدعم legalDocUrl: رابط ملف الشؤون القانونية
  */
 function emailV8_sendReportEmail(params) {
+  try {
   params = params || {};
 
   const reportType  = String(params.reportType || "").trim();
@@ -269,13 +275,13 @@ function emailV8_sendReportEmail(params) {
     try {
       MailApp.sendEmail(mail);
       primarySent = true;
-      console.log("✅ إيميل التقرير أُرسل إلى: " + toList.join(", ") + (ccList.length ? " | CC: " + ccList.join(", ") : ""));
+      try { if (typeof auditEngine_logEvent === "function") auditEngine_logEvent("Email_Sent", "إيميل تقرير", "Report sent to " + toList.join(", ")); } catch (_e) {}
     } catch (mailErr) {
       primaryError = String(mailErr.message || mailErr);
-      try { govV8_logError("emailV8_sendReportEmail", mailErr); } catch (_e) {}
+      try { if (typeof auditEngine_logError === "function") auditEngine_logError("04_EmailEngine", "emailV8_sendReportEmail_primary", mailErr); } catch (_e) {}
     }
   } else {
-    console.warn("⚠️ emailV8_sendReportEmail: لم يُعثر على أي إيميل للإرسال — authorName=" + authorName);
+    auditEngine_logError("emailV8_sendReportEmail", new Error("لم يُعثر على أي إيميل للإرسال — authorName=" + authorName), {});
   }
 
   let managerSent = false;
@@ -295,7 +301,7 @@ function emailV8_sendReportEmail(params) {
     emailV81_sendManagerFYI_("REPORT", subject, managerHtml, mgrAttach.length ? mgrAttach : null);
     managerSent = true;
   } catch (_e) {
-    try { govV8_logError("emailV8_sendReportEmail → managerFYI", _e); } catch (_) {}
+    try { if (typeof auditEngine_logError === "function") auditEngine_logError("04_EmailEngine", "emailV8_sendReportEmail_managerFYI", _e); } catch (_) {}
   }
 
   return {
@@ -306,6 +312,10 @@ function emailV8_sendReportEmail(params) {
     cc:         ccList.join(","),
     error:      primaryError
   };
+  } catch (err) {
+    if (typeof auditEngine_logError === "function") auditEngine_logError("04_EmailEngine", "emailV8_sendReportEmail", err);
+    return { ok: false, sent: false, error: String(err.message || err) };
+  }
 }
 
 /* =============================================================================
@@ -418,7 +428,7 @@ function emailV81_sendManagerFYI_(type, subject, htmlBody, attachments) {
   if (attachments && attachments.length) mail.attachments = attachments;
 
   try { MailApp.sendEmail(mail); }
-  catch (e) { try { govV8_logError("emailV81_sendManagerFYI_", e); } catch (_) {} }
+  catch (e) { try { if (typeof auditEngine_logError === "function") auditEngine_logError("04_EmailEngine", "emailV81_sendManagerFYI_", e); } catch (_) {} }
 }
 
 /* =============================================================================
@@ -734,6 +744,7 @@ function emailV81_escapeAttr_(s) {
    ============================================================================= */
 
 function email_sendForMasterRow_(masterSh, masterMap, rowIndex, overrides) {
+  try {
   var row = masterSh.getRange(rowIndex, 1, 1, masterSh.getLastColumn()).getValues()[0];
   overrides = overrides || {};
 
@@ -805,7 +816,7 @@ function email_sendForMasterRow_(masterSh, masterMap, rowIndex, overrides) {
   }
 
   if (!assigneeEmail || assigneeEmail.indexOf("@") === -1) {
-    govV8_logError("email_sendForMasterRow_", new Error("لم يُعثر على إيميل الموظف: " + assigneeName));
+    if (typeof auditEngine_logError === "function") auditEngine_logError("04_EmailEngine", "email_sendForMasterRow_", new Error("لم يُعثر على إيميل الموظف: " + assigneeName));
     return;
   }
 
@@ -818,7 +829,7 @@ function email_sendForMasterRow_(masterSh, masterMap, rowIndex, overrides) {
           .setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
       }
     } catch (permErr) {
-      console.warn("setSharing attachUrl:", permErr.message);
+      auditEngine_logError("email_sendForMasterRow_setSharing", permErr, {});
     }
   }
 
@@ -839,7 +850,10 @@ function email_sendForMasterRow_(masterSh, masterMap, rowIndex, overrides) {
         attachmentUrl: attachUrl
       });
     } catch (e) {
-      govV8_logError("email_sendForMasterRow_ | " + toEmail, e);
+      if (typeof auditEngine_logError === "function") auditEngine_logError("04_EmailEngine", "email_sendForMasterRow_sendTo_" + toEmail, e);
     }
   });
+  } catch (err) {
+    if (typeof auditEngine_logError === "function") auditEngine_logError("04_EmailEngine", "email_sendForMasterRow_", err);
+  }
 }

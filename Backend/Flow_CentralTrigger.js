@@ -20,7 +20,7 @@
 
 function trgV8_onFormSubmit(e) {
   if (!e) return;
-  console.log("⚡ trgV8 fired | sheet=" + (e.range ? e.range.getSheet().getName() : "?") + " | row=" + (e.range ? e.range.getRow() : "?"));
+  auditEngine_logEvent("SYSTEM", "TRIGGER_FIRED", (e.range ? e.range.getSheet().getName() : "?"), "", { row: e.range ? e.range.getRow() : "?" }, "INFO");
 
   var sheetName = e.range ? e.range.getSheet().getName() : "";
   var rowNum    = e.range ? e.range.getRow() : 0;
@@ -39,34 +39,33 @@ function trgV8_onFormSubmit(e) {
     } else if (sheetName === SHEETS.COMPLAINTS_RESPONSES) {
       complaints_processLastComplaint();
       try { rptComplaint_onSubmit(e); } catch (er) {
-        govV8_logError("trgV8 → rptComplaint_onSubmit", er);
+        auditEngine_logError("trgV8 → rptComplaint_onSubmit", er, "");
       }
 
     } else if (sheetName === SHEETS.TECH_HOSP_RESPONSES) {
       try { rptTechHosp_onSubmit(e); } catch (er) {
-        govV8_logError("trgV8 → rptTechHosp_onSubmit", er);
+        auditEngine_logError("trgV8 → rptTechHosp_onSubmit", er, "");
       }
 
     } else if (sheetName === SHEETS.TECH_UNITS_RESPONSES) {
       try { rptTechUnits_onSubmit(e); } catch (er) {
-        govV8_logError("trgV8 → rptTechUnits_onSubmit", er);
+        auditEngine_logError("trgV8 → rptTechUnits_onSubmit", er, "");
       }
       try { findingsEngine_processLastRow(); } catch (er) {
-        govV8_logError("trgV8 → findingsEngine_processLastRow", er);
+        auditEngine_logError("trgV8 → findingsEngine_processLastRow", er, "");
       }
 
     } else if (sheetName === SHEETS.FIN_RESPONSES) {
       try { rptFin_onSubmit(e); } catch (er) {
-        govV8_logError("trgV8 → rptFin_onSubmit", er);
+        auditEngine_logError("trgV8 → rptFin_onSubmit", er, "");
       }
 
     } else {
-      console.warn("trgV8_onFormSubmit: unrecognized sheet → " + sheetName);
+      auditEngine_logError("trgV8_onFormSubmit", new Error("unrecognized sheet → " + sheetName), { sheetName: sheetName });
     }
 
   } catch (err) {
-    govV8_logError("trgV8_onFormSubmit", err);
-    console.error("trgV8_onFormSubmit ERROR:", err.message);
+    auditEngine_logError("trgV8_onFormSubmit", err, "");
   }
 }
 
@@ -88,7 +87,6 @@ function engine_processLastInbound() {
       var lastRow = respSh.getLastRow();
       if (lastRow < 2) throw new Error("No rows in responses.");
 
-      console.log("▶ engine_processLastInbound | lastRow=" + lastRow);
       var respMap = schemaV8_buildHeaderMap(respSh);
       var respRow = respSh.getRange(lastRow, 1, 1, respSh.getLastColumn()).getValues()[0];
 
@@ -179,7 +177,7 @@ function engine_processLastInbound() {
         if (idx !== undefined) newRow[idx] = updates[h];
       });
       masterSh.getRange(rowIndex, 1, 1, masterSh.getLastColumn()).setValues([newRow]);
-      console.log("✅ master written | row=" + rowIndex + " | assignee=" + assigneeName + " | parentId=" + (parentId || "—") + " | deadline=" + (deadline instanceof Date ? deadline.toISOString() : String(deadline)));
+      auditEngine_logEvent("SYSTEM", "MASTER_WRITTEN", assigneeName, "", { row: rowIndex, parentId: parentId || "", deadline: deadline instanceof Date ? deadline.toISOString() : String(deadline) }, "SUCCESS");
 
       // ── 1. أرشفة ملف الوارد ──
       try {
@@ -204,7 +202,7 @@ function engine_processLastInbound() {
           }
         }
       } catch (ae) {
-        govV8_logError("engine_processLastInbound → captureAttachment", ae);
+        auditEngine_logError("engine_processLastInbound → captureAttachment", ae, "");
       }
 
       // ── 2. إرسال إيميل التكليف ──
@@ -214,7 +212,6 @@ function engine_processLastInbound() {
           var _attIdx   = masterMap["رابط_المرفقات"];
           var _attUrl   = (_attIdx !== undefined) ? String(_freshRow[_attIdx] || "").trim() : "";
           var _dlDate   = updates["الموعد_النهائي"];
-          console.log("📧 email | assignees=" + assigneeName + " | attachUrl=" + (_attUrl || "EMPTY") + " | deadline=" + (_dlDate instanceof Date ? _dlDate.toISOString() : "NULL"));
           assigneeList.forEach(function(assignee) {
             try {
               email_sendForMasterRow_(masterSh, masterMap, rowIndex, {
@@ -224,18 +221,19 @@ function engine_processLastInbound() {
                 overrideAssigneeName: assignee.name
               });
             } catch (_ee) {
-              govV8_logError("engine_processLastInbound → email [" + assignee.name + "]", _ee);
+              auditEngine_logError("engine_processLastInbound → email [" + assignee.name + "]", _ee, "");
             }
           });
         }
       } catch (ee) {
-        govV8_logError("engine_processLastInbound → email_sendForMasterRow_", ee);
+        auditEngine_logError("engine_processLastInbound → email_sendForMasterRow_", ee, "");
       }
 
       govV8_notify("INBOUND", "تم معالجة وارد رقم " + inboundNo + " سنة " + year,
                    "IN-" + inboundNo + "-" + year);
 
-      govV8_audit(
+      auditEngine_logEvent(
+        gov_getUser_(),
         found.found ? "INBOUND_UPSERT_UPDATE" : "INBOUND_UPSERT_CREATE",
         "وارد رقم " + inboundNo + " سنة " + year + " → masterRow=" + rowIndex,
         found.found ? "update" : "create",
@@ -245,7 +243,7 @@ function engine_processLastInbound() {
 
       // ── 3. حل أي صادر أو شكوى كانت منتظرة هذا الوارد ──
       try { pendingV8_resolveAll(); } catch (_pe) {
-        govV8_logError("engine_processLastInbound → pendingV8_resolveAll", _pe);
+        auditEngine_logError("engine_processLastInbound → pendingV8_resolveAll", _pe, "");
       }
 
       return {
@@ -355,15 +353,13 @@ function outbound_processLastOutbound() {
       var finished   = schemaV8_pick(foundRow, respMap, SCHEMA_ALIASES.INOUT.FINISHED_FLAG);
 
       if (!linkedInNo) {
-        console.warn("outbound_processLastOutbound: صادر بدون رقم وارد مرتبط — صف " + lastRow);
-        govV8_logError("outbound_processLastOutbound",
-          new Error("صادر بدون رقم قيد الوارد المرتبط — صف " + lastRow));
+          auditEngine_logError("outbound_processLastOutbound",
+          new Error("صادر بدون رقم قيد الوارد المرتبط — صف " + lastRow), "");
         return { skipped: true, reason: "missing linkedInNo", responseRow: lastRow };
       }
       if (!outDate) {
-        console.warn("outbound_processLastOutbound: صادر بدون تاريخ — صف " + lastRow);
-        govV8_logError("outbound_processLastOutbound",
-          new Error("صادر بدون تاريخ الصادر — صف " + lastRow));
+          auditEngine_logError("outbound_processLastOutbound",
+          new Error("صادر بدون تاريخ الصادر — صف " + lastRow), "");
         return { skipped: true, reason: "missing outDate", responseRow: lastRow };
       }
 
@@ -402,7 +398,7 @@ function outbound_processLastOutbound() {
       var pending = pendingV8_add("OUTBOUND", inboundId, foundRowIndex, newStatus,
                                   "Outbound responseRow=" + foundRowIndex + ", linkedInNo=" + linkedInNo + ", outId=" + outId);
       govV8_notify("OUTBOUND_PENDING", "صادر مرتبط بوارد غير موجود بعد: " + inboundId, inboundId);
-      govV8_audit("OUTBOUND_PENDING", "Queued pending outbound link for " + inboundId, "", pending);
+      auditEngine_logEvent(gov_getUser_(), "OUTBOUND_PENDING", "Queued pending outbound link for " + inboundId, "", pending);
 
       return { ok: true, linkedInboundFound: false, inboundId: inboundId, outId: outId,
                status: newStatus, responseRow: foundRowIndex, pendingQueued: true };
@@ -431,7 +427,7 @@ function outbound_applyUpdate_(masterSh, masterMap, rowIndex, inboundId, outId, 
         if (url) archFileUrl = url;
       }
     } catch (ae) {
-      govV8_logError("outbound_applyUpdate_ → archiveFile", ae);
+      auditEngine_logError("outbound_applyUpdate_ → archiveFile", ae, "");
     }
   }
 
@@ -456,7 +452,7 @@ function outbound_applyUpdate_(masterSh, masterMap, rowIndex, inboundId, outId, 
 
   var oldStatus = masterMap["الحالة"] !== undefined ? (oldRow[masterMap["الحالة"]] || "") : "";
   govV8_notify("OUTBOUND", "تم تحديث حالة الوارد " + inboundId + " إلى: " + newStatus, inboundId);
-  govV8_audit("OUTBOUND_APPLY", "Update inbound " + inboundId + " row=" + rowIndex + " → outId=" + outId, oldStatus, newStatus);
+  auditEngine_logEvent(gov_getUser_(), "OUTBOUND_APPLY", "Update inbound " + inboundId + " row=" + rowIndex + " → outId=" + outId, oldStatus, newStatus);
 
   try {
     var alreadyOut = outbound_findInboundById_(masterSh, masterMap, outId);
@@ -478,10 +474,10 @@ function outbound_applyUpdate_(masterSh, masterMap, rowIndex, inboundId, outId, 
       os("آخر_تعديل_بواسطة",   gov_getUser_());
       os("تاريخ_آخر_تعديل",    new Date());
       masterSh.appendRow(outRowA);
-      govV8_audit("OUTBOUND_NEW_ROW", "سطر صادر جديد: " + outId + " ← " + inboundId, "", outId);
+      auditEngine_logEvent(gov_getUser_(), "OUTBOUND_NEW_ROW", "سطر صادر جديد: " + outId + " ← " + inboundId, "", outId);
     }
   } catch (_oe) {
-    govV8_logError("outbound_applyUpdate_ → insertOutboundRow", _oe);
+    auditEngine_logError("outbound_applyUpdate_ → insertOutboundRow", _oe, "");
   }
 
   return { linkedInboundFound: true, masterRow: rowIndex, inboundId: inboundId,
@@ -562,7 +558,7 @@ function complaints_processLastComplaint() {
 
       if (!inboundNo) {
         govV8_notify("COMPLAINT", "تم تسجيل شكوى بدون رقم وارد", "COMPLAINT");
-        govV8_audit("COMPLAINT_MISSING_INBOUND", "Complaint row=" + lastRow + " missing inbound number", "", "");
+        auditEngine_logEvent(gov_getUser_(), "COMPLAINT_MISSING_INBOUND", "Complaint row=" + lastRow + " missing inbound number", "", "");
         return { ok: true, skipped: true, reason: "missing inbound number", row: lastRow };
       }
 
@@ -585,7 +581,7 @@ function complaints_processLastComplaint() {
                                     BUSINESS.STATUS.PENDING_APPROVAL,
                                     "Complaint row=" + lastRow);
         govV8_notify("COMPLAINT_PENDING", "شكوى مرتبطة بوارد غير موجود بعد: " + inboundId, inboundId);
-        govV8_audit("COMPLAINT_PENDING", "Pending link for " + inboundId, "", pending);
+        auditEngine_logEvent(gov_getUser_(), "COMPLAINT_PENDING", "Pending link for " + inboundId, "", pending);
         return { ok: true, pending: true, inboundId: inboundId, pendingRow: pending.pendingRow };
       }
 
@@ -607,7 +603,7 @@ function complaints_processLastComplaint() {
       masterSh.getRange(rowIndex, 1, 1, masterSh.getLastColumn()).setValues([newRow]);
 
       govV8_notify("COMPLAINT", "تم تحويل حالة الوارد " + inboundId + " إلى: بانتظار الاعتماد", inboundId);
-      govV8_audit("COMPLAINT_LINK", "Complaint linked to " + inboundId + " row=" + rowIndex,
+      auditEngine_logEvent(gov_getUser_(), "COMPLAINT_LINK", "Complaint linked to " + inboundId + " row=" + rowIndex,
                   oldStatus, BUSINESS.STATUS.PENDING_APPROVAL);
 
       return { ok: true, inboundId: inboundId, masterRow: rowIndex,
@@ -823,7 +819,7 @@ function iagV81_setupAllTriggers() {
     .create();
 
   var total = created + 2;
-  console.log("✅ iagV81_setupAllTriggers: أنشأ " + total + " triggers (" + created + " form + 2 scheduled)");
+  auditEngine_logEvent("SYSTEM", "TRIGGERS_SETUP", "iagV81_setupAllTriggers", "", { total: total, created: created }, "SUCCESS");
 
   SpreadsheetApp.getUi().alert(
     "✅ تم إعداد التريجرز بنجاح\n\n" +
@@ -861,26 +857,26 @@ function setupScheduledTriggers() {
     .atHour(7)
     .create();
 
-  console.log("✅ Triggers created: dailyEscalationCheck + weeklyAnalyticsRefresh");
+  auditEngine_logEvent("SYSTEM", "TRIGGERS_SETUP", "setupScheduledTriggers", "", {}, "SUCCESS");
 }
 
 /** 0.19 — يجري يومياً — stub جاهز للـ EscalationEngine لاحقاً */
 function dailyEscalationCheck() {
   try {
-    console.log("⏰ dailyEscalationCheck fired: " + new Date().toISOString());
+    auditEngine_logEvent("SYSTEM", "DAILY_ESCALATION_CHECK", new Date().toISOString(), "", {}, "INFO");
     escalationEngine_runDailyCheck();
   } catch (e) {
-    govV8_logError("dailyEscalationCheck", e);
+    auditEngine_logError("dailyEscalationCheck", e, "");
   }
 }
 
 /** 0.20 — يجري أسبوعياً — stub جاهز للـ Analytics لاحقاً */
 function weeklyAnalyticsRefresh() {
   try {
-    console.log("📊 weeklyAnalyticsRefresh fired: " + new Date().toISOString());
+    auditEngine_logEvent("SYSTEM", "WEEKLY_ANALYTICS_REFRESH", new Date().toISOString(), "", {}, "INFO");
     analytics_writeSnapshot_();
   } catch (e) {
-    govV8_logError("weeklyAnalyticsRefresh", e);
+    auditEngine_logError("weeklyAnalyticsRefresh", e, "");
   }
 }
 
@@ -907,6 +903,6 @@ function trgV8_finalizeHospReport() {
     ui.alert("✅ تم إنهاء التقرير بنجاح\n\nرابط الملف:\n" + result.docUrl);
   } catch (e) {
     ui.alert("❌ خطأ:\n" + e.message);
-    govV8_logError("trgV8_finalizeHospReport", e);
+    auditEngine_logError("trgV8_finalizeHospReport", e, "");
   }
 }

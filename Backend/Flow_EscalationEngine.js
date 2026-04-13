@@ -111,15 +111,17 @@ function escalationEngine_runDailyCheck() {
         carSh.getRange(idx+2, carMap["status"]+1).setValue("مصعَّد");
 
         escalated++;
-        console.log("🔺 تصعيد: " + carId + " → " + rule.escalate_to);
+        auditEngine_logEvent("SYSTEM", "ESCALATION", carId, "", { escalateTo: rule.escalate_to }, "SUCCESS");
       });
 
       if (escalated > 0) {
-        govV8_audit("ESCALATIONS_DONE", "صعَّد " + escalated + " CAR", "", { count: escalated });
-        try { escalationEngine_notifyManager_(escalated); } catch(e) {}
+        auditEngine_logEvent("SYSTEM", "ESCALATIONS_DONE",
+          "صعَّد " + escalated + " CAR", "", { count: escalated }, "SUCCESS");
+        try { escalationEngine_notifyManager_(escalated); } catch(e) {
+          auditEngine_logError("escalationEngine → notifyManager", e, "");
+        }
       }
 
-      console.log("✅ EscalationEngine: " + escalated + " تصعيد");
       return { ok: true, escalated: escalated };
     }
   );
@@ -163,7 +165,7 @@ function escalationEngine_notifyManager_(count) {
     + "<p style='margin:8px 0 0;color:#475569;font-size:.85rem'>يرجى مراجعة شيت <strong>CAR_ESCALATIONS</strong> فوراً.</p>"
     + "</div></div>";
   try { MailApp.sendEmail({ to: email, subject: subject, htmlBody: body }); }
-  catch(e) { govV8_logError("escalationEngine_notifyManager_", e); }
+  catch(e) { auditEngine_logError("escalationEngine_notifyManager_", e, ""); }
 }
 
 function escalationEngine_buildHeaderMap_(sheet) {

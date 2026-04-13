@@ -74,6 +74,7 @@ function carEngine_processNewFindings() {
 }
 
 function carEngine_processNewFindings_direct_() {
+  try {
   var carSS      = SpreadsheetApp.openById(CONFIG.CAR_SPREADSHEET_ID);
   var findingsSh = carSS.getSheetByName(SHEETS.FINDINGS);
   var carSh      = carSS.getSheetByName(SHEETS.CAR);
@@ -231,25 +232,31 @@ function carEngine_processNewFindings_direct_() {
     processedGroups++;
   });
 
-  console.log("✅ CAREngine: " + processedGroups + " خطاب | " + processedSections + " قسم");
+  auditEngine_logEvent("SYSTEM", "CAR_PROCESSED", "carEngine_processNewFindings_direct_", "", { groups: processedGroups, sections: processedSections }, "SUCCESS");
 
   if (processedGroups > 0) {
-    govV8_audit("CAR_GENERATED", "أنشأ " + processedGroups + " CAR بـ " + processedSections + " قسم", "", {
-      groups: processedGroups, sections: processedSections
-    });
-    try { carEngine_notifyManager_(processedGroups, processedSections); } catch(e) {}
+    auditEngine_logEvent("SYSTEM", "CAR_GENERATED",
+      "أنشأ " + processedGroups + " CAR بـ " + processedSections + " قسم",
+      "", { groups: processedGroups, sections: processedSections }, "SUCCESS");
+    try { carEngine_notifyManager_(processedGroups, processedSections); } catch(e) {
+      auditEngine_logError("carEngine → notifyManager", e, "");
+    }
     try { carEngine_notifyAdminPortal_(groups); } catch(e) {
-      govV8_logError("carEngine → notifyAdminPortal", e);
+      auditEngine_logError("carEngine → notifyAdminPortal", e, "");
     }
   }
 
   try { SpreadsheetApp.flush(); } catch(_) {}
 
   try { followUpEngine_processNewCARs_direct_(); } catch (fe) {
-    govV8_logError("carEngine → followUpEngine", fe);
+    auditEngine_logError("carEngine → followUpEngine", fe, "");
   }
 
   return { ok: true, processed: processedGroups, sections: processedSections };
+  } catch (e) {
+    auditEngine_logError("carEngine_processNewFindings_direct_", e, "");
+    throw e;
+  }
 }
 
 function carEngine_testLastBatch() {
@@ -342,7 +349,7 @@ function carEngine_loadCodesMap_() {
       if (template) map["text:" + template] = entry;
     });
   } catch(e) {
-    govV8_logError("carEngine_loadCodesMap_", e);
+    auditEngine_logError("carEngine_loadCodesMap_", e, "");
   }
   return map;
 }
@@ -384,7 +391,7 @@ function carEngine_notifyManager_(groupCount, sectionCount) {
     + "</div></div>";
 
   try { MailApp.sendEmail({ to: managerEmail, subject: subject, htmlBody: body }); }
-  catch (e) { govV8_logError("carEngine_notifyManager_", e); }
+  catch (e) { auditEngine_logError("carEngine_notifyManager_", e, ""); }
 }
 
 /* ============================================================
@@ -446,9 +453,10 @@ function carEngine_notifyAdminPortal_(groups) {
 
     try {
       MailApp.sendEmail({ to: adminInfo.managerEmail, subject: subject, htmlBody: body });
-      govV8_audit("PORTAL_NOTIFIED", "إيميل بوابة → " + adminArea, "", { email: adminInfo.managerEmail });
+      auditEngine_logEvent("SYSTEM", "PORTAL_NOTIFIED", "إيميل بوابة → " + adminArea,
+        "", { email: adminInfo.managerEmail }, "SUCCESS");
     } catch(e) {
-      govV8_logError("carEngine_notifyAdminPortal_ → " + adminArea, e);
+      auditEngine_logError("carEngine_notifyAdminPortal_ → " + adminArea, e, "");
     }
   });
 }

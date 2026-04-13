@@ -120,98 +120,45 @@ function doPost(e) {
     let result;
 
     switch (action) {
-
-      case "login":
-        result = handleLogin(body); break;
-
-      case "getAllData":
-        result = handleGetAllData(body); break;
-
+      case "login": result = executeHandlerSafe(action, handleLogin, body); break;
+      case "getAllData": result = executeHandlerSafe(action, handleGetAllData, body); break;
       case "getDashboard":
-      case "getDashboardData":
-        result = handleGetDashboard(body); break;
-
-      case "getTasks":
-        result = handleGetTasks(body); break;
-
-      case "getNotifications":
-        result = handleGetNotifications(body); break;
-
+      case "getDashboardData": result = executeHandlerSafe(action, handleGetDashboard, body); break;
+      case "getTasks": result = executeHandlerSafe(action, handleGetTasks, body); break;
+      case "getNotifications": result = executeHandlerSafe(action, handleGetNotifications, body); break;
       case "markNotifRead":
-      case "markAsRead":
-        result = handleMarkNotifRead(body); break;
-
+      case "markAsRead": result = executeHandlerSafe(action, handleMarkNotifRead, body); break;
       case "markAllNotifRead":
-      case "markAllRead":
-        result = handleMarkAllNotifRead(body); break;
-
-      case "deleteNotification":
-        result = handleDeleteNotification(body); break;
-
-      case "deleteAllNotifications":
-        result = handleDeleteAllNotifications(body); break;
-
+      case "markAllRead": result = executeHandlerSafe(action, handleMarkAllNotifRead, body); break;
+      case "deleteNotification": result = executeHandlerSafe(action, handleDeleteNotification, body); break;
+      case "deleteAllNotifications": result = executeHandlerSafe(action, handleDeleteAllNotifications, body); break;
       case "updateTaskStatus":
       case "updateStatus":
-      case "adminUpdateStatus":
-        result = handleUpdateTaskStatus(body); break;
-
-      case "updateTaskField":
-        result = handleUpdateTaskField(body); break;
-
-      case "reassignTask":
-        result = handleReassignTask(body); break;
-
-      case "uploadArchiveFile":
-        result = handleUploadArchiveFile(body); break;
-
+      case "adminUpdateStatus": result = executeHandlerSafe(action, handleUpdateTaskStatus, body); break;
+      case "updateTaskField": result = executeHandlerSafe(action, handleUpdateTaskField, body); break;
+      case "reassignTask": result = executeHandlerSafe(action, handleReassignTask, body); break;
+      case "uploadArchiveFile": result = executeHandlerSafe(action, handleUploadArchiveFile, body); break;
       case "sendReminderNotification":
-      case "sendReminder":
-        result = handleSendReminderNotification(body); break;
-
-      case "getEmployeeFiles":
-        result = handleGetEmployeeFiles(body); break;
-
-      case "getFindings":
-        result = handleGetFindings(body); break;
-
-      case "getCARs":
-        result = handleGetCARs(body); break;
-
-      case "getFollowUps":
-        result = handleGetFollowUps(body); break;
-
-      case "getEscalations":
-        result = handleGetEscalations(body); break;
-
-      case "updateCARResponse":
-        result = handleUpdateCARResponse(body); break;
-
-      case "closeCAR":
-        result = handleCloseCAR(body); break;
-
+      case "sendReminder": result = executeHandlerSafe(action, handleSendReminderNotification, body); break;
+      case "getEmployeeFiles": result = executeHandlerSafe(action, handleGetEmployeeFiles, body); break;
+      case "getFindings": result = executeHandlerSafe(action, handleGetFindings, body); break;
+      case "getCARs": result = executeHandlerSafe(action, handleGetCARs, body); break;
+      case "getFollowUps": result = executeHandlerSafe(action, handleGetFollowUps, body); break;
+      case "getEscalations": result = executeHandlerSafe(action, handleGetEscalations, body); break;
+      case "updateCARResponse": result = executeHandlerSafe(action, handleUpdateCARResponse, body); break;
+      case "closeCAR": 
+        if (body.updatedBy && !body.closedBy) body.closedBy = body.updatedBy;
+        result = executeHandlerSafe(action, handleCloseCAR, body); 
+        break;
       // ── جديد v8.5 — CAR_SECTIONS (داخلي) ──
-      case "getCARSections":
-        result = handleGetCARSections(body); break;
-
-      case "updateSectionStatus":
-        result = handleUpdateSectionStatus(body); break;
-
-      case "updateFindingStatus":
-        result = handleUpdateFindingStatus(body); break;
-
+      case "getCARSections": result = executeHandlerSafe(action, handleGetCARSections, body); break;
+      case "updateSectionStatus": result = executeHandlerSafe(action, handleUpdateSectionStatus, body); break;
+      case "updateFindingStatus": result = executeHandlerSafe(action, handleUpdateFindingStatus, body); break;
       // ── جديد v8.5 — Portal (خارجي) ──
-      case "portalLogin":
-        result = handlePortalLogin(body); break;
-
-      case "portalGetSections":
-        result = handlePortalGetSections(body); break;
-
-      case "portalSubmitResponse":
-        result = handlePortalSubmitResponse(body); break;
-
-      case "getDashboardStats":
-        result = handleGetDashboardStats(body); break;
+      case "portalLogin": result = executeHandlerSafe(action, handlePortalLogin, body); break;
+      case "portalGetSections": result = executeHandlerSafe(action, handlePortalGetSections, body); break;
+      case "portalSubmitResponse": result = executeHandlerSafe(action, handlePortalSubmitResponse, body); break;
+      case "getDashboardStats": result = executeHandlerSafe(action, handleGetDashboardStats, body); break;
 
       // stubs
       case "sendCustomEmail":
@@ -227,13 +174,39 @@ function doPost(e) {
     return buildResponse(result);
 
   } catch (err) {
-    logError("doPost", err && err.message ? err.message : String(err), safeStringify_(e));
+    auditEngine_logError("doPost", err && err.message ? err.message : String(err), safeStringify_(e));
     return buildResponse({ success: false, error: "خطأ داخلي في السيرفر" });
   }
 }
 
 function doGet() {
   return buildResponse({ success: true, message: "IAG Backend v8.5 — Active" });
+}
+
+// ── SECURITY & LOGGING ENGINE ──
+function executeHandlerSafe(actionName, handlerFunc, data) {
+  try {
+    return handlerFunc(data);
+  } catch (err) {
+    auditEngine_logError(actionName, err, "SystemError");
+    return { success: false, error: "فشلت العملية لسبب داخلي، تم تسجيل الخطأ" };
+  }
+}
+
+
+function checkRoleServerSide_(userName, allowedRoles) {
+  try {
+    if (!userName) return false;
+    var empData = getEmployeesData_();
+    var cols = empData.col;
+    for (var i = 0; i < empData.rows.length; i++) {
+        if (String(empData.rows[i][cols(BE_EMP_HEADERS.NAME)]).trim() === userName) {
+            var r = String(empData.rows[i][cols(BE_EMP_HEADERS.ROLE)]).trim();
+            return allowedRoles.includes(r);
+        }
+    }
+  } catch(e) {}
+  return false;
 }
 
 
@@ -247,7 +220,7 @@ function handleLogin(data) {
   const pin    = normalizeDigits_(data && data.pin);
 
   if (!mobile || !pin) {
-    writeAuditLog("SYSTEM", "login_failed_missing_data", "", "", "");
+    auditEngine_logEvent("SYSTEM", "login_failed_missing_data", "", "", "");
     return { success: false, error: "بيانات ناقصة" };
   }
 
@@ -272,19 +245,19 @@ function handleLogin(data) {
   }
 
   if (matchedRows.length === 0) {
-    writeAuditLog("SYSTEM", "login_failed_invalid_credentials", mobile, "", "");
+    auditEngine_logEvent("SYSTEM", "login_failed_invalid_credentials", mobile, "", "");
     return { success: false, error: "رقم الموبايل أو رمز الدخول غير صحيح" };
   }
 
   if (matchedRows.length > 1) {
-    logError("handleLogin", "Duplicate login identity", JSON.stringify({ mobile: mobile, count: matchedRows.length }));
+    auditEngine_logError("handleLogin", "Duplicate login identity", JSON.stringify({ mobile: mobile, count: matchedRows.length }));
     return { success: false, error: "تعارض في بيانات المستخدم، تواصل مع المسؤول" };
   }
 
   const row = matchedRows[0].row;
 
   if (!isTruthyActive_(row[col(BE_EMP_HEADERS.ACTIVE)])) {
-    writeAuditLog("SYSTEM", "login_failed_inactive", mobile, "", "");
+    auditEngine_logEvent("SYSTEM", "login_failed_inactive", mobile, "", "");
     return { success: false, error: "الحساب غير مفعل، تواصل مع المسؤول" };
   }
 
@@ -298,7 +271,7 @@ function handleLogin(data) {
     mobile   : safeStr_(row[col(BE_EMP_HEADERS.MOBILE)])
   };
 
-  writeAuditLog(result.name || "SYSTEM", "login_success", mobile, "", "");
+  auditEngine_logEvent(result.name || "SYSTEM", "login_success", mobile, "", "");
   return result;
 }
 
@@ -596,7 +569,7 @@ function handleMarkAllNotifRead(data) {
       }
     }
 
-    writeAuditLog(employeeName, "markAllNotifRead", employeeName, "", count);
+    auditEngine_logEvent(employeeName, "markAllNotifRead", employeeName, "", count);
     return { success: true, updated: count };
   } finally {
     lock.releaseLock();
@@ -659,7 +632,7 @@ function handleDeleteAllNotifications(data) {
       }
     }
 
-    writeAuditLog(employeeName, "deleteAllNotifications", employeeName, "", count);
+    auditEngine_logEvent(employeeName, "deleteAllNotifications", employeeName, "", count);
     return { success: true, deleted: count };
   } finally {
     lock.releaseLock();
@@ -694,7 +667,7 @@ function handleUpdateTaskStatus(data) {
 
       var assignedTo = String(rows[i][BE_INOUT_COL.ASSIGNED_TO - 1] || "").trim();
       if (!isAdminRole_(role) && assignedTo !== updatedBy) {
-        writeAuditLog(updatedBy, "updateTaskStatus_denied", taskId || uuid, "", newStatus);
+        auditEngine_logEvent(updatedBy, "updateTaskStatus_denied", taskId || uuid, "", newStatus);
         return { success: false, error: "غير مصرح لك بتعديل هذه المهمة" };
       }
 
@@ -711,7 +684,7 @@ function handleUpdateTaskStatus(data) {
 
       if (notes) sheet.getRange(rowNum, BE_INOUT_COL.NOTES).setValue(notes);
 
-      writeAuditLog(updatedBy, "updateTaskStatus", taskId || uuid, oldStatus, newStatus);
+      auditEngine_logEvent(updatedBy, "updateTaskStatus", taskId || uuid, oldStatus, newStatus);
       return { success: true };
     }
 
@@ -745,6 +718,12 @@ function handleUpdateTaskField(data) {
       var rowRecordId = String(rows[i][BE_INOUT_COL.RECORD_ID - 1] || "").trim();
       if (rowRecordId !== taskId) continue;
 
+      var assignedTo = String(rows[i][BE_INOUT_COL.ASSIGNED_TO - 1] || "").trim();
+      if (assignedTo !== updatedBy && !checkRoleServerSide_(updatedBy, ["مدير", "منسق"])) {
+         auditEngine_logEvent(updatedBy, "updateTaskField_denied", taskId, "", fieldName);
+         return { success: false, error: "غير مصرح لك بتعديل هذا الحقل" };
+      }
+
       var rowNum = i + 1;
       var oldVal = rows[i][colNum - 1];
 
@@ -752,7 +731,7 @@ function handleUpdateTaskField(data) {
       sheet.getRange(rowNum, BE_INOUT_COL.UPDATED_BY).setValue(updatedBy || "النظام");
       sheet.getRange(rowNum, BE_INOUT_COL.UPDATED_AT).setValue(new Date());
 
-      writeAuditLog(updatedBy || "النظام", "updateTaskField:" + fieldName, taskId, oldVal, fieldValue);
+      auditEngine_logEvent(updatedBy || "النظام", "updateTaskField:" + fieldName, taskId, oldVal, fieldValue);
       return { success: true };
     }
 
@@ -782,6 +761,11 @@ function handleReassignTask(data) {
       var rowRecordId = String(rows[i][BE_INOUT_COL.RECORD_ID - 1] || "").trim();
       if (rowRecordId !== taskId) continue;
 
+      if (!checkRoleServerSide_(updatedBy, ["مدير", "منسق"])) {
+        auditEngine_logEvent(updatedBy, "reassignTask_denied", taskId, "", newEmployee);
+        return { success: false, error: "الصلاحية غير كافية لإعادة التعيين" };
+      }
+
       var rowNum = i + 1;
       var oldEmp = rows[i][BE_INOUT_COL.ASSIGNED_TO - 1];
 
@@ -790,7 +774,7 @@ function handleReassignTask(data) {
       sheet.getRange(rowNum, BE_INOUT_COL.UPDATED_BY  ).setValue(updatedBy || "المنسق");
       sheet.getRange(rowNum, BE_INOUT_COL.UPDATED_AT  ).setValue(new Date());
 
-      writeAuditLog(updatedBy || "المنسق", "reassignTask", taskId, oldEmp, newEmployee);
+      auditEngine_logEvent(updatedBy || "المنسق", "reassignTask", taskId, oldEmp, newEmployee);
       return { success: true };
     }
 
@@ -815,32 +799,44 @@ function handleUploadArchiveFile(data) {
   lock.waitLock(30000);
 
   try {
-    var folder  = DriveApp.getFolderById(BE_WORK_FOLDER_ID);
-    var blob    = Utilities.newBlob(Utilities.base64Decode(base64), mimeType, fileName);
-    var file    = folder.createFile(blob);
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    var fileUrl = file.getUrl();
-
     var sheet = getSheet(BE_SHEETS.INOUT);
     var rows  = sheet.getDataRange().getValues();
+    var taskFound = false;
+    var assignedTo = "";
+    var rowNum = -1;
 
     for (var i = 1; i < rows.length; i++) {
       var rowRecordId = String(rows[i][BE_INOUT_COL.RECORD_ID - 1] || "").trim();
-      if (rowRecordId !== taskId) continue;
+      if (rowRecordId === taskId) {
+         taskFound = true;
+         assignedTo = String(rows[i][BE_INOUT_COL.ASSIGNED_TO - 1] || "").trim();
+         rowNum = i + 1;
+         break;
+      }
+    }
 
-      var rowNum = i + 1;
-      sheet.getRange(rowNum, BE_INOUT_COL.ARCHIVE_URL).setValue(fileUrl);
+    if (!taskFound) return { success: false, error: "المهمة غير موجودة" };
+
+    if (assignedTo !== updatedBy && !checkRoleServerSide_(updatedBy, ["مدير", "منسق"])) {
+      auditEngine_logEvent(updatedBy, "uploadArchiveFile_denied", taskId, "", fileName);
+      return { success: false, error: "غير مصرح لك برفع ملف لهذه المهمة" };
+    }
+
+    var folder  = DriveApp.getFolderById(BE_WORK_FOLDER_ID);
+    var blob    = Utilities.newBlob(Utilities.base64Decode(base64), mimeType, fileName);
+    var file    = folder.createFile(blob);
+    // Removed ANYONE_WITH_LINK sharing
+    var fileUrl = file.getUrl();
+
+    sheet.getRange(rowNum, BE_INOUT_COL.ARCHIVE_URL).setValue(fileUrl);
       sheet.getRange(rowNum, BE_INOUT_COL.UPDATED_BY ).setValue(updatedBy || "النظام");
       sheet.getRange(rowNum, BE_INOUT_COL.UPDATED_AT ).setValue(new Date());
 
-      writeAuditLog(updatedBy || "النظام", "uploadArchiveFile", taskId, "", fileUrl);
+      auditEngine_logEvent(updatedBy || "النظام", "uploadArchiveFile", taskId, "", fileUrl);
       return { success: true, fileUrl: fileUrl };
-    }
-
-    return { success: true, fileUrl: fileUrl, warning: "المهمة غير موجودة في الشيت" };
 
   } catch (err) {
-    logError("handleUploadArchiveFile", err.message, taskId);
+    auditEngine_logError("handleUploadArchiveFile", err.message, taskId);
     return { success: false, error: "فشل رفع الملف: " + err.message };
   } finally {
     lock.releaseLock();
@@ -911,7 +907,7 @@ function handleSendReminderNotification(data) {
       );
       emailSent = true;
     } catch(e) {
-      logError("sendReminderNotification_email", e.message, empName);
+      auditEngine_logError("sendReminderNotification_email", e.message, empName);
     }
   }
 
@@ -924,10 +920,10 @@ function handleSendReminderNotification(data) {
     });
     notifSheet.appendRow([notifId, empName, "", "تذكير", new Date(), false, taskData]);
   } catch(e) {
-    logError("sendReminderNotification_notif", e.message, empName);
+    auditEngine_logError("sendReminderNotification_notif", e.message, empName);
   }
 
-  writeAuditLog(sentBy, "sendReminderNotification", empName, "", tasks.length + " مهمة");
+  auditEngine_logEvent(sentBy, "sendReminderNotification", empName, "", tasks.length + " مهمة");
   return {
     success  : true,
     emailSent: emailSent,
@@ -939,85 +935,118 @@ function handleSendReminderNotification(data) {
 
 
 // ── 3.15 GET EMPLOYEE FILES ──
-function handleGetEmployeeFiles(payload) {
+function handleGetEmployeeFiles(body) {
+  var name = String((body && body.name) || "").trim();
+  if (!name) return { success: false, error: "اسم الموظف مطلوب" };
+
   try {
-    const empName = (payload.name || '').trim();
-    if (!empName) return { success: false, error: 'اسم الموظف مطلوب' };
+    var workRoot    = DriveApp.getFolderById(CONFIG.getWorkSharedRootId());
+    var empRootIt   = workRoot.getFoldersByName("ملفات الموظفين");
+    if (!empRootIt.hasNext()) return { success: true, inspections: [], complaints: [] };
 
-    const rootFolder  = DriveApp.getFolderById(BE_WORK_FOLDER_ID);
-    const empFolderIt = rootFolder.getFoldersByName(empName);
-    if (!empFolderIt.hasNext()) {
-      return { success: true, inspections: [], complaints: [] };
-    }
-    const empFolder = empFolderIt.next();
+    var empRoot     = empRootIt.next();
+    var empFolderIt = empRoot.getFoldersByName(name);
+    if (!empFolderIt.hasNext()) return { success: true, inspections: [], complaints: [] };
 
-    const result = { success: true, inspections: [], complaints: [] };
+    var empFolder = empFolderIt.next();
 
-    const inspIt = empFolder.getFoldersByName('تقارير المرور');
-    if (inspIt.hasNext()) result.inspections = _readYearTree(inspIt.next(), 'inspection');
+    var inspections = _empFiles_readCategory(empFolder, "تقارير المرور",    true);
+    var complaints  = _empFiles_readCategory(empFolder, "فحص الشكوى", false);
 
-    const compIt = empFolder.getFoldersByName('فحص الشكاوى');
-    if (compIt.hasNext()) result.complaints = _readYearTree(compIt.next(), 'complaint');
+    return { success: true, inspections: inspections, complaints: complaints };
 
-    return result;
   } catch (e) {
-    return { success: false, error: e.toString() };
+    return { success: false, error: e.message };
   }
 }
 
-function _readYearTree(parentFolder, type) {
-  const items  = [];
-  const yearIt = parentFolder.getFolders();
+function _empFiles_readCategory(empFolder, categoryName, hasEntity) {
+  var files = [];
+  var catIt = empFolder.getFoldersByName(categoryName);
+  if (!catIt.hasNext()) return files;
+  var catFolder = catIt.next();
 
+  var yearIt = catFolder.getFolders();
   while (yearIt.hasNext()) {
-    const yearFolder = yearIt.next();
-    const year       = yearFolder.getName();
-    const monthIt    = yearFolder.getFolders();
+    var yearFolder = yearIt.next();
+    var year = yearFolder.getName();
 
+    var monthIt = yearFolder.getFolders();
     while (monthIt.hasNext()) {
-      const monthFolder = monthIt.next();
-      const month       = monthFolder.getName();
+      var monthFolder = monthIt.next();
+      var month = monthFolder.getName();
 
-      if (type === 'inspection') {
-        const entityIt = monthFolder.getFolders();
+      if (hasEntity) {
+        var entityIt = monthFolder.getFolders();
         while (entityIt.hasNext()) {
-          const entityFolder = entityIt.next();
-          const entity       = entityFolder.getName();
-          const fileIt       = entityFolder.getFiles();
-          while (fileIt.hasNext()) items.push(_buildFileItem(fileIt.next(), year, month, entity, type));
-
-          const attIt = entityFolder.getFoldersByName('مرفقات');
-          if (attIt.hasNext()) {
-            const attFileIt = attIt.next().getFiles();
-            while (attFileIt.hasNext()) items.push(_buildFileItem(attFileIt.next(), year, month, entity + ' — مرفقات', type));
-          }
+          var entityFolder = entityIt.next();
+          var entity = entityFolder.getName();
+          files = files.concat(_empFiles_readFolder(entityFolder, year, month, entity));
         }
-        const directIt = monthFolder.getFiles();
-        while (directIt.hasNext()) items.push(_buildFileItem(directIt.next(), year, month, '', type));
+        files = files.concat(_empFiles_readFolder(monthFolder, year, month, ""));
       } else {
-        const fileIt = monthFolder.getFiles();
-        while (fileIt.hasNext()) items.push(_buildFileItem(fileIt.next(), year, month, '', type));
+        files = files.concat(_empFiles_readFolder(monthFolder, year, month, ""));
       }
     }
   }
-  return items;
+  return files;
 }
 
-function _buildFileItem(file, year, month, entity, type) {
-  const mimeType = file.getMimeType();
+function _empFiles_readFolder(folder, year, month, entity) {
+  var results = [];
+  var fileIt  = folder.getFiles();
+  while (fileIt.hasNext()) {
+    var file = fileIt.next();
+    try {
+      var obj = _empFiles_resolveFile(file, year, month, entity);
+      if (obj) results.push(obj);
+    } catch (e) {}
+  }
+  return results;
+}
+
+function _empFiles_resolveFile(file, year, month, entity) {
+  var mime = file.getMimeType() || "";
+  if (mime === "application/vnd.google-apps.shortcut") {
+    return _empFiles_resolveShortcut(file, year, month, entity);
+  }
+  return _empFiles_buildObj(file, year, month, entity);
+}
+
+function _empFiles_resolveShortcut(shortcut, year, month, entity) {
+  try {
+    var info = Drive.Files.get(shortcut.getId(), { fields: "shortcutDetails" });
+    if (!info.shortcutDetails || !info.shortcutDetails.targetId) return null;
+    var target = DriveApp.getFileById(info.shortcutDetails.targetId);
+    return _empFiles_buildObj(target, year, month, entity);
+  } catch (e) {
+    return _empFiles_buildObj(shortcut, year, month, entity);
+  }
+}
+
+function _empFiles_buildObj(file, year, month, entity) {
+  var mime = file.getMimeType() || "";
+  var modified = "";
+  try {
+    var d = file.getLastUpdated();
+    if (d) modified = d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
+  } catch(e) {}
+
+  var size = 0;
+  try { size = file.getSize() || 0; } catch(e) {}
+
   return {
-    id      : file.getId(),
-    name    : file.getName(),
-    url     : file.getUrl(),
-    mimeType: mimeType,
-    isDoc   : mimeType === MimeType.GOOGLE_DOCS ||
-              mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    size    : file.getSize(),
-    modified: Utilities.formatDate(file.getLastUpdated(), 'Africa/Cairo', 'dd/MM/yyyy'),
-    year    : year,
-    month   : month,
-    entity  : entity,
-    type    : type
+    id:       file.getId(),
+    name:     file.getName(),
+    url:      file.getUrl(),
+    mimeType: mime,
+    isDoc:    mime === "application/vnd.google-apps.document",
+    isPdf:    mime === "application/pdf",
+    year:     year,
+    month:    month,
+    entity:   entity,
+    modified: modified,
+    size:     size
   };
 }
 
@@ -1025,6 +1054,8 @@ function _buildFileItem(file, year, month, entity, type) {
 // ── 3.16 GET FINDINGS ──
 function handleGetFindings(data) {
   var unitId = String((data && data.unitId) || "").trim();
+  var employeeName = String((data && (data.employeeName || data.name)) || "").trim();
+  var isManager = checkRoleServerSide_(employeeName, ["مدير", "منسق", "فني احصاء", "فني احصاء او المنسق", "مراجع فني", "مراجع مالي وإداري"]);
   try {
     var sheet = getCarSheet(BE_CAR_SHEETS.FINDINGS);
     var rows  = sheet.getDataRange().getValues();
@@ -1037,11 +1068,12 @@ function handleGetFindings(data) {
       var obj = {};
       headers.forEach(function(h, j) { obj[String(h).trim()] = safeStr_(row[j]); });
       if (unitId && obj["unit_id"] !== unitId && obj["facility_name"] !== unitId) continue;
+      if (!isManager && employeeName && Object.values(obj).indexOf(employeeName) === -1) continue;
       findings.push(obj);
     }
     return { success: true, findings: findings };
   } catch(e) {
-    logError("handleGetFindings", e.message, "");
+    auditEngine_logError("handleGetFindings", e.message, "");
     return { success: false, error: e.message };
   }
 }
@@ -1050,6 +1082,8 @@ function handleGetFindings(data) {
 // ── 3.17 GET CARs ──
 function handleGetCARs(data) {
   var status = String((data && data.status) || "").trim();
+  var employeeName = String((data && (data.employeeName || data.name)) || "").trim();
+  var isManager = checkRoleServerSide_(employeeName, ["مدير", "منسق", "فني احصاء", "فني احصاء او المنسق", "مراجع فني", "مراجع مالي وإداري"]);
   try {
     var sheet = getCarSheet(BE_CAR_SHEETS.CAR_REGISTER);
     var rows  = sheet.getDataRange().getValues();
@@ -1062,11 +1096,12 @@ function handleGetCARs(data) {
       var obj = {};
       headers.forEach(function(h, j) { obj[String(h).trim()] = safeStr_(row[j]); });
       if (status && obj["status"] !== status) continue;
+      if (!isManager && employeeName && Object.values(obj).indexOf(employeeName) === -1) continue;
       cars.push(obj);
     }
     return { success: true, cars: cars };
   } catch(e) {
-    logError("handleGetCARs", e.message, "");
+    auditEngine_logError("handleGetCARs", e.message, "");
     return { success: false, error: e.message };
   }
 }
@@ -1075,6 +1110,8 @@ function handleGetCARs(data) {
 // ── 3.18 GET FOLLOW-UPS ──
 function handleGetFollowUps(data) {
   var carId = String((data && data.carId) || "").trim();
+  var employeeName = String((data && (data.employeeName || data.name)) || "").trim();
+  var isManager = checkRoleServerSide_(employeeName, ["مدير", "منسق", "فني احصاء", "فني احصاء او المنسق", "مراجع فني", "مراجع مالي وإداري"]);
   try {
     var sheet = getCarSheet(BE_CAR_SHEETS.FOLLOWUP);
     var rows  = sheet.getDataRange().getValues();
@@ -1087,11 +1124,12 @@ function handleGetFollowUps(data) {
       var obj = {};
       headers.forEach(function(h, j) { obj[String(h).trim()] = safeStr_(row[j]); });
       if (carId && obj["car_id"] !== carId) continue;
+      if (!isManager && employeeName && Object.values(obj).indexOf(employeeName) === -1) continue;
       followups.push(obj);
     }
     return { success: true, followups: followups };
   } catch(e) {
-    logError("handleGetFollowUps", e.message, "");
+    auditEngine_logError("handleGetFollowUps", e.message, "");
     return { success: false, error: e.message };
   }
 }
@@ -1099,6 +1137,8 @@ function handleGetFollowUps(data) {
 
 // ── 3.19 GET ESCALATIONS ──
 function handleGetEscalations(data) {
+  var employeeName = String((data && (data.employeeName || data.name)) || "").trim();
+  var isManager = checkRoleServerSide_(employeeName, ["مدير", "منسق", "فني احصاء", "فني احصاء او المنسق", "مراجع فني", "مراجع مالي وإداري"]);
   try {
     var sheet = getCarSheet(BE_CAR_SHEETS.ESCALATIONS);
     var rows  = sheet.getDataRange().getValues();
@@ -1110,11 +1150,12 @@ function handleGetEscalations(data) {
       if (!row[0]) continue;
       var obj = {};
       headers.forEach(function(h, j) { obj[String(h).trim()] = safeStr_(row[j]); });
+      if (!isManager && employeeName && Object.values(obj).indexOf(employeeName) === -1) continue;
       escalations.push(obj);
     }
     return { success: true, escalations: escalations };
   } catch(e) {
-    logError("handleGetEscalations", e.message, "");
+    auditEngine_logError("handleGetEscalations", e.message, "");
     return { success: false, error: e.message };
   }
 }
@@ -1145,7 +1186,7 @@ function handleGetDashboardStats(data) {
     });
     return { success: true, data: result };
   } catch (e) {
-    logError("handleGetDashboardStats", e.message, "");
+    auditEngine_logError("handleGetDashboardStats", e.message, "");
     return { success: false, error: e.message };
   }
 }
@@ -1180,7 +1221,7 @@ function handleUpdateCARResponse(data) {
       if (colRespDate) sheet.getRange(i + 1, colRespDate).setValue(new Date());
       if (colNotes && data.notes) sheet.getRange(i + 1, colNotes).setValue(String(data.notes));
 
-      writeAuditLog(updatedBy || "النظام", "updateCARResponse", carId, "", response);
+      auditEngine_logEvent(updatedBy || "النظام", "updateCARResponse", carId, "", response);
       return { success: true };
     }
 
@@ -1259,7 +1300,7 @@ function handleCloseCAR(data) {
         }
       } catch(e) { /* لا يوقف إغلاق الـ CAR */ }
 
-      writeAuditLog(closedBy || "النظام", "closeCAR", carId, oldStatus, "مغلق | evidence: " + (evidenceUrl || "—"));
+      auditEngine_logEvent(closedBy || "النظام", "closeCAR", carId, oldStatus, "مغلق | evidence: " + (evidenceUrl || "—"));
       return { success: true };
     }
 
@@ -1277,6 +1318,8 @@ function handleCloseCAR(data) {
 // ── 3.22 GET CAR SECTIONS (داخلي) ──
 function handleGetCARSections(data) {
   var carId = String((data && data.car_id) || "").trim();
+  var employeeName = String((data && (data.employeeName || data.name)) || "").trim();
+  var isManager = checkRoleServerSide_(employeeName, ["مدير", "منسق", "فني احصاء", "فني احصاء او المنسق", "مراجع فني", "مراجع مالي وإداري"]);
   try {
     var sheet = getCarSheet(BE_CAR_SHEETS.CAR_SECTIONS);
     var rows  = sheet.getDataRange().getValues();
@@ -1291,13 +1334,14 @@ function handleGetCARSections(data) {
       var obj = {};
       headers.forEach(function(h, j) { obj[String(h).trim()] = safeStr_(row[j]); });
       if (carId && obj["car_id"] !== carId) continue;
+      if (!isManager && employeeName && Object.values(obj).indexOf(employeeName) === -1) continue;
       obj.rowIndex = i + 1;
       sections.push(obj);
     }
 
     return { success: true, sections: sections };
   } catch(e) {
-    logError("handleGetCARSections", e.message, "");
+    auditEngine_logError("handleGetCARSections", e.message, "");
     return { success: false, error: e.message };
   }
 }
@@ -1343,7 +1387,7 @@ function handleUpdateSectionStatus(data) {
       if (colUpdBy) sheet.getRange(i + 1, colUpdBy).setValue(updatedBy);
       if (colUpdAt) sheet.getRange(i + 1, colUpdAt).setValue(new Date());
 
-      writeAuditLog(updatedBy, "updateSectionStatus",
+      auditEngine_logEvent(updatedBy, "updateSectionStatus",
         carId + "/" + sectionName, oldStatus, staffStatus);
       return { success: true };
     }
@@ -1411,7 +1455,7 @@ function handleUpdateFindingStatus(data) {
         sheet.getRange(i + 1, colComments).setValue(existing ? existing + "\n" + entry : entry);
       }
 
-      writeAuditLog(updatedBy, "updateFindingStatus", findingId, oldStatus, newStatus);
+      auditEngine_logEvent(updatedBy, "updateFindingStatus", findingId, oldStatus, newStatus);
       return { success: true, finding_id: findingId, status: newStatus };
     }
 
@@ -1475,7 +1519,7 @@ function handlePortalLogin(data) {
       sheet.getRange(i + 1, h["failed_count"]  + 1).setValue(0);
       sheet.getRange(i + 1, h["locked_until"]  + 1).setValue("");
 
-      writeAuditLog("portal:" + adminCode, "portalLogin", adminCode, "", "success");
+      auditEngine_logEvent("portal:" + adminCode, "portalLogin", adminCode, "", "success");
       return {
         success     : true,
         admin_code  : adminCode,
@@ -1545,7 +1589,7 @@ function handlePortalGetSections(data) {
 
     return { success: true, sections: sections, admin_name: adminName };
   } catch(e) {
-    logError("handlePortalGetSections", e.message, adminCode);
+    auditEngine_logError("handlePortalGetSections", e.message, adminCode);
     return { success: false, error: e.message };
   }
 }
@@ -1565,6 +1609,20 @@ function handlePortalSubmitResponse(data) {
   lock.waitLock(15000);
 
   try {
+    var admSheet = getSheet(BE_SHEETS.HEALTH_ADMINS);
+    var admRows  = admSheet.getDataRange().getValues();
+    var admH     = {};
+    admRows[0].forEach(function(h, i) { admH[String(h).trim()] = i; });
+    
+    var adminName = "";
+    for (var a = 1; a < admRows.length; a++) {
+      if (String(admRows[a][admH["admin_code"]] || "").trim() === adminCode) {
+        adminName = safeStr_(admRows[a][admH["admin_name"]]);
+        break;
+      }
+    }
+    if (!adminName) return { success: false, error: "كود الإدارة غير صحيح أو لا يوجد الإدارة" };
+
     var sheet   = getCarSheet(BE_CAR_SHEETS.CAR_SECTIONS);
     var rows    = sheet.getDataRange().getValues();
     var headers = rows[0].map(function(h) { return String(h).trim(); });
@@ -1573,15 +1631,24 @@ function handlePortalSubmitResponse(data) {
     var colSecName  = headers.indexOf("section_name")     + 1;
     var colResponse = headers.indexOf("portal_response")  + 1;
     var colRepliedAt= headers.indexOf("portal_replied_at") + 1;
+    var colFacility = headers.indexOf("facility_name")    + 1;
 
     for (var i = 1; i < rows.length; i++) {
       if (String(rows[i][colCarId   - 1] || "").trim() !== carId)      continue;
       if (String(rows[i][colSecName - 1] || "").trim() !== sectionName) continue;
 
+      if (colFacility) {
+         var rowFacility = String(rows[i][colFacility - 1] || "").trim();
+         if (rowFacility.indexOf(adminName) === -1) {
+            auditEngine_logEvent("portal:" + adminCode, "portalSubmitResponse_denied", carId + "/" + sectionName, "", "Unauthorized facility");
+            return { success: false, error: "غير مصرح بتعديل سجلات منشأة أخرى" };
+         }
+      }
+
       if (colResponse)  sheet.getRange(i + 1, colResponse ).setValue(response);
       if (colRepliedAt) sheet.getRange(i + 1, colRepliedAt).setValue(new Date());
 
-      writeAuditLog("portal:" + adminCode, "portalSubmitResponse",
+      auditEngine_logEvent("portal:" + adminCode, "portalSubmitResponse",
         carId + "/" + sectionName, "", response.substring(0, 80));
       return { success: true };
     }
@@ -1759,16 +1826,4 @@ function safeStringify_(obj) {
   try { return JSON.stringify(obj); } catch (e) { return String(obj); }
 }
 
-function writeAuditLog(user, action, target, oldVal, newVal) {
-  try {
-    var sheet = getSheet(BE_SHEETS.AUDIT_LOG);
-    sheet.appendRow([new Date(), user, action, target, JSON.stringify(oldVal), JSON.stringify(newVal), ""]);
-  } catch (e) { /* لا يوقف العملية الأصلية */ }
-}
-
-function logError(context, message, details) {
-  try {
-    var sheet = getSheet(BE_SHEETS.ERRORS_LOG);
-    sheet.appendRow([new Date(), context, message, details]);
-  } catch (e) { /* silent */ }
-}
+// writeAuditLog and logError logic unified in 15_AuditEngine.js

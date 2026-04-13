@@ -74,67 +74,72 @@ const AI_CFG = {
    ============================================================ */
 
 function aiV8_correctText(text, options) {
-  if (!text || typeof text !== 'string' || text.trim().length === 0) return text || '';
+  try {
+    if (!text || typeof text !== 'string' || text.trim().length === 0) return text || '';
 
-  var clean = text.trim();
-  if (clean.length < 5)                                       return clean;
-  if (clean === '—' || clean === '-' || clean === 'لا يوجد') return clean;
+    var clean = text.trim();
+    if (clean.length < 5)                                       return clean;
+    if (clean === '—' || clean === '-' || clean === 'لا يوجد') return clean;
 
-  var opts   = aiV8_processOptions_(options);
-  var apiKey = aiV8_getGeminiKey_();
-  if (!apiKey) {
-    aiV8_logError_('aiV8_correctText', 'Gemini API Key missing', opts);
-    return clean;
-  }
-
-  var pack = aiV8_protectSensitive_(clean);
-
-  // chunk large text
-  if (pack.protectedText.length > AI_CFG.MAX_CHARS_PER_CHUNK) {
-    var chunks     = aiV8_splitToChunks_(pack.protectedText, AI_CFG.MAX_CHARS_PER_CHUNK);
-    var fixedChunks = [];
-
-    for (var ci = 0; ci < chunks.length; ci++) {
-      var chunkPrompt = aiV8_buildPrompt_(chunks[ci], opts);
-      var chunkResult = aiV8_tryModels_(chunkPrompt, apiKey);
-
-      if (chunkResult === null) {
-        fixedChunks.push(aiV8_restoreSensitive_(chunks[ci], pack));
-        continue;
-      }
-
-      var restoredChunk   = aiV8_restoreSensitive_(chunkResult, pack);
-      var originalChunk   = aiV8_restoreSensitive_(chunks[ci], pack);
-      var validation      = aiV8_validateNoShorten_(originalChunk, restoredChunk);
-
-      if (!validation.ok) {
-        console.warn('⚠️ AIEngine Chunk ' + (ci + 1) + '/' + chunks.length + ' rejected: ' + validation.reason);
-        fixedChunks.push(originalChunk);
-      } else {
-        fixedChunks.push(restoredChunk);
-      }
+    var opts   = aiV8_processOptions_(options);
+    var apiKey = aiV8_getGeminiKey_();
+    if (!apiKey) {
+      if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'aiV8_correctText', new Error('Gemini API Key missing'), opts);
+      return clean;
     }
 
-    return fixedChunks.join('\n');
+    var pack = aiV8_protectSensitive_(clean);
+
+    // chunk large text
+    if (pack.protectedText.length > AI_CFG.MAX_CHARS_PER_CHUNK) {
+      var chunks     = aiV8_splitToChunks_(pack.protectedText, AI_CFG.MAX_CHARS_PER_CHUNK);
+      var fixedChunks = [];
+
+      for (var ci = 0; ci < chunks.length; ci++) {
+        var chunkPrompt = aiV8_buildPrompt_(chunks[ci], opts);
+        var chunkResult = aiV8_tryModels_(chunkPrompt, apiKey);
+
+        if (chunkResult === null) {
+          fixedChunks.push(aiV8_restoreSensitive_(chunks[ci], pack));
+          continue;
+        }
+
+        var restoredChunk   = aiV8_restoreSensitive_(chunkResult, pack);
+        var originalChunk   = aiV8_restoreSensitive_(chunks[ci], pack);
+        var validation      = aiV8_validateNoShorten_(originalChunk, restoredChunk);
+
+        if (!validation.ok) {
+          auditEngine_logError('AIEngine_chunkValidation', new Error('Chunk ' + (ci + 1) + '/' + chunks.length + ' rejected: ' + validation.reason), {});
+          fixedChunks.push(originalChunk);
+        } else {
+          fixedChunks.push(restoredChunk);
+        }
+      }
+
+      return fixedChunks.join('\n');
+    }
+
+    // single pass
+    var prompt  = aiV8_buildPrompt_(pack.protectedText, opts);
+    var result  = aiV8_tryModels_(prompt, apiKey);
+
+    if (result === null) {
+      if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'aiV8_correctText', new Error('All models failed'), opts);
+      return clean;
+    }
+
+    var restored  = aiV8_restoreSensitive_(result, pack);
+    var validated = aiV8_validateNoShorten_(clean, restored);
+    if (!validated.ok) {
+      auditEngine_logError('AIEngine_finalValidation', new Error('validation rejected: ' + validated.reason), {});
+      return clean;
+    }
+
+    return restored;
+  } catch (error) {
+    if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'aiV8_correctText', error, { textLength: text ? String(text).length : 0 });
+    return text || '';
   }
-
-  // single pass
-  var prompt  = aiV8_buildPrompt_(pack.protectedText, opts);
-  var result  = aiV8_tryModels_(prompt, apiKey);
-
-  if (result === null) {
-    aiV8_logError_('aiV8_correctText', 'All models failed', opts);
-    return clean;
-  }
-
-  var restored  = aiV8_restoreSensitive_(result, pack);
-  var validated = aiV8_validateNoShorten_(clean, restored);
-  if (!validated.ok) {
-    console.warn('⚠️ AIEngine validation rejected: ' + validated.reason + ' | returning original');
-    return clean;
-  }
-
-  return restored;
 }
 
 /* ============================================================
@@ -149,11 +154,9 @@ function aiV8_processOptions_(options) {
   var opts = Object.assign({}, defaults, options || {});
 
   if (Object.values(AI_CFG.MODES).indexOf(opts.mode) === -1) {
-    console.warn('⚠️ AIEngine: invalid mode → rewrite_light');
     opts.mode = AI_CFG.MODES.REWRITE_LIGHT;
   }
   if (Object.values(AI_CFG.CONTEXTS).indexOf(opts.context) === -1) {
-    console.warn('⚠️ AIEngine: invalid context → general');
     opts.context = AI_CFG.CONTEXTS.GENERAL;
   }
   return opts;
@@ -200,58 +203,66 @@ function aiV8_getContextGuidelines_(context) {
    ============================================================ */
 
 function aiV8_tryModels_(prompt, apiKey) {
-  for (var mi = 0; mi < AI_CFG.GEMINI.MODELS.length; mi++) {
-    var model = AI_CFG.GEMINI.MODELS[mi];
-    var out   = aiV8_callModelWithRetry_(model, prompt, apiKey);
-    if (out !== null) {
-      console.log('✅ AIEngine: succeeded with ' + model);
-      return out;
+  try {
+    for (var mi = 0; mi < AI_CFG.GEMINI.MODELS.length; mi++) {
+      var model = AI_CFG.GEMINI.MODELS[mi];
+      var out   = aiV8_callModelWithRetry_(model, prompt, apiKey);
+      if (out !== null) {
+        if (typeof auditEngine_logEvent === 'function') auditEngine_logEvent('AIEngine', 'SYSTEM', 'AI_SUCCESS', { model: model }, 'SYSTEM');
+        return out;
+      }
     }
-    console.warn('⚠️ AIEngine: ' + model + ' failed, trying next...');
+    return null;
+  } catch (error) {
+    if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'aiV8_tryModels_', error);
+    return null;
   }
-  return null;
 }
 
 function aiV8_callModelWithRetry_(model, prompt, apiKey) {
-  var delay = AI_CFG.GEMINI.RETRY.INITIAL_DELAY_MS;
+  try {
+    var delay = AI_CFG.GEMINI.RETRY.INITIAL_DELAY_MS;
 
-  for (var attempt = 1; attempt <= AI_CFG.GEMINI.RETRY.MAX_ATTEMPTS; attempt++) {
-    try {
-      var url     = AI_CFG.GEMINI.BASE_URL + model + ':generateContent?key=' + apiKey;
-      var payload = JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: AI_CFG.GEMINI.GENERATION_CONFIG
-      });
+    for (var attempt = 1; attempt <= AI_CFG.GEMINI.RETRY.MAX_ATTEMPTS; attempt++) {
+      try {
+        var url     = AI_CFG.GEMINI.BASE_URL + model + ':generateContent?key=' + apiKey;
+        var payload = JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: AI_CFG.GEMINI.GENERATION_CONFIG
+        });
 
-      var resp = UrlFetchApp.fetch(url, {
-        method:             'POST',
-        contentType:        'application/json',
-        payload:            payload,
-        muteHttpExceptions: true
-      });
+        var resp = UrlFetchApp.fetch(url, {
+          method:             'POST',
+          contentType:        'application/json',
+          payload:            payload,
+          muteHttpExceptions: true
+        });
 
-      var code = resp.getResponseCode();
-      var txt  = resp.getContentText();
+        var code = resp.getResponseCode();
+        var txt  = resp.getContentText();
 
-      if (code === 200) {
-        var parsed = JSON.parse(txt);
-        var out    = aiV8_extractText_(parsed);
-        if (out && String(out).trim()) {
-          return String(out).trim();
+        if (code === 200) {
+          var parsed = JSON.parse(txt);
+          var out    = aiV8_extractText_(parsed);
+          if (out && String(out).trim()) {
+            return String(out).trim();
+          }
+        } else {
+          auditEngine_logError('AIEngine_httpError', new Error('HTTP ' + code + ' attempt ' + attempt), { model: model });
         }
-        console.warn('    ⚠️ Empty response (attempt ' + attempt + ')');
-      } else {
-        console.warn('    ⚠️ HTTP ' + code + ' (attempt ' + attempt + ')');
+      } catch (e) {
+        if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'aiV8_callModelWithRetry_', e, { model: model, attempt: attempt });
       }
-    } catch (e) {
-      console.warn('    ⚠️ Error attempt ' + attempt + ': ' + (e && e.message ? e.message : e));
+
+      Utilities.sleep(delay);
+      delay = Math.floor(delay * AI_CFG.GEMINI.RETRY.BACKOFF_MULTIPLIER);
     }
 
-    Utilities.sleep(delay);
-    delay = Math.floor(delay * AI_CFG.GEMINI.RETRY.BACKOFF_MULTIPLIER);
+    return null;
+  } catch (globalErr) {
+    if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'aiV8_callModelWithRetry_Global', globalErr);
+    return null;
   }
-
-  return null;
 }
 
 function aiV8_extractText_(parsed) {
@@ -262,6 +273,7 @@ function aiV8_extractText_(parsed) {
     var t = parts.map(function (p) { return p.text || ''; }).join('').trim();
     return t || null;
   } catch (e) {
+    if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'aiV8_extractText_', e);
     return null;
   }
 }
@@ -415,6 +427,7 @@ function aiV8_loadGlossary_() {
     });
     return out;
   } catch (e) {
+    if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'aiV8_loadGlossary_', e);
     return [];
   }
 }
@@ -458,22 +471,7 @@ function aiV8_splitToChunks_(text, maxChars) {
   return chunks.length ? chunks : [s];
 }
 
-/* ============================================================
-   SECTION 8 — Error Logging
-   ============================================================ */
 
-function aiV8_logError_(where, msg, meta) {
-  try {
-    if (typeof govV8_logError === 'function') {
-      govV8_logError('AI:' + where, new Error(msg));
-      return;
-    }
-    var ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
-    var sh = ss.getSheetByName(SHEETS.ERRORS_LOG);
-    if (!sh) return;
-    sh.appendRow([new Date(), 'AI:' + String(where || ''), String(msg || ''), JSON.stringify(meta || {})]);
-  } catch (e) {}
-}
 
 /* ============================================================
    SECTION 9 — Compat: AIEngine object + convenience wrappers
@@ -481,20 +479,40 @@ function aiV8_logError_(where, msg, meta) {
 
 var AIEngine = {
   correctText: function (text, options) {
-    return aiV8_correctText(text, options);
+    try {
+      return aiV8_correctText(text, options);
+    } catch (e) {
+      if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'AIEngine.correctText', e);
+      return text || '';
+    }
   }
 };
 
 function fixTextOnly(text, context) {
-  return aiV8_correctText(text, { mode: AI_CFG.MODES.FIX_ONLY, context: context || 'general' });
+  try {
+    return aiV8_correctText(text, { mode: AI_CFG.MODES.FIX_ONLY, context: context || 'general' });
+  } catch (e) {
+    if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'fixTextOnly', e);
+    return text || '';
+  }
 }
 
 function rewriteLight(text, context) {
-  return aiV8_correctText(text, { mode: AI_CFG.MODES.REWRITE_LIGHT, context: context || 'general' });
+  try {
+    return aiV8_correctText(text, { mode: AI_CFG.MODES.REWRITE_LIGHT, context: context || 'general' });
+  } catch (e) {
+    if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'rewriteLight', e);
+    return text || '';
+  }
 }
 
 function rewriteFull(text, context) {
-  return aiV8_correctText(text, { mode: AI_CFG.MODES.REWRITE_FULL, context: context || 'general' });
+  try {
+    return aiV8_correctText(text, { mode: AI_CFG.MODES.REWRITE_FULL, context: context || 'general' });
+  } catch (e) {
+    if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'rewriteFull', e);
+    return text || '';
+  }
 }
 
 /**
@@ -502,7 +520,12 @@ function rewriteFull(text, context) {
  * apiKey ignored — reads from CONFIG/ScriptProperties via aiV8_getGeminiKey_
  */
 function correctComplaintText(text) {
-  return aiV8_correctText(text, { mode: AI_CFG.MODES.REWRITE_LIGHT, context: AI_CFG.CONTEXTS.COMPLAINT });
+  try {
+    return aiV8_correctText(text, { mode: AI_CFG.MODES.REWRITE_LIGHT, context: AI_CFG.CONTEXTS.COMPLAINT });
+  } catch (e) {
+    if (typeof auditEngine_logError === 'function') auditEngine_logError('AIEngine', 'correctComplaintText', e);
+    return text || '';
+  }
 }
 
 /* ─── CONFIG extensions (merge with 81_Extensions) ─── */

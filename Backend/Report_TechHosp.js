@@ -82,7 +82,7 @@ function rptTechHosp_showActiveSessions() {
    ============================================================ */
 
 function rptTechHosp_aggregateSection_(e) {
-  console.log("🏥 بدء تجميع قسم المرور الفني");
+  auditEngine_logEvent("تقارير المستشفيات", "النظام", "بدء تجميع قسم جديد بالمستشفى", "نجاح");
   try {
     // ── 3.1 Build data object ──
     var data = {};
@@ -111,7 +111,7 @@ function rptTechHosp_aggregateSection_(e) {
     };
 
     if (!meta.hospital) throw new Error("اسم المستشفى مفقود");
-    console.log("👤 " + meta.officer + " | 🏥 " + meta.hospital + " | قسم: " + meta.sectionName);
+    auditEngine_logEvent("تقارير المستشفيات", meta.officer, "معالجة بيانات قسم: " + meta.sectionName + " بمستشفى " + meta.hospital, "نجاح");
 
     // ── 3.3 Session Key ──
     var dateStr    = Utilities.formatDate(visitDateObj, Session.getScriptTimeZone(), "yyyyMMdd");
@@ -125,7 +125,7 @@ function rptTechHosp_aggregateSection_(e) {
     if (session) {
       docId = String(session.sessionRow[5] || "").trim(); // doc_id (col index 5)
       isNew = false;
-      console.log("📂 جلسة موجودة: " + sessionKey);
+      auditEngine_logEvent("تقارير المستشفيات", meta.officer, "إضافة لقائمة الجلسة المفتوحة: " + sessionKey, "نجاح");
     } else {
       var templateId  = CONFIG.getTemplateTechHosp();
       var workRoot    = DriveApp.getFolderById(CONFIG.getWorkSharedRootId());
@@ -138,7 +138,7 @@ function rptTechHosp_aggregateSection_(e) {
       docId = docFile.getId();
       isNew = true;
       rptTechHosp_createSession_(masterSS, sessionKey, meta, docId, docFile.getUrl());
-      console.log("📄 جلسة جديدة: " + sessionKey);
+      auditEngine_logEvent("تقارير المستشفيات", meta.officer, "بدء جلسة جديدة: " + sessionKey + " بمعرف " + docId, "نجاح");
     }
 
     // ── 3.5 Process & append section to Doc ──
@@ -152,12 +152,11 @@ function rptTechHosp_aggregateSection_(e) {
       rptTechHosp_updateSectionsSubmitted_(masterSS, sessionKey, meta.sectionName);
     }
 
-    console.log("✅ تم تجميع قسم: " + meta.sectionName);
+    auditEngine_logEvent("تقارير المستشفيات", meta.officer, "تم تجميع قسم: " + meta.sectionName + " بنجاح", "نجاح");
     return { ok: true, sessionKey: sessionKey, section: meta.sectionName, isNew: isNew };
 
   } catch (err) {
-    console.error("❌ rptTechHosp_aggregateSection_:", err.message);
-    govV8_logError("rptTechHosp_aggregateSection_", err);
+    auditEngine_logError("rptTechHosp_aggregateSection_", err, { eventData: (e && e.namedValues) ? "Form Data" : "Unknown" });
     throw err;
   }
 }
@@ -216,7 +215,7 @@ function rptTechHosp_updateSectionsSubmitted_(masterSS, sessionKey, sectionName)
 }
 
 function rptTechHosp_finalizeReport(sessionId) {
-  console.log("🏥 بدء إنهاء تقرير المستشفى: " + sessionId);
+  auditEngine_logEvent("إنهاء تقرير مستشفى", "النظام", "بدء إنهاء الجلسة: " + sessionId, "نجاح");
   try {
     var masterSS = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
     var session  = rptTechHosp_findSession_(masterSS, sessionId);
@@ -241,7 +240,7 @@ function rptTechHosp_finalizeReport(sessionId) {
       if (sectionsSubmitted.indexOf(allSections[mi]) === -1) missing.push(allSections[mi]);
     }
     if (missing.length > 0) {
-      console.log("📝 إضافة " + missing.length + " قسم غائب");
+      auditEngine_logEvent("إنهاء تقرير مستشفى", officer, "إضافة أقسام غائبة لتقرير " + hospitalName + ": " + missing.join(", "), "نجاح");
       var doc    = DocumentApp.openById(docId);
       var body   = doc.getBody();
       var tables = body.getTables();
@@ -261,7 +260,7 @@ function rptTechHosp_finalizeReport(sessionId) {
     var arabicDate = fmtV8_dateFileName(visitDate);
     var fileName   = "تقرير مرور فني - " + hospitalName + " - " + arabicDate;
     var pdfBlob    = null;
-    try { pdfBlob = govV8_exportPdfWithRetry_(docFile, fileName); } catch (pe) { console.warn("PDF:", pe.message); }
+    try { pdfBlob = govV8_exportPdfWithRetry_(docFile, fileName); } catch (pe) { auditEngine_logError("rptTechHosp_PDF", pe, { fileName: fileName }); }
 
     // ── Distribute + Archive ──
     iag_distributeShortcuts(docFile, TECH_HOSP_REPORT_TYPE, hospitalName, visitDate, officer);
@@ -295,12 +294,11 @@ function rptTechHosp_finalizeReport(sessionId) {
       sh.getRange(session.rowIndex, 11).setValue(new Date());
     }
 
-    console.log("✅ اكتمل تقرير المستشفى:", docUrl);
+    auditEngine_logEvent("إنهاء تقرير مستشفى", officer, "اكتمل التقرير بنجاح للمستشفى: " + hospitalName, "نجاح", docUrl);
     return { ok: true, docUrl: docUrl, sessionId: sessionId };
 
   } catch (err) {
-    console.error("❌ rptTechHosp_finalizeReport:", err.message);
-    govV8_logError("rptTechHosp_finalizeReport", err);
+    auditEngine_logError("rptTechHosp_finalizeReport", err, { session: sessionId });
     throw err;
   }
 }
@@ -322,7 +320,7 @@ function techHosp_processSingleSection_(data, meta) {
     try {
       var corrected = aiV8_correctText(finalText, { mode: "fix_only", context: "technical" });
       if (corrected && corrected.length > 0) finalText = corrected;
-    } catch (ae) { console.warn("AI section error:", ae.message); }
+    } catch (ae) { auditEngine_logError("rptTechHosp_AI", ae, {}); }
   }
 
   var imagesFolder = techHosp_createImagesFolder_(meta);
@@ -366,7 +364,6 @@ function techHosp_extractSectionData_(data, sectionName) {
    ============================================================ */
 
 function techHosp_processSections_(data, meta) {
-  console.log("📊 معالجة بيانات الأقسام...");
 
   var sections = [];
   var rawDataForRecs = [];
@@ -388,7 +385,7 @@ function techHosp_processSections_(data, meta) {
       try {
         var corrected = aiV8_correctText(finalText, { mode: "fix_only", context: "technical" });
         if (corrected && corrected.length > 0) finalText = corrected;
-      } catch (ae) { console.warn("AI section error:", ae.message); }
+      } catch (ae) { auditEngine_logError("rptTechHosp_AI", ae, {}); }
     }
 
     // Images
@@ -403,10 +400,9 @@ function techHosp_processSections_(data, meta) {
     rawDataForRecs.push({ section: secName, data: { notes: finalText } });
     sections.push({ name: secName, tableRow: secName, text: finalText, images: images });
     Utilities.sleep(100);
-    console.log("─── " + secName);
   }
 
-  console.log("✅ معالجة " + sections.length + " قسم");
+  auditEngine_logEvent("SYSTEM", "SECTIONS_PROCESSED", "techHosp_processSections_", "", { count: sections.length }, "SUCCESS");
   return { sections: sections, rawData: rawDataForRecs };
 }
 
@@ -430,7 +426,7 @@ function techHosp_updateDoc_(docId, meta, processed, isNew) {
 
   var tables = body.getTables();
   if (tables.length < 2) {
-    console.warn("⚠️ Less than 2 tables in template");
+    auditEngine_logError("techHosp_updateDoc_", new Error("Less than 2 tables in template"), {});
     doc.saveAndClose();
     return;
   }
@@ -496,7 +492,7 @@ function techHosp_insertImages_(cell, urlsString) {
         var img  = p.appendInlineImage(blob);
         img.setWidth(200).setHeight(150);
       }
-    } catch (e) { console.warn("⚠️ فشل صورة: " + url); }
+    } catch (e) { auditEngine_logError("techHosp_insertImages_", e, { url: url }); }
   });
 }
 
@@ -598,7 +594,7 @@ function techHosp_createImagesFolder_(meta) {
     var hospF     = folderV8_getOrCreate(monthF, meta.hospital + " - " + fmtV8_dateFileName(meta.visitDate));
     return hospF;
   } catch (e) {
-    console.warn("⚠️ فشل إنشاء مجلد الصور:", e.message);
+    auditEngine_logError("techHosp_createImagesFolder_", e, {});
     return null;
   }
 }

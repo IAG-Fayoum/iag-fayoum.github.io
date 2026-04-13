@@ -19,6 +19,7 @@
  * @returns {Object} كائن بـ 12 مؤشر
  */
 function analytics_computeLive_(monthOffset) {
+  try {
   var offset = (typeof monthOffset === "number") ? monthOffset : 0;
   var now    = new Date();
   var y      = now.getFullYear();
@@ -160,6 +161,10 @@ function analytics_computeLive_(monthOffset) {
     total_inout:              totalInout,
     sla_compliance_rate:      slaComplianceRate
   };
+  } catch (e) {
+    auditEngine_logError("analytics_computeLive_", e, { monthOffset: monthOffset });
+    throw e;
+  }
 }
 
 /* ============================================================
@@ -171,6 +176,7 @@ function analytics_computeLive_(monthOffset) {
  * يُستدعى من weeklyAnalyticsRefresh أو يدوياً.
  */
 function analytics_writeSnapshot_() {
+  try {
   var stats    = analytics_computeLive_(0);
   var masterSS = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
   var statsSh  = masterSS.getSheetByName(SHEETS.STATISTICS);
@@ -194,7 +200,12 @@ function analytics_writeSnapshot_() {
     stats.total_inout,
     stats.sla_compliance_rate
   ]);
-  console.log("✅ analytics_writeSnapshot_: " + stats.snapshot_date);
+  auditEngine_logEvent("SYSTEM", "ANALYTICS_SNAPSHOT",
+    stats.snapshot_date, "", { visits: stats.total_visits }, "SUCCESS");
+  } catch (e) {
+    auditEngine_logError("analytics_writeSnapshot_", e, "");
+    throw e;
+  }
 }
 
 /* ============================================================
@@ -241,6 +252,7 @@ function analytics_countInRange_(sheet, start, end) {
  *                     adminAreaList, employeeList }
  */
 function analytics_computeFiltered_(p) {
+  try {
   var now      = new Date();
   var dateFrom = (p.dateFrom instanceof Date) ? p.dateFrom
                : (p.dateFrom ? new Date(p.dateFrom)
@@ -546,4 +558,8 @@ function analytics_computeFiltered_(p) {
     adminAreaList:     Object.keys(areaListSet).filter(Boolean).sort(),
     employeeList:      employeeList
   };
+  } catch (e) {
+    auditEngine_logError("analytics_computeFiltered_", e, p);
+    throw e;
+  }
 }
