@@ -9,14 +9,14 @@
     'مدير': [
       { href: 'admin.html',        icon: 'home',             label: 'الرئيسية'  },
       { href: 'distribution.html', icon: 'bar-chart-2',      label: 'المؤشرات'  },
-      { href: 'settings.html',     icon: 'clipboard-list',   label: 'إجراءات'   },
+      { href: 'findings.html',     icon: 'shield-alert',     label: 'الملاحظات' },
       { href: 'forms.html',        icon: 'file-text',        label: 'النماذج'   },
       { href: 'dashboard.html',    icon: 'layout-dashboard', label: 'إحصائيات'  },
     ],
     'منسق': [
       { href: 'coordinator.html',  icon: 'home',           label: 'الرئيسية'  },
       { href: 'distribution.html', icon: 'bar-chart-2',    label: 'المؤشرات'  },
-      { href: 'settings.html',     icon: 'clipboard-list', label: 'إجراءات'   },
+      { href: 'findings.html',     icon: 'shield-alert',   label: 'الملاحظات' },
       { href: 'forms.html',        icon: 'file-text',      label: 'النماذج'   },
     ],
     'default': [

@@ -3,7 +3,7 @@
 **المشروع:** IAG-System-2026  
 **الغرض:** متابعة المراحل الرئيسية وربطها بخطط العمل في `docs/`.
 
-**آخر تحديث:** 2026-04-14 — **Sprint 4 Block C مكتمل — Analytics & Dashboard | Phase 5 مكتملة بالكامل ✅**
+**آخر تحديث:** 2026-04-14 — **Phase 6 مكتملة ✅ — System Cleanup & Final Optimization**
 
 ---
 
@@ -38,8 +38,9 @@
 | 2 | تنظيف وتوحيد الفرونت إند (إزالة Tailwind، توحيد `#0a5c56`) | ✅ مكتملة | جميع الصفحات النشطة تم تنظيفها. |
 | 3 | Backend: أمان + إزالة الازدواجية + Router | ✅ مكتملة | `backend-plan.md` |
 | 4 | Audit Logs + Housekeeping | ✅ مكتملة | إعادة تسمية الملفات، دمج Shortcuts، إزالة console.* |
-| 5 | **Phase 5 Frontend — Core + Design System + Block Migrations** | 🔄 **قيد التنفيذ** | انظر جدول Phase 5 أدناه |
-| 6 | ربط Frontend بالـ Backend (تكامل كامل) | ⬜ لم تبدأ | بعد اكتمال Phase 5 |
+| 5 | **Phase 5 Frontend — Core + Design System + Block Migrations** | ✅ **مكتملة** | 11/11 صفحة مهاجرة |
+| 6 | **Phase 6 — System Cleanup & Final Optimization** | ✅ **مكتملة** | انظر تفاصيل Phase 6 أدناه |
+| 7 | ربط Frontend بالـ Backend (تكامل كامل) | ⬜ لم تبدأ | بعد اكتمال Phase 6 |
 | 7 | تحسينات اختيارية | ⬜ لم تبدأ | أداء، UX، توثيق تشغيلي إضافي |
 
 ---
@@ -98,9 +99,47 @@
 
 ---
 
+---
+
+## Phase 6 — System Cleanup & Final Optimization (2026-04-14)
+
+### الملفات المحذوفة (Dead Files Removed)
+
+| الملف | السبب |
+|-------|-------|
+| `assets/css/theme.css` | لا مرجع لها في أي صفحة — ملف CSS قديم |
+| `assets/css/iag-theme.css` | لا مرجع لها في أي صفحة — ملف theme قديم |
+| `assets/css/styles.css` | لا مرجع لها في أي صفحة — ملف styles عام قديم |
+| `assets/css/settings.css` | settings.html محذوف — ملف CSS يتيم |
+| `assets/js/auth.js` | محل بـ `core/session.js` — legacy auth module |
+| `assets/js/settings.js` | settings.html محذوف — ملف JS يتيم |
+
+### إصلاحات التنقل (Navigation Fixes)
+
+- `coordinator.html` — حذف `<script src="assets/js/auth.js">` الزائد (session.js هو المرجع الوحيد للمصادقة)
+- `assets/js/nav.js` — إصلاح روابط `settings.html` المكسورة (الصفحة محذوفة) → استبدالها بـ `findings.html` (الملاحظات) لكلا دوري مدير ومنسق
+
+### تدقيق UI النهائي
+
+| المعيار | الحالة |
+|---------|--------|
+| `iag-design-system.css` هو الـ entrypoint الوحيد في كل الصفحات | ✅ |
+| لا Tailwind CDN في أي صفحة | ✅ |
+| لا `fetch()` مباشر في JS files (خارج `core/api.js`) | ✅ |
+| `auth.js` محذوف من جميع الصفحات | ✅ |
+| nav.js لا يحتوي على روابط مكسورة | ✅ |
+| Inline styles على الأيقونات (Lucide icon sizing) | ⚠️ متبقية كـ known residual — مقبولة |
+| ألوان hardcoded في ملفات CSS للصفحات | ⚠️ تقنية دين — للمعالجة في Phase 7 |
+
+### ملاحظة: settings.html
+
+تم حذف `settings.html` في commit سابق (`0193aa0`). روابط التنقل إليها في nav.js أُصلحت. إذا احتاج النظام لصفحة الإجراءات مستقبلاً، يجب إعادة بناؤها وفق قواعد Phase 5.
+
+---
+
 ## الوضع الحالي للمشروع (ملخص — 2026-04-14)
 
-- **Frontend:** **11/11 صفحة مهاجرة بالكامل** لـ core runtime (IAGApi + IAGSession + IAGFeedback + IAG Design System). **Phase 5 مكتملة 100%.**
+- **Frontend:** **10/10 صفحة نشطة** على core runtime (IAGApi + IAGSession + IAGFeedback + IAG Design System). **Phase 5 + Phase 6 مكتملتان 100%.** (settings.html محذوف — 10 صفحات نشطة فعلية)
 - **Backend:** مكتمل — Audit Engine مطبق، ملفات مُعاد تسميتها، `console.*` محذوفة، الكود نظيف 100%.
 - **التوثيق:** `CLAUDE.md` + `frontend-rules.md` + `frontend-master-plan.md` + `system_blueprint.md` محدّثة وتحكم كل عمل.
 - **المرحلة التالية:** Phase 6 — ربط Frontend بالـ Backend (تكامل كامل).
