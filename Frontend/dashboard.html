@@ -10,8 +10,7 @@
   <link rel="icon" type="image/png" href="assets/icons/favicon.png">
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/theme.css">
-  <link rel="stylesheet" href="assets/css/iag-theme.css">
+  <link rel="stylesheet" href="assets/css/system/iag-design-system.css">
   <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 <body>
@@ -60,11 +59,11 @@
 <!-- FILTER BAR -->
 <div class="filter-bar">
   <div class="filter-row">
-    <div class="fg" style="max-width:85px">
+    <div class="fg fg--sm">
       <label>السنة</label>
       <select class="fi" id="f-year"></select>
     </div>
-    <div class="fg" style="max-width:115px">
+    <div class="fg fg--md">
       <label>الشهر</label>
       <select class="fi" id="f-month">
         <option value="">كل الشهور</option>
@@ -77,22 +76,22 @@
       </select>
     </div>
     <div class="fsep"></div>
-    <div class="fg" style="min-width:120px">
+    <div class="fg fg--date">
       <label>من تاريخ</label>
       <input type="date" class="fi" id="f-from">
     </div>
-    <div class="fg" style="min-width:120px">
+    <div class="fg fg--date">
       <label>إلى تاريخ</label>
       <input type="date" class="fi" id="f-to">
     </div>
     <div class="fsep"></div>
-    <div class="fg" style="min-width:145px">
+    <div class="fg fg--area">
       <label>الإدارة / المستشفى</label>
       <select class="fi" id="f-area">
         <option value="">الكل</option>
       </select>
     </div>
-    <div class="fg" style="min-width:140px">
+    <div class="fg fg--emp">
       <label>الموظف المكلف</label>
       <select class="fi" id="f-emp">
         <option value="">الكل</option>
@@ -110,7 +109,7 @@
 
 <!-- KPI CARDS -->
 <div class="kpi-grid" id="kpi-grid">
-  <div class="loader-box" style="grid-column:1/-1">
+  <div class="loader-box span-full">
     <i data-lucide="loader-2" style="width:30px;height:30px;display:block;margin:0 auto 10px;opacity:.3" class="spin"></i>
     جاري تحميل البيانات...
   </div>
@@ -146,7 +145,7 @@
   <div class="tab-pane active" id="tab-overview">
     <div class="ov-grid">
 
-      <div class="card" style="margin:0">
+      <div class="card card--flush">
         <div class="card-hdr">
           <i data-lucide="bar-chart-2" style="width:15px;height:15px;color:var(--primary)"></i>
           الملاحظات حسب الجهة
@@ -165,7 +164,7 @@
         </div>
       </div>
 
-      <div class="card" style="margin:0">
+      <div class="card card--flush">
         <div class="card-hdr">
           <i data-lucide="activity" style="width:15px;height:15px;color:var(--primary)"></i>
           ملخص المؤشرات
@@ -174,12 +173,12 @@
       </div>
     </div>
 
-    <div style="margin-top:12px" class="wrap">
-      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+    <div class="wrap wrap--mt">
+      <div class="section-hdr">
         <i data-lucide="table-2" style="width:14px;height:14px;color:var(--primary)"></i>
-        <span style="font-size:.82rem;font-weight:800;color:var(--text-1)">تفصيل حسب الجهة</span>
+        <span class="section-hdr-title">تفصيل حسب الجهة</span>
       </div>
-      <div class="card" style="padding:0;overflow:hidden">
+      <div class="card card--table">
         <div class="tbl-wrap">
           <table>
             <thead>
@@ -221,13 +220,13 @@
           <div id="f-type-split"><div class="empty-row">—</div></div>
         </div>
       </div>
-      <div class="card" style="padding:0;overflow:hidden">
-        <div style="padding:12px 14px 10px;display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+      <div class="card card--table">
+        <div class="card-inner-hdr card-inner-hdr--between">
+          <div class="card-inner-hdr">
             <i data-lucide="list" style="width:14px;height:14px;color:var(--primary)"></i>
             تفاصيل الملاحظات
           </div>
-          <span style="font-size:.68rem;color:var(--text-3)" id="f-count-lbl"></span>
+          <span class="card-count-lbl" id="f-count-lbl"></span>
         </div>
         <div class="tbl-wrap">
           <table>
@@ -251,8 +250,8 @@
   <div class="tab-pane" id="tab-inout">
     <div class="wrap" style="margin-top:14px">
       <div class="mkrow" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px" id="io-mkrow"></div>
-      <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px">
-        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+      <div class="card card--table card--mb">
+        <div class="card-inner-hdr">
           <i data-lucide="layers" style="width:14px;height:14px;color:var(--primary)"></i>
           المعاملات حسب النوع
         </div>
@@ -278,8 +277,8 @@
   <div class="tab-pane" id="tab-reports">
     <div class="wrap" style="margin-top:14px">
       <div class="mkrow" style="grid-template-columns:repeat(2,1fr);margin-bottom:12px" id="rp-mkrow"></div>
-      <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px">
-        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+      <div class="card card--table card--mb">
+        <div class="card-inner-hdr">
           <i data-lucide="file-bar-chart" style="width:14px;height:14px;color:var(--primary)"></i>
           التقارير حسب النوع
         </div>
@@ -316,8 +315,8 @@
   <div class="tab-pane" id="tab-escal">
     <div class="wrap" style="margin-top:14px">
       <div class="mkrow" style="grid-template-columns:repeat(2,1fr);margin-bottom:12px" id="e-mkrow"></div>
-      <div class="card" style="padding:0;overflow:hidden">
-        <div style="padding:12px 14px 10px;display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:800;color:var(--text-1)">
+      <div class="card card--table">
+        <div class="card-inner-hdr">
           <i data-lucide="alert-triangle" style="width:14px;height:14px;color:#d97706"></i>
           سجل التصعيدات
         </div>
@@ -343,7 +342,9 @@
 <nav class="bottom-nav hidden" id="bottom-nav"></nav>
 
 <script src="assets/js/config.js"></script>
-<script src="assets/js/auth.js"></script>
+<script src="assets/js/core/api.js"></script>
+<script src="assets/js/core/session.js"></script>
+<script src="assets/js/core/ui-feedback.js"></script>
 <script src="assets/js/nav.js"></script>
 <script src="assets/js/dashboard.js"></script>
 </body>

@@ -3,7 +3,7 @@
 **المشروع:** IAG-System-2026  
 **الغرض:** متابعة المراحل الرئيسية وربطها بخطط العمل في `docs/`.
 
-**آخر تحديث:** 2026-04-14 — **Sprint 3 Block B مكتمل — Employee & Field Operations**
+**آخر تحديث:** 2026-04-14 — **Sprint 4 Block C مكتمل — Analytics & Dashboard | Phase 5 مكتملة بالكامل ✅**
 
 ---
 
@@ -56,7 +56,7 @@
 | **1B** | Design System Core (tokens + base + components + ios) | ✅ **مكتمل** | — |
 | **2** | Block A — Management & Coordination | ✅ **مكتمل** | `admin` · `coordinator` · `settings` · `notifications` |
 | **3** | Block B — Employee & Field Operations | ✅ **مكتمل** | `employee` · `forms` · `findings` · `portal` |
-| **4** | Block C — Analytics & Dashboard + Final Consolidation | ⬜ لم تبدأ | `dashboard` · `distribution` · `index` |
+| **4** | Block C — Analytics & Dashboard + Final Consolidation | ✅ **مكتمل** | `dashboard` · `distribution` · `index` |
 
 ### تفاصيل Sprint 1A (2026-04-13)
 - إنشاء `core/api.js`: طبقة موحدة لكل الاتصالات، response normalization (`ok/success` → `ok`)، timeout support
@@ -88,11 +88,22 @@
 
 ---
 
+### تفاصيل Sprint 4 — Block C (2026-04-14)
+- `dashboard.html/js` — إزالة `theme.css`/`iag-theme.css`/`auth.js`/`nav.js` القديمة، إضافة `iag-design-system.css` + core scripts. `IAGSession.requireAuth()` + role guard بـ redirect-only (لا logout). `IAGApi.getDashboardStats(filters)` يحل محل `fetch` المباشر (بدون `action` مكرر). `IAGSession.logout()` بدل `localStorage.clear()`. إزالة جميع `style="..."` الهيكلية → classes في `dashboard.css` (`.fg--sm`, `.fg--md`, `.fg--date`, `.fg--area`, `.fg--emp`, `.card--flush`, `.card--table`, `.span-full`, `.section-hdr`, `.card-inner-hdr`).
+- `distribution.html` — حذف Tailwind CDN (مخالفة خطيرة). استخراج 120 سطر CSS → `distribution.css` (tokens كاملة). استخراج ~800 سطر JS → `distribution.js`. إزالة جميع Tailwind utility classes من HTML (`font-bold text-lg text-gray-900` → `m-title`، `p-2 bg-gray-100 rounded-full` → `modal-close-btn`). script tags: config + core/api + core/session + core/ui-feedback + nav + distribution.js.
+- `distribution.js` — `IAGSession.requireAuth()` للحماية. `IAGApi.getDashboardData()` + `IAGFeedback.showLoading/hideLoading` لـ loadData(). `IAGApi.sendReminderNotification()` لـ remindEmp() و remindAllEmps() (مع loading overlay للـ batch). `IAGSession.logout()` و `IAGSession.getUser()`.
+- `index.html/js` — حذف `theme.css` و `auth.js`. إضافة `iag-design-system.css` + core/api + core/session. `IAGSession.getUser()` بدل localStorage. `IAGApi.login()` + `IAGSession.setUser(result.data)` بدل `auth.login()` + `auth.currentUser`.
+- `index.css` — جميع الألوان الصلبة استُبدلت بـ tokens: `#0a5c56` → `var(--brand-primary)`، `#0f766e` → `var(--brand-primary-teal)`، `#0d9488` → `var(--brand-primary-hover)`، `#e2e8f0` → `var(--color-border)`، `#334155` → `var(--color-text-2)` إلخ.
+- `core/api.js` — إضافة 3 endpoints: `getDashboardStats(filters)` · `getDashboardData(year, period)` · `sendReminderNotification(empName, sentBy, tasks)`.
+
+---
+
 ## الوضع الحالي للمشروع (ملخص — 2026-04-14)
 
-- **Frontend:** 8 من 11 صفحة مهاجرة بالكامل لـ core runtime (IAGApi + IAGSession + IAGFeedback + IAG Design System). المتبقي: Block C (`dashboard`, `distribution`, `index`).
+- **Frontend:** **11/11 صفحة مهاجرة بالكامل** لـ core runtime (IAGApi + IAGSession + IAGFeedback + IAG Design System). **Phase 5 مكتملة 100%.**
 - **Backend:** مكتمل — Audit Engine مطبق، ملفات مُعاد تسميتها، `console.*` محذوفة، الكود نظيف 100%.
 - **التوثيق:** `CLAUDE.md` + `frontend-rules.md` + `frontend-master-plan.md` + `system_blueprint.md` محدّثة وتحكم كل عمل.
+- **المرحلة التالية:** Phase 6 — ربط Frontend بالـ Backend (تكامل كامل).
 
 ---
 

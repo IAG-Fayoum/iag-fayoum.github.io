@@ -10,10 +10,11 @@ let gLoading = false;
 
 /* ── INIT ── */
 document.addEventListener('DOMContentLoaded', () => {
-  const u = localStorage.getItem('iag_user');
-  if (!u) { location.href = 'index.html'; return; }
-  const user = JSON.parse(u);
-  if (user.role !== 'مدير' && user.role !== 'Admin') { location.href = 'index.html'; return; }
+  const user = IAGSession.requireAuth();
+  // Role guard: redirect-only (don't logout — user has a valid session, wrong page)
+  if (user.role !== 'مدير' && user.role !== 'Admin') {
+    window.location.href = 'index.html'; return;
+  }
   document.getElementById('header-name').textContent = user.name || '';
   initYear();
   setDefaultPeriod();
@@ -83,7 +84,7 @@ async function applyFilters() {
   gLoading = true;
   renderTags();
   document.getElementById('kpi-grid').innerHTML =
-    `<div class="loader-box" style="grid-column:1/-1">
+    `<div class="loader-box span-full">
        <i data-lucide="loader-2" style="width:28px;height:28px;display:block;margin:0 auto 10px;opacity:.3" class="spin"></i>
        جاري تحميل البيانات...
      </div>`;
@@ -91,24 +92,25 @@ async function applyFilters() {
   lucide.createIcons();
 
   try {
-    const f   = getF();
-    const req = { action: 'getDashboardStats' };
-    if (f.dateFrom && f.dateTo) { req.dateFrom = f.dateFrom; req.dateTo = f.dateTo; }
-    if (f.adminArea) req.adminArea = f.adminArea;
-    if (f.employee)  req.employee  = f.employee;
+    const f = getF();
+    // Build filters only — action is set internally by IAGApi.getDashboardStats()
+    const filters = {};
+    if (f.dateFrom && f.dateTo) { filters.dateFrom = f.dateFrom; filters.dateTo = f.dateTo; }
+    if (f.adminArea) filters.adminArea = f.adminArea;
+    if (f.employee)  filters.employee  = f.employee;
 
-    const res  = await fetch(CONFIG.API_URL, { method:'POST', body:JSON.stringify(req) });
-    const json = await res.json();
-    if (!json.success) throw new Error(json.error || 'فشل التحميل');
-    gData = json.data;
+    const result = await IAGApi.getDashboardStats(filters);
+    if (!result.ok) throw new Error(result.error || 'فشل التحميل');
+    gData = result.data;
     renderAll(gData);
     fillDropdowns(gData.adminAreaList || [], gData.employeeList || []);
   } catch(e) {
     document.getElementById('kpi-grid').innerHTML =
-      `<div class="loader-box" style="grid-column:1/-1;color:var(--danger)">
+      `<div class="loader-box span-full" style="color:var(--danger)">
          <i data-lucide="alert-circle" style="width:28px;height:28px;display:block;margin:0 auto 10px"></i>
          ⚠️ ${e.message}
        </div>`;
+    IAGFeedback.showError(e.message);
     lucide.createIcons();
   } finally { gLoading = false; }
 }
@@ -411,4 +413,4 @@ function closeMenu() {
   document.getElementById('side-menu').classList.remove('open');
   document.getElementById('menu-overlay').classList.remove('open');
 }
-function logout() { localStorage.clear(); location.href = 'index.html'; }
+function logout() { IAGSession.logout(); }

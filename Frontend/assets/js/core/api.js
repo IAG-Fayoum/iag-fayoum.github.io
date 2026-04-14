@@ -205,6 +205,23 @@ const IAGApi = (() => {
         return request('portalSubmitResponse', { admin_code: adminCode, car_id: carId, section_name: sectionName, response });
     }
 
+    // ── Block C Endpoint Helpers (Sprint 4) ──────────────────────────────────
+
+    /** Dashboard: load statistics with optional filters (dateFrom, dateTo, adminArea, employee) */
+    function getDashboardStats(filters = {}) {
+        return request('getDashboardStats', filters);
+    }
+
+    /** Distribution: load employee performance data */
+    function getDashboardData(year, period) {
+        return request('getDashboardData', { year, period });
+    }
+
+    /** Distribution: send reminder notification to a single employee */
+    function sendReminderNotification(empName, sentBy, tasks) {
+        return request('sendReminderNotification', { empName, sentBy, tasks });
+    }
+
     // ── Public API ────────────────────────────────────────────────────────────
 
     return {
@@ -232,6 +249,10 @@ const IAGApi = (() => {
         portalLogin,
         portalGetSections,
         portalSubmitResponse,
+        // Block C (Sprint 4)
+        getDashboardStats,
+        getDashboardData,
+        sendReminderNotification,
     };
 
 })();
